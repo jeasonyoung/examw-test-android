@@ -1,6 +1,7 @@
 package com.lidroid.xutils.db.converter;
 
 import android.database.Cursor;
+import com.lidroid.xutils.db.sqlite.ColumnDbType;
 
 /**
  * Author: wyouflf
@@ -9,12 +10,12 @@ import android.database.Cursor;
  */
 public class ByteArrayColumnConverter implements ColumnConverter<byte[]> {
     @Override
-    public byte[] getFiledValue(final Cursor cursor, int index) {
+    public byte[] getFieldValue(final Cursor cursor, int index) {
         return cursor.isNull(index) ? null : cursor.getBlob(index);
     }
 
     @Override
-    public byte[] getFiledValue(String fieldStringValue) {
+    public byte[] getFieldValue(String fieldStringValue) {
         return null;
     }
 
@@ -24,7 +25,7 @@ public class ByteArrayColumnConverter implements ColumnConverter<byte[]> {
     }
 
     @Override
-    public String getColumnDbType() {
-        return "BLOB";
+    public ColumnDbType getColumnDbType() {
+        return ColumnDbType.BLOB;
     }
 }

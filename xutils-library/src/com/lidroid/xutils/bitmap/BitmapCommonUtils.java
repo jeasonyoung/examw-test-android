@@ -16,51 +16,25 @@
 package com.lidroid.xutils.bitmap;
 
 import android.content.Context;
-import android.os.Environment;
-import android.os.StatFs;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.lidroid.xutils.bitmap.core.BitmapSize;
-import com.lidroid.xutils.util.LogUtils;
 
-import java.io.File;
 import java.lang.reflect.Field;
 
 public class BitmapCommonUtils {
 
-    /**
-     * @param context
-     * @param dirName Only the folder name, not full path.
-     * @return app_cache_path/dirName
-     */
-    public static String getDiskCacheDir(Context context, String dirName) {
-        final String cachePath = Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ?
-                context.getExternalCacheDir().getPath() : context.getCacheDir().getPath();
-
-        return cachePath + File.separator + dirName;
-    }
-
-    public static long getAvailableSpace(File dir) {
-        try {
-            final StatFs stats = new StatFs(dir.getPath());
-            return (long) stats.getBlockSize() * (long) stats.getAvailableBlocks();
-        } catch (Throwable e) {
-            LogUtils.e(e.getMessage(), e);
-            return -1;
-        }
-
+    private BitmapCommonUtils() {
     }
 
     private static BitmapSize screenSize = null;
 
     public static BitmapSize getScreenSize(Context context) {
         if (screenSize == null) {
-            screenSize = new BitmapSize();
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            screenSize.setWidth(displayMetrics.widthPixels);
-            screenSize.setHeight(displayMetrics.heightPixels);
+            screenSize = new BitmapSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
         }
         return screenSize;
     }

@@ -28,19 +28,22 @@ import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.BitmapGlobalConfig;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadCallBack;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
-import com.lidroid.xutils.bitmap.callback.SimpleBitmapLoadCallBack;
+import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
 import com.lidroid.xutils.bitmap.core.AsyncDrawable;
 import com.lidroid.xutils.bitmap.core.BitmapSize;
 import com.lidroid.xutils.bitmap.download.Downloader;
-import com.lidroid.xutils.util.core.CompatibleAsyncTask;
-import com.lidroid.xutils.util.core.LruDiskCache;
+import com.lidroid.xutils.cache.FileNameGenerator;
+import com.lidroid.xutils.task.PriorityAsyncTask;
+import com.lidroid.xutils.task.PriorityExecutor;
+import com.lidroid.xutils.task.TaskHandler;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
-public class BitmapUtils {
+public class BitmapUtils implements TaskHandler {
 
     private boolean pauseTask = false;
+    private boolean cancelAllTask = false;
     private final Object pauseTaskLock = new Object();
 
     private Context context;
@@ -57,8 +60,8 @@ public class BitmapUtils {
             throw new IllegalArgumentException("context may not be null");
         }
 
-        this.context = context;
-        globalConfig = new BitmapGlobalConfig(context, diskCachePath);
+        this.context = context.getApplicationContext();
+        globalConfig = BitmapGlobalConfig.getInstance(this.context, diskCachePath);
         defaultDisplayConfig = new BitmapDisplayConfig();
     }
 
@@ -186,18 +189,13 @@ public class BitmapUtils {
         return this;
     }
 
-    public BitmapUtils configDiskCacheFileNameGenerator(LruDiskCache.DiskCacheFileNameGenerator diskCacheFileNameGenerator) {
-        globalConfig.setDiskCacheFileNameGenerator(diskCacheFileNameGenerator);
+    public BitmapUtils configDiskCacheFileNameGenerator(FileNameGenerator fileNameGenerator) {
+        globalConfig.setFileNameGenerator(fileNameGenerator);
         return this;
     }
 
     public BitmapUtils configBitmapCacheListener(BitmapCacheListener listener) {
         globalConfig.setBitmapCacheListener(listener);
-        return this;
-    }
-
-    public BitmapUtils configGlobalConfig(BitmapGlobalConfig globalConfig) {
-        this.globalConfig = globalConfig;
         return this;
     }
 
@@ -220,10 +218,8 @@ public class BitmapUtils {
             return;
         }
 
-        container.clearAnimation();
-
         if (callBack == null) {
-            callBack = new SimpleBitmapLoadCallBack<T>();
+            callBack = new DefaultBitmapLoadCallBack<T>();
         }
 
         if (displayConfig == null || displayConfig == defaultDisplayConfig) {
@@ -234,13 +230,17 @@ public class BitmapUtils {
         BitmapSize size = displayConfig.getBitmapMaxSize();
         displayConfig.setBitmapMaxSize(BitmapCommonUtils.optimizeMaxSizeByView(container, size.getWidth(), size.getHeight()));
 
-        callBack.onPreLoad(container, uri, displayConfig);
+        container.clearAnimation();
 
         if (TextUtils.isEmpty(uri)) {
             callBack.onLoadFailed(container, uri, displayConfig.getLoadFailedDrawable());
             return;
         }
 
+        // start loading
+        callBack.onPreLoad(container, uri, displayConfig);
+
+        // find bitmap from mem cache.
         Bitmap bitmap = globalConfig.getBitmapCache().getBitmapFromMemCache(uri, displayConfig);
 
         if (bitmap != null) {
@@ -254,14 +254,20 @@ public class BitmapUtils {
         } else if (!bitmapLoadTaskExist(container, uri, callBack)) {
 
             final BitmapLoadTask<T> loadTask = new BitmapLoadTask<T>(container, uri, displayConfig, callBack);
-            // set loading image
-            final AsyncDrawable<T> asyncDrawable = new AsyncDrawable<T>(
-                    displayConfig.getLoadingDrawable(),
-                    loadTask);
-            callBack.setDrawable(container, asyncDrawable);
 
-            // load bitmap from uri or diskCache
-            loadTask.executeOnExecutor(globalConfig.getBitmapLoadExecutor());
+            // get executor
+            PriorityExecutor executor = globalConfig.getBitmapLoadExecutor();
+            File diskCacheFile = this.getBitmapFileFromDiskCache(uri);
+            boolean diskCacheExist = diskCacheFile != null && diskCacheFile.exists();
+            if (diskCacheExist && executor.isBusy()) {
+                executor = globalConfig.getDiskCacheExecutor();
+            }
+            // set loading image
+            Drawable loadingDrawable = displayConfig.getLoadingDrawable();
+            callBack.setDrawable(container, new AsyncDrawable<T>(loadingDrawable, loadTask));
+
+            loadTask.setPriority(displayConfig.getPriority());
+            loadTask.executeOnExecutor(executor);
         }
     }
 
@@ -279,18 +285,12 @@ public class BitmapUtils {
         globalConfig.clearDiskCache();
     }
 
-    public void clearCache(String uri, BitmapDisplayConfig config) {
-        if (config == null) {
-            config = defaultDisplayConfig;
-        }
-        globalConfig.clearCache(uri, config);
+    public void clearCache(String uri) {
+        globalConfig.clearCache(uri);
     }
 
-    public void clearMemoryCache(String uri, BitmapDisplayConfig config) {
-        if (config == null) {
-            config = defaultDisplayConfig;
-        }
-        globalConfig.clearMemoryCache(uri, config);
+    public void clearMemoryCache(String uri) {
+        globalConfig.clearMemoryCache(uri);
     }
 
     public void clearDiskCache(String uri) {
@@ -309,29 +309,61 @@ public class BitmapUtils {
         return globalConfig.getBitmapCache().getBitmapFileFromDiskCache(uri);
     }
 
-    public Bitmap getBitmapFromMemCache(String uri, BitmapDisplayConfig displayConfig) {
-        return globalConfig.getBitmapCache().getBitmapFromMemCache(uri, displayConfig);
+    public Bitmap getBitmapFromMemCache(String uri, BitmapDisplayConfig config) {
+        if (config == null) {
+            config = defaultDisplayConfig;
+        }
+        return globalConfig.getBitmapCache().getBitmapFromMemCache(uri, config);
     }
 
     ////////////////////////////////////////// tasks //////////////////////////////////////////////////////////////////////
 
-    public void resumeTasks() {
+    @Override
+    public boolean supportPause() {
+        return true;
+    }
+
+    @Override
+    public boolean supportResume() {
+        return true;
+    }
+
+    @Override
+    public boolean supportCancel() {
+        return true;
+    }
+
+    @Override
+    public void pause() {
+        pauseTask = true;
+        flushCache();
+    }
+
+    @Override
+    public void resume() {
         pauseTask = false;
         synchronized (pauseTaskLock) {
             pauseTaskLock.notifyAll();
         }
     }
 
-    public void pauseTasks() {
+    @Override
+    public void cancel() {
         pauseTask = true;
-        flushCache();
-    }
-
-    public void stopTasks() {
-        pauseTask = true;
+        cancelAllTask = true;
         synchronized (pauseTaskLock) {
             pauseTaskLock.notifyAll();
         }
+    }
+
+    @Override
+    public boolean isPaused() {
+        return pauseTask;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelAllTask;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -362,7 +394,7 @@ public class BitmapUtils {
         return false;
     }
 
-    public class BitmapLoadTask<T extends View> extends CompatibleAsyncTask<Object, Object, Bitmap> {
+    public class BitmapLoadTask<T extends View> extends PriorityAsyncTask<Object, Object, Bitmap> {
         private final String uri;
         private final WeakReference<T> containerReference;
         private final BitmapLoadCallBack<T> callBack;
@@ -388,6 +420,9 @@ public class BitmapUtils {
                 while (pauseTask && !this.isCancelled()) {
                     try {
                         pauseTaskLock.wait();
+                        if (cancelAllTask) {
+                            return null;
+                        }
                     } catch (Throwable e) {
                     }
                 }
@@ -419,7 +454,7 @@ public class BitmapUtils {
 
         @Override
         protected void onProgressUpdate(Object... values) {
-            if (values == null || values.length < 1) return;
+            if (values == null || values.length == 0) return;
 
             final T container = this.getTargetContainer();
             if (container == null) return;

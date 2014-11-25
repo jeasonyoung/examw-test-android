@@ -2,6 +2,7 @@ package com.lidroid.xutils.db.converter;
 
 import android.database.Cursor;
 import android.text.TextUtils;
+import com.lidroid.xutils.db.sqlite.ColumnDbType;
 
 import java.util.Date;
 
@@ -12,12 +13,12 @@ import java.util.Date;
  */
 public class DateColumnConverter implements ColumnConverter<Date> {
     @Override
-    public Date getFiledValue(final Cursor cursor, int index) {
+    public Date getFieldValue(final Cursor cursor, int index) {
         return cursor.isNull(index) ? null : new Date(cursor.getLong(index));
     }
 
     @Override
-    public Date getFiledValue(String fieldStringValue) {
+    public Date getFieldValue(String fieldStringValue) {
         if (TextUtils.isEmpty(fieldStringValue)) return null;
         return new Date(Long.valueOf(fieldStringValue));
     }
@@ -29,7 +30,7 @@ public class DateColumnConverter implements ColumnConverter<Date> {
     }
 
     @Override
-    public String getColumnDbType() {
-        return "INTEGER";
+    public ColumnDbType getColumnDbType() {
+        return ColumnDbType.INTEGER;
     }
 }

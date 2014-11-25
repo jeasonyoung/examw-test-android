@@ -27,12 +27,13 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
         
     <application
-        android:name="app.AppContext"
+        android:name="com.examw.test.app.AppContext"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
+        <!-- 启动入口 -->
         <activity
-            android:name="app.AppStart"
+            android:name="com.examw.test.app.AppStart"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
@@ -40,6 +41,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <!-- 引导界面  -->
+        <activity
+            android:name="com.examw.test.ui.GuideActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 主界面   -->
+        <activity
+            android:name="com.examw.test.ui.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 </manifest>

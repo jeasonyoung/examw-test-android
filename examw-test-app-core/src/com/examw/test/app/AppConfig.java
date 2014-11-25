@@ -24,6 +24,8 @@ import com.examw.test.util.StringUtils;
 public class AppConfig {
 
 	private final static String APP_CONFIG = "config";
+	
+	public static final String SHAREDPREFERENCES_NAME = "first_pref";  
 
 	public final static String CONF_APP_UNIQUEID = "APP_UNIQUEID";
 	public final static String CONF_COOKIE = "cookie";

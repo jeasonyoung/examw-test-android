@@ -24,6 +24,7 @@ import com.lidroid.xutils.http.client.multipart.content.FileBody;
 import com.lidroid.xutils.http.client.multipart.content.InputStreamBody;
 import com.lidroid.xutils.http.client.multipart.content.StringBody;
 import com.lidroid.xutils.util.LogUtils;
+import com.lidroid.xutils.task.Priority;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -37,7 +38,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -47,10 +47,12 @@ public class RequestParams {
     private String charset = HTTP.UTF_8;
 
     private List<HeaderItem> headers;
-    private LinkedHashMap<String, NameValuePair> queryStringParams;
+    private List<NameValuePair> queryStringParams;
     private HttpEntity bodyEntity;
-    private LinkedHashMap<String, NameValuePair> bodyParams;
+    private List<NameValuePair> bodyParams;
     private HashMap<String, ContentBody> fileParams;
+
+    private Priority priority;
 
     public RequestParams() {
     }
@@ -59,6 +61,14 @@ public class RequestParams {
         if (!TextUtils.isEmpty(charset)) {
             this.charset = charset;
         }
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     public String getCharset() {
@@ -151,50 +161,50 @@ public class RequestParams {
 
     public void addQueryStringParameter(String name, String value) {
         if (queryStringParams == null) {
-            queryStringParams = new LinkedHashMap<String, NameValuePair>();
+            queryStringParams = new ArrayList<NameValuePair>();
         }
-        queryStringParams.put(name, new BasicNameValuePair(name, value));
+        queryStringParams.add(new BasicNameValuePair(name, value));
     }
 
     public void addQueryStringParameter(NameValuePair nameValuePair) {
         if (queryStringParams == null) {
-            queryStringParams = new LinkedHashMap<String, NameValuePair>();
+            queryStringParams = new ArrayList<NameValuePair>();
         }
-        queryStringParams.put(nameValuePair.getName(), nameValuePair);
+        queryStringParams.add(nameValuePair);
     }
 
     public void addQueryStringParameter(List<NameValuePair> nameValuePairs) {
         if (queryStringParams == null) {
-            queryStringParams = new LinkedHashMap<String, NameValuePair>();
+            queryStringParams = new ArrayList<NameValuePair>();
         }
         if (nameValuePairs != null && nameValuePairs.size() > 0) {
             for (NameValuePair pair : nameValuePairs) {
-                queryStringParams.put(pair.getName(), pair);
+                queryStringParams.add(pair);
             }
         }
     }
 
     public void addBodyParameter(String name, String value) {
         if (bodyParams == null) {
-            bodyParams = new LinkedHashMap<String, NameValuePair>();
+            bodyParams = new ArrayList<NameValuePair>();
         }
-        bodyParams.put(name, new BasicNameValuePair(name, value));
+        bodyParams.add(new BasicNameValuePair(name, value));
     }
 
     public void addBodyParameter(NameValuePair nameValuePair) {
         if (bodyParams == null) {
-            bodyParams = new LinkedHashMap<String, NameValuePair>();
+            bodyParams = new ArrayList<NameValuePair>();
         }
-        bodyParams.put(nameValuePair.getName(), nameValuePair);
+        bodyParams.add(nameValuePair);
     }
 
     public void addBodyParameter(List<NameValuePair> nameValuePairs) {
         if (bodyParams == null) {
-            bodyParams = new LinkedHashMap<String, NameValuePair>();
+            bodyParams = new ArrayList<NameValuePair>();
         }
         if (nameValuePairs != null && nameValuePairs.size() > 0) {
             for (NameValuePair pair : nameValuePairs) {
-                bodyParams.put(pair.getName(), pair);
+                bodyParams.add(pair);
             }
         }
     }
@@ -220,6 +230,20 @@ public class RequestParams {
         fileParams.put(key, new FileBody(file, mimeType, charset));
     }
 
+    public void addBodyParameter(String key, File file, String fileName, String mimeType, String charset) {
+        if (fileParams == null) {
+            fileParams = new HashMap<String, ContentBody>();
+        }
+        fileParams.put(key, new FileBody(file, fileName, mimeType, charset));
+    }
+
+    public void addBodyParameter(String key, InputStream stream, long length) {
+        if (fileParams == null) {
+            fileParams = new HashMap<String, ContentBody>();
+        }
+        fileParams.put(key, new InputStreamBody(stream, length));
+    }
+
     public void addBodyParameter(String key, InputStream stream, long length, String fileName) {
         if (fileParams == null) {
             fileParams = new HashMap<String, ContentBody>();
@@ -227,11 +251,11 @@ public class RequestParams {
         fileParams.put(key, new InputStreamBody(stream, length, fileName));
     }
 
-    public void addBodyParameter(String key, InputStream stream, long length, String mimeType, String fileName) {
+    public void addBodyParameter(String key, InputStream stream, long length, String fileName, String mimeType) {
         if (fileParams == null) {
             fileParams = new HashMap<String, ContentBody>();
         }
-        fileParams.put(key, new InputStreamBody(stream, length, mimeType, fileName));
+        fileParams.put(key, new InputStreamBody(stream, length, fileName, mimeType));
     }
 
     public void setBodyEntity(HttpEntity bodyEntity) {
@@ -262,7 +286,7 @@ public class RequestParams {
             MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.STRICT, null, Charset.forName(charset));
 
             if (bodyParams != null && !bodyParams.isEmpty()) {
-                for (NameValuePair param : bodyParams.values()) {
+                for (NameValuePair param : bodyParams) {
                     try {
                         multipartEntity.addPart(param.getName(), new StringBody(param.getValue()));
                     } catch (UnsupportedEncodingException e) {
@@ -277,17 +301,14 @@ public class RequestParams {
 
             result = multipartEntity;
         } else if (bodyParams != null && !bodyParams.isEmpty()) {
-            result = new BodyParamsEntity(new ArrayList<NameValuePair>(bodyParams.values()), charset);
+            result = new BodyParamsEntity(bodyParams, charset);
         }
 
         return result;
     }
 
     public List<NameValuePair> getQueryStringParams() {
-        if (queryStringParams != null && !queryStringParams.isEmpty()) {
-            return new ArrayList<NameValuePair>(queryStringParams.values());
-        }
-        return null;
+        return queryStringParams;
     }
 
     public List<HeaderItem> getHeaders() {

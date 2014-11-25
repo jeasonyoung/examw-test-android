@@ -2,6 +2,7 @@ package com.lidroid.xutils.db.converter;
 
 import android.database.Cursor;
 import android.text.TextUtils;
+import com.lidroid.xutils.db.sqlite.ColumnDbType;
 
 /**
  * Author: wyouflf
@@ -10,12 +11,12 @@ import android.text.TextUtils;
  */
 public class CharColumnConverter implements ColumnConverter<Character> {
     @Override
-    public Character getFiledValue(final Cursor cursor, int index) {
+    public Character getFieldValue(final Cursor cursor, int index) {
         return cursor.isNull(index) ? null : (char) cursor.getInt(index);
     }
 
     @Override
-    public Character getFiledValue(String fieldStringValue) {
+    public Character getFieldValue(String fieldStringValue) {
         if (TextUtils.isEmpty(fieldStringValue)) return null;
         return fieldStringValue.charAt(0);
     }
@@ -27,7 +28,7 @@ public class CharColumnConverter implements ColumnConverter<Character> {
     }
 
     @Override
-    public String getColumnDbType() {
-        return "INTEGER";
+    public ColumnDbType getColumnDbType() {
+        return ColumnDbType.INTEGER;
     }
 }

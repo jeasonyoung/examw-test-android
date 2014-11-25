@@ -42,9 +42,9 @@ public class FileUploadEntity extends FileEntity implements UploadEntity {
         if (outStream == null) {
             throw new IllegalArgumentException("Output stream may not be null");
         }
-        InputStream inStream = null;
+        BufferedInputStream inStream = null;
         try {
-            inStream = new FileInputStream(this.file);
+            inStream = new BufferedInputStream(new FileInputStream(this.file));
             byte[] tmp = new byte[4096];
             int len;
             while ((len = inStream.read(tmp)) != -1) {
@@ -52,7 +52,7 @@ public class FileUploadEntity extends FileEntity implements UploadEntity {
                 uploadedSize += len;
                 if (callBackHandler != null) {
                     if (!callBackHandler.updateProgress(fileSize, uploadedSize, false)) {
-                        throw new InterruptedIOException("stop");
+                        throw new InterruptedIOException("cancel");
                     }
                 }
             }

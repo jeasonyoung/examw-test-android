@@ -41,10 +41,11 @@ public class FileBody extends AbstractContentBody {
             throw new IllegalArgumentException("File may not be null");
         }
         this.file = file;
-        if (filename != null)
+        if (filename != null) {
             this.filename = filename;
-        else
+        } else {
             this.filename = file.getName();
+        }
         this.charset = charset;
     }
 
@@ -58,11 +59,11 @@ public class FileBody extends AbstractContentBody {
     }
 
     public FileBody(final File file, final String mimeType) {
-        this(file, mimeType, null);
+        this(file, null, mimeType, null);
     }
 
     public FileBody(final File file) {
-        this(file, "application/octet-stream");
+        this(file, null, "application/octet-stream", null);
     }
 
     public InputStream getInputStream() throws IOException {
@@ -73,16 +74,16 @@ public class FileBody extends AbstractContentBody {
         if (out == null) {
             throw new IllegalArgumentException("Output stream may not be null");
         }
-        InputStream in = null;
+        BufferedInputStream in = null;
         try {
-            in = new FileInputStream(this.file);
+            in = new BufferedInputStream(new FileInputStream(this.file));
             byte[] tmp = new byte[4096];
             int l;
             while ((l = in.read(tmp)) != -1) {
                 out.write(tmp, 0, l);
                 callBackInfo.pos += l;
                 if (!callBackInfo.doCallBack(false)) {
-                    throw new InterruptedIOException("stop");
+                    throw new InterruptedIOException("cancel");
                 }
             }
             out.flush();

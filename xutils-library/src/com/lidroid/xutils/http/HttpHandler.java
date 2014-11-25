@@ -19,28 +19,28 @@ import android.os.SystemClock;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.callback.*;
+import com.lidroid.xutils.task.PriorityAsyncTask;
 import com.lidroid.xutils.util.OtherUtils;
-import com.lidroid.xutils.util.core.CompatibleAsyncTask;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolException;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.RedirectHandler;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.UnknownHostException;
 
 
-public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> implements RequestCallBackHandler {
+public class HttpHandler<T> extends PriorityAsyncTask<Object, Object, Void> implements RequestCallBackHandler {
 
     private final AbstractHttpClient client;
     private final HttpContext context;
-
-    private final StringDownloadHandler mStringDownloadHandler = new StringDownloadHandler();
-    private final FileDownloadHandler mFileDownloadHandler = new FileDownloadHandler();
 
     private HttpRedirectHandler httpRedirectHandler;
 
@@ -54,9 +54,9 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
     private String requestMethod;
     private HttpRequestBase request;
     private boolean isUploading = true;
-    private final RequestCallBack<T> callback;
+    private RequestCallBack<T> callback;
 
-    private int retriedTimes = 0;
+    private int retriedCount = 0;
     private String fileSavePath = null;
     private boolean isDownloadingFile = false;
     private boolean autoResume = false; // Whether the downloading could continue from the point of interruption.
@@ -68,6 +68,7 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
         this.context = context;
         this.callback = callback;
         this.charset = charset;
+        this.client.setRedirectHandler(notUseApacheRedirectHandler);
     }
 
     private State state = State.WAITING;
@@ -82,23 +83,33 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
         this.expiry = expiry;
     }
 
+    public void setRequestCallBack(RequestCallBack<T> callback) {
+        this.callback = callback;
+    }
+
+    public RequestCallBack<T> getRequestCallBack() {
+        return this.callback;
+    }
+
     // 执行请求
     @SuppressWarnings("unchecked")
     private ResponseInfo<T> sendRequest(HttpRequestBase request) throws HttpException {
-        if (autoResume && isDownloadingFile) {
-            File downloadFile = new File(fileSavePath);
-            long fileLen = 0;
-            if (downloadFile.isFile() && downloadFile.exists()) {
-                fileLen = downloadFile.length();
-            }
-            if (fileLen > 0) {
-                request.setHeader("RANGE", "bytes=" + fileLen + "-");
-            }
-        }
 
-        boolean retry = true;
         HttpRequestRetryHandler retryHandler = client.getHttpRequestRetryHandler();
-        while (retry) {
+        while (true) {
+
+            if (autoResume && isDownloadingFile) {
+                File downloadFile = new File(fileSavePath);
+                long fileLen = 0;
+                if (downloadFile.isFile() && downloadFile.exists()) {
+                    fileLen = downloadFile.length();
+                }
+                if (fileLen > 0) {
+                    request.setHeader("RANGE", "bytes=" + fileLen + "-");
+                }
+            }
+
+            boolean retry = true;
             IOException exception = null;
             try {
                 requestMethod = request.getMethod();
@@ -117,31 +128,30 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
                 return responseInfo;
             } catch (UnknownHostException e) {
                 exception = e;
-                retry = retryHandler.retryRequest(exception, ++retriedTimes, context);
+                retry = retryHandler.retryRequest(exception, ++retriedCount, context);
             } catch (IOException e) {
                 exception = e;
-                retry = retryHandler.retryRequest(exception, ++retriedTimes, context);
+                retry = retryHandler.retryRequest(exception, ++retriedCount, context);
             } catch (NullPointerException e) {
                 exception = new IOException(e.getMessage());
                 exception.initCause(e);
-                retry = retryHandler.retryRequest(exception, ++retriedTimes, context);
+                retry = retryHandler.retryRequest(exception, ++retriedCount, context);
             } catch (HttpException e) {
                 throw e;
             } catch (Throwable e) {
                 exception = new IOException(e.getMessage());
                 exception.initCause(e);
-                retry = retryHandler.retryRequest(exception, ++retriedTimes, context);
+                retry = retryHandler.retryRequest(exception, ++retriedCount, context);
             }
-            if (!retry && exception != null) {
+            if (!retry) {
                 throw new HttpException(exception);
             }
         }
-        return null;
     }
 
     @Override
     protected Void doInBackground(Object... params) {
-        if (mStopped || params == null || params.length < 1) return null;
+        if (this.state == State.CANCELLED || params == null || params.length == 0) return null;
 
         if (params.length > 3) {
             fileSavePath = String.valueOf(params[1]);
@@ -151,7 +161,7 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
         }
 
         try {
-            if (mStopped) return null;
+            if (this.state == State.CANCELLED) return null;
             // init request & requestUrl
             request = (HttpRequestBase) params[0];
             requestUrl = request.getURI().toString();
@@ -183,7 +193,7 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
     @Override
     @SuppressWarnings("unchecked")
     protected void onProgressUpdate(Object... values) {
-        if (mStopped || values == null || values.length < 1 || callback == null) return;
+        if (this.state == State.CANCELLED || values == null || values.length == 0 || callback == null) return;
         switch ((Integer) values[0]) {
             case UPDATE_START:
                 this.state = State.STARTED;
@@ -229,9 +239,11 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
                 if (isDownloadingFile) {
                     autoResume = autoResume && OtherUtils.isSupportRange(response);
                     String responseFileName = autoRename ? OtherUtils.getFileNameFromHttpResponse(response) : null;
-                    result = mFileDownloadHandler.handleEntity(entity, this, fileSavePath, autoResume, responseFileName);
+                    FileDownloadHandler downloadHandler = new FileDownloadHandler();
+                    result = downloadHandler.handleEntity(entity, this, fileSavePath, autoResume, responseFileName);
                 } else {
-                    result = mStringDownloadHandler.handleEntity(entity, this, charset);
+                    StringDownloadHandler downloadHandler = new StringDownloadHandler();
+                    result = downloadHandler.handleEntity(entity, this, charset);
                     if (HttpUtils.sHttpCache.isEnabled(requestMethod)) {
                         HttpUtils.sHttpCache.put(requestUrl, (String) result, expiry);
                     }
@@ -254,15 +266,12 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
         return null;
     }
 
-    private boolean mStopped = false;
-
     /**
-     * stop request task.
+     * cancel request task.
      */
     @Override
-    public void stop() {
-        this.mStopped = true;
-        this.state = State.STOPPED;
+    public void cancel() {
+        this.state = State.CANCELLED;
 
         if (request != null && !request.isAborted()) {
             try {
@@ -278,24 +287,15 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
         }
 
         if (callback != null) {
-            callback.onStopped();
+            callback.onCancelled();
         }
-    }
-
-    @Override
-    public boolean isStopped() {
-        return mStopped;
-    }
-
-    public RequestCallBack<T> getRequestCallBack() {
-        return this.callback;
     }
 
     private long lastUpdateTime;
 
     @Override
     public boolean updateProgress(long total, long current, boolean forceUpdateUI) {
-        if (callback != null && !mStopped) {
+        if (callback != null && this.state != State.CANCELLED) {
             if (forceUpdateUI) {
                 this.publishProgress(UPDATE_LOADING, total, current);
             } else {
@@ -306,11 +306,11 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
                 }
             }
         }
-        return !mStopped;
+        return this.state != State.CANCELLED;
     }
 
     public enum State {
-        WAITING(0), STARTED(1), LOADING(2), STOPPED(3), SUCCESS(4), FAILURE(-1);
+        WAITING(0), STARTED(1), LOADING(2), FAILURE(3), CANCELLED(4), SUCCESS(5);
         private int value = 0;
 
         State(int value) {
@@ -326,18 +326,32 @@ public class HttpHandler<T> extends CompatibleAsyncTask<Object, Object, Void> im
                 case 2:
                     return LOADING;
                 case 3:
-                    return STOPPED;
-                case 4:
-                    return SUCCESS;
-                case -1:
                     return FAILURE;
+                case 4:
+                    return CANCELLED;
+                case 5:
+                    return SUCCESS;
                 default:
-                    return null;
+                    return FAILURE;
             }
         }
 
         public int value() {
             return this.value;
+        }
+    }
+
+    private static final NotUseApacheRedirectHandler notUseApacheRedirectHandler = new NotUseApacheRedirectHandler();
+
+    private static final class NotUseApacheRedirectHandler implements RedirectHandler {
+        @Override
+        public boolean isRedirectRequested(HttpResponse httpResponse, HttpContext httpContext) {
+            return false;
+        }
+
+        @Override
+        public URI getLocationURI(HttpResponse httpResponse, HttpContext httpContext) throws ProtocolException {
+            return null;
         }
     }
 }

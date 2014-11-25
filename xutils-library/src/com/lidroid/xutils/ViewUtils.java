@@ -21,41 +21,24 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.view.View;
 import com.lidroid.xutils.util.LogUtils;
-import com.lidroid.xutils.util.core.DoubleKeyValueMap;
+import com.lidroid.xutils.view.EventListenerManager;
 import com.lidroid.xutils.view.ResLoader;
-import com.lidroid.xutils.view.ViewCommonEventListener;
-import com.lidroid.xutils.view.ViewCustomEventListener;
 import com.lidroid.xutils.view.ViewFinder;
+import com.lidroid.xutils.view.ViewInjectInfo;
+import com.lidroid.xutils.view.annotation.ContentView;
 import com.lidroid.xutils.view.annotation.PreferenceInject;
 import com.lidroid.xutils.view.annotation.ResInject;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.EventBase;
-import com.lidroid.xutils.view.annotation.event.OnClick;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ViewUtils {
 
     private ViewUtils() {
-    }
-
-    private static ConcurrentHashMap<Class<? extends Annotation>, ViewCustomEventListener> annotationType_viewCustomEventListener_map;
-
-    /**
-     * register Custom Annotation
-     *
-     * @param annotationType The type of custom annotation must be annotated by @EventBase.
-     * @param listener
-     */
-    public static void registerCustomAnnotation(Class<? extends Annotation> annotationType, ViewCustomEventListener listener) {
-        if (annotationType_viewCustomEventListener_map == null) {
-            annotationType_viewCustomEventListener_map = new ConcurrentHashMap<Class<? extends Annotation>, ViewCustomEventListener>();
-        }
-        annotationType_viewCustomEventListener_map.put(annotationType, listener);
     }
 
     public static void inject(View view) {
@@ -86,18 +69,30 @@ public class ViewUtils {
         injectObject(handler, new ViewFinder(preferenceActivity));
     }
 
-
     @SuppressWarnings("ConstantConditions")
     private static void injectObject(Object handler, ViewFinder finder) {
 
+        Class<?> handlerType = handler.getClass();
+
+        // inject ContentView
+        ContentView contentView = handlerType.getAnnotation(ContentView.class);
+        if (contentView != null) {
+            try {
+                Method setContentViewMethod = handlerType.getMethod("setContentView", int.class);
+                setContentViewMethod.invoke(handler, contentView.value());
+            } catch (Throwable e) {
+                LogUtils.e(e.getMessage(), e);
+            }
+        }
+
         // inject view
-        Field[] fields = handler.getClass().getDeclaredFields();
+        Field[] fields = handlerType.getDeclaredFields();
         if (fields != null && fields.length > 0) {
             for (Field field : fields) {
                 ViewInject viewInject = field.getAnnotation(ViewInject.class);
                 if (viewInject != null) {
                     try {
-                        View view = finder.findViewById(viewInject.value());
+                        View view = finder.findViewById(viewInject.value(), viewInject.parentId());
                         if (view != null) {
                             field.setAccessible(true);
                             field.set(handler, view);
@@ -137,44 +132,40 @@ public class ViewUtils {
         }
 
         // inject event
-        Method[] methods = handler.getClass().getDeclaredMethods();
+        Method[] methods = handlerType.getDeclaredMethods();
         if (methods != null && methods.length > 0) {
-            String eventName = OnClick.class.getCanonicalName();
-            String prefix = eventName.substring(0, eventName.lastIndexOf('.'));
-            DoubleKeyValueMap<Object, Annotation, Method> value_annotation_method_map = new DoubleKeyValueMap<Object, Annotation, Method>();
             for (Method method : methods) {
                 Annotation[] annotations = method.getDeclaredAnnotations();
                 if (annotations != null && annotations.length > 0) {
                     for (Annotation annotation : annotations) {
-                        if (annotation.annotationType().getAnnotation(EventBase.class) != null) {
-                            if (annotation.annotationType().getCanonicalName().startsWith(prefix)) {
+                        Class<?> annType = annotation.annotationType();
+                        if (annType.getAnnotation(EventBase.class) != null) {
+                            method.setAccessible(true);
+                            try {
+                                // ProGuard：-keep class * extends java.lang.annotation.Annotation { *; }
+                                Method valueMethod = annType.getDeclaredMethod("value");
+                                Method parentIdMethod = null;
                                 try {
-                                    // ProGuard：-keep class * extends java.lang.annotation.Annotation { *; }
-                                    Method valueMethod = annotation.annotationType().getDeclaredMethod("value");
-                                    Object value = valueMethod.invoke(annotation);
-                                    if (value.getClass().isArray()) {
-                                        int len = Array.getLength(value);
-                                        for (int i = 0; i < len; i++) {
-                                            value_annotation_method_map.put(Array.get(value, i), annotation, method);
-                                        }
-                                    } else {
-                                        value_annotation_method_map.put(value, annotation, method);
-                                    }
+                                    parentIdMethod = annType.getDeclaredMethod("parentId");
                                 } catch (Throwable e) {
-                                    LogUtils.e(e.getMessage(), e);
                                 }
-                            } else {
-                                Class<? extends Annotation> annType = annotation.annotationType();
-                                ViewCustomEventListener listener = annotationType_viewCustomEventListener_map.get(annType);
-                                if (listener != null) {
-                                    listener.setEventListener(handler, finder, annotation, method);
+                                Object values = valueMethod.invoke(annotation);
+                                Object parentIds = parentIdMethod == null ? null : parentIdMethod.invoke(annotation);
+                                int parentIdsLen = parentIds == null ? 0 : Array.getLength(parentIds);
+                                int len = Array.getLength(values);
+                                for (int i = 0; i < len; i++) {
+                                    ViewInjectInfo info = new ViewInjectInfo();
+                                    info.value = Array.get(values, i);
+                                    info.parentId = parentIdsLen > i ? (Integer) Array.get(parentIds, i) : 0;
+                                    EventListenerManager.addEventMethod(finder, info, annotation, handler, method);
                                 }
+                            } catch (Throwable e) {
+                                LogUtils.e(e.getMessage(), e);
                             }
                         }
                     }
                 }
             }
-            ViewCommonEventListener.setEventListener(handler, finder, value_annotation_method_map);
         }
     }
 

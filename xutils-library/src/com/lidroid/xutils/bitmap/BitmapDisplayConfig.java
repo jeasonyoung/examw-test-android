@@ -16,11 +16,11 @@
 package com.lidroid.xutils.bitmap;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.animation.Animation;
 import com.lidroid.xutils.bitmap.core.BitmapSize;
+import com.lidroid.xutils.bitmap.factory.BitmapFactory;
+import com.lidroid.xutils.task.Priority;
 
 public class BitmapDisplayConfig {
 
@@ -31,8 +31,9 @@ public class BitmapDisplayConfig {
     private boolean autoRotation = false;
     private boolean showOriginal = false;
     private Bitmap.Config bitmapConfig = Bitmap.Config.RGB_565;
+    private BitmapFactory bitmapFactory;
 
-    private static final Drawable TRANSPARENT_DRAWABLE = new ColorDrawable(Color.TRANSPARENT);
+    private Priority priority;
 
     public BitmapDisplayConfig() {
     }
@@ -54,7 +55,7 @@ public class BitmapDisplayConfig {
     }
 
     public Drawable getLoadingDrawable() {
-        return loadingDrawable == null ? TRANSPARENT_DRAWABLE : loadingDrawable;
+        return loadingDrawable;
     }
 
     public void setLoadingDrawable(Drawable loadingDrawable) {
@@ -62,7 +63,7 @@ public class BitmapDisplayConfig {
     }
 
     public Drawable getLoadFailedDrawable() {
-        return loadFailedDrawable == null ? TRANSPARENT_DRAWABLE : loadFailedDrawable;
+        return loadFailedDrawable;
     }
 
     public void setLoadFailedDrawable(Drawable loadFailedDrawable) {
@@ -93,9 +94,26 @@ public class BitmapDisplayConfig {
         this.bitmapConfig = bitmapConfig;
     }
 
+    public BitmapFactory getBitmapFactory() {
+        return bitmapFactory;
+    }
+
+    public void setBitmapFactory(BitmapFactory bitmapFactory) {
+        this.bitmapFactory = bitmapFactory;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
     @Override
     public String toString() {
-        return isShowOriginal() ? "" : bitmapMaxSize.toString();
+        return (isShowOriginal() ? "" : bitmapMaxSize.toString()) +
+                (bitmapFactory == null ? "" : bitmapFactory.getClass().getName());
     }
 
     public BitmapDisplayConfig cloneNew() {
@@ -107,6 +125,8 @@ public class BitmapDisplayConfig {
         config.autoRotation = this.autoRotation;
         config.showOriginal = this.showOriginal;
         config.bitmapConfig = this.bitmapConfig;
+        config.bitmapFactory = this.bitmapFactory;
+        config.priority = this.priority;
         return config;
     }
 }
