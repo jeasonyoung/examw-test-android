@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="home_grid_drawable_ids">
+        <item>@drawable/ic_grid_exam</item>
+        <item>@drawable/ic_grid_chapter</item>
+        <item>@drawable/ic_grid_knowledge</item>
+        <item>@drawable/ic_grid_favor</item>
+        <item>@drawable/ic_grid_error_redo</item>
+        <item>@drawable/ic_grid_record</item>
+    </array>
+    <array name="home_grid_color_ids">
+        <item>@drawable/c_home_item_exam</item>
+        <item>@drawable/c_home_item_chapter</item>
+        <item>@drawable/c_home_item_knowledge</item>
+        <item>@drawable/c_home_item_favor</item>
+        <item>@drawable/c_home_item_error_redo</item>
+        <item>@drawable/c_home_item_record</item>
+    </array>
+    <string-array name="home_grid_titles">
+        <item>@string/simulate</item>
+        <item>@string/chapter</item>
+        <item>@string/daily</item>
+        <item>@string/myFavor</item>
+        <item>@string/errorRedo</item>
+        <item>@string/learnRecord</item>
+    </string-array>
+</resources>

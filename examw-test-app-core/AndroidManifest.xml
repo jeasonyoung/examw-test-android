@@ -30,7 +30,8 @@
         android:name="com.examw.test.app.AppContext"
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
         <!-- 启动入口 -->
         <activity
             android:name="com.examw.test.app.AppStart"
@@ -51,6 +52,41 @@
         <activity
             android:name="com.examw.test.ui.MainActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 模拟考试界面  -->
+        <activity
+            android:name="com.examw.test.ui.SimulateActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 章节练习界面  -->
+        <activity
+            android:name="com.examw.test.ui.ChapterActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 每日一练界面  -->
+        <activity
+            android:name="com.examw.test.ui.DailyActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 收藏界面  -->
+        <activity
+            android:name="com.examw.test.ui.FavoriteActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 错题界面  -->
+        <activity
+            android:name="com.examw.test.ui.ErrorItemActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 考试记录界面  -->
+        <activity
+            android:name="com.examw.test.ui.RecordActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 关于界面  -->
+        <activity
+            android:name="com.examw.test.ui.AboutActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>

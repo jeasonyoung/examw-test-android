@@ -41,11 +41,109 @@ public class AppContext extends Application {
 	private static final int CACHE_TIME = 60*60000;//缓存失效时间
 	
 	private boolean login = false;	//登录状态
+	public static final int LOGINING = 1;// 正在登录
+	public static final int LOGIN_FAIL = -1;// 登录失败
+	public static final int LOGINED = 2;// 已经登录
+	public static final int UNLOGIN = 0;// 没有登录
+	public static final int LOCAL_LOGINED = 3; // 本地登录
+	private int loginState = 0; // 登录状态
+	private boolean isAutoCheckuped, isAutoLogined, hasNewVersion, hasNewData;
+	
 	private int loginUid = 0;	//登录用户的id
 	private Hashtable<String, Object> memCacheRegion = new Hashtable<String, Object>();
 	
 	private String saveImagePath;//保存图片路径
 	
+	/**
+	 * 获取 登录状态
+	 * @return loginState
+	 * 登录状态
+	 */
+	public int getLoginState() {
+		return loginState;
+	}
+
+	/**
+	 * 设置 登录状态
+	 * @param loginState
+	 * 登录状态
+	 */
+	public void setLoginState(int loginState) {
+		this.loginState = loginState;
+	}
+
+	/**
+	 * 获取 是否自动检测更新
+	 * @return isAutoCheckuped
+	 * 是否自动检测更新
+	 */
+	public boolean isAutoCheckuped() {
+		return isAutoCheckuped;
+	}
+
+	/**
+	 * 设置 是否自动检测更新
+	 * @param isAutoCheckuped
+	 * 是否自动检测更新
+	 */
+	public void setAutoCheckuped(boolean isAutoCheckuped) {
+		this.isAutoCheckuped = isAutoCheckuped;
+	}
+
+	/**
+	 * 获取 是否自动登录
+	 * @return isAutoLogined
+	 * 是否自动登录
+	 */
+	public boolean isAutoLogined() {
+		return isAutoLogined;
+	}
+
+	/**
+	 * 设置 是否自动登录
+	 * @param isAutoLogined
+	 * 是否自动登录
+	 */
+	public void setAutoLogined(boolean isAutoLogined) {
+		this.isAutoLogined = isAutoLogined;
+	}
+
+	/**
+	 * 获取 是否有新版本
+	 * @return hasNewVersion
+	 * 是否有新版本
+	 */
+	public boolean isHasNewVersion() {
+		return hasNewVersion;
+	}
+
+	/**
+	 * 设置 是否有新版本
+	 * @param hasNewVersion
+	 * 是否有新版本
+	 */
+	public void setHasNewVersion(boolean hasNewVersion) {
+		this.hasNewVersion = hasNewVersion;
+	}
+
+	/**
+	 * 获取 是否有新数据
+	 * @return hasNewData
+	 * 是否有新数据
+	 */
+	public boolean isHasNewData() {
+		return hasNewData;
+	}
+
+	/**
+	 * 设置 是否有新数据
+	 * @param hasNewData
+	 * 是否有新数据
+	 */
+	public void setHasNewData(boolean hasNewData) {
+		this.hasNewData = hasNewData;
+	}
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -581,6 +679,10 @@ public class AppContext extends Application {
 	 */
 	public void setSaveImagePath(String saveImagePath) {
 		this.saveImagePath = saveImagePath;
+	}
+
+	public boolean isTimeOver() {
+		return false;
 	}	
 	
 }

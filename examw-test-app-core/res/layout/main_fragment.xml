@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fadingEdge="none"
+    android:fillViewport="true"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12.0dip"
+        android:background="@color/white"
+        android:orientation="vertical" >
+
+        <FrameLayout
+            android:id="@+id/top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_marginTop="10.0dip"
+            android:background="@drawable/main_top_bg" >
+
+            <RelativeLayout
+                android:id="@+id/set_date_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="12.0dip" >
+
+                <TextView
+                    android:id="@+id/day_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/calculate"
+                    android:drawablePadding="5.0dip"
+                    android:paddingBottom="10.0dip"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_medium_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/usernameTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:drawableLeft="@drawable/register_username"
+                    android:drawablePadding="5.0dip"
+                    android:paddingBottom="10.0dip"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_medium_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/mama_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/day_date"
+                    android:text="@string/restTime"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_medium_size" />
+
+                <TextView
+                    android:id="@+id/rest_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/mama_tip"
+                    android:layout_toRightOf="@id/mama_tip"
+                    android:layout_marginLeft="10.0dip"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_medium_size" />
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        <com.examw.test.widget.HomeGrid
+            android:id="@+id/gridview1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="@dimen/home_grid_space"
+            android:cacheColorHint="@drawable/trans"
+            android:gravity="center"
+            android:horizontalSpacing="@dimen/home_grid_space"
+            android:listSelector="@drawable/trans"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="@dimen/home_grid_space" />
+
+        <FrameLayout
+            android:id="@+id/layout_ad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12.0dip"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="50.0dip" >
+        </View>
+    </LinearLayout>
+
+</ScrollView>
