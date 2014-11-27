@@ -87,7 +87,8 @@ public class MainGridAdapter extends BaseAdapter{
 	    float destiny = context.getResources().getDisplayMetrics().density;
 	    this.i = ((width - 4 * (int)context.getResources().getDimension(R.dimen.home_grid_space)) / 3);
 	    this.j = width/8;
-	    this.k = (int) ((height-280*destiny)/2); //计算一个格子的高度
+	    int column = texts.length%3 ==0?texts.length/3:texts.length/3+1;
+	    this.k = (int) ((height-280*destiny)/column); //计算一个格子的高度
 	}
 	private StateListDrawable[] getDrawables(Resources localResources) {
 		StateListDrawable[] ds = new StateListDrawable[imagebtns.length()];

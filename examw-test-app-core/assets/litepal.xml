@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="examw_test" ></dbname>
+
+    <version value="1" ></version>
+
+    <list>
+       <mapping class="com.demo.model.Singers"></mapping>
+       <mapping class="com.demo.model.Albums"></mapping>
+       <mapping class="com.demo.model.Songs"></mapping>
+  	</list>
+  	
+</litepal>

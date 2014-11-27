@@ -31,7 +31,13 @@ import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.util.StringUtils;
+import com.examw.test.util.ToastUtils;
 import com.examw.test.widget.HomeGrid;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
 
 public class MainFragment extends Fragment {
 	private HomeGrid g;
@@ -95,10 +101,11 @@ public class MainFragment extends Fragment {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 //				startActivity(new Intent(getActivity(), SetTimeActivity.class));
+				ToastUtils.show(getActivity(), "点击了按钮");
 			}
 		});
 	}
-
+	
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub

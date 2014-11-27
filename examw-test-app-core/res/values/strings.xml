@@ -160,9 +160,9 @@
 
     <!-- 关于 -->
     <string name="version_name">1.0</string>
-    <string name="website">http://www.cyedu.org</string>
+    <string name="website">http://tiku.examw.com</string>
     <string name="telephone">4000 525 585</string>
-    <string name="company_name"> 会计从业资格考试网(cyedu.org) </string>
+    <string name="company_name"> 中华考试网(www.examw.com) </string>
     <string name="right_info">Copyright © 2007&#8211;2013 All Rights Reserved.</string>
     <!--  -->
     <string name="main_title">考试一点通</string>
@@ -180,6 +180,6 @@
     <string name="share_txt_renren">人人网</string>
     <string name="share_txt_other">其他</string>
     <string name="share_content">会计证考试一点通，通过考试更轻松(http://www.cyedu.org/)</string>
-    <string name="share_content_url">http://www.cyedu.org/</string>
-    <string name="buy_url">http://www.cyedu.org/</string>
+    <string name="share_content_url">http://www.examw.com/</string>
+    <string name="buy_url">http://tiku.examw.com</string>
 </resources>

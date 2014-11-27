@@ -84,7 +84,7 @@
             android:name="com.examw.test.ui.RecordActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <!-- 关于界面  -->
+        <!-- 关于应用界面  -->
         <activity
             android:name="com.examw.test.ui.AboutActivity"
             android:screenOrientation="portrait" >
