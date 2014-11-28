@@ -16,7 +16,6 @@ import java.util.UUID;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -261,14 +260,17 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws Exception
 	 */
-	public int getVersionCode() throws Exception
+	public int getVersionCode()
 	{
 		// 获取packagemanager的实例
-		PackageManager packageManager = getPackageManager();
-		// getPackageName()是你当前类的包名，0代表是获取版本信息
-		PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),0);
-		int versionCode = packInfo.versionCode;
-		return versionCode;
+		PackageInfo packInfo;
+		try {
+			packInfo = getPackageManager().getPackageInfo(getPackageName(),0);
+			return packInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	/**
@@ -276,11 +278,17 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws Exception
 	 */
-	public String getVersionName() throws Exception
+	public String getVersionName()
 	{
 		// getPackageName()是你当前类的包名，0代表是获取版本信息
-		PackageInfo packInfo = getPackageManager().getPackageInfo(getPackageName(),0);
-		return packInfo.versionName;
+		PackageInfo packInfo;
+		try {
+			packInfo = getPackageManager().getPackageInfo(getPackageName(),0);
+			return packInfo.versionName;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
@@ -685,4 +693,32 @@ public class AppContext extends Application {
 		return false;
 	}	
 	
+//	public AppUpdate getAppUpdate() throws AppException {
+//		AppUpdate update = null;
+//		String key = "appUpdateInfo";
+//		if (!isNetworkConnected()) {
+//			throw AppException.http(0);
+//		}
+//		if (isReadDataCache(key)) // 可读
+//		{
+//			System.out.println("可读..........");
+//			update = (AppUpdate) readObject(key);
+//			if (!update.isNeedUpdate(getVersionCode())) {
+//				update = ApiClient.checkVersion(this);
+//				if (update != null) {
+//					update.setCacheKey(key);
+//					saveObject(update, key);
+//				}
+//			}
+//		} else {
+//			System.out.println("不可读...........");
+//			update = ApiClient.checkVersion(this);
+//			if (update != null) {
+//				update.setCacheKey(key);
+//				saveObject(update, key);
+//			}
+//		}
+//		System.out.println(update);
+//		return update;
+//	}
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/layout_selector_background"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/paper_name_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip"
+        android:layout_marginTop="10.0dip"
+        android:textColor="@color/black"
+        android:text="sdfasdfasdfsadfdfasdfafasdf"
+        android:textSize="@dimen/text_medium_size" 
+        />
+    <TextView
+        android:id="@+id/paper_info_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/paper_name_TextView"
+        android:layout_below="@id/paper_name_TextView"
+        android:layout_marginTop="5.0dip"
+        android:paddingBottom="10.0dip"
+        android:text="sdfasdfasdfsadfdfasdfafasdf"
+        android:textSize="@dimen/text_small_size" 
+        />
+	<TextView
+	    android:id="@+id/lastTimeTextView"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/paper_name_TextView"
+        android:paddingBottom="10.0dip"
+        android:layout_marginRight="10.0dip"
+        android:text="sdfasdfasdfsadfdfasdfafasdf"
+        android:textSize="@dimen/text_small_size"
+        android:textColor="@color/black" 
+        android:layout_marginTop="5.0dip"
+        />
+</RelativeLayout>

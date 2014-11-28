@@ -1,0 +1,259 @@
+package com.examw.test.domain;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import org.litepal.crud.DataSupport;
+
+/**
+ * 试卷[已经发布过的试卷]
+ * @author fengwei.
+ * @since 2014年11月27日 下午3:56:12.
+ */
+public class Paper extends DataSupport implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String paperId,name,description,content,examId,subjectId,sourceName,areaName;
+	private Integer type,price,time,year,total;
+	private Double score;
+	private Date publishTime;
+	/**
+	 * 获取 试卷ID
+	 * @return paperId
+	 * 试卷ID
+	 */
+	public String getPaperId() {
+		return paperId;
+	}
+	/**
+	 * 设置 试卷ID
+	 * @param paperId
+	 * 试卷ID
+	 */
+	public void setPaperId(String paperId) {
+		this.paperId = paperId;
+	}
+	/**
+	 * 获取 试卷名称
+	 * @return title
+	 * 试卷名称
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * 设置 试卷名称
+	 * @param title
+	 * 试卷名称
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
+	 * 获取 试卷内容
+	 * @return content
+	 * 试卷内容
+	 */
+	public String getContent() {
+		return content;
+	}
+	/**
+	 * 设置 试卷内容
+	 * @param content
+	 * 试卷内容
+	 */
+	public void setContent(String content) {
+		this.content = content;
+	}
+	/**
+	 * 获取 试题总数
+	 * @return total
+	 * 试题总数
+	 */
+	public Integer getTotal() {
+		return total;
+	}
+	/**
+	 * 设置 试题总数
+	 * @param total
+	 * 试题总数
+	 */
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+	/**
+	 * 获取 试卷描述
+	 * @return description
+	 * 试卷描述
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置 试卷描述
+	 * @param description
+	 * 试卷描述
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	/**
+	 * 获取 考试ID
+	 * @return examId
+	 * 考试ID
+	 */
+	public String getExamId() {
+		return examId;
+	}
+	/**
+	 * 设置 考试ID
+	 * @param examId
+	 * 考试ID
+	 */
+	public void setExamId(String examId) {
+		this.examId = examId;
+	}
+	/**
+	 * 获取 科目ID
+	 * @return subjectId
+	 * 科目ID
+	 */
+	public String getSubjectId() {
+		return subjectId;
+	}
+	/**
+	 * 设置 科目ID
+	 * @param subjectId
+	 * 科目ID
+	 */
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
+	}
+	/**
+	 * 获取 来源名称
+	 * @return sourceName
+	 * 来源名称
+	 */
+	public String getSourceName() {
+		return sourceName;
+	}
+	/**
+	 * 设置 来源名称
+	 * @param sourceName
+	 * 来源名称
+	 */
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
+	}
+	/**
+	 * 获取 地区名称
+	 * @return areaName
+	 * 地区名称
+	 */
+	public String getAreaName() {
+		return areaName;
+	}
+	/**
+	 * 设置 地区名称
+	 * @param areaName
+	 * 地区名称
+	 */
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+	/**
+	 * 获取 试卷类型
+	 * @return type
+	 * 试卷类型
+	 */
+	public Integer getType() {
+		return type;
+	}
+	/**
+	 * 设置 试卷类型
+	 * @param type
+	 * 试卷类型
+	 */
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	/**
+	 * 获取 试卷价格
+	 * @return price
+	 * 试卷价格
+	 */
+	public Integer getPrice() {
+		return price;
+	}
+	/**
+	 * 设置 试卷价格
+	 * @param price
+	 * 试卷价格
+	 */
+	public void setPrice(Integer price) {
+		this.price = price;
+	}
+	/**
+	 * 获取 考试时间
+	 * @return time
+	 * 考试时间
+	 */
+	public Integer getTime() {
+		return time;
+	}
+	/**
+	 * 设置 考试时间
+	 * @param time
+	 * 考试时间
+	 */
+	public void setTime(Integer time) {
+		this.time = time;
+	}
+	/**
+	 * 获取 年份
+	 * @return year
+	 * 年份
+	 */
+	public Integer getYear() {
+		return year;
+	}
+	/**
+	 * 设置 年份
+	 * @param year
+	 * 年份
+	 */
+	public void setYear(Integer year) {
+		this.year = year;
+	}
+	/**
+	 * 获取 试卷分数
+	 * @return score
+	 * 试卷分数
+	 */
+	public Double getScore() {
+		return score;
+	}
+	/**
+	 * 设置 试卷分数
+	 * @param score
+	 * 试卷分数
+	 */
+	public void setScore(Double score) {
+		this.score = score;
+	}
+	/**
+	 * 获取 发布时间
+	 * @return publishTime
+	 * 发布时间
+	 */
+	public Date getPublishTime() {
+		return publishTime;
+	}
+	/**
+	 * 设置 发布时间
+	 * @param publishTime
+	 * 发布时间
+	 */
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
+	}
+}

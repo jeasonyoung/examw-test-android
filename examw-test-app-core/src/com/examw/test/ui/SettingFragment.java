@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
+import com.examw.test.util.BrightnessUtil;
 
 public class SettingFragment extends Fragment implements OnClickListener {
 	private TextView dateTxt, versionTxt, cacheSizeTxt,
@@ -93,20 +94,17 @@ public class SettingFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		Log.e("settingFragment",requestCode+" " + resultCode);
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 //		this.versionTxt.setText(appContext.getVersionName());
 		if(appContext.isHasNewData()) newDataFlag.setVisibility(View.VISIBLE);
@@ -293,86 +291,78 @@ public class SettingFragment extends Fragment implements OnClickListener {
 		if (pop == null) {
 			
 		}
-//			View v = LayoutInflater.from(this.getActivity()).inflate(
-//					R.layout.brightness_dlg, null);
-//			final SeekBar seekBar = (SeekBar) v
-//					.findViewById(R.id.light_seekbar);
-//			seekBar.setMax(BrightnessUtil.MAX_BRIGHTNESS);
-//			seekBar.setProgress((BrightnessUtil
-//					.getScreenBrightness(getActivity())));
-//			seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-//				@Override
-//				public void onProgressChanged(SeekBar seekBar, int progress,
-//						boolean fromUser) {
-//					// TODO Auto-generated method stub
-//					BrightnessUtil.setBrightness(getActivity(), progress);
-//				}
-//
-//				@Override
-//				public void onStartTrackingTouch(SeekBar arg0) {
-//
-//					// TODO Auto-generated method stub
-//				}
-//
-//				@Override
-//				public void onStopTrackingTouch(SeekBar arg0) {
-//				}
-//			});
-//			CheckBox checkBox = (CheckBox) v.findViewById(R.id.checkBox1);
-//			checkBox.setChecked(BrightnessUtil.isAutoBrightness(mContext
-//					.getContentResolver()));
-//			if (checkBox.isChecked())
-//				seekBar.setEnabled(false);
-//			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-//				@Override
-//				public void onCheckedChanged(CompoundButton buttonView,
-//						boolean isChecked) {
-//					// TODO Auto-generated method stub
-//					if (isChecked) {
-//						BrightnessUtil.startAutoBrightness(getActivity());
-//						seekBar.setEnabled(false);
-//					} else {
-//						BrightnessUtil.stopAutoBrightness(getActivity());
-//						seekBar.setEnabled(true);
-//					}
-//				}
-//			});
-//			Button sureBtn = (Button) v.findViewById(R.id.btn_sure);
-//			sureBtn.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					if (seekBar.isEnabled()) {
-//						BrightnessUtil.saveBrightness(
-//								mContext.getContentResolver(),
-//								seekBar.getProgress());
-//						pop.dismiss();
-//					} else {
-//						pop.dismiss();
-//					}
-//				}
-//			});
-//			Button cancelBtn = (Button) v.findViewById(R.id.btn_cancel);
-//			cancelBtn.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					pop.dismiss();
-//				}
-//			});
-//			pop = new PopupWindow(v, LayoutParams.WRAP_CONTENT,
-//					LayoutParams.WRAP_CONTENT);
-//			// 使其聚集
-//			pop.setFocusable(true);
-//			// 设置允许在外点击消失
-//			pop.setOutsideTouchable(true);
-//
-//			// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
-//			pop.setBackgroundDrawable(new BitmapDrawable());
-//		}
-//		pop.showAtLocation(this.getView(), Gravity.CENTER, 0, 0);
+			View v = LayoutInflater.from(this.getActivity()).inflate(
+					R.layout.brightness_dlg, null);
+			final SeekBar seekBar = (SeekBar) v
+					.findViewById(R.id.light_seekbar);
+			seekBar.setMax(BrightnessUtil.MAX_BRIGHTNESS);
+			seekBar.setProgress((BrightnessUtil
+					.getScreenBrightness(getActivity())));
+			seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					BrightnessUtil.setBrightness(getActivity(), progress);
+				}
+
+				@Override
+				public void onStartTrackingTouch(SeekBar arg0) {
+				}
+
+				@Override
+				public void onStopTrackingTouch(SeekBar arg0) {
+				}
+			});
+			CheckBox checkBox = (CheckBox) v.findViewById(R.id.checkBox1);
+			checkBox.setChecked(BrightnessUtil.isAutoBrightness(mContext
+					.getContentResolver()));
+			if (checkBox.isChecked())
+				seekBar.setEnabled(false);
+			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView,
+						boolean isChecked) {
+					if (isChecked) {
+						BrightnessUtil.startAutoBrightness(getActivity());
+						seekBar.setEnabled(false);
+					} else {
+						BrightnessUtil.stopAutoBrightness(getActivity());
+						seekBar.setEnabled(true);
+					}
+				}
+			});
+			Button sureBtn = (Button) v.findViewById(R.id.btn_sure);
+			sureBtn.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if (seekBar.isEnabled()) {
+						BrightnessUtil.saveBrightness(
+								mContext.getContentResolver(),
+								seekBar.getProgress());
+						pop.dismiss();
+					} else {
+						pop.dismiss();
+					}
+				}
+			});
+			Button cancelBtn = (Button) v.findViewById(R.id.btn_cancel);
+			cancelBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					pop.dismiss();
+				}
+			});
+			pop = new PopupWindow(v, LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT);
+			// 使其聚集
+			pop.setFocusable(true);
+			// 设置允许在外点击消失
+			pop.setOutsideTouchable(true);
+
+			// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+			pop.setBackgroundDrawable(new BitmapDrawable());
+			pop.showAtLocation(this.getView(), Gravity.CENTER, 0, 0);
 	}
 
 	public void setLoginTxt() {

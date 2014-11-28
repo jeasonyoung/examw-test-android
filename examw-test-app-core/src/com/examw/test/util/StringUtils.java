@@ -54,7 +54,7 @@ public class StringUtils {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * 以友好的方式显示时间
 	 * 
@@ -267,5 +267,39 @@ public class StringUtils {
 			}
 		}
 		return res.toString();
+	}
+	/**
+	 * 比较两个日期
+	 * @param date1 第一个日期
+	 * @param date2 第二个日期
+	 * @return	date1在date2之后 返回true,否则返回false
+	 */
+	public static boolean compareDate(String date1,String date2)
+	{
+		//date1>date2 为 true date1在date2之后
+		try
+		{
+			Date d1 = dateFormater.get().parse(date1);
+			Date d2 = dateFormater.get().parse(date2);
+			int i = d1.compareTo(d2);
+			return i>0?true:false;
+		}catch(Exception e)
+		{
+			return false;
+		}
+	}
+	public static boolean compareDate(String date1)
+	{
+		//date1>date2 为 true date1在date2之后
+		try
+		{
+			Date d1 = dateFormater.get().parse(date1);
+			Date d2 = new Date();
+			int i = d1.compareTo(d2);
+			return i>0?true:false;
+		}catch(Exception e)
+		{
+			return true;
+		}
 	}
 }

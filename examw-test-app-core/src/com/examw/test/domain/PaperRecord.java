@@ -1,4 +1,4 @@
-package com.examw.test.model;
+package com.examw.test.domain;
 /**
  * 考试记录
  * @author fengwei.

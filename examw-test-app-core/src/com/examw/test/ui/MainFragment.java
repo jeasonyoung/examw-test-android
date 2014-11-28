@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.http.Header;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -11,8 +13,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,20 +24,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.util.StringUtils;
 import com.examw.test.util.ToastUtils;
 import com.examw.test.widget.HomeGrid;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.callback.RequestCallBack;
-import com.lidroid.xutils.http.client.HttpRequest;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 public class MainFragment extends Fragment {
 	private HomeGrid g;
@@ -102,10 +97,40 @@ public class MainFragment extends Fragment {
 				// TODO Auto-generated method stub
 //				startActivity(new Intent(getActivity(), SetTimeActivity.class));
 				ToastUtils.show(getActivity(), "点击了按钮");
+				testHttp();
 			}
 		});
 	}
-	
+	private void testHttp(){
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(
+			"http://tiku.examw.com/examw-test/api/data/products/615c758f-424f-4808-9528-67630125687e/papers",
+			new TextHttpResponseHandler() {
+
+			@Override
+			public void onStart() {
+		        Log.d("Mainfragment","请求开始");
+		    }
+
+		    @Override
+		    public void onRetry(int retryNo) {
+		        // called when request is retried
+		    	Log.d("Mainfragment","重新请求"+retryNo);
+			}
+
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2,
+					Throwable arg3) {
+				Log.d("Mainfragment","请求失败"+arg2);
+			}
+
+			@Override
+			public void onSuccess(int stateCode, Header[] arg1, String arg2) {
+				Log.d("Mainfragment","请求成功");
+				Log.d("getString",arg2);
+			}
+		});
+	}
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
