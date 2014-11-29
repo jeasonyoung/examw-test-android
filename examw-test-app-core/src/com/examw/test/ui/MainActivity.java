@@ -1,14 +1,11 @@
 package com.examw.test.ui;
 
-import java.lang.ref.WeakReference;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -73,7 +70,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		} else {
 //			//检查数据更新
 //			UpdateDataManager.getUpdateManager().checkDataUpdate(this, false);
-			}
+			
+		}
 			// 是否自动登录
 				// 开线程去登录
 		// 启动一个登录线程

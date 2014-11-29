@@ -25,6 +25,8 @@
 	<!-- 获取mac地址作为用户的备用唯一标识 -->
     <!-- 获取手机设备码 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 系统设置 -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
         
     <application
         android:name="com.examw.test.app.AppContext"
@@ -87,6 +89,11 @@
         <!-- 关于应用界面  -->
         <activity
             android:name="com.examw.test.ui.AboutActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 隐私协议节目 -->
+        <activity
+            android:name=".ui.PrivacyAgreementActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>

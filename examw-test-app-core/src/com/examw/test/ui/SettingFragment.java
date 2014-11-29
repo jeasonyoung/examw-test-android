@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
+import com.examw.test.support.AppUpdateManager;
 import com.examw.test.util.BrightnessUtil;
 
 public class SettingFragment extends Fragment implements OnClickListener {
@@ -117,20 +118,29 @@ public class SettingFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		//分享
 		case R.id.layout_share:
 //			share2();
 			break;
+		//关于应用
 		case R.id.layout_about_app:
 			startActivity(new Intent(mContext, AboutActivity.class));
 			break;
+		//访问网站
 		case R.id.layout_website:
 			viewWebsite();
 			break;
+		//检测应用更新
 		case R.id.layout_checkupdate:
+			newVersionFlag.setVisibility(View.GONE);
+			AppUpdateManager.getUpdateManager().checkAppUpdate(this.getActivity(),
+					true);
 			break;
+		//检测数据更新
 		case R.id.layout_checkupdata:
 			newDataFlag.setVisibility(View.GONE);
 			break;
+		//清理缓存
 		case R.id.layout_clear_cache:
 			// 清理缓存
 			appContext.clearAppCache();
@@ -139,18 +149,23 @@ public class SettingFragment extends Fragment implements OnClickListener {
 			// 提示消息
 			print("缓存清除成功");
 			break;
+		//隐私协议
 		case R.id.layout_deal:
-//			startActivity(new Intent(mContext, AboutAppActivity.class));
+			startActivity(new Intent(mContext, PrivacyAgreementActivity.class));
 			break;
+		//意见反馈
 		case R.id.layout_feedback:
 //			feedBack();
 			break;
+		//登录退出
 		case R.id.btn_logout:
 			loginOrLogout();
 			break;
+		//屏幕亮度
 		case R.id.layout_screenlight:
 			showPop();
 			break;
+		//一开始就检测更新
 		case R.id.checkWhenStart:
 			if (checkBox.isChecked()) {
 				appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(true));
@@ -162,6 +177,7 @@ public class SettingFragment extends Fragment implements OnClickListener {
 			// 启动时是否检测更新
 			checkWhenStart();
 			break;
+		//数据同步
 		case R.id.layout_sync:
 //			Intent mIntent = new Intent(this.getActivity(), SysncActivity.class);
 //			mIntent.putExtra("loginFrom", "sysnc");
@@ -289,8 +305,6 @@ public class SettingFragment extends Fragment implements OnClickListener {
 	// }
 	private void showPop() {
 		if (pop == null) {
-			
-		}
 			View v = LayoutInflater.from(this.getActivity()).inflate(
 					R.layout.brightness_dlg, null);
 			final SeekBar seekBar = (SeekBar) v
@@ -362,7 +376,8 @@ public class SettingFragment extends Fragment implements OnClickListener {
 
 			// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
 			pop.setBackgroundDrawable(new BitmapDrawable());
-			pop.showAtLocation(this.getView(), Gravity.CENTER, 0, 0);
+		}
+		pop.showAtLocation(this.getView(), Gravity.CENTER, 0, 0);
 	}
 
 	public void setLoginTxt() {
@@ -507,12 +522,10 @@ public class SettingFragment extends Fragment implements OnClickListener {
 //	}
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		if(pop!=null)
 		{
 			pop.dismiss();
 		}
 		super.onDestroy();
-		
 	}
 }

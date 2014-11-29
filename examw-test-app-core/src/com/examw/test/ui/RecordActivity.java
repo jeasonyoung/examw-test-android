@@ -10,6 +10,7 @@ import com.examw.test.R;
  * @since 2014年11月26日 下午3:22:12.
  */
 public class RecordActivity extends BaseActivity{
+	private static final String TAG = "RecordActivity";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

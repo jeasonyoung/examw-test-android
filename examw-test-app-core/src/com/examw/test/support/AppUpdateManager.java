@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -32,7 +33,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.model.AppUpdateInfo;
-import com.examw.test.util.StringUtils;
 
 /**
  * 应用更新管理
@@ -40,6 +40,7 @@ import com.examw.test.util.StringUtils;
  * @since 2014年11月28日 下午12:05:24.
  */
 public class AppUpdateManager {
+	private static final String TAG = "AppUpdateManager";
 	private static final int DOWN_NOSDCARD = 0;
     private static final int DOWN_UPDATE = 1;
     private static final int DOWN_OVER = 2;
@@ -87,7 +88,7 @@ public class AppUpdateManager {
 	private AppUpdateInfo mUpdateInfo;
 	
 	private int currentCode;
-    
+	
     private Handler mHandler = new Handler(){
     	public void handleMessage(Message msg) {
     		switch (msg.what) {
@@ -134,6 +135,8 @@ public class AppUpdateManager {
 				mProDialog = ProgressDialog.show(mContext, null, "正在检测，请稍后...", true, true);
 			else if(mProDialog.isShowing() || (latestOrFailDialog!=null && latestOrFailDialog.isShowing()))
 				return;
+			else
+				mProDialog.show();
 		}
 		final Handler handler = new Handler(){
 			public void handleMessage(Message msg) {
@@ -165,9 +168,14 @@ public class AppUpdateManager {
 			public void run() {
 				Message msg = new Message();
 				try {
-//					String update = ApiClient.checkVersion((AppContext)((Activity)mContext).getApplication());
-//					ParseResult pr = JsonParseUtil.parseCheckUpdate(update);
+					Log.d(TAG,"启动了检测线程进行检测更新");
+					Thread.sleep(3000);
 					AppUpdateInfo update = new AppUpdateInfo();//appContext.getAppUpdate();
+					update.setVersionCode(3);
+					update.setVersionName("3.0");
+					update.setSize(20480);
+					update.setUrl("http://dldir1.qq.com/weixin/android/weixin600android501.apk");
+					update.setContent("更新信息:修复部分bug");
 					msg.what = 1;
 					msg.obj = update;
 				} catch (Exception e) {
@@ -188,7 +196,7 @@ public class AppUpdateManager {
 			latestOrFailDialog.dismiss();
 			latestOrFailDialog = null;
 		}
-		AlertDialog.Builder builder = new Builder(appContext);
+		AlertDialog.Builder builder = new Builder(mContext);
 		builder.setTitle("系统提示");
 		if (dialogType == DIALOG_TYPE_LATEST) {
 			builder.setMessage("您当前已经是最新版本");
@@ -223,9 +231,9 @@ public class AppUpdateManager {
 			}
 		});
 		noticeDialog = builder.create();
+		noticeDialog.setCanceledOnTouchOutside(false); //不允许点外面消失
 		noticeDialog.show();
 	}
-	
 	/**
 	 * 显示下载对话框
 	 */
@@ -265,6 +273,7 @@ public class AppUpdateManager {
 		@Override
 		public void run() {
 			try {
+				Log.d(TAG,"启动了下载线程进行APK的下载");
 				String apkName = "AccountApp_"+mUpdateInfo.getVersionName()+".apk";
 				String tmpApk = "AccountApp_"+mUpdateInfo.getVersionName()+".tmp";
 				//判断是否挂载了SD卡

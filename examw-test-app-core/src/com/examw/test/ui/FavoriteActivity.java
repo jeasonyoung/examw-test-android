@@ -10,6 +10,7 @@ import com.examw.test.R;
  * @since 2014年11月26日 下午3:21:16.
  */
 public class FavoriteActivity extends BaseActivity{
+	private static final String TAG = "FavoriteActivity";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.adapter.PaperListAdapter;
-import com.examw.test.app.AppContext;
 import com.examw.test.domain.Paper;
 import com.examw.test.support.ReturnBtnClickListener;
 import com.examw.test.widget.NewDataToast;
