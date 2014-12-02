@@ -3,61 +3,40 @@
     android:id="@+id/main_linearlayout_footer"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/widget_bar_bg_n"
+    android:background="@color/main_footer_bg_normal_color"
     android:layout_alignParentBottom="true"
     android:gravity="center_vertical"
     android:orientation="horizontal" >
 
     <RadioButton
         android:id="@+id/btn_home"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/widget_bar_bg"
-        android:button="@null"
-        android:drawableTop="@drawable/weight_home"
-        android:gravity="center"
-        android:padding="3.0dip"
+        style="@style/main_footbar_radio"
+        android:drawableBottom="@drawable/weight_home"
+        android:drawablePadding="-20dip"
         android:checked="true"
-        android:text="主页"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_small_size" />
+        />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/widget_bar_cut_off" />
+        android:layout_width="1.0dip"
+        android:layout_height="fill_parent"
+        android:src="@color/main_footer_divider_color" />
 
     <RadioButton
         android:id="@+id/btn_setting"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/widget_bar_bg"
-        android:button="@null"
-        android:drawableTop="@drawable/weight_setting"
-        android:gravity="center"
-        android:padding="3.0dip"
-        android:text="设置"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_small_size" />
+       	style="@style/main_footbar_radio"
+        android:drawableBottom="@drawable/weight_setting"
+        android:drawablePadding="-20dip"
+        />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/widget_bar_cut_off" />
+        android:layout_width="1.0dip"
+        android:layout_height="fill_parent"
+        android:src="@color/main_footer_divider_color" />
     
     <RadioButton
         android:id="@+id/btn_more"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/widget_bar_bg1"
-        android:button="@null"
-        android:drawableTop="@drawable/weight_more"
-        android:gravity="center"
-        android:padding="3.0dip"
-        android:text="更多"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_small_size" />
+        style="@style/main_footbar_radio"
+        android:drawableBottom="@drawable/weight_more"
+        android:drawablePadding="-20dip"
+        />
 </LinearLayout>

@@ -3,8 +3,6 @@ package com.examw.test.app;
 import java.util.Stack;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
 
 /**
  * 
@@ -82,12 +80,9 @@ public class AppManager {
 	/**
 	 * 退出应用程序
 	 */
-	@SuppressWarnings("deprecation")
-	public void AppExit(Context context) {
+	public void AppExit() {
 		try {
 			finishAllActivity();
-			ActivityManager activityMgr= (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-			activityMgr.restartPackage(context.getPackageName());
 			System.exit(0);
 		} catch (Exception e) {	}
 	}

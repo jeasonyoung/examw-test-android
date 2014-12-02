@@ -40,7 +40,13 @@ public class StringUtils {
 			return new SimpleDateFormat("yyyy-MM-dd",Locale.CHINA);
 		}
 	};
-
+	
+	private final static ThreadLocal<SimpleDateFormat> dateFormater3 = new ThreadLocal<SimpleDateFormat>() {
+		@Override
+		protected SimpleDateFormat initialValue() {
+			return new SimpleDateFormat("yyyy年MM月dd日",Locale.CHINA);
+		}
+	};
 	/**
 	 * 将字符串转为日期类型
 	 * 
@@ -54,7 +60,17 @@ public class StringUtils {
 			return null;
 		}
 	}
-	
+	/**
+	 * 将日期转化为字符串显示
+	 */
+	public static String toDateStr(long date)
+	{
+		if(date==0)
+		{
+			return null;
+		}
+		return dateFormater3.get().format(new Date(date));
+	}
 	/**
 	 * 以友好的方式显示时间
 	 * 
@@ -300,6 +316,22 @@ public class StringUtils {
 		}catch(Exception e)
 		{
 			return true;
+		}
+	}
+	
+	/**
+	 * 将包含数字的字符串转为所包含的数字
+	 * @param s
+	 * @return
+	 */
+	public static int toInt2(String s)
+	{
+		try
+		{
+			return Integer.valueOf(s.replaceAll("\\D", ""));
+		}catch(Exception e)
+		{
+			return 0;
 		}
 	}
 }

@@ -37,6 +37,10 @@ public class AppConfig {
 	public final static String CONF_HTTPS_LOGIN = "perf_httpslogin";
 	public final static String CONF_VOICE = "perf_voice";
 	public final static String CONF_CHECKUP = "perf_checkup";
+	public final static String CONF_EXAMTIME = "perf_examtime";
+	public final static String CONF_AUTOLOGIN = "perf_autoLogin";
+	public final static String CONF_SELECTED_COURSEID = "perf_courseids";
+	public final static String CONT_EXAM_FONT_SIZE = "perf_examfontsize";
 
 	public final static String SAVE_IMAGE_PATH = "save_image_path";
 	@SuppressLint("NewApi")
@@ -95,7 +99,18 @@ public class AppConfig {
 	public long getExpiresIn() {
 		return StringUtils.toLong(get(CONF_EXPIRESIN));
 	}
-
+	public long getExamTime()
+	{
+		return StringUtils.toLong(get(CONF_EXAMTIME));
+	}
+	public String getFormatExamTime()
+	{
+		return StringUtils.toDateStr(getExamTime());
+	}
+	public void setExamTime(long date)
+	{
+		set(CONF_EXAMTIME,String.valueOf(date));
+	}
 	public String get(String key) {
 		Properties props = get();
 		return (props != null) ? props.getProperty(key) : null;

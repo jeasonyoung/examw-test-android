@@ -56,6 +56,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 模拟考试界面  -->
         <activity
             android:name="com.examw.test.ui.SimulateActivity"
@@ -81,6 +85,21 @@
             android:name="com.examw.test.ui.ErrorItemActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 知识点界面 -->
+        <activity
+            android:name=".ui.KnowledgeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 论坛界面 -->
+        <activity
+            android:name=".ui.ForumActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 考试指南界面 -->
+        <activity
+            android:name=".ui.ExamInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 考试记录界面  -->
         <activity
             android:name="com.examw.test.ui.RecordActivity"
@@ -91,9 +110,14 @@
             android:name="com.examw.test.ui.AboutActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <!-- 隐私协议节目 -->
+        <!-- 隐私协议界面 -->
         <activity
             android:name=".ui.PrivacyAgreementActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 时间设置界面 -->
+        <activity
+            android:name=".ui.SetTimeActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>

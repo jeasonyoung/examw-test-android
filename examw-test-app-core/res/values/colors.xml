@@ -86,5 +86,16 @@
     <color name="share_ic_text_color">#ff999999</color>
     <color name="share_title_bg_color">#ffeeeeee</color>
     <color name="share_title_text_color">#ff222222</color>
-
+    
+	<color name="main_top_bg_color">#fff1f1f1</color>
+	<color name="main_top_text_color">#ff464646</color>
+	<color name="main_top_exam_color">#ff065BEA</color>
+	<color name="rest_day_color">#fffe3200</color>
+	<color name="main_grid_item_normal_color">#fff5f4f9</color>
+	<color name="main_grid_item_pressed_color">#ff3277ec</color>
+	<color name="main_grid_item_text_color">#ff3176EC</color>
+	<color name="main_grid_item_stock">#ffdedede</color>
+	<color name="main_footer_bg_pressed_color">#ff034ecc</color>
+	<color name="main_footer_bg_normal_color">#ff065bea</color>
+	<color name="main_footer_divider_color">#ff1669f5</color>
 </resources>

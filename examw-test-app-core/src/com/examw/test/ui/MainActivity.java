@@ -1,16 +1,22 @@
 package com.examw.test.ui;
 
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
@@ -18,19 +24,26 @@ import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
+import com.examw.test.dao.UserDao;
+import com.examw.test.domain.User;
+import com.examw.test.model.Json;
+import com.examw.test.support.ApiClient;
+import com.examw.test.support.AppUpdateManager;
+import com.examw.test.util.CyptoUtils;
+import com.examw.test.util.StringUtils;
 import com.examw.test.util.ToastUtils;
 import com.examw.test.widget.BadgeView;
 import com.slidingmenu.lib.SlidingMenu;
 
 /**
  * 主界面
+ * 
  * @author fengwei.
  * @since 2014年9月3日 下午3:18:19.
  */
-public class MainActivity extends FragmentActivity implements OnClickListener{
+public class MainActivity extends FragmentActivity implements OnClickListener {
 	private SlidingMenu menu;
-//	private LinearLayout menuLayout;
-	private ImageButton menuBtn;
+	// private LinearLayout menuLayout;
 	private AppContext appContext;// 全局Context
 	private AppConfig appConfig;
 	private Handler mHandler = null;
@@ -39,10 +52,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	public static final int MAIN_ACCOUNT = 1;
 	public static final int MAIN_ABOUT = 2;
 	private int flag = MAIN_INDEX;
-//	private UserDao userDao;
-	private RadioButton homeBtn,moreBtn,setBtn;
+	private RadioButton homeBtn, moreBtn, setBtn;
 	private LinearLayout footer;
 	private BadgeView v;
+	private AlertDialog exitDialog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.e("MainActivity", "onCreate");
@@ -52,30 +66,61 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		appContext = (AppContext) getApplication();
 		appConfig = AppConfig.getAppConfig(this);
 		this.setContentView(R.layout.ui_main);
-//		mHandler = new MyHandler(this);
+		mHandler = new MyHandler(this);
 		initViews();
 		initFragment(flag);
 		initSlidingMenu();
-		this.menuBtn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (menu != null) {
-					menu.toggle();
-				}
-			}
-		});
 		// 网络连接判断
 		if (!appContext.isNetworkConnected()) {
 			ToastUtils.show(this, R.string.network_not_connected);
 		} else {
-//			//检查数据更新
-//			UpdateDataManager.getUpdateManager().checkDataUpdate(this, false);
-			
+			// //检查数据更新
+			// UpdateDataManager.getUpdateManager().checkDataUpdate(this,
+			// false);
+
 		}
-			// 是否自动登录
-				// 开线程去登录
-		// 启动一个登录线程
-//		appContext.new AutoLoginThread().start();
+		// 检查新版本
+		if (appContext.isCheckUp() && !appContext.isAutoCheckuped()) {
+			// 老式的自动更新
+			AppUpdateManager.getUpdateManager().checkAppUpdate(this, false);
+			appContext.setAutoCheckuped(true);
+			// UmengUpdateAgent.update(this); //umeng update
+		}
+		// 是否自动登录
+		if (appContext.isAutoLogin() && !appContext.isAutoLogined()) {
+			// 开线程去登录
+			new Thread() {
+				public void run() {
+					Message msg = new Message();
+					String username = appConfig.get("user.account");
+					String pwd = CyptoUtils.decode("changheng",
+							appConfig.get("user.pwd"));
+					try {
+						Log.e("登录线程", "启动");
+						appContext.setLoginState(AppContext.LOGINING); // 登录中
+						Json result = ApiClient
+								.login(appContext, username, pwd);
+						msg.what = 1;
+						msg.obj = result;
+						if (result != null && (!result.isSuccess())) {
+							if (localLogin(username, pwd)) {
+								msg.what = 2;
+							}
+							msg.what = 1;
+						}
+						// //////////////////////////////////////
+					} catch (Exception e) {
+						e.printStackTrace();
+						if (localLogin(username, pwd)) {
+							msg.what = 2;
+						}
+						// msg.what = -1;
+					}
+					mHandler.sendMessage(msg);
+				};
+			}.start();
+			appContext.setAutoLogined(true);
+		}
 	}
 
 	private void initFragment(int curFragment) {
@@ -97,70 +142,70 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.fragment_replace_layout, f).commit();
 	}
-	
+
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch(v.getId())
-		{
+		switch (v.getId()) {
 		case R.id.btn_home:
 			moreBtn.setChecked(false);
 			setBtn.setChecked(false);
-			if(flag == MAIN_INDEX)
-			{
+			if (flag == MAIN_INDEX) {
 				return;
 			}
 			flag = MAIN_INDEX;
 			getSupportFragmentManager().beginTransaction()
-				.replace(R.id.fragment_replace_layout, new MainFragment()).commit();
+					.replace(R.id.fragment_replace_layout, new MainFragment())
+					.commit();
 			break;
 		case R.id.btn_more:
-			if(menu!=null)
-			{
+			moreBtn.setChecked(false);
+			if (menu != null) {
 				menu.toggle();
 			}
 			break;
 		case R.id.btn_setting:
 			moreBtn.setChecked(false);
 			homeBtn.setChecked(false);
-			if(this.v!=null) this.v.hide();
-			if(flag == MAIN_SETTING)
-			{
+			if (this.v != null)
+				this.v.hide();
+			if (flag == MAIN_SETTING) {
 				return;
 			}
 			flag = MAIN_SETTING;
-			getSupportFragmentManager().beginTransaction()
-				.replace(R.id.fragment_replace_layout, new SettingFragment()).commit();
+			getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.fragment_replace_layout,
+							new SettingFragment()).commit();
 			break;
-			
+
 		}
 	}
-	
+
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
-		
+
 	}
+
 	public void showContent() {
 		if (menu != null) {
 			menu.toggle();
 		}
 	}
-	public void hideNewTag()
-	{
-		if(v!=null)
-		{
+
+	public void hideNewTag() {
+		if (v != null) {
 			v.hide();
 		}
 	}
+
 	private void initViews() {
-//		this.menuLayout = (LinearLayout) this.findViewById(R.id.menuLayout);
-		this.menuBtn = (ImageButton) this.findViewById(R.id.menuBtn);
+		// this.menuLayout = (LinearLayout) this.findViewById(R.id.menuLayout);
 		this.moreBtn = (RadioButton) this.findViewById(R.id.btn_more);
 		this.setBtn = (RadioButton) this.findViewById(R.id.btn_setting);
 		this.homeBtn = (RadioButton) this.findViewById(R.id.btn_home);
-		this.footer = (LinearLayout) this.findViewById(R.id.main_linearlayout_footer);
+		this.footer = (LinearLayout) this
+				.findViewById(R.id.main_linearlayout_footer);
 		this.moreBtn.setOnClickListener(this);
 		this.setBtn.setOnClickListener(this);
 		this.homeBtn.setOnClickListener(this);
@@ -174,13 +219,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 				menu.showContent();
 				return true;
 			}
-			if (flag == MAIN_INDEX)
-			{
-//				UIHelper.Exit(this);
-				ToastUtils.show(this, "退出");
-				AppManager.getAppManager().AppExit(this);
-			}
-			else
+			if (flag == MAIN_INDEX) {
+				ShowExitDialog();
+			} else
 				createMainFragment();
 			return true;
 		} else if ((paramKeyEvent.getKeyCode() == 82)) {
@@ -222,8 +263,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	public void onResume() {
 		super.onResume();
 		changeMenu();
-		if(appContext.isHasNewVersion()||appContext.isHasNewData())
-		{
+		if (appContext.isHasNewVersion() || appContext.isHasNewData()) {
 			showNew();
 		}
 	}
@@ -252,10 +292,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		Log.e("MainActivity ", "onDestroy");
 		AppManager.getAppManager().finishActivity(this);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(arg0, arg1, arg2);
 		Log.e("MainActivity onActivityResult", arg1 + "");
 		switch (arg1) {
@@ -294,45 +333,46 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		}
 		// menuFragment.changeLoginState();
 	}
-	public void showFooter(int flag)
-	{
+
+	public void showFooter(int flag) {
 		this.footer.setVisibility(flag);
 	}
-//	private static class MyHandler extends Handler {
-//		WeakReference<MainActivity> mActivity;
-//
-//		public MyHandler(MainActivity activity) {
-//			mActivity = new WeakReference<MainActivity>(activity);
-//		}
-//
-//		@Override
-//		public void handleMessage(Message msg) {
-//			MainActivity theActivity = mActivity.get();
-//			switch (msg.what) {
-//			case 1:
-//				ParseResult pr = (ParseResult) msg.obj;
-//				if (pr.Ok()) {
-//					User user = (User) pr.obj;
-//					theActivity.appContext.saveLoginInfo(user);
-//					theActivity.changeMenu();
-//				} else {
-//					theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL); // 登录失败
-//					theActivity.changeMenu();
-//				}
-//				UIHelper.ToastMessage(theActivity, pr.getErrorMsg());
-//				break;
-//			case -1:
-//				UIHelper.ToastMessage(theActivity, "亲,网络不给力");
-//				theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
-//				theActivity.changeMenu();
-//				break;
-//			case 2:
-//				UIHelper.ToastMessage(theActivity, "本地登录成功");
-//				theActivity.appContext.setLoginState(AppContext.LOCAL_LOGINED);
-//				theActivity.changeMenu();
-//			}
-//		}
-//	}
+
+	private static class MyHandler extends Handler {
+		WeakReference<MainActivity> mActivity;
+
+		public MyHandler(MainActivity activity) {
+			mActivity = new WeakReference<MainActivity>(activity);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			MainActivity theActivity = mActivity.get();
+			switch (msg.what) {
+			case 1:
+				Json result = (Json) msg.obj;
+				if (result.isSuccess()) {
+					User user = (User) result.getData();
+					theActivity.appContext.saveLoginInfo(user);
+					theActivity.changeMenu();
+				} else {
+					theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL); // 登录失败
+					theActivity.changeMenu();
+				}
+				ToastUtils.show(theActivity, result.getMsg());
+				break;
+			case -1:
+				ToastUtils.show(theActivity, "亲,网络不给力");
+				theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
+				theActivity.changeMenu();
+				break;
+			case 2:
+				ToastUtils.show(theActivity, "本地登录成功");
+				theActivity.appContext.setLoginState(AppContext.LOCAL_LOGINED);
+				theActivity.changeMenu();
+			}
+		}
+	}
 
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getRepeatCount() > 0
@@ -345,74 +385,103 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	/**
 	 * 轮询通知信息
 	 */
-//	private void foreachUserNotice() {
-//		final int uid = appContext.getLoginUid();
-//		final Handler handler = new Handler() {
-//			public void handleMessage(Message msg) {
-//				if (msg.what == 1) {
-//					UIHelper.sendBroadCast(MainActivity.this, (Notice) msg.obj);
-//				}
-//				foreachUserNotice();// 回调
-//			}
-//		};
-//		new Thread() {
-//			public void run() {
-//				Message msg = new Message();
-//				try {
-//					sleep(60 * 1000);
-//					if (uid > 0) {
-//						Notice notice = appContext.getUserNotice(uid);
-//						msg.what = 1;
-//						msg.obj = notice;
-//					} else {
-//						msg.what = 0;
-//					}
-//				} catch (AppException e) {
-//					e.printStackTrace();
-//					msg.what = -1;
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//					msg.what = -1;
-//				}
-//				handler.sendMessage(msg);
-//			}
-//		}.start();
-//	}
+	// private void foreachUserNotice() {
+	// final int uid = appContext.getLoginUid();
+	// final Handler handler = new Handler() {
+	// public void handleMessage(Message msg) {
+	// if (msg.what == 1) {
+	// UIHelper.sendBroadCast(MainActivity.this, (Notice) msg.obj);
+	// }
+	// foreachUserNotice();// 回调
+	// }
+	// };
+	// new Thread() {
+	// public void run() {
+	// Message msg = new Message();
+	// try {
+	// sleep(60 * 1000);
+	// if (uid > 0) {
+	// Notice notice = appContext.getUserNotice(uid);
+	// msg.what = 1;
+	// msg.obj = notice;
+	// } else {
+	// msg.what = 0;
+	// }
+	// } catch (AppException e) {
+	// e.printStackTrace();
+	// msg.what = -1;
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// msg.what = -1;
+	// }
+	// handler.sendMessage(msg);
+	// }
+	// }.start();
+	// }
 	/**
 	 * 本地登录（必须先在线登录一次）
-	 * @param username 用户名
-	 * @param password 密码
+	 * 
+	 * @param username
+	 *            用户名
+	 * @param password
+	 *            密码
 	 * @return
 	 */
-//	private boolean localLogin(String username, String password) {
-//		if (StringUtils.isEmpty(username))
-//			return false;
-//		if (userDao == null) {
-//			userDao = new UserDao(this);
-//		}
-//		User user = userDao.findByUsername(username);
-////		System.out.println(user);
-//		if (user != null) {
-//			if (password.equals(new String(Base64.decode(
-//					Base64.decode(user.getPassword(), 0), 0)))) {
-//				appContext.saveLocalLoginInfo(username);
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	private boolean localLogin(String username, String password) {
+		if (StringUtils.isEmpty(username))
+			return false;
+		User user = UserDao.findByUsername(username);
+		if (user != null) {
+			if (password.equals(new String(Base64.decode(
+					Base64.decode(user.getPassword(), 0), 0)))) {
+				appContext.saveLocalLoginInfo(username);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 显示有更新
 	 */
-	private void showNew()
-	{
-		if(v == null)
-		{
-			 v = new BadgeView(this,setBtn);
-			 v.setBackgroundResource(R.drawable.ic_redpoint);
-			 v.setText("new");
-			 v.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+	private void showNew() {
+		if (v == null) {
+			v = new BadgeView(this, setBtn);
+			v.setBackgroundResource(R.drawable.ic_redpoint);
+			v.setText("new");
+			v.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
 		}
 		v.show();
+	}
+
+	/**
+	 * 退出程序
+	 * 
+	 * @param cont
+	 */
+	public void ShowExitDialog() {
+		if (exitDialog != null && !exitDialog.isShowing()) {
+			exitDialog.show();
+			return;
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setIcon(android.R.drawable.ic_dialog_info);
+		builder.setTitle(R.string.app_menu_surelogout);
+		builder.setPositiveButton(R.string.sure,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+						// 退出
+						AppManager.getAppManager().AppExit();
+					}
+				});
+		builder.setNegativeButton(R.string.cancle,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+		exitDialog = builder.create();
+		exitDialog.show();
 	}
 }

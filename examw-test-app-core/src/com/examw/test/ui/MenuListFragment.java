@@ -153,7 +153,7 @@ public class MenuListFragment extends ListFragment {
 //			}
 			break;
 		case 4:	//退出
-			AppManager.getAppManager().AppExit(getActivity());
+			AppManager.getAppManager().AppExit();
 			break;
 		case 5:	//导入数据
 //			Intent intent = new Intent(getActivity(), ImportDataActivity.class);

@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50.0dip"
         android:layout_alignParentTop="true"
-        android:background="@drawable/widget_bar_bg_n"
+        android:background="@color/main_top_bg_color"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -24,32 +24,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/main_title"
-                android:textColor="@color/white"
-                android:textSize="@dimen/title_large_size" />
-
+                android:textColor="@color/main_top_text_color"
+                android:textSize="20.0sp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/area_version_name"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_small_size" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/menuLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_alignParentRight="true"
-            android:padding="10.0dip" 
-            android:visibility="gone"
-            >
-
-            <ImageButton
-                android:id="@+id/menuBtn"
+                android:text="@string/left_bookflag"
+                android:textColor="@color/main_top_text_color"
+                android:textSize="16.0sp" />
+			<TextView
+                android:id="@+id/examTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/icon_select_question" />
+                android:text="中级农业经济师"
+                android:textColor="@color/main_top_exam_color"
+                android:textSize="16.0sp" />
+			<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/right_bookflag"
+                android:textColor="@color/main_top_text_color"
+                android:textSize="16.0sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/year_version_name"
+                android:textColor="@color/main_top_text_color"
+                android:textSize="14.0sp" />
         </LinearLayout>
     </RelativeLayout>
 

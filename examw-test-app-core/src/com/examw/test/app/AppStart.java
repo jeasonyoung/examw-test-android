@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.LinearLayout;
 
 import com.examw.test.R;
+import com.examw.test.db.UserDBUtil;
 import com.examw.test.ui.GuideActivity;
 import com.examw.test.ui.MainActivity;
 import com.examw.test.util.FileUtils;
@@ -42,7 +44,11 @@ public class AppStart extends Activity {
 				.findViewById(R.id.app_start_view);
 		check(wellcome);
 		setContentView(view);
-
+		//初始化数据库
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		db.close();
+		db = null;
+		////////////////////////////////////////////////////
 		// 渐变展示启动屏
 		AlphaAnimation aa = new AlphaAnimation(0.3f, 1.0f);
 		aa.setDuration(2000);

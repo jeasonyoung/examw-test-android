@@ -152,7 +152,7 @@ public class AppUpdateManager {
 				//显示检测结果
 				if(msg.what == 1){
 						mUpdateInfo = (AppUpdateInfo)msg.obj;
-					if(mUpdateInfo.isNeedUpdate(currentCode)){
+					if(mUpdateInfo!=null && mUpdateInfo.isNeedUpdate(currentCode)){
 						apkUrl = mUpdateInfo.getUrl();
 						updateMsg = mUpdateInfo.toString();
 						showNoticeDialog();
@@ -170,14 +170,15 @@ public class AppUpdateManager {
 				try {
 					Log.d(TAG,"启动了检测线程进行检测更新");
 					Thread.sleep(3000);
-					AppUpdateInfo update = new AppUpdateInfo();//appContext.getAppUpdate();
-					update.setVersionCode(3);
-					update.setVersionName("3.0");
-					update.setSize(20480);
-					update.setUrl("http://dldir1.qq.com/weixin/android/weixin600android501.apk");
-					update.setContent("更新信息:修复部分bug");
+					//TODO 修改更新检测
+//					AppUpdateInfo update = new AppUpdateInfo();//appContext.getAppUpdate();
+//					update.setVersionCode(3);
+//					update.setVersionName("3.0");
+//					update.setSize(20480);
+//					update.setUrl("http://dldir1.qq.com/weixin/android/weixin600android501.apk");
+//					update.setContent("更新信息:修复部分bug");
 					msg.what = 1;
-					msg.obj = update;
+					msg.obj = null;
 				} catch (Exception e) {
 					e.printStackTrace();
 					msg.what = -1;

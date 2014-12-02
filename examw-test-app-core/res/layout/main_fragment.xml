@@ -69,7 +69,7 @@
                     android:layout_alignBottom="@id/mama_tip"
                     android:layout_toRightOf="@id/mama_tip"
                     android:layout_marginLeft="10.0dip"
-                    android:textColor="@color/black"
+                    android:textColor="@color/rest_day_color"
                     android:textSize="@dimen/text_medium_size" />
             </RelativeLayout>
 
@@ -82,11 +82,12 @@
             android:layout_margin="@dimen/home_grid_space"
             android:cacheColorHint="@drawable/trans"
             android:gravity="center"
-            android:horizontalSpacing="@dimen/home_grid_space"
+            android:horizontalSpacing="1.0dip"
             android:listSelector="@drawable/trans"
             android:numColumns="3"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="@dimen/home_grid_space" />
+            android:background="@color/main_grid_item_stock"
+            android:verticalSpacing="1.0dip" />
 
         <FrameLayout
             android:id="@+id/layout_ad"

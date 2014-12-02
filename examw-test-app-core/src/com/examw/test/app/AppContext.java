@@ -13,6 +13,8 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.litepal.exceptions.GlobalException;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -20,7 +22,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.telephony.TelephonyManager;
 
+import com.examw.test.domain.User;
+import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.MethodsCompat;
 import com.examw.test.util.StringUtils;
 
@@ -48,10 +53,44 @@ public class AppContext extends Application {
 	private int loginState = 0; // 登录状态
 	private boolean isAutoCheckuped, isAutoLogined, hasNewVersion, hasNewData;
 	
-	private int loginUid = 0;	//登录用户的id
+	private String loginUid = "";	//登录用户的id
 	private Hashtable<String, Object> memCacheRegion = new Hashtable<String, Object>();
 	
 	private String saveImagePath;//保存图片路径
+	
+	private String username;
+	/**
+	 * Global application context.
+	 */
+	private static Context mContext;
+
+	/**
+	 * Construct of LitePalApplication. Initialize application context.
+	 */
+	public AppContext() {
+		mContext = this;
+	}
+
+	/**
+	 * Get the global application context.
+	 * @return Application context.
+	 * @throws GlobalException
+	 */
+	public static Context getContext() {
+		if (mContext == null) {
+			throw new RuntimeException("APPLICATION_CONTEXT_IS_NULL");
+		}
+		return mContext;
+	}
+
+	@Override
+	public void onLowMemory() {
+		super.onLowMemory();
+		if(StringUtils.isEmpty(username)){
+			username = getProperty("user.username"); 
+		}
+		mContext = getApplicationContext();
+	}
 	
 	/**
 	 * 获取 登录状态
@@ -69,6 +108,19 @@ public class AppContext extends Application {
 	 */
 	public void setLoginState(int loginState) {
 		this.loginState = loginState;
+	}
+	
+	public void setUsername(String username)
+	{
+		this.username = username;
+	}
+	/**
+	 * 获取 用户名
+	 * @return username
+	 * 
+	 */
+	public String getUsername() {
+		return username;
 	}
 
 	/**
@@ -88,7 +140,18 @@ public class AppContext extends Application {
 	public void setAutoCheckuped(boolean isAutoCheckuped) {
 		this.isAutoCheckuped = isAutoCheckuped;
 	}
-
+	
+	/**
+	 * 是否自动登录
+	 */
+	public boolean isAutoLogin() {
+		String perf_autoLogin = getProperty(AppConfig.CONF_AUTOLOGIN);
+		if (StringUtils.isEmpty(perf_autoLogin))
+			return false;
+		else
+			return StringUtils.toBool(perf_autoLogin);
+	}
+	
 	/**
 	 * 获取 是否自动登录
 	 * @return isAutoLogined
@@ -303,7 +366,7 @@ public class AppContext extends Application {
 	 * 获取登录用户id
 	 * @return
 	 */
-	public int getLoginUid() {
+	public String getLoginUid() {
 		return this.loginUid;
 	}
 	/**
@@ -673,7 +736,15 @@ public class AppContext extends Application {
 	public void removeProperty(String...key){
 		AppConfig.getAppConfig(this).remove(key);
 	}
-
+	
+	/**
+	 * 获取设备唯一标识
+	 */
+	public String getDeviceId() {
+		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		return tm.getDeviceId();
+	}
+	
 	/**
 	 * 获取内存中保存图片的路径
 	 * @return
@@ -689,10 +760,19 @@ public class AppContext extends Application {
 		this.saveImagePath = saveImagePath;
 	}
 
-	public boolean isTimeOver() {
-		return false;
-	}	
-	
+	public void saveLoginInfo(final User user) {
+		this.loginUid = user.getUid();
+		this.loginState = LOGINED;
+		this.username = user.getUsername();
+		setProperty("user.uid", String.valueOf(user.getUid()));
+		setProperty("user.account", user.getUsername());
+		setProperty("user.pwd",CyptoUtils.encode("changheng", user.getPassword()));
+	}
+	public void saveLocalLoginInfo(String username) {
+		this.loginState = LOCAL_LOGINED;
+		this.username = username;
+	}
+
 //	public AppUpdate getAppUpdate() throws AppException {
 //		AppUpdate update = null;
 //		String key = "appUpdateInfo";

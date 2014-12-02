@@ -166,7 +166,9 @@
     <string name="right_info">Copyright © 2007&#8211;2013 All Rights Reserved.</string>
     <!--  -->
     <string name="main_title">考试一点通</string>
-    <string name="area_version_name">全国版</string>
+    <string name="year_version_name">2015版</string>
+    <string name="left_bookflag">《</string>
+    <string name="right_bookflag">》</string>
     <!-- 错误报告发送的邮箱账户 -->
     <string name="reportSendAccount">fw121fw4@163.com</string>
     <!-- 分享  -->

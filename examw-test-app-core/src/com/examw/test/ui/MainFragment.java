@@ -4,15 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.http.Header;
-
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,36 +19,37 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.util.ToastUtils;
+import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
 
 public class MainFragment extends Fragment {
+	private static final String TAG = "MainFragment";
 	private HomeGrid g;
-	private RelativeLayout time_tip, setDateLayout;
+	private RelativeLayout setDateLayout;
 	private TextView restDay, usernameTv;
 	private SimpleDateFormat format;
 	private AppConfig appConfig;
 	private AppContext appContext;
-	private ScrollView scrollView;
 	private ProgressDialog mProDialog;
 	
 	//主界面适配的Activity
-	private static final Class[] classes = { 
-			SimulateActivity.class,
+	private static final Class<?>[] classes = {
+			KnowledgeActivity.class,
 			ChapterActivity.class, 
-			DailyActivity.class,
 			FavoriteActivity.class, 
 			ErrorItemActivity.class,
-			RecordActivity.class
+			SimulateActivity.class,
+			DailyActivity.class,
+			ForumActivity.class,
+			RecordActivity.class,
+			ExamInfoActivity.class
+			
 	};
 	private static final String[] actionName = { null, null, "myFavors",
 			"myErrors", null, "myNotes", null, null, null };
@@ -63,7 +61,6 @@ public class MainFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		Log.i("Mainfragment", "onCreateView");
 		appConfig = AppConfig.getAppConfig(getActivity());
 		appContext = (AppContext) getActivity().getApplication();
@@ -79,103 +76,67 @@ public class MainFragment extends Fragment {
 		format = new SimpleDateFormat("yyyy.MM.dd", Locale.CHINA);
 		((TextView) v.findViewById(R.id.day_date)).setText(format
 				.format(new Date()));
-		scrollView = ((ScrollView) v.findViewById(R.id.scroll));
 		g.setAdapter(new MainGridAdapter(getActivity()));
 		g.setVisibility(View.VISIBLE);
-//		scrollView.requestChildFocus(time_tip, null);
 		g.setOnItemClickListener(new ItemClickListener());
 		return v;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		this.setDateLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-//				startActivity(new Intent(getActivity(), SetTimeActivity.class));
-				ToastUtils.show(getActivity(), "点击了按钮");
-				testHttp();
+				startActivity(new Intent(getActivity(), SetTimeActivity.class));
 			}
 		});
 	}
-	private void testHttp(){
-		AsyncHttpClient client = new AsyncHttpClient();
-		client.get(
-			"http://tiku.examw.com/examw-test/api/data/products/615c758f-424f-4808-9528-67630125687e/papers",
-			new TextHttpResponseHandler() {
-
-			@Override
-			public void onStart() {
-		        Log.d("Mainfragment","请求开始");
-		    }
-
-		    @Override
-		    public void onRetry(int retryNo) {
-		        // called when request is retried
-		    	Log.d("Mainfragment","重新请求"+retryNo);
-			}
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2,
-					Throwable arg3) {
-				Log.d("Mainfragment","请求失败"+arg2);
-			}
-
-			@Override
-			public void onSuccess(int stateCode, Header[] arg1, String arg2) {
-				Log.d("Mainfragment","请求成功");
-				Log.d("getString",arg2);
-			}
-		});
-	}
+	
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		flag = true;
-//		if (appConfig.getExamTime() == 0) {
-//			this.restDay.setText("设置考试时间");
-//		} else
-//		{
-//			String time = calculateRestDay(appConfig.getExamTime());
-//			this.restDay.setText(time);
-//			int dayNums = StringUtils.toInt2(time);
-//			int color = dayNums<=0?getResources().getColor(R.color.black):
-//							dayNums<=30?getResources().getColor(R.color.red):
-//								dayNums<=90?getResources().getColor(R.color.blue):
-//									getResources().getColor(R.color.green);
-//			this.restDay.setTextColor(color);
-//		}
+		if (appConfig.getExamTime() == 0) {
+			this.restDay.setText("设置考试时间");
+		} else
+		{
+			String time = calculateRestDay(appConfig.getExamTime());
+			this.restDay.setText(time);
+			int dayNums = StringUtils.toInt2(time);
+			int color = dayNums<=0?getResources().getColor(R.color.black):
+							dayNums<=30?getResources().getColor(R.color.red):
+								dayNums<=90?getResources().getColor(R.color.blue):
+									getResources().getColor(R.color.green);
+			this.restDay.setTextColor(color);
+		}
 		setUsername();
 	}
 
 	private void setUsername() {
 		// 开一个线程检测是不是已登录来更改主页用户名的设置
-//		final Handler handler = new Handler(){
-//			public void handleMessage(Message msg) {
-//				usernameTv.setText(appContext.getUsername());
-//				usernameTv.setVisibility(View.VISIBLE);
-//			};
-//		};
-//		new Thread() {
-//			public void run() {
-//				while (flag) {
-//					try {
-//						if (appContext.getLoginState() == AppContext.LOGINED
-//								|| appContext.getLoginState() == AppContext.LOCAL_LOGINED) {
-//							flag = false;
-//							handler.sendEmptyMessage(1);
-//						}else
-//							Thread.sleep(1000);
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			};
-//		}.start();
+		final Handler handler = new Handler(){
+			public void handleMessage(Message msg) {
+				usernameTv.setText(appContext.getUsername());
+				usernameTv.setVisibility(View.VISIBLE);
+			};
+		};
+		new Thread() {
+			public void run() {
+				while (flag) {
+					try {
+						if (appContext.getLoginState() == AppContext.LOGINED
+								|| appContext.getLoginState() == AppContext.LOCAL_LOGINED) {
+							flag = false;
+							handler.sendEmptyMessage(1);
+						}else
+							Thread.sleep(1000);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			};
+		}.start();
 	}
 
 	// 计算日期
@@ -201,7 +162,6 @@ public class MainFragment extends Fragment {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2,
 				long arg3) {
-			// TODO Auto-generated method stub
 			// 下数据包
 			arg1.clearFocus();
 			startActivity(arg2,needLogin[arg2]);
@@ -321,37 +281,18 @@ public class MainFragment extends Fragment {
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
 		flag = false;
 		super.onPause();
 	}
 
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		Log.i("MainFragment", "on Destroy");
 		super.onDestroy();
 	}
 	private void startActivity(int arg2,boolean needCheck)
 	{
-		if(appContext.isTimeOver()&&needCheck)
-		{
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setTitle("提示");
-			builder.setMessage("抱歉，使用的期限已过，您可以去官网购买。");
-			builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					dialog.dismiss();
-					 Uri uri = Uri.parse("");          
-				     Intent it = new Intent(Intent.ACTION_VIEW, uri);
-				     startActivity(it);
-				}
-			});
-			builder.setCancelable(true);
-			builder.create().show();
-		}else
+		if(!needCheck)
 		{
 			Intent intent = new Intent(MainFragment.this.getActivity(),
 				classes[arg2]);
@@ -359,6 +300,16 @@ public class MainFragment extends Fragment {
 				intent.putExtra("actionName", actionName[arg2]);
 			}
 			startActivity(intent);
+		}else
+		{
+			Intent intent2 = new Intent(
+					MainFragment.this.getActivity(),
+					LoginActivity.class);
+			intent2.putExtra("className", classes[arg2].getName());
+			if (actionName[arg2] != null) {
+				intent2.putExtra("actionName", actionName[arg2]);
+			}
+			startActivity(intent2);
 		}
 	}
 }

@@ -18,7 +18,6 @@ import com.examw.test.R;
 
 public class MainGridAdapter extends BaseAdapter{
 	private TypedArray imagebtns;
-	private StateListDrawable[] bds;
 	private String[] texts;
 	private Context context;
 	private int i = 0;
@@ -44,7 +43,7 @@ public class MainGridAdapter extends BaseAdapter{
 			v = LayoutInflater.from(context).inflate(R.layout.item_main_grid, null);
 			if (this.i != 0)
 		      {
-				if(this.k<this.i) this.k = this.i;
+				//if(this.k<this.i) this.k = this.i;
 		        AbsListView.LayoutParams localLayoutParams = new AbsListView.LayoutParams(this.i, this.k);
 		        localLayoutParams.width = this.i;
 		        localLayoutParams.height = this.k;
@@ -58,8 +57,6 @@ public class MainGridAdapter extends BaseAdapter{
 			v.setTag(holder);
 		}
 		holder = (ViewHolder) v.getTag();
-		bds[position].setCallback(v);
-		v.setBackgroundDrawable(bds[position]);
 		try{
 			holder.img.setImageResource(this.imagebtns.getResourceId(position, -1));//setImageDrawable(r.getDrawable(this.imagebtns.getResourceId(position, -1)));//
 		}catch(Exception e)
@@ -78,41 +75,16 @@ public class MainGridAdapter extends BaseAdapter{
 		Resources localResources = this.context.getResources();
 		imagebtns = localResources.obtainTypedArray(R.array.home_grid_drawable_ids);
 		texts = localResources.getStringArray(R.array.home_grid_titles);
-		bds = getDrawables(localResources);
 		//屏幕的高宽
 		WindowManager localWindowManager = (WindowManager)context.getSystemService("window");
 		int width = localWindowManager.getDefaultDisplay().getWidth();
 	    int height  = localWindowManager.getDefaultDisplay().getHeight();
 	    //密度
 	    float destiny = context.getResources().getDisplayMetrics().density;
-	    this.i = ((width - 4 * (int)context.getResources().getDimension(R.dimen.home_grid_space)) / 3);
+	    this.i = (int)(((width - 22*destiny) / 3)-1);
 	    this.j = width/8;
 	    int column = texts.length%3 ==0?texts.length/3:texts.length/3+1;
-	    this.k = (int) ((height-280*destiny)/column); //计算一个格子的高度
-	}
-	private StateListDrawable[] getDrawables(Resources localResources) {
-		StateListDrawable[] ds = new StateListDrawable[imagebtns.length()];
-		TypedArray rids = localResources.obtainTypedArray(R.array.home_grid_color_ids);
-		int background = R.drawable.background2;
-		Resources r = context.getResources();
-		int pressed = android.R.attr.state_pressed;
-		// int window_focused = android.R.attr.state_window_focused;
-		// int focused = android.R.attr.state_focused;
-		// int selected = android.R.attr.state_selected;
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = new StateListDrawable();
-			// ds[i].addState(new int []{pressed , window_focused},
-			// r.getDrawable(background));
-			// ds[i].addState(new int []{pressed , -focused},
-			// r.getDrawable(rids[i]));
-			// ds[i].addState(new int []{selected },
-			// r.getDrawable(rids[i]));
-			// ds[i].addState(new int []{focused }, r.getDrawable(rids[i]));
-			ds[i].addState(new int[] { pressed }, r.getDrawable(background));
-			ds[i].addState(new int[0], r.getDrawable(rids.getResourceId(i, -1)));
-		}
-		rids.recycle();
-		return ds;
+	    this.k = (int) ((height-230*destiny)/column); //计算一个格子的高度
 	}
 	static class ViewHolder 
 	{

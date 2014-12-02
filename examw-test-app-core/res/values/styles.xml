@@ -95,17 +95,15 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-    
-   	<!-- <style name="frame_button">
+    <style name="main_footbar_radio">
         <item name="android:layout_width">fill_parent</item>
-   		<item name="android:layout_height">fill_parent</item>
-       	<item name="android:layout_weight">1</item>
-       	<item name="android:background">@drawable/frame_button_bg</item>
-       	<item name="android:button">@null</item>
-       	<item name="android:gravity">center</item>
-       	<item name="android:textColor">@color/frame_button_text_light</item>
-    </style> -->
-    
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>  
+        <item name="android:button">@null</item>  
+        <item name="android:background">@drawable/widget_bar_bg</item>
+        <item name="android:padding">8.0dip</item>
+    </style>
    	<style name="RadioButton">
         <item name="android:textSize">@dimen/text_medium_size</item>
         <item name="android:textColor">@color/black</item>
