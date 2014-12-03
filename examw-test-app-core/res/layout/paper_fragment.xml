@@ -10,33 +10,45 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         layout="@layout/top_head" />
-    
-	<include layout="@layout/paper_list_top" />
-	
-	<FrameLayout
+
+    <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
         <include layout="@layout/loading" />
 
-        <android.support.v4.view.ViewPager
-        	android:id="@+id/id_viewpager"
-        	android:layout_width="match_parent"
-       	 	android:layout_height="match_parent" 
-        />
+        <LinearLayout
+            android:id="@+id/questionContentLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <com.handmark.pulltorefresh.library.PullToRefreshListView
+                android:id="@+id/contentListView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/transparent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@drawable/topic_driver"
+                android:drawSelectorOnTop="false"
+                android:fadingEdge="none"
+                android:scrollbars="none"
+                android:visibility="visible" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/noneDataLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone" >
+
             <TextView
                 android:id="@+id/noneText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/nodata"
                 android:gravity="center_horizontal"
+                android:drawableTop="@drawable/nodata"
                 android:text="@string/nonedata"
                 android:textSize="@dimen/title_large_size" />
         </LinearLayout>

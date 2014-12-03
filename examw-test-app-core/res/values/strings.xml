@@ -51,6 +51,8 @@
     <string name="connect_error">亲,网速不给力</string>
     <string name="loadingStr2">玩命加载中</string>
     <!-- <string name=""></string> -->
+	<string name="real_paper">历年真题</string>
+	<string name="simulate_paper">模拟试题</string>
 	
     <string name="exam_myAnswerStr">我的回答：</string>
     <string name="exam_sysAnswerStr">正确答案：</string>

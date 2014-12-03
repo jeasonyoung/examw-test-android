@@ -22,6 +22,8 @@ import com.examw.test.util.StringUtils;
  */
 @SuppressLint("NewApi")
 public class AppConfig {
+	
+	public static final String PRODUCTID = "615c758f-424f-4808-9528-67630125687e";
 
 	private final static String APP_CONFIG = "config";
 	

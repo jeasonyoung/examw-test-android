@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class UserDBUtil {
 	private static UserDBHelper mUserDBHelper;
-	public static int openedNum = 0;
 	
 	/**
 	 * 获取可读写的数据库

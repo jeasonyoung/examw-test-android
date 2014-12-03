@@ -98,7 +98,7 @@ public class MainFragment extends Fragment {
 		super.onStart();
 		flag = true;
 		if (appConfig.getExamTime() == 0) {
-			this.restDay.setText("设置考试时间");
+			this.restDay.setText("");
 		} else
 		{
 			String time = calculateRestDay(appConfig.getExamTime());
@@ -292,7 +292,7 @@ public class MainFragment extends Fragment {
 	}
 	private void startActivity(int arg2,boolean needCheck)
 	{
-		if(!needCheck)
+		if(!needCheck || appContext.getLoginState() == AppContext.LOCAL_LOGINED || appContext.getLoginState() == AppContext.LOGINED)
 		{
 			Intent intent = new Intent(MainFragment.this.getActivity(),
 				classes[arg2]);

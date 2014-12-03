@@ -24,19 +24,19 @@
         android:orientation="horizontal"
         android:padding="15.0dip" >
 
-        <com.changheng.accountant.view.wheel.WheelView
+        <com.examw.test.widget.wheel.WheelView
             android:id="@+id/year"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.0" />
 
-        <com.changheng.accountant.view.wheel.WheelView
+        <com.examw.test.widget.wheel.WheelView
             android:id="@+id/month"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.5" />
 
-        <com.changheng.accountant.view.wheel.WheelView
+        <com.examw.test.widget.wheel.WheelView
             android:id="@+id/day"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

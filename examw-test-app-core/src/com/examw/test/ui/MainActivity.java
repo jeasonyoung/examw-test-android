@@ -1,6 +1,5 @@
 package com.examw.test.ui;
 
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 import android.app.AlertDialog;

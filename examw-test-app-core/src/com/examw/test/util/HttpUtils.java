@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.examw.test.app.AppContext;
 import com.examw.test.exception.AppException;
@@ -36,6 +37,7 @@ import com.examw.test.support.URLs;
  * @since 2014年11月28日 下午1:51:46.
  */
 public class HttpUtils {
+	private static final String TAG = "HttpUtils";
 	public static final String UTF_8 = "UTF-8";
 	public static final String DESC = "descend";
 	public static final String ASC = "ascend";
@@ -161,6 +163,7 @@ public class HttpUtils {
 	 */
 	public static String http_get(AppContext appContext, String url)
 			throws AppException {
+		Log.d(TAG,"url = "+url);
 		String cookie = getCookie(appContext);
 		String userAgent = getUserAgent(appContext);
 
@@ -209,7 +212,7 @@ public class HttpUtils {
 				httpClient = null;
 			}
 		} while (time < RETRY_TIME);
-
+		Log.d(TAG,"响应:"+responseBody);
 		return responseBody;
 	}
 

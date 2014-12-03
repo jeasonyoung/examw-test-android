@@ -256,4 +256,15 @@ public class Paper extends DataSupport implements Serializable {
 	public void setPublishTime(Date publishTime) {
 		this.publishTime = publishTime;
 	}
+	public Paper() {}
+	public Paper(String paperId,String name,Double score,Integer time,Integer year,Integer price,Integer total){
+		//paperid,name,score,time,year,price,total
+		this.paperId = paperId;
+		this.name = name;
+		this.score = score;
+		this.time = time;
+		this.year = year;
+		this.price = price;
+		this.total = total;
+	}
 }

@@ -32,7 +32,6 @@ import com.examw.test.util.StringUtils;
 public class AppStart extends Activity {
 
 	private static final String TAG = "AppStart";
-	final AppContext ac = (AppContext) getApplication();
 	private boolean isFirstIn;
 
 	@Override
@@ -44,11 +43,6 @@ public class AppStart extends Activity {
 				.findViewById(R.id.app_start_view);
 		check(wellcome);
 		setContentView(view);
-		//初始化数据库
-		SQLiteDatabase db = UserDBUtil.getDatabase();
-		db.close();
-		db = null;
-		////////////////////////////////////////////////////
 		// 渐变展示启动屏
 		AlphaAnimation aa = new AlphaAnimation(0.3f, 1.0f);
 		aa.setDuration(2000);
@@ -68,7 +62,6 @@ public class AppStart extends Activity {
 			}
 
 		});
-
 		// 兼容低版本cookie（1.5版本以下，包括1.5.0,1.5.1）
 		AppContext appContext = (AppContext) getApplication();
 		String cookie = appContext.getProperty("cookie");
@@ -147,6 +140,9 @@ public class AppStart extends Activity {
 				goMain();
 			} else {
 				// 转到引导界面
+				//开一个线程进行数据库初始化
+				AppContext ac = (AppContext) this.getApplicationContext();
+				ac.new InitDataThread().start();
 				goGuide();
 			}
 		} catch (Exception e) {

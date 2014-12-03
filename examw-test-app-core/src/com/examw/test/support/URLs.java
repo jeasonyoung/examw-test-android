@@ -2,6 +2,8 @@ package com.examw.test.support;
 
 import java.io.Serializable;
 
+import com.examw.test.app.AppConfig;
+
 /**
  * 访问数据接口地址
  * @author fengwei.
@@ -13,10 +15,10 @@ public class URLs implements Serializable{
 
 	public static final String HOST = "http://tiku.examw.com";
 	
-	public static final String BASE_URL = "http://tiku.examw.com/examw-test/api/data/";
+	public static final String BASE_URL = "http://tiku.examw.com/examw-test/api/data";
 	
 	//登录地址
 	public static final String LOGIN = "";
-	public static final String SUBJECTS = BASE_URL + "";
+	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppConfig.PRODUCTID;
 	public static final String BUY = "";
 }

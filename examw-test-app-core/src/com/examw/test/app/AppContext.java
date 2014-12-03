@@ -19,12 +19,19 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
+import com.examw.test.dao.ProductDao;
+import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.User;
+import com.examw.test.exception.AppException;
+import com.examw.test.model.FrontProductInfo;
+import com.examw.test.support.ApiClient;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.MethodsCompat;
 import com.examw.test.util.StringUtils;
@@ -36,7 +43,7 @@ import com.examw.test.util.StringUtils;
  * @created 2012-3-21
  */
 public class AppContext extends Application {
-	
+	private static final String TAG = "APPLICATION" ;
 	public static final int NETTYPE_WIFI = 0x01;
 	public static final int NETTYPE_CMWAP = 0x02;
 	public static final int NETTYPE_CMNET = 0x03;
@@ -208,6 +215,7 @@ public class AppContext extends Application {
 
 	@Override
 	public void onCreate() {
+		Log.d(TAG,"应用Application onCreate执行....");
 		super.onCreate();
         //注册App异常崩溃处理器
         //hread.setDefaultUncaughtExceptionHandler(AppException.getAppExceptionHandler());
@@ -353,7 +361,6 @@ public class AppContext extends Application {
 		}
 		return null;
 	}
-	
 	/**
 	 * 用户是否登录
 	 * @return
@@ -801,4 +808,53 @@ public class AppContext extends Application {
 //		System.out.println(update);
 //		return update;
 //	}
+	
+	public FrontProductInfo getProductInfo(){
+		FrontProductInfo info = null;
+		String key = "productInfo";
+		if (!isNetworkConnected()) {
+			return null;
+		}
+		if (isReadDataCache(key)) // 可读
+		{
+			info = (FrontProductInfo) readObject(key);
+		} else {
+			try{
+				info = ApiClient.getProductInfo(this);
+				if (info != null) {
+					saveObject(info, key);
+				}
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return info;
+	}
+	//初始化数据线程
+	class InitDataThread extends Thread{
+		@Override
+		public void run() {
+			//初始化数据库
+			Log.d(TAG,"初始化数据线程启动");
+			Long start = System.currentTimeMillis();
+			SQLiteDatabase db = UserDBUtil.getDatabase();
+			db.close();
+			db = null;
+			if(!ProductDao.hasInsert())
+			{
+				try {
+					FrontProductInfo info = ApiClient.getProductInfo(AppContext.this);
+					if(info !=null)
+					{
+						saveObject(info, "productInfo");
+						ProductDao.insert(info);
+					}
+				} catch (AppException e) {
+					e.printStackTrace();
+				}
+			}
+			Log.d(TAG,"初始化数据线程结束,耗时:"+(System.currentTimeMillis() - start));
+		}
+	}
 }
