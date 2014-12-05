@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.domain.Paper;
+import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.util.StringUtils;
 
 /**
@@ -17,8 +18,33 @@ import com.examw.test.util.StringUtils;
  * @since 2014年12月3日 下午2:15:05.
  */
 public class PaperDao {
+	/**
+	 * 模拟题。
+	 * SIMU(0x02),
+	FORECAST(0x03),
+	PRACTICE(0x04),
+	CHAPTER(0x05),
+	DAILY(0x06);
+	 */
+	
 	private static final String TAG = "PaperDao";
-
+	public static final int TYPE_REAL = 1;
+	public static final int TYPE_SIMU = 2;
+	public static final int TYPE_FORECAST = 3;
+	public static final int TYPE_PRACTICE = 4;
+	public static final int TYPE_CHAPTER = 5;
+	public static final int TYPE_DAILY = 6;
+	
+	
+	public static boolean hasPaper()
+	{
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select * from PaperTab",new String[] {});
+		boolean flag = cursor.getCount()>0;
+		cursor.close();
+		db.close();
+		return flag;
+	}
 	/**
 	 * 插入试卷和大题
 	 * @param paper 试卷
@@ -52,13 +78,13 @@ public class PaperDao {
 		LibraryDBUtil.close();
 	}
 
-
+	
 	/**
 	 * 插入试卷的集合
 	 * @param list
 	 * @return 返回更新的数量
 	 */
-	public static int insertPaperList(List<Paper> list) {
+	public static int insertPaperList(ArrayList<FrontPaperInfo> list) {
 		int count = 0;
 		if (list != null && list.size() > 0) {
 			SQLiteDatabase db = LibraryDBUtil.getDatabase();
@@ -66,16 +92,15 @@ public class PaperDao {
 			String sql2 = "insert into PaperTab(paperid,name,description,content,examid,subjectid,sourcename,areaname,type,price,time,year,total,score,publishtime)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			db.beginTransaction();
 			try {
-				for (Paper paper : list) {
-					Cursor cursor = db.rawQuery(sql1,
-							new String[] { paper.getPaperId() });
+				for (FrontPaperInfo paper : list) {
+					Cursor cursor = db.rawQuery(sql1,new String[] { paper.getId() });
 					if (cursor.getCount() > 0) {
 						cursor.close();
 						continue;
 					}
 					cursor.close();
-					Object[] params = new Object[] { paper.getPaperId(), paper.getName(),
-							paper.getDescription(), paper.getContent(), paper.getExamId(),
+					Object[] params = new Object[] { paper.getId(), paper.getName(),
+							paper.getDescription(), null, paper.getExamId(),
 							paper.getSubjectId(), paper.getSourceName(),
 							paper.getAreaName(), paper.getType(), paper.getPrice(),
 							paper.getTime(), paper.getYear(), paper.getTotal(),
@@ -92,11 +117,15 @@ public class PaperDao {
 		return count;
 	}
 
-	public static List<Paper> findPapers(String ids) {
+	public static List<Paper> findPapers(Integer type) {
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		// String paperId, String paperName, int paperSorce, int
 		// paperTime,String courseId,String examId
-		String sql = "select paperid,name,score,time,year,price,total from PaperTab where paperid in (" + ids + ") order by publishtime desc";
+		String sql = "select paperid,name,score,time,year,price,total from PaperTab order by publishtime desc";
+		if(type != null)
+		{
+			sql = "select paperid,name,score,time,year,price,total from PaperTab where type = "+type+" order by publishtime desc";
+		}
 		String[] params = new String[] {};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {

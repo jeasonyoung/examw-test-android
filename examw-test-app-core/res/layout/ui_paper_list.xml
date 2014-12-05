@@ -24,22 +24,8 @@
         	android:layout_width="match_parent"
        	 	android:layout_height="match_parent" 
         />
-
-        <LinearLayout
-            android:id="@+id/noneDataLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/noneText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/nodata"
-                android:gravity="center_horizontal"
-                android:text="@string/nonedata"
-                android:textSize="@dimen/title_large_size" />
-        </LinearLayout>
+        
+		<include layout="@layout/nodata_layout" />
         <include layout="@layout/reload" />
     </FrameLayout>
 </LinearLayout>

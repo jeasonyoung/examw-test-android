@@ -1,57 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/lightbule2"
     android:orientation="vertical" >
 
-    <include
-        android:id="@+id/topTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/top_head" />
-
-    <FrameLayout
+    <include layout="@layout/loading" />
+    <LinearLayout
+        android:id="@+id/questionContentLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <include layout="@layout/loading" />
-
-        <LinearLayout
-            android:id="@+id/questionContentLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <com.handmark.pulltorefresh.library.PullToRefreshListView
-                android:id="@+id/contentListView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/transparent"
-                android:cacheColorHint="@android:color/transparent"
-                android:divider="@drawable/topic_driver"
-                android:drawSelectorOnTop="false"
-                android:fadingEdge="none"
-                android:scrollbars="none"
-                android:visibility="visible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/noneDataLayout"
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            android:id="@+id/contentListView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone" >
-
-            <TextView
-                android:id="@+id/noneText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:drawableTop="@drawable/nodata"
-                android:text="@string/nonedata"
-                android:textSize="@dimen/title_large_size" />
-        </LinearLayout>
-        <include layout="@layout/reload" />
-    </FrameLayout>
-</LinearLayout>
+            android:background="@color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@drawable/topic_driver"
+            android:drawSelectorOnTop="false"
+            android:fadingEdge="none"
+            android:scrollbars="none"
+            android:visibility="visible" />
+    </LinearLayout>
+	<include layout="@layout/nodata_layout"/>
+    <include layout="@layout/reload" />
+</FrameLayout>

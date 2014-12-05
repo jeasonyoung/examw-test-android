@@ -21,13 +21,13 @@ public class LibraryDBHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE ProductTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,PRODUCTID TEXT,NAME TEXT,INFO TEXT)");
-		db.execSQL("CREATE TABLE SubjectTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,SUBJECTID TEXT,NAME TEXT,ORDERNO INTEGER)");
-		db.execSQL("CREATE TABLE PaperTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,PAPERID TEXT,NAME TEXT,DESCRIPTION TEXT,CONTENT TEXT,EXAMID TEXT,SUBJECTID TEXT,SOURCENAME TEXT,AREANAME TEXT,TYPE INTEGER,PRICE INTEGER,TIME INTEGER,YEAR INTEGER,TOTAL INTEGER,SCORE DOUBLE,PUBLISHTIME DATETIME DEFAULT (datetime('now','localtime')))");
-		db.execSQL("CREATE TABLE KnowledgeTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,KNOWLEDGEID TEXT,KNOWLEDGETITLE TEXT,KNOWLEDGECONTENT TEXT,CHAPTERID TEXT,CLASSID TEXT,ORDERID INTEGER)");
-		db.execSQL("CREATE TABLE SyllabusTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,CHAPTERID TEXT,CHAPTERTITLE TEXT,ORDERNO INTEGER)");
-		db.execSQL("CREATE TABLE ItemTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,ITEMID TEXT,SUBJECTID TEXT,CONTENT TEXT,MATERIAL TEXT,TYPE INTEGER)");
-		db.execSQL("CREATE TABLE ItemSyllabusTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,ITEMID TEXT,CHAPTERID TEXT)");
+		db.execSQL("create table ProductTab(_id integer primary key autoincrement,productId text,name text,info text)");
+		db.execSQL("create table SubjectTab(_id integer primary key autoincrement,subjectId text,name text,orderno integer)");
+		db.execSQL("create table PaperTab(_id integer primary key autoincrement,paperId text,name text,description text,content text,examId text,subjectId text,sourceName text,areaName text,type integer,price integer,time integer,year integer,total integer,score double,publishTime datetime default (datetime('now','localtime')))");
+		db.execSQL("create table KnowledgeTab(_id integer primary key autoincrement,knowledgeid text,knowledgetitle text,knowledgecontent text,chapterid text,classid text,orderid integer)");
+		db.execSQL("create table SyllabusTab(_id integer primary key autoincrement,chapterId text,chapterTitle text,orderNo integer)");
+		db.execSQL("create table ItemTab(_id integer primary key autoincrement,itemId text,subjectId text,content text,material text,type integer)");
+		db.execSQL("create table ItemsyllabusTab(_id integer primary key autoincrement,itemId text,chapterId text)");
 	}
 
 	@Override

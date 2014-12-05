@@ -25,32 +25,32 @@
                 android:layout_height="wrap_content"
                 android:text="@string/main_title"
                 android:textColor="@color/main_top_text_color"
-                android:textSize="20.0sp" />
+                android:textSize="@dimen/title_medium_size" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/left_bookflag"
                 android:textColor="@color/main_top_text_color"
-                android:textSize="16.0sp" />
+                android:textSize="@dimen/text_medium_size" />
 			<TextView
                 android:id="@+id/examTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="中级农业经济师"
                 android:textColor="@color/main_top_exam_color"
-                android:textSize="16.0sp" />
+                android:textSize="@dimen/text_medium_size" />
 			<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/right_bookflag"
                 android:textColor="@color/main_top_text_color"
-                android:textSize="16.0sp" />
+                android:textSize="@dimen/text_medium_size" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/year_version_name"
                 android:textColor="@color/main_top_text_color"
-                android:textSize="14.0sp" />
+                android:textSize="@dimen/text_small_size" />
         </LinearLayout>
     </RelativeLayout>
 

@@ -20,5 +20,8 @@ public class URLs implements Serializable{
 	//登录地址
 	public static final String LOGIN = "";
 	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppConfig.PRODUCTID;
+	public static final String SUBJECT_LIST = BASE_URL + "/products/"+AppConfig.PRODUCTID+"/subjects";
+	public static final String PAPER_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papers";
+	public static final String SINGLE_PAPER = BASE_URL + "/papers/%1$s"; 
 	public static final String BUY = "";
 }

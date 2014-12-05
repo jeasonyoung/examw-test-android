@@ -1,6 +1,6 @@
 package com.examw.test.adapter;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,8 +19,8 @@ import com.examw.test.domain.Paper;
  */
 public class PaperListAdapter extends BaseAdapter{
 	private LayoutInflater mInflater;
-	private List<Paper> papers;
-	public PaperListAdapter(Context context,List<Paper> papers) {
+	private ArrayList<Paper> papers;
+	public PaperListAdapter(Context context,ArrayList<Paper> papers) {
 		this.mInflater = LayoutInflater.from(context);
 		this.papers = papers;
 	}

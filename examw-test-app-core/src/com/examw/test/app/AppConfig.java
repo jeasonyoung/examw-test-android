@@ -22,9 +22,11 @@ import com.examw.test.util.StringUtils;
  */
 @SuppressLint("NewApi")
 public class AppConfig {
-	
+	//产品ID
 	public static final String PRODUCTID = "615c758f-424f-4808-9528-67630125687e";
-
+	//终端ID
+	public static final String TERMINALID = "4";
+	
 	private final static String APP_CONFIG = "config";
 	
 	public static final String SHAREDPREFERENCES_NAME = "first_pref";  

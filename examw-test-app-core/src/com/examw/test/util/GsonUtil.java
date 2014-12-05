@@ -2,7 +2,10 @@ package com.examw.test.util;
 
 import java.util.List;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * GSON解析工具类
@@ -11,8 +14,9 @@ import com.google.gson.Gson;
  */
 public class GsonUtil {
 	private static Gson gson;
+	private static final String TAG = "GSONUtil";
 	
-	private static Gson getGson(){
+	public synchronized static Gson getGson(){
 		if(gson == null)
 		{
 			gson = new Gson();
@@ -38,35 +42,5 @@ public class GsonUtil {
 	 */
 	public static <T>T jsonToBean(String jsonStr, Class<T> c) {
 		return getGson().fromJson(jsonStr, c);
-	}
-	
-	/**
-	 * 将json格式转换成list对象，并准确指定类型
-	 * @param jsonStr
-	 * @param type
-	 * @return
-	 */
-	public static List<?> jsonToList(String jsonStr, java.lang.reflect.Type type) {
-		List<?> objList = null;
-		if (gson != null) {
-			objList = gson.fromJson(jsonStr, type);
-		}
-		return objList;
-	}
-	
-	/**
-	 * 将json格式转换成list对象
-	 * 
-	 * @param jsonStr
-	 * @return
-	 */
-	public static List<?> jsonToList(String jsonStr) {
-		List<?> objList = null;
-		if (gson != null) {
-			java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<List<?>>() {
-			}.getType();
-			objList = gson.fromJson(jsonStr, type);
-		}
-		return objList;
 	}
 }

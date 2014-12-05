@@ -21,6 +21,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.client.params.ClientPNames;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -110,6 +111,8 @@ public class HttpUtils {
 				.setSoTimeout(TIMEOUT_SOCKET);
 		// 设置 字符集
 		httpClient.getParams().setContentCharset(UTF_8);
+		//设置重定向
+		httpClient.getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 		return httpClient;
 	}
 
@@ -173,6 +176,7 @@ public class HttpUtils {
 		String responseBody = "";
 		int time = 0;
 		do {
+			Log.d(TAG,String.format("正在进行第[%d]次请求",time));
 			try {
 				httpClient = getHttpClient();
 				httpGet = getHttpGet(url, cookie, userAgent);

@@ -1,6 +1,7 @@
 package com.examw.test.ui;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -25,6 +26,9 @@ import com.examw.test.R;
 import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
+import com.examw.test.exception.AppException;
+import com.examw.test.model.SubjectInfo;
+import com.examw.test.support.ApiClient;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 
@@ -44,7 +48,7 @@ public class MainFragment extends Fragment {
 			ChapterActivity.class, 
 			FavoriteActivity.class, 
 			ErrorItemActivity.class,
-			SimulateActivity.class,
+			ChooseSubjectActivity.class,
 			DailyActivity.class,
 			ForumActivity.class,
 			RecordActivity.class,
@@ -71,8 +75,9 @@ public class MainFragment extends Fragment {
 		this.restDay = (TextView) v.findViewById(R.id.rest_day);
 		this.usernameTv = (TextView) v.findViewById(R.id.usernameTv);
 		this.usernameTv.setVisibility(View.GONE);
-		restDay.getPaint().setFlags(
-				Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+		//下划线
+//		restDay.getPaint().setFlags(
+//				Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 		format = new SimpleDateFormat("yyyy.MM.dd", Locale.CHINA);
 		((TextView) v.findViewById(R.id.day_date)).setText(format
 				.format(new Date()));
@@ -89,6 +94,17 @@ public class MainFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(getActivity(), SetTimeActivity.class));
+//				new Thread(){
+//					public void run() {
+//						try {
+//							 ArrayList<SubjectInfo> list = ApiClient.getSubjectList(appContext);
+//							 Log.d(TAG,list.size()+" " + list.get(0).getName());
+//						} catch (AppException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					};
+//				}.start();
 			}
 		});
 	}

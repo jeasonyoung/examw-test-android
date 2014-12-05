@@ -19,10 +19,10 @@ public class UserDBHelper extends SQLiteOpenHelper{
 	public static final int VERSION = 1;
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE UserTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,UID TEXT,USERNAME TEXT,PASSWORD TEXT,INFO TEXT)");
-		db.execSQL("CREATE TABLE ItemRecordTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,CLASSID TEXT,CLASSNAME TEXT,CLASSPID TEXT)");
-		db.execSQL("CREATE TABLE FavoriteTab(_ID INTEGER,DAYS_ID INTEGER,CLASS_ID TEXT,SUMMARY_CONTENT TEXT,CONTAINS_KID TEXT,CONTAINS_PAPERID TEXT,AREA_ID TEXT)");
-		db.execSQL("CREATE TABLE PaperRecordTab(_ID INTEGER PRIMARY KEY AUTOINCREMENT,KNOWLEDGEID TEXT,KNOWLEDGETITLE TEXT,KNOWLEDGECONTENT TEXT,CHAPTERID TEXT,CLASSID TEXT,ORDERID INTEGER)");
+		db.execSQL("CREATE TABLE UserTab(_id integer primary key autoincrement,uid text,userId text,username text,password text,info text)");
+		db.execSQL("CREATE TABLE PaperRecordTab(_id integer primary key autoincrement,recordId text,paperId text,paperName text,paperType integer,userId text,username text,score double,lastTime datetime default(datetime('now','localtime')),createTime datetime default(datetime('now','localtime')),useTime integer,status integer,terminalId text,productId text,rightNum integer)");
+		db.execSQL("CREATE TABLE ItemRecordTab(_id integer primary key autoincrement,recordId text,structureId text,itemId text,itemContent text,answer text,termialId text,status integer,score double,useTime integer,createTime date default(datetime('now','localtime')),lastTime date default(datetime('now','localtime')))");
+		db.execSQL("CREATE TABLE FavoriateTab(_id integer primary key autoincrement,userId text,username text,itemId text,itemType integer,itemContent text,subjectId text,terminalId text,remarks text,createTime date default(datetime('now','localtime')))");
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

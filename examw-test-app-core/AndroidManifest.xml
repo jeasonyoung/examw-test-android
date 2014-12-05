@@ -47,17 +47,23 @@
         </activity>
         <!-- 引导界面  -->
         <activity
-            android:name="com.examw.test.ui.GuideActivity"
+            android:name=".ui.GuideActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 主界面   -->
         <activity
-            android:name="com.examw.test.ui.MainActivity"
+            android:name=".ui.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 登录界面 -->
         <activity
             android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 选择科目界面 -->
+        <activity
+            android:name=".ui.ChooseSubjectActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 模拟考试界面  -->

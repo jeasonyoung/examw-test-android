@@ -1,10 +1,13 @@
 package com.examw.test.ui;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -18,8 +21,13 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.app.AppContext;
+import com.examw.test.dao.PaperDao;
+import com.examw.test.model.FrontPaperInfo;
+import com.examw.test.support.ApiClient;
 
 
 
@@ -37,18 +45,23 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 
 	private TextView mRealPaperTextView;
 	private TextView mSimulatePaperTextView;
-
+	
+	private LinearLayout loadingLayout,nodataLayout,reloadLayout;
+	
 	private ImageView mTabLine;
 	private int mScreen1_3;
 
 	private int mCurrentPageIndex;
+	
+	private Handler handler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui_paper_list);
-		initTabLine();
+		this.handler = new MyHandler(this);
 		initView();
+		initTabLine();
 	}
 
 	private void initTabLine() {
@@ -68,12 +81,22 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		((TextView)this.findViewById(R.id.title)).setText("模拟考场");;
 		mRealPaperTextView = (TextView) findViewById(R.id.real_paper_tv);
 		mSimulatePaperTextView = (TextView) findViewById(R.id.simulate_paper_tv);
-
+		
 		findViewById(R.id.real_paper_layout).setOnClickListener(this);
 		findViewById(R.id.simulate_paper_layout).setOnClickListener(this); 
 		
+		loadingLayout = (LinearLayout) this.findViewById(R.id.loadingLayout);
+		nodataLayout = (LinearLayout) this.findViewById(R.id.nodataLayout);
+		reloadLayout = (LinearLayout) this.findViewById(R.id.reload);
+		
+		loadingLayout.setVisibility(View.VISIBLE);
+		
 		mViewPager = (ViewPager) findViewById(R.id.id_viewpager);
-
+		
+		new GetPaperListThread().start();
+	}
+	
+	private void initViewPager(){
 		mDatas = new ArrayList<Fragment>();
 		RealPaperFragment tab01 = new RealPaperFragment();
 		SimulatePaperFragment tab02 = new SimulatePaperFragment();
@@ -143,7 +166,6 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 
 			}
 		});
-
 	}
 	@Override
 	public void onClick(View v) {
@@ -161,9 +183,64 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		}
 	}
 	protected void resetTextView() {
-		// TODO Auto-generated method stub
 		mRealPaperTextView.setTextColor(Color.BLACK);
 		mSimulatePaperTextView.setTextColor(Color.BLACK);
 	}
-
+	
+	private class GetPaperListThread extends Thread
+	{
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+			if(PaperDao.hasPaper())
+			{
+				//本地数据库中有试卷
+				handler.sendEmptyMessage(1);
+			}else
+			{
+				//本地数据库中没有试卷,访问网络
+				try{
+					ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
+					PaperDao.insertPaperList(list);
+					if(list == null || list.size()==0)
+						handler.sendEmptyMessage(2);
+					else
+						handler.sendEmptyMessage(1);
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+					Message msg = handler.obtainMessage();
+					msg.what = -1;
+					handler.sendMessage(msg);
+				}
+			}
+		}
+	}
+	static class MyHandler extends Handler {
+        WeakReference<SimulateActivity> mActivity;
+        MyHandler(SimulateActivity activity) {
+                mActivity = new WeakReference<SimulateActivity>(activity);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+        	SimulateActivity theActivity = mActivity.get();
+        	theActivity.loadingLayout.setVisibility(View.GONE);
+                switch (msg.what) {
+                case 1:
+                	theActivity.nodataLayout.setVisibility(View.GONE);//无数据显示
+                	theActivity.loadingLayout.setVisibility(View.GONE);//无数据显示
+                	mActivity.get().initViewPager();
+                	theActivity.reloadLayout.setVisibility(View.GONE);//无数据显示
+                	break;
+                case 2:
+                	break;
+                case -1:
+                	//连不上,
+            		theActivity.reloadLayout.setVisibility(View.VISIBLE);//无数据显示
+            		Toast.makeText(theActivity, "暂时连不上服务器,请稍候", Toast.LENGTH_SHORT).show();//提示
+            		break;
+                }
+        }
+	}
 }
