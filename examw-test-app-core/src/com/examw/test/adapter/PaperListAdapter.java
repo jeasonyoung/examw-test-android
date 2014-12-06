@@ -49,7 +49,8 @@ public class PaperListAdapter extends BaseAdapter{
 			holder = new ViewHolder();
 			holder.title = (TextView) convertView.findViewById(R.id.paper_name_TextView);
 			holder.info = (TextView) convertView.findViewById(R.id.paper_info_TextView);
-			//holder.doExam = (Button) convertView.findViewById(R.id.paper_action_btn);
+			holder.userTotal = (TextView) convertView.findViewById(R.id.paper_user_total_TextView);
+			holder.publishTime = (TextView) convertView.findViewById(R.id.lastTimeTextView);
 			convertView.setTag(holder);
 		}else
 		{
@@ -57,25 +58,13 @@ public class PaperListAdapter extends BaseAdapter{
 		}
 		final Paper p = papers.get(position);
 		holder.title.setText(p.getName());
-		holder.info.setText("考试时间:"+p.getTime()+"分钟,"+"总分:"+p.getScore()+"分"
-						+"\n已有"+50+"人作答");
-		//holder.doExam.setText("��ʼ����");
-//		holder.doExam.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				Context context = mInflater.getContext();
-//				Intent intent = new Intent(context,QuestionDoExamActivity.class);
-//				intent.putExtra("paperName", p.getPaperName());
-//				intent.putExtra("paperId", p.getPaperId());
-//				context.startActivity(intent);
-//			}
-//		});
+		holder.info.setText("考试时间: "+p.getTime()+" 分钟,"+"总分: "+p.getScore()+" 分");
+		holder.userTotal.setText(p.getUserTotal()==null?"0":p.getUserTotal()+"");
+		holder.publishTime.setText(p.getPublishTime().substring(0, 11));
 		return convertView;
 	}
 	static class ViewHolder
 	{
-		TextView title,info;
-		//Button doExam;
+		TextView title,info,userTotal,publishTime;
 	}
 }

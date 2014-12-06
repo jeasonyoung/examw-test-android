@@ -1,7 +1,6 @@
 package com.examw.test.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.litepal.crud.DataSupport;
 
@@ -13,9 +12,9 @@ import org.litepal.crud.DataSupport;
 public class Paper extends DataSupport implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String paperId,name,description,content,examId,subjectId,sourceName,areaName;
-	private Integer type,price,time,year,total;
+	private Integer type,price,time,year,total,userTotal;
 	private Double score;
-	private Date publishTime;
+	private String publishTime;
 	/**
 	 * 获取 试卷ID
 	 * @return paperId
@@ -245,7 +244,7 @@ public class Paper extends DataSupport implements Serializable {
 	 * @return publishTime
 	 * 发布时间
 	 */
-	public Date getPublishTime() {
+	public String getPublishTime() {
 		return publishTime;
 	}
 	/**
@@ -253,11 +252,27 @@ public class Paper extends DataSupport implements Serializable {
 	 * @param publishTime
 	 * 发布时间
 	 */
-	public void setPublishTime(Date publishTime) {
+	public void setPublishTime(String publishTime) {
 		this.publishTime = publishTime;
 	}
+	/**
+	 * 获取 参考人数
+	 * @return userTotal
+	 * 参考人数
+	 */
+	public Integer getUserTotal() {
+		return userTotal;
+	}
+	/**
+	 * 设置 参考人数
+	 * @param userTotal
+	 * 参考人数
+	 */
+	public void setUserTotal(Integer userTotal) {
+		this.userTotal = userTotal;
+	}
 	public Paper() {}
-	public Paper(String paperId,String name,Double score,Integer time,Integer year,Integer price,Integer total){
+	public Paper(String paperId,String name,Double score,Integer time,Integer year,Integer price,Integer total,Integer userTotal,String publishTime){
 		//paperid,name,score,time,year,price,total
 		this.paperId = paperId;
 		this.name = name;
@@ -266,5 +281,8 @@ public class Paper extends DataSupport implements Serializable {
 		this.year = year;
 		this.price = price;
 		this.total = total;
+		this.userTotal = userTotal;
+		this.publishTime = publishTime;
 	}
+	
 }

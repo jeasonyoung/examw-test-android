@@ -3,7 +3,6 @@ package com.examw.test.ui;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.adapter.PaperListAdapter;
+import com.examw.test.dao.PaperDao;
 import com.examw.test.domain.Paper;
 import com.examw.test.widget.NewDataToast;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -31,7 +31,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /**
- * 
+ * 历年真题分页面
  * @author fengwei.
  * @since 2014年12月3日 上午11:07:46.
  */
@@ -39,19 +39,23 @@ public class RealPaperFragment extends Fragment{
 	private static final String TAG = "RealPaperFragment";
 	private PullToRefreshListView paperListView;
 	private ArrayList<Paper> papers;
-	private ProgressDialog dialog;
 	private Handler handler;
-	private LinearLayout nodata,loadingLayout,reloadLayout;
+	private LinearLayout nodataLayout,loadingLayout,reloadLayout;
 	private View lvPapers_footer;
 	private ProgressBar lvPapers_foot_progress;
 	private TextView lvPapers_foot_more;
 	private int page,total;
 	private PaperListAdapter mAdapter;
+	private String subjectId;
+	private String paperType;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG,"RealPaperFragment 创建");
 		View v = inflater.inflate(R.layout.paper_fragment, null);
+		Bundle data = this.getArguments();
+		subjectId = data.getString("subjectId");
+		paperType = data.getString("paperType");
 		initViews(v);
 		initData();
 		return v;
@@ -60,6 +64,7 @@ public class RealPaperFragment extends Fragment{
 	{
 		this.paperListView = (PullToRefreshListView) v.findViewById(R.id.contentListView);
 		this.loadingLayout = (LinearLayout) v.findViewById(R.id.loadingLayout);
+		this.nodataLayout = (LinearLayout) v.findViewById(R.id.nodataLayout);
 		this.reloadLayout = (LinearLayout) v.findViewById(R.id.reload);
 		this.lvPapers_footer = this.getActivity().getLayoutInflater().inflate(R.layout.listview_footer,null);
 		this.lvPapers_foot_more = (TextView) lvPapers_footer.findViewById(R.id.listview_foot_more);
@@ -68,7 +73,6 @@ public class RealPaperFragment extends Fragment{
 		this.paperListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				// TODO Auto-generated method stub
 					new GetPaperTask().execute();
 			}
 		});
@@ -76,7 +80,6 @@ public class RealPaperFragment extends Fragment{
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				// TODO Auto-generated method stub
 				if(arg2 > papers.size())
 				{
 					footerClick();
@@ -92,13 +95,8 @@ public class RealPaperFragment extends Fragment{
 	{
 		/*
 		 * 先从数据库中查,
-		 * 查不到,联网查,再插入数据库
-		 * 更新,
-		 * 联网更新,插入数据库
 		 * 更多,查数据库
 		 */
-		dialog = ProgressDialog.show(RealPaperFragment.this.getActivity(),null,"努力加载中请稍候",true,true);
-		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		handler = new MyHandler(this);
 		this.loadingLayout.setVisibility(View.VISIBLE);
 		new GetPaperListThread().start();
@@ -154,7 +152,8 @@ public class RealPaperFragment extends Fragment{
 	{
 		@Override
 		public void run() {
-			
+			papers = PaperDao.findPapers(subjectId,paperType);
+			handler.sendEmptyMessage(1);
 		}
 	}
 	static class MyHandler extends Handler {
@@ -168,7 +167,6 @@ public class RealPaperFragment extends Fragment{
         	theActivity.loadingLayout.setVisibility(View.GONE);
                 switch (msg.what) {
                 case 1:
-                	theActivity.dialog.dismiss();
                 	if(theActivity.papers!=null&&theActivity.papers.size()>0)
                 	{
                 		theActivity.mAdapter = new PaperListAdapter(theActivity.getActivity(),theActivity.papers);
@@ -183,25 +181,22 @@ public class RealPaperFragment extends Fragment{
                     	}
                 	}else
                 	{
-                		theActivity.nodata.setVisibility(View.VISIBLE);//无数据显示
+                		theActivity.nodataLayout.setVisibility(View.VISIBLE);//无数据显示
                 	}
                 			//theActivity.expandList.setAdapter(new MyExpandableAdapter(theActivity, theActivity.group, theActivity.child));
                 			//设置adapter
                 	break;
                 case -2:
-               		theActivity.dialog.dismiss();
-               		theActivity.nodata.setVisibility(View.VISIBLE);//无数据显示
+               		theActivity.nodataLayout.setVisibility(View.VISIBLE);//无数据显示
                		Toast.makeText(theActivity.getActivity(), "您没有购买课程", Toast.LENGTH_SHORT).show();//提示
                 	break;
                 case -1:
                 	//连不上,
-                	theActivity.dialog.dismiss();
             		theActivity.reloadLayout.setVisibility(View.VISIBLE);//无数据显示
             		Toast.makeText(theActivity.getActivity(), "暂时连不上服务器,请稍候", Toast.LENGTH_SHORT).show();//提示
             		break;
                 case -3:
-                	theActivity.dialog.dismiss();
-                	theActivity.nodata.setVisibility(View.VISIBLE);//无数据显示
+                	theActivity.nodataLayout.setVisibility(View.VISIBLE);//无数据显示
             		Toast.makeText(theActivity.getActivity(), "本地没有数据", Toast.LENGTH_SHORT).show();//提示
             		break;
                 case 4:

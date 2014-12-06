@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,9 +26,11 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
+import com.examw.test.app.AppManager;
 import com.examw.test.dao.PaperDao;
 import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.support.ApiClient;
+import com.examw.test.support.ReturnBtnClickListener;
 
 
 
@@ -54,11 +57,15 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 	private int mCurrentPageIndex;
 	
 	private Handler handler;
+	
+	private String subjectId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui_paper_list);
+		// 添加Activity到堆栈
+		AppManager.getAppManager().addActivity(this);
 		this.handler = new MyHandler(this);
 		initView();
 		initTabLine();
@@ -78,12 +85,16 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 	}
 
 	private void initView() {
-		((TextView)this.findViewById(R.id.title)).setText("模拟考场");;
+		Intent intent = this.getIntent();
+		subjectId = intent.getStringExtra("subjectId");
+		
+		((TextView)this.findViewById(R.id.title)).setText(intent.getStringExtra("subjectName"));;
 		mRealPaperTextView = (TextView) findViewById(R.id.real_paper_tv);
 		mSimulatePaperTextView = (TextView) findViewById(R.id.simulate_paper_tv);
 		
 		findViewById(R.id.real_paper_layout).setOnClickListener(this);
 		findViewById(R.id.simulate_paper_layout).setOnClickListener(this); 
+		this.findViewById(R.id.btn_goback).setOnClickListener(new ReturnBtnClickListener(this));
 		
 		loadingLayout = (LinearLayout) this.findViewById(R.id.loadingLayout);
 		nodataLayout = (LinearLayout) this.findViewById(R.id.nodataLayout);
@@ -99,8 +110,16 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 	private void initViewPager(){
 		mDatas = new ArrayList<Fragment>();
 		RealPaperFragment tab01 = new RealPaperFragment();
-		SimulatePaperFragment tab02 = new SimulatePaperFragment();
-
+		RealPaperFragment tab02 = new RealPaperFragment();
+		//传参数
+		Bundle data1 = new Bundle();
+		data1.putString("subjectId", subjectId);
+		data1.putString("paperType",String.valueOf(PaperDao.TYPE_REAL));
+		tab01.setArguments(data1);
+		Bundle data2 = new Bundle();
+		data2.putString("subjectId", subjectId);
+		data2.putString("paperType", PaperDao.TYPE_SIMU+","+PaperDao.TYPE_FORECAST+","+PaperDao.TYPE_PRACTICE);
+		tab02.setArguments(data2);
 		mDatas.add(tab01);
 		mDatas.add(tab02);
 
@@ -242,5 +261,10 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
             		break;
                 }
         }
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		AppManager.getAppManager().finishActivity(this);
 	}
 }

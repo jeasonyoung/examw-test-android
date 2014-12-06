@@ -68,7 +68,12 @@
         </activity>
         <!-- 模拟考试界面  -->
         <activity
-            android:name="com.examw.test.ui.SimulateActivity"
+            android:name=".ui.SimulateActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+         <!-- 试卷介绍页面  -->
+        <activity
+            android:name=".ui.PaperInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 章节练习界面  -->

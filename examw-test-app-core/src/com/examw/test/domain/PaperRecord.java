@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public class PaperRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
+	public static final Integer STATUS_DONE = 1;
+	public static final Integer STATUS_NONE = 0;
 	private String recordId,paperId,paperName,userId,userName,productId,terminalId;
 	private Double score;
 	private Integer paperType,usedTime,rightNum,status;

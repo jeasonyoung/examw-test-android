@@ -136,7 +136,7 @@ public class PaperRecordDao {
 	public static PaperRecord findLastPaperRecord(String paperId,String userName)
 	{
 		Log.d(TAG,String.format("查询[paperId = %1$s,userName = %2$s]的最新考试记录", paperId,userName));
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBUtil.getDatabase();
 		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime from PaperRecordTab where paperId = ? and userName = ?";
 		String[] params = new String[] {paperId,userName};
 		Cursor cursor = db.rawQuery(sql, params);

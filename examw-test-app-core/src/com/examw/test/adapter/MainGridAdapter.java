@@ -3,7 +3,6 @@ package com.examw.test.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.drawable.StateListDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +69,7 @@ public class MainGridAdapter extends BaseAdapter{
 		holder.txt.setText(this.texts[position]);
 		return v;
 	}
+	@SuppressWarnings("deprecation")
 	public MainGridAdapter(Context context) {
 		this.context = context;
 		Resources localResources = this.context.getResources();

@@ -7,6 +7,7 @@
     <color name="default_text_black">#ff000000</color>
     <color name="default_text_white">#ffffffff</color>
     <color name="default_text_gray">#ff888888</color>
+    <color name="common_grey">#fff5f4f9</color>
     <color name="default_text_deep_gray">#ff333333</color>
     <color name="default_text_night">#ff366ba6</color>
     <color name="text_browse_list_answer">#ff008000</color>
@@ -26,6 +27,7 @@
     <color name="grey2">#60c0c7c7</color>
     <color name="oogrey">#0fc0c7c7</color>
     <color name="black">#ff000000</color>
+    <color name="orange">#ffff6600</color>
     <color name="ashen">#fff6f6f6</color>
     <color name="pink">#ffF4DADA</color>
     <color name="white">#ffffffff</color>

@@ -95,7 +95,7 @@ public class HttpUtils {
 	 * 
 	 * @return
 	 */
-	private static HttpClient getHttpClient() {
+	public static HttpClient getHttpClient() {
 		HttpClient httpClient = new HttpClient();
 		// 设置 HttpClient 接收 Cookie,用与浏览器一样的策略
 		httpClient.getParams().setCookiePolicy(
@@ -116,7 +116,7 @@ public class HttpUtils {
 		return httpClient;
 	}
 
-	private static GetMethod getHttpGet(String url, String cookie,
+	public static GetMethod getHttpGet(String url, String cookie,
 			String userAgent) {
 		GetMethod httpGet = new GetMethod(url);
 		// 设置 请求超时时间
