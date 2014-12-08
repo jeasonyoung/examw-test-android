@@ -154,7 +154,9 @@
             <com.examw.test.QuestionMaterialLayout
                 android:id="@+id/questionMaterial"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
+                android:layout_height="fill_parent" 
+                android:visibility="gone"
+                />
             <!-- 使用viewflow 试试 -->
 
             <org.taptwo.android.widget.ViewFlow

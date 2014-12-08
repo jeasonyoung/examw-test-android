@@ -71,6 +71,13 @@ public class StringUtils {
 		}
 		return dateFormater3.get().format(new Date(date));
 	}
+	/*
+	 * 将日期转化为标准字符串显示
+	 */
+	public static String toStandardDateStr(Date date)
+	{
+		return dateFormater.get().format(date);
+	}
 	/**
 	 * 以友好的方式显示时间
 	 * 

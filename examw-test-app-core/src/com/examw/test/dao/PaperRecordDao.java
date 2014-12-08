@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.examw.test.app.AppConfig;
-import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.db.UserDBUtil;
+import com.examw.test.domain.ItemRecord;
 import com.examw.test.domain.PaperRecord;
 
 /**
@@ -132,8 +132,14 @@ public class PaperRecordDao {
 		db.close();
 		return record;
 	}
-	
-	public static PaperRecord findLastPaperRecord(String paperId,String userName)
+	/**
+	 * 查询试卷最近一次的考试记录
+	 * @param paperId	试卷ID
+	 * @param userName	用户名
+	 * @param withItems	是否带上试题
+	 * @return
+	 */
+	public static PaperRecord findLastPaperRecord(String paperId,String userName,boolean withItems)
 	{
 		Log.d(TAG,String.format("查询[paperId = %1$s,userName = %2$s]的最新考试记录", paperId,userName));
 		SQLiteDatabase db = UserDBUtil.getDatabase();
@@ -152,6 +158,26 @@ public class PaperRecordDao {
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
 					cursor.getString(12),cursor.getString(13));
 		cursor.close();
+		//是否带上试题
+		if(withItems)
+		{
+//			/recordId,structureId,itemId,itemContent,answer,termialId,status,score,useTime,createTime
+			String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
+			Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{record.getRecordId()});
+			if (cursorItem.getCount() == 0) {
+				cursorItem.close();
+			}else{
+				ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
+				while (cursorItem.moveToNext()) {
+					ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
+							cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
+							cursorItem.getDouble(5));
+					items.add(itemRecord);
+				}
+				record.setItems(items);
+			}
+			
+		}
 		db.close();
 		return record;
 	}

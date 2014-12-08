@@ -1,6 +1,5 @@
 package com.examw.test.ui;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -19,10 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao;
 import com.examw.test.dao.PaperRecordDao;
-import com.examw.test.domain.Paper;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.PaperPreview;
@@ -30,7 +29,6 @@ import com.examw.test.model.StructureInfo;
 import com.examw.test.support.ApiClient;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.StringUtils;
-import com.google.gson.Gson;
 
 /**
  * 试卷信息页
@@ -93,7 +91,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 				 * 先去数据库中查询
 				 */
 				String content = PaperDao.findPaperContent(paperId);
-				record = PaperRecordDao.findLastPaperRecord(paperId, username);
+				record = PaperRecordDao.findLastPaperRecord(paperId, username,false);
 				if(StringUtils.isEmpty(content))
 				{
 					try{
@@ -231,10 +229,10 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 		int length = rules.size();
 		this.ruleSize.setText(length + "");
 		int total_n = 0;
-		if (record != null && PaperRecord.STATUS_NONE.equals(record.getStatus())) {
+		if (record != null && AppConstant.STATUS_NONE.equals(record.getStatus())) {
 			this.startBtn.setText("继续考试");
 			this.tempTime = record.getUsedTime();
-		} else if (record != null && PaperRecord.STATUS_DONE.equals(record.getStatus())) {
+		} else if (record != null && AppConstant.STATUS_DONE.equals(record.getStatus())) {
 			this.startBtn.setText("查看成绩");
 		} else {
 			this.startBtn.setText("开始考试");

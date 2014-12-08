@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConstant;
 
 public class CheckBoxGroup extends LinearLayout{
 	private List<OptionLayout> checkboxList = new ArrayList<OptionLayout>();
@@ -103,9 +104,9 @@ public class CheckBoxGroup extends LinearLayout{
 	 * @param color
 	 * @param value
 	 */
-	public void setFontColor(int rightColor,String rightAnswer,int wrongColor,String userAnswer,String type)
+	public void setFontColor(int rightColor,String rightAnswer,int wrongColor,String userAnswer,Integer type)
 	{
-		if("2".equals(type)||"3".equals(type))
+		if(type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN))
 		{
 			for(OptionLayout cb: checkboxList)
 			{

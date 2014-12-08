@@ -1,7 +1,5 @@
 package com.examw.test.ui;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
@@ -42,16 +40,17 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private Gson gson ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_answer_card);
-		findView();
-		initData();
+		//初始化界面
+		this.findView();
+		//初始化数据
+		this.initData();
 	}
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
-		initView();
+		//初始化界面
+		this.initView();
 		super.onStart();
 	}
 	private void findView()

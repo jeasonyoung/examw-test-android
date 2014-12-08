@@ -17,24 +17,13 @@ import com.examw.test.util.StringUtils;
  * @since 2014年12月3日 下午2:15:05.
  */
 public class PaperDao {
-	/**
-	 * 模拟题。
-	 * SIMU(0x02),
-	FORECAST(0x03),
-	PRACTICE(0x04),
-	CHAPTER(0x05),
-	DAILY(0x06);
-	 */
 	
 	private static final String TAG = "PaperDao";
-	public static final int TYPE_REAL = 1;
-	public static final int TYPE_SIMU = 2;
-	public static final int TYPE_FORECAST = 3;
-	public static final int TYPE_PRACTICE = 4;
-	public static final int TYPE_CHAPTER = 5;
-	public static final int TYPE_DAILY = 6;
 	
-	
+	/**
+	 * 判断是否含有试卷
+	 * @return
+	 */
 	public static boolean hasPaper()
 	{
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();

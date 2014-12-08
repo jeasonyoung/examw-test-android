@@ -1,17 +1,18 @@
 package com.examw.test.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * 
+ * 做题记录
  * @author fengwei.
  * @since 2014年11月27日 下午4:36:51.
  */
 public class ItemRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private String recordId,userId,userName,itemId,itemContent,subjectId,terminalId,remarks;
-	private Date createTime;
+	private String recordId,userId,structureId,userName,answer,itemId,itemContent,terminalId;
+	private Integer status;
+	private double score;
+	private String createTime;
 	/**
 	 * 获取 考试记录ID 
 	 * @return recordId
@@ -27,6 +28,23 @@ public class ItemRecord implements Serializable{
 	 */
 	public void setRecordId(String recordId) {
 		this.recordId = recordId;
+	}
+	
+	/**
+	 * 获取 结构ID
+	 * @return structureId
+	 * 结构ID
+	 */
+	public String getStructureId() {
+		return structureId;
+	}
+	/**
+	 * 设置 结构ID
+	 * @param structureId
+	 * 结构ID
+	 */
+	public void setStructureId(String structureId) {
+		this.structureId = structureId;
 	}
 	/**
 	 * 获取 用户ID
@@ -93,22 +111,6 @@ public class ItemRecord implements Serializable{
 		this.itemContent = itemContent;
 	}
 	/**
-	 * 获取 科目ID
-	 * @return subjectId
-	 *  科目ID
-	 */
-	public String getSubjectId() {
-		return subjectId;
-	}
-	/**
-	 * 设置  科目ID
-	 * @param subjectId
-	 *  科目ID
-	 */
-	public void setSubjectId(String subjectId) {
-		this.subjectId = subjectId;
-	}
-	/**
 	 * 获取 设备终端ID
 	 * @return terminalId
 	 * 设备终端ID
@@ -124,28 +126,61 @@ public class ItemRecord implements Serializable{
 	public void setTerminalId(String terminalId) {
 		this.terminalId = terminalId;
 	}
+	
 	/**
-	 * 获取 备注
-	 * @return remarks
-	 * 备注
+	 * 获取 用户答案
+	 * @return answer
+	 * 用户答案
 	 */
-	public String getRemarks() {
-		return remarks;
+	public String getAnswer() {
+		return answer;
 	}
 	/**
-	 * 设置 备注
-	 * @param remarks
-	 * 备注
+	 * 设置 用户答案
+	 * @param answer
+	 * 用户答案
 	 */
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+	/**
+	 * 获取 状态
+	 * @return status
+	 * 状态
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置 状态
+	 * @param status
+	 * 状态
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	/**
+	 * 获取 得分
+	 * @return score
+	 * 得分
+	 */
+	public double getScore() {
+		return score;
+	}
+	/**
+	 * 设置 得分
+	 * @param score
+	 * 得分
+	 */
+	public void setScore(double score) {
+		this.score = score;
 	}
 	/**
 	 * 获取 创建时间
 	 * @return createTime
 	 * 创建时间
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -153,8 +188,20 @@ public class ItemRecord implements Serializable{
 	 * @param createTime
 	 * 创建时间
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 	
+	public ItemRecord() {}
+	
+//	/recordId,structureId,itemId,answer,status,score
+	public ItemRecord(String recordId, String structureId, String itemId,
+			String answer, int status, double score) {
+		this.recordId = recordId;
+		this.structureId = structureId;
+		this.itemId = itemId;
+		this.answer = answer;
+		this.status = status;
+		this.score = score;
+	}
 }

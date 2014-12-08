@@ -70,5 +70,8 @@ public class BaseActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
+	
+	public void submitOrSeeAnswer(){}
+	public void saveChoiceAnswer(String answer){}
+	public void saveTextAnswer(String answer){}
 }

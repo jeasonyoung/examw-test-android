@@ -76,6 +76,16 @@
             android:name=".ui.PaperInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 试卷考试界面 -->
+         <activity
+            android:name=".ui.PaperDoPaperActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 答题卡界面  -->
+         <activity
+            android:name=".ui.AnswerCardActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 章节练习界面  -->
         <activity
             android:name="com.examw.test.ui.ChapterActivity"

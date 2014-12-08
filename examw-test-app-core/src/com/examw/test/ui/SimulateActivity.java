@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
 import com.examw.test.dao.PaperDao;
@@ -114,11 +115,11 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		//传参数
 		Bundle data1 = new Bundle();
 		data1.putString("subjectId", subjectId);
-		data1.putString("paperType",String.valueOf(PaperDao.TYPE_REAL));
+		data1.putString("paperType",String.valueOf(AppConstant.PAPER_TYPE_REAL));
 		tab01.setArguments(data1);
 		Bundle data2 = new Bundle();
 		data2.putString("subjectId", subjectId);
-		data2.putString("paperType", PaperDao.TYPE_SIMU+","+PaperDao.TYPE_FORECAST+","+PaperDao.TYPE_PRACTICE);
+		data2.putString("paperType", AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE);
 		tab02.setArguments(data2);
 		mDatas.add(tab01);
 		mDatas.add(tab02);
