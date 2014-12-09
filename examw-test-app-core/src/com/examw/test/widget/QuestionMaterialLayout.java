@@ -25,7 +25,7 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 	private Context context;
 	private View view;
 	private View iv;
-	private WebView textView, testView;
+	private WebView textView;
 
 	public int getTvHeight() {
 		return tvHeight;
@@ -59,11 +59,6 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 	 * menu完全显示时，留给content的宽度值。
 	 */
 	private int menuPadding = 80;
-
-	/**
-	 * 主内容的布局。
-	 */
-	private View content;
 
 	/**
 	 * menu布局的参数，通过此参数来更改leftMargin的值。
@@ -111,6 +106,7 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 		init();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void init() {
 		iv = view.findViewById(R.id.imageView);
 		textView = (WebView) view.findViewById(R.id.content2);
@@ -153,9 +149,9 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 		mHandler.post(showPopWindowRunnable);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void setData() {
 		tvHeight = (int) (textView.getContentHeight() * textView.getScale());
-		System.out.println("文本高度：" + textView.getContentHeight() + ",计算高度：");
 		menuParams = (RelativeLayout.LayoutParams) this.getLayoutParams();
 		contentParams = (RelativeLayout.LayoutParams) textView
 				.getLayoutParams();
@@ -242,9 +238,9 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 	/**
 	 * 将屏幕滚动到menu界面，滚动速度设定为30.
 	 */
-	private void scrollToMenu() {
-		new ScrollTask().execute(30);
-	}
+//	private void scrollToMenu() {
+//		new ScrollTask().execute(30);
+//	}
 
 	/**
 	 * 将屏幕滚动到content界面，滚动速度设定为-30.

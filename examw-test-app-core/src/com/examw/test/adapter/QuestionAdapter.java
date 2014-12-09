@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.TreeSet;
 
 import android.annotation.SuppressLint;
@@ -22,6 +23,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,6 +43,7 @@ import com.examw.test.app.AppConstant;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.ui.BaseActivity;
 import com.examw.test.ui.PaperDoPaperActivity;
+import com.examw.test.util.StringUtils;
 import com.examw.test.widget.CheckBoxGroup;
 import com.examw.test.widget.OptionLayout;
 
@@ -50,6 +53,7 @@ import com.examw.test.widget.OptionLayout;
  * @since 2014年12月8日 上午11:03:12.
  */
 public class QuestionAdapter extends BaseAdapter {
+	private static final String TAG = "QuestionAdatper";
 	private Context context;
 	private PaperDoPaperActivity activity2;
 //	private QuestionDoExamActivity1 activity1;
@@ -108,6 +112,7 @@ public class QuestionAdapter extends BaseAdapter {
 		} else {
 //			action = activity1.getAction();
 		}
+		Log.d(TAG, "action = "+action);
 		float size = this.pref.getFloat("fontsize", 16.0f);
 		StructureItemInfo currentQuestion = questionList.get(position); // 当前的题目
 		AnswerViewHolder answerHolder = new AnswerViewHolder();
@@ -173,12 +178,11 @@ public class QuestionAdapter extends BaseAdapter {
 		v.setTag(R.id.tag_second, answerHolder);
 		// holder.scrollView.fullScroll(33); //滑动到最开始?
 		contentHolder.examImages.removeAllViews();
-		Integer type = currentQuestion.getType(); // 题型
 		String answer = currentQuestion.getUserAnswer(); // 学员的答案
+		Integer type = currentQuestion.getType();
 		contentHolder.modeLayout4.setVisibility(View.GONE);
-		if (type.equals(AppConstant.ITEM_TYPE_SINGLE) || type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN)) { // 单选题
+		if (currentQuestion.isChoose()) { // 选择题
 			contentHolder.modeLayout.setVisibility(0);
-			
 			TreeSet<StructureItemInfo> children= new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
 			// 显示图片
 			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
@@ -376,8 +380,15 @@ public class QuestionAdapter extends BaseAdapter {
 	public void showAnswer(AnswerViewHolder holder,StructureItemInfo currentQuestion, String userAnswer) {
 		String trueAnswer = currentQuestion.getAnswer();
 		Integer type = currentQuestion.getType();
-		holder.myAnswerTextView.setText(answerToTF(userAnswer));
-		holder.sysAnswerTextView.setText(answerToTF(trueAnswer));
+		if(currentQuestion.isChoose())
+		{
+			holder.myAnswerTextView.setText(this.calculateUserAnswer(currentQuestion, userAnswer));
+			holder.sysAnswerTextView.setText(this.calculateRightAnswer(currentQuestion));
+		}else
+		{
+			holder.myAnswerTextView.setText(answerToTF(userAnswer));
+			holder.sysAnswerTextView.setText(answerToTF(trueAnswer));
+		}
 		holder.analysisTextView.setText(currentQuestion.getAnalysis());
 		if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
 			holder.answerResultImg.setVisibility(View.GONE);
@@ -395,6 +406,42 @@ public class QuestionAdapter extends BaseAdapter {
 						.setImageResource(R.drawable.answer_wrong_pto);
 			}
 		}
+	}
+	//计算用户答案的选项
+	private String calculateUserAnswer(StructureItemInfo currentQuestion, String userAnswer){
+		if(StringUtils.isEmpty(userAnswer)) return "";
+		String option = "";
+		TreeSet<StructureItemInfo> children = new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
+		int i = 65;
+		for(StructureItemInfo child:children)
+		{
+			if(userAnswer.contains(child.getId()))
+			{
+				option += ((char)(i++)) + " "; 
+			}else{
+				i++;
+			}
+		}
+		return option;
+	}
+	//计算正确答案的选项
+	private String calculateRightAnswer(StructureItemInfo currentQuestion)
+	{
+		String answer = currentQuestion.getAnswer();
+		if(StringUtils.isEmpty(answer)) return "";
+		String option = "";
+		TreeSet<StructureItemInfo> children = new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
+		int i = 65;
+		for(StructureItemInfo child:children)
+		{
+			if(answer.contains(child.getId()))
+			{
+				option += ((char)(i++)) + " "; 
+			}else{
+				i++;
+			}
+		}
+		return option;
 	}
 
 	// 改变字体大小

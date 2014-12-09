@@ -25,4 +25,9 @@ public class AppConstant {
 	
 	public static final Integer STATUS_DONE = 1;
 	public static final Integer STATUS_NONE = 0;
+	
+	public static final Integer ANSWER_RIGHT = 1;	//答对
+	public static final Integer ANSWER_NONE = 0;	//没答
+	public static final Integer ANSWER_WRONG = 1;	//答错
+	public static final Integer ANSWER_LESS = 2;	//少选
 }	

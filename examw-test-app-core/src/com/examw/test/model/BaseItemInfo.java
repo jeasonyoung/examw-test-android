@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import com.examw.test.app.AppConstant;
+
 /**
  * 题目信息基类。
  * 
@@ -467,7 +469,7 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 		return index;
 	}
 	//增加属性
-	private Boolean isCollected;    // 是否被收藏
+	private boolean isCollected;    // 是否被收藏
 	private String userAnswer;	    // 用户答案
 	private BigDecimal userScore;	// 用户得分
 	private Integer answerStatus;	// 回答状态
@@ -479,7 +481,7 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	 * @return isCollected
 	 * 是否被收藏
 	 */
-	public Boolean getIsCollected() {
+	public boolean getIsCollected() {
 		return isCollected;
 	}
 	/**
@@ -487,7 +489,7 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	 * @param isCollected
 	 * 是否被收藏
 	 */
-	public void setIsCollected(Boolean isCollected) {
+	public void setIsCollected(boolean isCollected) {
 		this.isCollected = isCollected;
 	}
 	/**
@@ -586,5 +588,18 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	
+	//是否单选或者判断
+	public boolean isSingle()
+	{
+		return (this.type.equals(AppConstant.ITEM_TYPE_SINGLE) || this.type.equals(AppConstant.ITEM_TYPE_JUDGE));
+	}
+	//是否多选
+	public boolean isMulty()
+	{
+		return this.type.equals(AppConstant.ITEM_TYPE_MULTI) || this.type.equals(AppConstant.ITEM_TYPE_UNCERTAIN);
+	}
+	public boolean isChoose()
+	{
+		return (type.equals(AppConstant.ITEM_TYPE_SINGLE) || type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN));
+	}
 }

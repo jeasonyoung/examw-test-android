@@ -1,5 +1,6 @@
 package com.examw.test.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -158,7 +159,7 @@ public class PaperRecordDao {
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
 					cursor.getString(12),cursor.getString(13));
 		cursor.close();
-		//是否带上试题
+		//是否带上试题 
 		if(withItems)
 		{
 //			/recordId,structureId,itemId,itemContent,answer,termialId,status,score,useTime,createTime
@@ -171,7 +172,7 @@ public class PaperRecordDao {
 				while (cursorItem.moveToNext()) {
 					ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
 							cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
-							cursorItem.getDouble(5));
+							new BigDecimal(cursorItem.getDouble(5)));
 					items.add(itemRecord);
 				}
 				record.setItems(items);

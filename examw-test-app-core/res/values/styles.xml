@@ -44,6 +44,11 @@
     <style name="AnimationPreview">    
         <item name="android:windowEnterAnimation">@anim/grow_from_bottom</item>  
         <item name="android:windowExitAnimation">@anim/fade_out</item>  
+    </style>
+    <!-- 左上角扩大缩小 -->
+    <style name="AnimationLeftTopScale">    
+        <item name="android:windowEnterAnimation">@anim/grow_from_left_top</item>  
+        <item name="android:windowExitAnimation">@anim/fade_from_left_top</item>  
     </style>  
     
      <style name="title_comm">

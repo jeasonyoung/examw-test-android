@@ -1,6 +1,7 @@
 package com.examw.test.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 做题记录
@@ -11,7 +12,7 @@ public class ItemRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String recordId,userId,structureId,userName,answer,itemId,itemContent,terminalId;
 	private Integer status;
-	private double score;
+	private BigDecimal score;
 	private String createTime;
 	/**
 	 * 获取 考试记录ID 
@@ -164,7 +165,7 @@ public class ItemRecord implements Serializable{
 	 * @return score
 	 * 得分
 	 */
-	public double getScore() {
+	public BigDecimal getScore() {
 		return score;
 	}
 	/**
@@ -172,7 +173,7 @@ public class ItemRecord implements Serializable{
 	 * @param score
 	 * 得分
 	 */
-	public void setScore(double score) {
+	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
 	/**
@@ -196,7 +197,7 @@ public class ItemRecord implements Serializable{
 	
 //	/recordId,structureId,itemId,answer,status,score
 	public ItemRecord(String recordId, String structureId, String itemId,
-			String answer, int status, double score) {
+			String answer, int status, BigDecimal score) {
 		this.recordId = recordId;
 		this.structureId = structureId;
 		this.itemId = itemId;

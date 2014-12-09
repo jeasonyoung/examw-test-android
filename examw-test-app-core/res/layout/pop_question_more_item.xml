@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_item"
+    android:layout_width="wrap_content"
+    android:layout_height="50.0dip"
+    android:layout_weight="1"
+    android:drawableLeft="@drawable/ic_notice_bg"
+    android:padding="10dp"
+    android:textSize="@dimen/text_medium_size"
+    android:drawablePadding="10.0dip"
+    android:gravity="center_vertical"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/layout_selector_background"
+    android:textAppearance="@android:style/TextAppearance.Medium" />

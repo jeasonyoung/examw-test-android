@@ -149,9 +149,9 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 //			Toast.makeText(this, "没有题目数据暂时不能练习", Toast.LENGTH_SHORT).show();
 //			return;
 //		}
-		if (dialog != null) {
-			dialog.show();
-		}
+//		if (dialog != null) {
+//			dialog.show();
+//		}
 		Intent intent = null;
 //		if (record != null && record.getAnswers() != null) {
 //			// SparseBooleanArray isDone = new SparseBooleanArray();
@@ -182,6 +182,14 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 //			intent.putExtra("tOrF", gson.toJson(tOrF));
 //			intent.putExtra("username", username);
 //		}
+		if(record!=null && AppConstant.STATUS_DONE.equals(record.getStatus()))	//已经交卷
+		{
+			
+		}else{
+			intent = new Intent(this, PaperDoPaperActivity.class);
+			intent.putExtra("paperId", paper.getId());
+			intent.putExtra("action", "DoExam");
+		}
 		this.startActivity(intent);
 		this.finish(); // 结束生命
 	}

@@ -1,7 +1,12 @@
 package com.examw.test.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,8 +19,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.examw.test.R;
-import com.examw.test.dao.PaperDao;
-import com.google.gson.Gson;
+import com.examw.test.adapter.AnswerCardStructureListAdatper;
+import com.examw.test.model.StructureInfo;
+import com.examw.test.util.GsonUtil;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 答题卡
@@ -23,11 +30,12 @@ import com.google.gson.Gson;
  * @since 2014年12月6日 下午3:42:19.
  */
 public class AnswerCardActivity extends BaseActivity implements OnClickListener{
+	private static final String TAG = "AnswerCardActivity";
 	private ImageButton scoreFlexImg;
 	private LinearLayout scoreLayout,loadingLayout,nodataLayout,lookBtn,doAgainBtn;
 	private GridView scoreGridView;
 	private ListView questionListView;
-//	private List<ExamRule> ruleList;
+	private List<StructureInfo> ruleList;
 	private int[] tOrF;
 	private String action,ruleListJson,questionListJson;
 	private String[] data ;
@@ -35,9 +43,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private Intent intent;
 	private String username;
 	private SparseBooleanArray isDone;
-	private PaperDao dao;
 //	private ExamRecord r;
-	private Gson gson ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,19 +79,11 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private void initData()
 	{
 		intent = this.getIntent();
+		this.action = intent.getStringExtra("action");
 		this.ruleListJson = intent.getStringExtra("ruleListJson");
-//		this.ruleList = gson.fromJson(ruleListJson, type);
-//		this.isDone = gson.fromJson(intent.getStringExtra("isDone"), SparseBooleanArray.class);
-//		this.trueOfFalse = gson.fromJson(intent.getStringExtra("trueOfFalse"), int[].class);
-//		this.r = gson.fromJson(intent.getStringExtra("record"), ExamRecord.class);
-//		this.questionListJson =  intent.getStringExtra("tOrF");
-//		if(questionListJson != null)
-//		{
-//			this.tOrF = gson.fromJson(questionListJson, int[].class);
-//		}
-//		this.username = intent.getStringExtra("username");
-////		this.paperId = intent.getStringExtra("paperid");
-//		this.dao = new PaperDao(this);
+		this.ruleList = GsonUtil.getGson().fromJson(ruleListJson, new TypeToken<ArrayList<StructureInfo>>(){}.getType());
+		this.trueOfFalse = GsonUtil.getGson().fromJson(intent.getStringExtra("trueOfFalse"), int[].class);
+		Log.d(TAG,Arrays.toString(trueOfFalse));
 	}
 	private void initView()
 	{
@@ -94,14 +92,13 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 			((ImageView)this.findViewById(R.id.colorTipsIV)).setImageResource(R.drawable.answer_color_tips2);
 			this.scoreLayout.setVisibility(View.GONE);
 			this.loadingLayout.setVisibility(View.GONE);
-//			if(this.ruleList!=null&&this.ruleList.size()>0)
-//			{
-//				System.out.println("trueOfFalse1 == "+trueOfFalse);
-//				this.questionListView.setAdapter(new ChooseListAdapter(this,this,ruleList,isDone,trueOfFalse));
-//			}else
-//			{
-//				this.nodataLayout.setVisibility(View.VISIBLE);
-//			}
+			if(this.ruleList!=null&&this.ruleList.size()>0)
+			{
+				this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse));
+			}else
+			{
+				this.nodataLayout.setVisibility(View.VISIBLE);
+			}
 		}else if("submitPaper".equals(action)||"showResult".equals(action))
 		{
 			this.scoreLayout.setVisibility(View.VISIBLE);
@@ -170,7 +167,6 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	}
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch(v.getId())
 		{
 		case R.id.btn_goback:
@@ -302,9 +298,4 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	    }
 	    return super.onKeyDown(paramInt, paramKeyEvent);
 	}
-//	private void setNull4UserAnswer() {
-//		for (ExamQuestion q : questionList) {
-//			q.setUserAnswer(null);
-//		}
-//	}
 }

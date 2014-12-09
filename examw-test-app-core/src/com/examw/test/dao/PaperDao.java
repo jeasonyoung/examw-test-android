@@ -146,6 +146,7 @@ public class PaperDao {
 	 */
 	public static String findPaperContent(String paperId)
 	{
+		Log.d(TAG, String.format("查询试卷[PaperId= %s]的内容",paperId));
 		if(StringUtils.isEmpty(paperId)) return null;
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		Cursor cursor = db.rawQuery("select content from PaperTab where paperid = ?", new String[]{paperId});
@@ -166,17 +167,10 @@ public class PaperDao {
 	 */
 	public static void updatePaperContent(String paperId,String content)
 	{
+		Log.d(TAG, String.format("插入试卷[PaperId= %s]的内容",paperId));
 		if (StringUtils.isEmpty(content) || StringUtils.isEmpty(paperId)) return;
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
-		Cursor cursor = db.rawQuery("select * from PaperTab where paperid = ?",
-				new String[] { paperId});
-		if (cursor.getCount() == 0) {
-			cursor.close();
-			db.close();
-			return;
-		}
-		cursor.close();
-		db.execSQL("update PaperTab set content = ? where paperid = ?", new Object[]{paperId,content});
+		db.execSQL("update PaperTab set content = ? where paperid = ?", new Object[]{content,paperId});
 		db.close();
 	}
 	
