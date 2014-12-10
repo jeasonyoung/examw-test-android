@@ -16,11 +16,13 @@ public class AnswerCardItemGridAdapter extends BaseAdapter{
 	private Context context;
 	private String[] data;
 	private int[] trueOfFalse;
+	private boolean flag;
 	
-	public AnswerCardItemGridAdapter(Context context,String[] data,int[] trueOfFalse) {
+	public AnswerCardItemGridAdapter(Context context,String[] data,int[] trueOfFalse,boolean flag) {
 		this.context = context;
 		this.data = data;
 		this.trueOfFalse = trueOfFalse;
+		this.flag = flag;
 	}
 	@Override
 	public int getCount() {
@@ -45,12 +47,21 @@ public class AnswerCardItemGridAdapter extends BaseAdapter{
 		}
 		holder = (ViewHolder) v.getTag();
 		holder.textView.setText(data[position]);
-		if(trueOfFalse[Integer.parseInt(data[position])-1]!=0)	//已经做了
-			v.setBackgroundColor(context.getResources().getColor(R.color.lightbule));
-//		int colorid = trueOfFalse[Integer.parseInt(data[position])-1]==1?context.getResources().getColor(R.color.green)
-//				:trueOfFalse[Integer.parseInt(data[position])-1]==-1?context.getResources().getColor(R.color.red)
-//						:context.getResources().getColor(R.color.transparent);
-//		v.setBackgroundColor(colorid);
+		if(!flag)	//只显示已做未做的情况
+		{
+			if(trueOfFalse[Integer.parseInt(data[position])-1]!=0)	//已经做了
+				v.setBackgroundColor(context.getResources().getColor(R.color.lightbule));
+		}else	//显示正确与否
+		{
+			int colorid = trueOfFalse[Integer.parseInt(data[position])-1]==1?	//答对绿色
+								context.getResources().getColor(R.color.green)
+									:trueOfFalse[Integer.parseInt(data[position])-1]==-1?	//答错红色
+											context.getResources().getColor(R.color.red)
+												:trueOfFalse[Integer.parseInt(data[position])-1]==2?	//少答橙色
+														context.getResources().getColor(R.color.orange)
+													:context.getResources().getColor(R.color.transparent);	//未答白色
+			v.setBackgroundColor(colorid);
+		}
 		return v;
 	};
 	static class ViewHolder

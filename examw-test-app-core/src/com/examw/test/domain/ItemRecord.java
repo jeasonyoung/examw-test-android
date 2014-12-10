@@ -14,6 +14,7 @@ public class ItemRecord implements Serializable{
 	private Integer status;
 	private BigDecimal score;
 	private String createTime;
+	private String lastTime;
 	/**
 	 * 获取 考试记录ID 
 	 * @return recordId
@@ -193,6 +194,22 @@ public class ItemRecord implements Serializable{
 		this.createTime = createTime;
 	}
 	
+	/**
+	 * 获取 
+	 * @return lastTime
+	 * 
+	 */
+	public String getLastTime() {
+		return lastTime;
+	}
+	/**
+	 * 设置 
+	 * @param lastTime
+	 * 
+	 */
+	public void setLastTime(String lastTime) {
+		this.lastTime = lastTime;
+	}
 	public ItemRecord() {}
 	
 //	/recordId,structureId,itemId,answer,status,score

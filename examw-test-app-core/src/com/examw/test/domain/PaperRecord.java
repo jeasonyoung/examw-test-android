@@ -15,7 +15,7 @@ public class PaperRecord implements Serializable{
 	private Integer paperType,usedTime,rightNum,status;
 	private String createTime,lastTime;
 	private ArrayList<ItemRecord> items;
-	
+	private String torf;
 	/**
 	 * 获取 记录ID
 	 * @return recordId
@@ -285,7 +285,25 @@ public class PaperRecord implements Serializable{
 	public void setPaperType(Integer paperType) {
 		this.paperType = paperType;
 	}
+	
+	/**
+	 * 获取 
+	 * @return torf
+	 * 
+	 */
+	public String getTorf() {
+		return torf;
+	}
 
+	/**
+	 * 设置 
+	 * @param torf
+	 * 
+	 */
+	public void setTorf(String torf) {
+		this.torf = torf;
+	}
+	
 	public PaperRecord() {
 	}
 	
@@ -293,7 +311,7 @@ public class PaperRecord implements Serializable{
 	public PaperRecord(String recordId, String paperId, String paperName,Integer paperType,
 			String userId, String userName, String productId,
 			String terminalId, Integer status, Double score,
-			Integer usedTime, Integer rightNum, String createTime, String lastTime) {
+			Integer usedTime, Integer rightNum, String createTime, String lastTime,String torf) {
 		super();
 		this.recordId = recordId;
 		this.paperId = paperId;
@@ -309,5 +327,7 @@ public class PaperRecord implements Serializable{
 		this.rightNum = rightNum;
 		this.createTime = createTime;
 		this.lastTime = lastTime;
+		this.torf = torf;
 	}
+
 }

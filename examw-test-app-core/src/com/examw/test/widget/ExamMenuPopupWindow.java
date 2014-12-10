@@ -24,6 +24,7 @@ public class ExamMenuPopupWindow extends PopupWindow {
 	}
 	
 	public ExamMenuPopupWindow(Context context,ExamMenuItemClickListener itemClickListener) {
+		super(context);
 		View v = LayoutInflater.from(context).inflate(
 				R.layout.pop_question_more_menu, null);
 		ListView listView = (ListView) v

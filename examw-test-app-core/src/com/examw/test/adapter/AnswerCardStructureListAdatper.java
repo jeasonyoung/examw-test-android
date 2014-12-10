@@ -27,11 +27,13 @@ public class AnswerCardStructureListAdatper extends BaseAdapter{
 	private AnswerCardActivity activity;
 	private List<StructureInfo> ruleList;
 	private int[] trueOfFalse;
-	public AnswerCardStructureListAdatper(Context context,AnswerCardActivity activity,List<StructureInfo> ruleList,int[] trueOfFalse) {
+	private boolean disColor;
+	public AnswerCardStructureListAdatper(Context context,AnswerCardActivity activity,List<StructureInfo> ruleList,int[] trueOfFalse,boolean disColor) {
 		this.context = context;
 		this.activity = activity;
 		this.ruleList = ruleList;
 		this.trueOfFalse = trueOfFalse;
+		this.disColor = disColor;
 	}
 	@Override
 	public int getCount() {
@@ -68,19 +70,12 @@ public class AnswerCardStructureListAdatper extends BaseAdapter{
 		{
 			data[i] = String.valueOf((i+1+t));
 		}
-		holder.gridView.setAdapter(new AnswerCardItemGridAdapter(context,data,trueOfFalse));
+		holder.gridView.setAdapter(new AnswerCardItemGridAdapter(context,data,trueOfFalse,disColor));
 		holder.gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				 Intent data=new Intent();  
-		         data.putExtra("ruleTitle", r.getTitle());  
-		         data.putExtra("action", "DoExam");
-		         data.putExtra("cursor", Integer.parseInt(((TextView)arg1.findViewById(R.id.optionTextView)).getText().toString())-1);  
-		         //设置请求代码20,选题
-		         activity.setResult(20, data);  
-		         //结束Activity  
-		         activity.finish();  
+		         activity.showAnswer(Integer.parseInt(((TextView)arg1.findViewById(R.id.optionTextView)).getText().toString())-1);  
 			}
 		});
 		return v;

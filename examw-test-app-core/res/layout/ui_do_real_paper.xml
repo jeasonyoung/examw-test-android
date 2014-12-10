@@ -164,7 +164,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_below="@id/questionMaterial"
-                app:sidebuffer="2" >
+                app:sidebuffer="3" >
             </org.taptwo.android.widget.ViewFlow>
         </RelativeLayout>
 

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,7 +35,6 @@ import com.examw.test.util.StringUtils;
  * @since 2014年11月28日 下午5:13:13.
  */
 public class PaperInfoActivity extends BaseActivity implements OnClickListener {
-	private static final String TAG = "PaperInfoActivity";
 	private LinearLayout ruleInfo;
 	private TextView totalNum, ruleSize, paperScore, paperTime;
 	private Button startBtn;
@@ -47,11 +45,8 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 	private String username;
 	private PaperRecord record;
 	private PaperPreview paper;
-	private int tempTime;
 	private AppContext appContext;
-	private SparseBooleanArray isDone = new SparseBooleanArray();
-	private int[] tOrF;
-
+	private List<StructureInfo> ruleList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -120,71 +115,31 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			gotoDoExamActivity();
 			return;
 		case R.id.btn_restart:	//重新开始
-			gotoChooseActivity();
+			restart();
 			return;
 		}
 	}
 	
-	
-	private void gotoChooseActivity() {
-		Intent mIntent = new Intent(this, PaperInfoActivity.class);
+	/**
+	 * 重新开始
+	 */
+	private void restart() {
+		Intent mIntent = new Intent(this, PaperDoPaperActivity.class);
 		mIntent.putExtra("action", "DoExam");
-		mIntent.putExtra("paperName", paper.getName());
 		mIntent.putExtra("paperId", record.getPaperId());
-		mIntent.putExtra("username", username);
-		mIntent.putExtra("tempTime", 0);
-//		mIntent.putExtra("paperTime", record.getPapertime());
-//		mIntent.putExtra("paperScore", record.getPaperscore());
-//		record.setTempAnswer("");
-//		record.setIsDone(null);
-//		record.setTempTime(record.getPapertime() * 60);
-//		dao.saveOrUpdateRecord(record);
-//		mIntent.putExtra("tOrF", gson.toJson(tOrF));
 		this.startActivity(mIntent);
 		this.finish();
 	}
 
 	private void gotoDoExamActivity() {
-//		if (questionList == null || questionList.size() == 0) {
-//			Toast.makeText(this, "没有题目数据暂时不能练习", Toast.LENGTH_SHORT).show();
-//			return;
-//		}
-//		if (dialog != null) {
-//			dialog.show();
-//		}
 		Intent intent = null;
-//		if (record != null && record.getAnswers() != null) {
-//			// SparseBooleanArray isDone = new SparseBooleanArray();
-//			// addAnswer(isDone,questionList,record.getAnswers());
-//			intent = new Intent(this, PaperInfoActivity.class);
-//			intent.putExtra("action", "showResult");
-//			intent.putExtra("ruleListJson", gson.toJson(ruleList));
-//			intent.putExtra("tOrF", gson.toJson(tOrF));
-//			intent.putExtra("paperScore", record.getPaperscore());
-//			intent.putExtra("paperTime", record.getPapertime());
-//			intent.putExtra("username", username);
-//			intent.putExtra("paperid", record.getPaperId());
-//			intent.putExtra("useTime", record.getUseTime());
-//			intent.putExtra("record", gson.toJson(record));
-//			intent.putExtra("isDone", gson.toJson(isDone));
-//			intent.putExtra("userScore", record.getScore()); // 本次得分
-//		} else {
-//			intent = new Intent(this, QuestionDoExamActivity2.class);
-//			intent.putExtra("paperName", paper.getPaperName());
-//			intent.putExtra("paperId", paper.getPaperId());
-//			intent.putExtra("paperTime", paper.getPaperTime());
-//			intent.putExtra("tempTime", tempTime);
-//			intent.putExtra("paperScore", paper.getPaperSorce());
-//			intent.putExtra("action", "DoExam");
-//			Gson gson = new Gson();
-//			intent.putExtra("ruleListJson", gson.toJson(ruleList));
-//			// intent.putExtra("questionListJson", gson.toJson(questionList));
-//			intent.putExtra("tOrF", gson.toJson(tOrF));
-//			intent.putExtra("username", username);
-//		}
 		if(record!=null && AppConstant.STATUS_DONE.equals(record.getStatus()))	//已经交卷
 		{
-			
+			intent = new Intent(this, AnswerCardActivity.class);
+			intent.putExtra("paperId", paper.getId());
+			intent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
+			intent.putExtra("trueOfFalse", record.getTorf());
+			intent.putExtra("action", "showResult");
 		}else{
 			intent = new Intent(this, PaperDoPaperActivity.class);
 			intent.putExtra("paperId", paper.getId());
@@ -207,12 +162,12 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			switch (msg.what) {
 			case 1:
 				theActivity.dialog.dismiss();
-				List<StructureInfo> rules = theActivity.paper.getStructures();
-				if (rules.size() == 0) {
+				theActivity.ruleList = theActivity.paper.getStructures();
+				if (theActivity.ruleList.size() == 0) {
 					Toast.makeText(theActivity, "暂时没有试题数据", Toast.LENGTH_SHORT)
 							.show();
 				} else {
-					theActivity.initTextView(rules);
+					theActivity.initTextView(theActivity.ruleList);
 				}
 				break;
 			case -2:
@@ -236,25 +191,23 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 		this.paperTime.setText(paper.getTime() + "");
 		int length = rules.size();
 		this.ruleSize.setText(length + "");
-		int total_n = 0;
 		if (record != null && AppConstant.STATUS_NONE.equals(record.getStatus())) {
 			this.startBtn.setText("继续考试");
-			this.tempTime = record.getUsedTime();
 		} else if (record != null && AppConstant.STATUS_DONE.equals(record.getStatus())) {
 			this.startBtn.setText("查看成绩");
 		} else {
 			this.startBtn.setText("开始考试");
 			this.restarBtn.setVisibility(View.GONE);
 		}
-		this.totalNum.setText(total_n + "");
+		this.totalNum.setText(paper.getTotal()+"");
 		for (int i = 0; i < length; i++) {
 			StructureInfo r = rules.get(i);
-			total_n += r.getTotal();
 			View v = LayoutInflater.from(this).inflate(R.layout.item_structure_info,null);
 			TextView ruleTitle = (TextView) v.findViewById(R.id.ruleTitle);
 			ruleTitle.setText("第" + (i + 1) + "大题" + r.getTitle());
 			TextView ruleTitleInfo = (TextView) v.findViewById(R.id.ruleTitleInfo);
 			ruleTitleInfo.setText("说明:" + r.getDescription());
+			r.setItems(null);
 			this.ruleInfo.addView(v, i);
 		}
 	}

@@ -111,7 +111,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 		}
 		popWindow.dismiss();
 		Intent intent = new Intent(this,PaperInfoActivity.class);
-		intent.putExtra("recordId",r.getRecordId());
+		intent.putExtra("paperId",r.getPaperId());
 		this.startActivity(intent);
 	}
 	private class GetDataTask extends AsyncTask<String,Void,ArrayList<Subject>>

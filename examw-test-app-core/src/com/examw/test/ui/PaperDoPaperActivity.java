@@ -76,7 +76,8 @@ import com.examw.test.widget.QuestionMaterialLayout;
  * @author fengwei.
  * @since 2014年12月8日 上午9:00:02.
  */
-public class PaperDoPaperActivity extends BaseActivity implements OnClickListener {
+public class PaperDoPaperActivity extends BaseActivity implements
+		OnClickListener {
 	private static final String TAG = "PaperDoPaperActivity";
 	// 组件
 	private ImageButton favoriteBtn, answerBtn;
@@ -132,7 +133,7 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG,"考试界面启动");
+		Log.d(TAG, "考试界面启动");
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_do_real_paper);
 		preferences = this.getSharedPreferences("wdkaoshi", 0);
@@ -174,12 +175,13 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 
 	// 取得主界面的组件,只取得不操作
 	private void initView() {
-		Log.d(TAG,"初始化组件");
+		Log.d(TAG, "初始化组件");
 		this.favoriteBtn = (ImageButton) this.findViewById(R.id.favoriteBtn); // 收藏按钮
 		this.answerBtn = (ImageButton) this.findViewById(R.id.answerBtn); // 交卷按钮
 		this.examTypeTextView = (TextView) this
 				.findViewById(R.id.examTypeTextView);// 大题标题
-		this.ruleTitleLayout = (RelativeLayout) this.findViewById(R.id.ruleTitleLayout); // 大题布局
+		this.ruleTitleLayout = (RelativeLayout) this
+				.findViewById(R.id.ruleTitleLayout); // 大题布局
 		this.timeCountDown = (TextView) this
 				.findViewById(R.id.timecount_down_TextView);// 倒计时
 		this.viewFlow = (ViewFlow) this.findViewById(R.id.viewflow); // 滑动切题组件
@@ -218,23 +220,24 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 				} else {
 					favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
 				}
-//				if ("practice".equals(action)) {
-//					// 有答案了,禁止选择,没答案继续选择
-//					if (currentQuestion.getUserAnswer() != null) {
-//						((QuestionAdapter.ContentViewHolder) view
-//								.getTag(R.id.tag_first)).examOption
-//								.forbidden(false);
-//						// questionAdapter.setRadioEnable(((QuestionAdapter.ContentViewHolder)view.getTag(R.id.tag_first)).examOption,
-//						// false);
-//					} else {
-//						((QuestionAdapter.ContentViewHolder) view
-//								.getTag(R.id.tag_first)).examOption
-//								.forbidden(true);
-//						// questionAdapter.setRadioEnable(((QuestionAdapter.ContentViewHolder)view.getTag(R.id.tag_first)).examOption,
-//						// true);
-//					}
-//				}
-				if (favor!= null && favor.getItemId() != null) {
+				if ("myErrors".equals(action)) {
+					// 有答案了,禁止选择,没答案继续选择
+					if (currentQuestion.getUserAnswer() != null) {
+						((QuestionAdapter.ContentViewHolder) view
+								.getTag(R.id.tag_first)).examOption
+								.forbidden(false);
+					} else {
+						((QuestionAdapter.ContentViewHolder) view
+								.getTag(R.id.tag_first)).examOption
+								.forbidden(true);
+					}
+				} else if (!"DoExam".equals(action)) {
+					// 禁止选择
+					((QuestionAdapter.ContentViewHolder) view
+							.getTag(R.id.tag_first)).examOption
+							.forbidden(false);
+				}
+				if (favor != null && favor.getItemId() != null) {
 					// 收藏一个
 					System.out.println("收藏或者取消了收藏");
 					new Thread() {
@@ -282,7 +285,8 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			public void run() {
 				try {
 					String content = PaperDao.findPaperContent(paperId);
-					record = PaperRecordDao.findLastPaperRecord(paperId, username, true);
+					record = PaperRecordDao.findLastPaperRecord(paperId,
+							username, true);
 					if (StringUtils.isEmpty(content)) {
 						handler.sendEmptyMessage(-1);
 						return;
@@ -304,13 +308,16 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 						record.setTerminalId(AppConfig.TERMINALID);
 						record.setLastTime(record.getCreateTime());
 						record.setItems(new ArrayList<ItemRecord>());
+						//保存考试记录
+						PaperRecordDao.save(record);
 					}
-					itemRecords = record.getItems();	//考试题目记录
+					itemRecords = record.getItems(); // 考试题目记录
 					ruleList = paper.getStructures();
 					// 初始化试题数据
-					questionList = DataConverter.findItems(ruleList,itemRecords);
-					tOrF = new int[questionList.size()];	//对错
-					paperTime = paper.getTime() * 60 - record.getUsedTime(); //考试剩余时间
+					questionList = DataConverter.findItems(ruleList,
+							itemRecords);
+					tOrF = new int[questionList.size()]; // 对错
+					paperTime = paper.getTime() * 60 - record.getUsedTime(); // 考试剩余时间
 					paperScore = paper.getScore().doubleValue();
 					time = paper.getTime() * 60;
 					Message msg = handler.obtainMessage();
@@ -334,7 +341,6 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -356,7 +362,8 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			case 1:
 				if (theActivity.paperTime > 0)
 					theActivity.paperTime--;
-				theActivity.timeCountDown.setText(getTimeText(theActivity.paperTime));
+				theActivity.timeCountDown
+						.setText(getTimeText(theActivity.paperTime));
 				if (theActivity.paperTime == 0) {
 					// 交卷
 					timerFlag = false;
@@ -369,8 +376,8 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 				if (theActivity.proDialog != null) {
 					theActivity.proDialog.dismiss();
 				}
-				//TODO 启动答题总结界面
-//				theActivity.gotoChooseActivity2(); // 答题总结界面
+				// 启动答题总结界面
+				theActivity.gotoAnswerSummaryActivity(); // 答题总结界面
 				break;
 			}
 		}
@@ -396,31 +403,31 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			PaperDoPaperActivity q2 = weak.get();
 			switch (msg.what) {
 			case 1:
-				q2.questionAdapter = new QuestionAdapter(q2, q2,q2.questionList, q2.username, q2.paperId);
-				q2.viewFlow.setAdapter(q2.questionAdapter);
 				if ("DoExam".equals(q2.action)
 						|| "showQuestionWithAnswer".equals(q2.action)) {
 					if (q2.ruleList != null && q2.ruleList.size() > 0) {
 						q2.currentRule = q2.ruleList.get(0);
 						q2.examTypeTextView.setText(q2.currentRule.getTitle()); // 大题名字
-//						q2.ruleTypeLayout.setOnClickListener(q2);
+						// q2.ruleTypeLayout.setOnClickListener(q2);
 						q2.questionCursor = msg.arg1;
-						q2.viewFlow.setSelection(q2.questionCursor);
+						// 初始化已经选择了0
+						// q2.viewFlow.setSelection(q2.questionCursor);
 					} else {
 						q2.nodataLayout.setVisibility(0);
 					}
 				}
+				q2.questionAdapter = new QuestionAdapter(q2, q2,
+						q2.questionList, q2.username, q2.paperId);
+				q2.viewFlow.setAdapter(q2.questionAdapter);
 				q2.loadingLayout.setVisibility(View.GONE);
 				int firstExam = q2.guidefile.getInt("isFirstExam", 0);
 				if (firstExam == 0 && "DoExam".equals(q2.action)) {
 					// q2.openPopupwin();
 				}
-				q2.new TimerThread().start();	//时间线程启动
+				q2.new TimerThread().start(); // 时间线程启动
 				break;
-			case 33:	//切题
-				if (q2.questionCursor < q2.questionList.size() - 1) {
-					q2.viewFlow.setSelection(++q2.questionCursor);
-				}
+			case 33: // 切题
+				q2.nextQuestion();	//自动切换到下一题
 				break;
 			case -1:
 				q2.loadingLayout.setVisibility(View.GONE);
@@ -439,33 +446,35 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			return;
 		}
 		switch (v.getId()) {
-		case R.id.btn_more:		//小菜单
+		case R.id.btn_more: // 小菜单
 			showMenuPop(v);
 			break;
-		case R.id.previousBtn:	//上一题
+		case R.id.previousBtn: // 上一题
 			preQuestion();
 			break;
-		case R.id.nextBtn:		//下一题
+		case R.id.nextBtn: // 下一题
 			nextQuestion();
 			break;
-		case R.id.favoriteBtn:	//收藏
+		case R.id.favoriteBtn: // 收藏
 			favorQuestion();
 			break;
-		case R.id.btn_goback:	//返回
+		case R.id.btn_goback: // 返回
 			if ("DoExam".equals(action)) {
 				showDialog();
 			} else {
 				this.finish();
 			}
 			break;
-		case R.id.ruleTitleLayout:	//大题切换
+		case R.id.ruleTitleLayout: // 大题切换
 			if (ruleList != null && ruleList.size() > 0) {
 				showStructureWindow(v);
 			}
+		case R.id.answerBtn:	//答案按钮
+			submitOrSeeAnswer();
 			break;
 		}
 	}
-
+	
 	// 上一题
 	private void preQuestion() {
 		if (questionCursor == 0) {
@@ -474,7 +483,7 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		}
 		questionAdapter.clearCheck();
 		questionCursor--;
-		viewFlow.setSelection(questionCursor);
+		viewFlow.snapToPrevious();
 	}
 
 	// 下一题
@@ -485,7 +494,7 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		}
 		questionAdapter.clearCheck();
 		questionCursor++;
-		viewFlow.setSelection(questionCursor);
+		viewFlow.snapToNext();
 	}
 
 	// 收藏
@@ -523,7 +532,21 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			Toast.makeText(this, "收藏成功", Toast.LENGTH_SHORT).show();
 		}
 	}
-
+	//交卷或者查看隐藏答案
+	@Override
+	public void submitOrSeeAnswer() {
+		if ("DoExam".equals(action)) {
+			submitExam();
+		}else 
+		{
+			QuestionAdapter.AnswerViewHolder holder = (AnswerViewHolder) viewFlow
+					.getSelectedView().getTag(R.id.tag_second);
+			if (holder.examAnswerLayout.getVisibility() == View.VISIBLE)
+				holder.examAnswerLayout.setVisibility(View.GONE);
+			else
+				holder.examAnswerLayout.setVisibility(View.VISIBLE);
+		}
+	}
 	// 保存选择题(单选和多选)答案
 	public void saveChoiceAnswer(String abcd) // 1001-A&1002-B&
 	{
@@ -532,19 +555,20 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		if (currentQuestion.getType().equals(AppConstant.ITEM_TYPE_JUDGE)) {
 			abcd = "A".equals(abcd) ? "1" : "0";
 		}
-		//保存答案,或者去除答案
+		// 保存答案,或者去除答案
 		currentQuestion.setUserAnswer(abcd);
-		//取出题目记录或者新增一个题目记录
+		// 取出题目记录或者新增一个题目记录
 		ItemRecord currentRecord = getItemRecord();
 		currentRecord.setAnswer(abcd);
-		//判断题目的对错
-		judgeItemIsRight(currentRecord, currentQuestion, currentRule.getMin(), currentRule.getScore());
-		
-		// 每做完5道题自动保存答案
-		if (itemRecords.size() % 5 == 0) {
-			//TODO 保存答案
-		}
-		//单选,判断自动切题
+		// 判断题目的对错
+		judgeItemIsRight(currentRecord, currentQuestion, currentRule.getMin(),
+				currentRule.getScore());
+
+		// 每做完5道题自动保存答案 [暂不处理]
+//		if (itemRecords.size() % 5 == 0) {
+//			// TODO 保存答案
+//		}
+		// 单选,判断自动切题
 		if (currentQuestion.isSingle()) {
 			handler.postDelayed(new Runnable() {
 				@Override
@@ -555,20 +579,17 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 
 		}
 	}
-	//获取或更新考试记录
-	private ItemRecord getItemRecord()
-	{
+
+	// 获取或更新考试记录
+	private ItemRecord getItemRecord() {
 		ItemRecord currentRecord = null;
-		for(ItemRecord ir:itemRecords)
-		{
-			if(ir.getItemId().equals(currentQuestion.getId()))
-			{
+		for (ItemRecord ir : itemRecords) {
+			if (ir.getItemId().equals(currentQuestion.getId())) {
 				currentRecord = ir;
 				break;
 			}
 		}
-		if(currentRecord == null)
-		{
+		if (currentRecord == null) {
 			currentRecord = new ItemRecord();
 			currentRecord.setItemId(currentQuestion.getId());
 			currentRecord.setItemContent(GsonUtil.objectToJson(currentQuestion));
@@ -580,26 +601,28 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		}
 		return currentRecord;
 	}
+
 	/*
-	* 判断题目是对是错
-	*/
-	private boolean judgeItemIsRight(ItemRecord itemRecord,StructureItemInfo item,BigDecimal min, BigDecimal per) {
-		//用户没有作答
-		String answer  = itemRecord.getAnswer();
+	 * 判断题目是对是错
+	 */
+	private boolean judgeItemIsRight(ItemRecord itemRecord,
+			StructureItemInfo item, BigDecimal min, BigDecimal per) {
+		// 用户没有作答
+		String answer = itemRecord.getAnswer();
 		if (StringUtils.isEmpty(answer)) {
 			itemRecord.setScore(min); // 得0分或者负分
 			itemRecord.setStatus(AppConstant.ANSWER_NONE); // 没有作答
 			return false;
 		}
-		//题目没有答案
-		if(StringUtils.isEmpty(item.getAnalysis())){	//没有正确答案(题目有问题)
+		// 题目没有答案
+		if (StringUtils.isEmpty(item.getAnalysis())) { // 没有正确答案(题目有问题)
 			itemRecord.setScore(BigDecimal.ZERO); // 得0分或者负分
 			itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 算答错
-			tOrF[questionCursor] = AppConstant.ANSWER_WRONG;	//对错表
+			tOrF[questionCursor] = AppConstant.ANSWER_WRONG; // 对错表
 			return false;
 		}
-		//单选题或判断题
-		if(item.isSingle()) {
+		// 单选题或判断题
+		if (item.isSingle()) {
 			if (itemRecord.getAnswer().equals(answer)) // 答对
 			{
 				itemRecord.setScore(per); // 得标准分
@@ -607,20 +630,24 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 				tOrF[questionCursor] = AppConstant.ANSWER_RIGHT;
 				return true;
 			} else {
-				itemRecord.setScore((min.compareTo(BigDecimal.ZERO) == 1) ? BigDecimal.ZERO : min); // 得0分或者负分
+				itemRecord
+						.setScore((min.compareTo(BigDecimal.ZERO) == 1) ? BigDecimal.ZERO
+								: min); // 得0分或者负分
 				itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 答错
 				tOrF[questionCursor] = AppConstant.ANSWER_WRONG;
 				return false;
 			}
 		}
-		//多选或不定项
-		if(item.isMulty()) {
+		// 多选或不定项
+		if (item.isMulty()) {
 			String[] arr = answer.split(",");
 			int total = 0;
 			String trueAnswer = item.getAnswer();
 			for (String a : arr) {
 				if (trueAnswer.indexOf(a) == -1) { // 包含有错误答案
-					itemRecord.setScore((min.compareTo(BigDecimal.ZERO) == 1) ? BigDecimal.ZERO : min); // 得0分或者负分
+					itemRecord
+							.setScore((min.compareTo(BigDecimal.ZERO) == 1) ? BigDecimal.ZERO
+									: min); // 得0分或者负分
 					itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 答错
 					tOrF[questionCursor] = AppConstant.ANSWER_WRONG;
 					return false;
@@ -633,9 +660,12 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 				itemRecord.setStatus(AppConstant.ANSWER_RIGHT);// 答对
 				tOrF[questionCursor] = AppConstant.ANSWER_RIGHT;
 				return true;
-			} else { 
-				itemRecord.setScore((min.compareTo(BigDecimal.ZERO) == -1) ? BigDecimal.ZERO : min.multiply(new BigDecimal(total))); // 得0分或者负分
-				if(itemRecord.getScore().compareTo(per)==1) itemRecord.setScore(per); //得分不能超过该题总分
+			} else {
+				itemRecord
+						.setScore((min.compareTo(BigDecimal.ZERO) == -1) ? BigDecimal.ZERO
+								: min.multiply(new BigDecimal(total))); // 得0分或者负分
+				if (itemRecord.getScore().compareTo(per) == 1)
+					itemRecord.setScore(per); // 得分不能超过该题总分
 				itemRecord.setStatus(AppConstant.ANSWER_LESS); // 少选
 				tOrF[questionCursor] = AppConstant.ANSWER_LESS;
 				return false;
@@ -643,13 +673,14 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		}
 		return true;
 	}
+
 	// 保存问答题答案
 	public void saveTextAnswer(String txtAnswer) {
 		if (!"DoExam".equals(action)) {
 			return; // 非考试不必保存答案
 		}
-		//TODO 保存问答题答案
-		//单个题目记录的保存or修改
+		// TODO 保存问答题答案
+		// 单个题目记录的保存or修改
 		currentQuestion.setUserAnswer(txtAnswer);
 		ItemRecord itemRecord = getItemRecord();
 		itemRecord.setAnswer(txtAnswer);
@@ -658,147 +689,49 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 
 	// 交卷,评判分
 	private void submitPaper() {
-		/**
-			 * 
-			 */
-		// if (record.getTempAnswer() == null
-		// || "".equals(record.getTempAnswer().trim())) {
-		// Toast.makeText(this, "还没做交毛卷啊", Toast.LENGTH_SHORT).show();
-		// return;
-		// }
-//		try {
-			double score = 0; // 总分
-			double score1 = 0; // 答错扣分的情况
-			double score2 = 0; // 计算大题的临时变量
-			StringBuffer buf = new StringBuffer();
-			StringBuffer scoreBuf = new StringBuffer("eachScore&");
-			StringBuffer errorBuf = new StringBuffer();
-			
-			//TODO 交卷判分
-			
-//			for (int k = 0; k < ruleList.size(); k++) // 循环大题
-//			{
-//				StructureInfo r = ruleList.get(k);
-//				double fen = r.getScoreForEach();// 每题的分数
-//				String fenRule = r.getScoreSet();// 判分规则 0|N表示每题多少分就是多少分，
-//													// 1|N,表示答对一个选项得N分，全部答对得该题的满分
-//													// 2|N,表示打错扣N分,最少得0分
-//				for (int j = 0; j < questionList.size(); j++) // 循环题目
-//				{
-//					ExamQuestion q = questionList.get(j);
-//					double tempScore = 0;
-//					// if (q.getRuleId().equals(r.getRuleId())) //
-//					// 属于该大题的题目，按该规则进行判分
-//					if (r.getContainQids2().contains("," + q.getQid() + ",")) {
-//						System.out.println(q.getAnswer() + ", userAnswer:"
-//								+ q.getUserAnswer());
-//						tOrF[j] = q.getUserAnswer() == null ? 0 : q.getAnswer()
-//								.equals(q.getUserAnswer()) ? 1 : -1;
-//						if (q.getUserAnswer() != null
-//								&& (!q.getAnswer().equals(q.getUserAnswer()))) {
-//							errorBuf.append(q.getQid()).append("_")
-//									.append(q.getUserAnswer()).append("_")
-//									.append(q.getAnswer()).append(":");
-//							ExamErrorQuestion error = new ExamErrorQuestion(
-//									q.getQid(), username, paperid,
-//									q.getUserAnswer());
-//							dao.insertError(error);
-//						}
-//						if (fenRule.startsWith("0|")) // 答错不扣分，全对才得满分
-//						{
-//							if (q.getAnswer().equals(q.getUserAnswer())) {
-//								score = score + fen; // 得分
-//								tempScore = fen;
-//							}
-//						} else if (fenRule.startsWith("1|"))// 答对一个选项得多少分
-//						{
-//							String answer = q.getAnswer();
-//							String userAnswer = q.getUserAnswer() == null ? "@"
-//									: q.getUserAnswer();
-//							if (answer.contains(userAnswer)) { // 包含答案算分
-//								if (answer.equals(userAnswer)) {
-//									score = score + fen;
-//									tempScore = fen;
-//								} else {
-//									String[] ua = userAnswer.split("[,]"); // 少选得分，是每个选项的得分还是只要是少选就得多少分
-//									double fen1 = Double.parseDouble(fenRule
-//											.split("[|]")[1]) * ua.length;
-//									score = score + fen1;
-//									tempScore = fen1;
-//								}
-//							}
-//						} else if (fenRule.startsWith("2|"))// 答错扣分
-//						{
-//							if (q.getAnswer().equals(q.getUserAnswer())) // 答对
-//							{
-//								score1 = score1
-//										+ Double.parseDouble(fenRule
-//												.split("[|]")[1]);
-//								tempScore = Double.parseDouble(fenRule
-//										.split("[|]")[1]);
-//							} else // 答错
-//							{
-//								score1 = score1
-//										- Double.parseDouble(fenRule
-//												.split("[|]")[1]);
-//								tempScore = 0 - Double.parseDouble(fenRule
-//										.split("[|]")[1]);
-//							}
-//						}
-//						scoreBuf.append(r.getRuleId()).append("-")
-//								.append(q.getQid()).append("-")
-//								.append(tempScore).append("&"); // 每道题的得分
-//					}
-//				}
-////				if (errorBuf.length() > 0) {
-////					final String error = errorBuf.substring(0,
-////							errorBuf.length() - 1); // 11.11修改
-////					new Thread() {
-////						public void run() {
-////							((AppContext) getApplication()).uploadError(error,paperId);
-////						};
-////					}.start();
-////				}
-//				// 每大题得分
-//				if (fenRule.startsWith("2|")) {
-//					buf.append(r.getRuleId());
-//					buf.append("=");
-//					buf.append(score1 > 0 ? score1 : 0);
-//					buf.append(";");
-//				} else {
-//					buf.append(r.getRuleId());
-//					buf.append("=");
-//					score2 = score - score2;
-//					buf.append(score2);
-//					buf.append(";");
-//					score2 = score;
-//				}
-//			}
-//			score = score1 > 0 ? (score + score1) : score;
-//			// 学员答案存进去
-//			record.setScore(score);
-//			System.out.println("scoreBuf = " + scoreBuf.toString());
-//			// 更新record记录
-//			// record.setRcdScoreForEachQuestion(scoreBuf.toString());//每题的得分情况
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-	}
-	//清除用户的答案
-	private void clearUserAnswer(){
-		for(StructureItemInfo info : questionList)
+		if(itemRecords ==null || itemRecords.size()==0)
 		{
+			record.setRightNum(0);
+			record.setScore(0.0);
+			return;
+		}
+		BigDecimal userScore = BigDecimal.ZERO;
+		// TODO 交卷判分
+		for(int k =0;k<ruleList.size();k++)
+		{
+			BigDecimal ruleScore = BigDecimal.ZERO;
+			StructureInfo r = ruleList.get(k);
+			for(ItemRecord item:itemRecords)
+			{
+				if(r.getId().equals(item.getStructureId()))
+				{
+					ruleScore = ruleScore.add(item.getScore());
+				}
+			}
+			if(ruleScore.compareTo(BigDecimal.ZERO)==-1) ruleScore = BigDecimal.ZERO;
+			userScore = userScore.add(ruleScore);
+		}
+		record.setRightNum(getRightNum());
+		record.setScore(userScore.doubleValue());
+		record.setTorf(GsonUtil.objectToJson(tOrF));
+	}
+
+	// 清除用户的答案
+	private void clearUserAnswer() {
+		for (StructureItemInfo info : questionList) {
 			info.setUserAnswer(null);
 			info.setAnswerStatus(AppConstant.ANSWER_NONE);
 		}
-		itemRecords.clear(); //清除记录
+		itemRecords.clear(); // 清除记录
 	}
-	//显示大题下拉
+
+	// 显示大题下拉
 	private void showStructureWindow(View parent) {
 		if (popupWindow == null) {
 			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-			View view = layoutInflater.inflate(R.layout.pop_structure_layout, null);
+			View view = layoutInflater.inflate(R.layout.pop_structure_layout,
+					null);
 
 			lv_group = (ListView) view.findViewById(R.id.lvGroup);
 			// 加载数据
@@ -830,13 +763,15 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 					int position, long id) {
 				// 切题,改变大题名称,切到该大题第一题
 				// 当前大题
-				StructureInfo rule = PaperDoPaperActivity.this.ruleList.get(position);
+				StructureInfo rule = PaperDoPaperActivity.this.ruleList
+						.get(position);
 				int questionPosition = 0;
 				for (int i = position - 1; i >= 0; i--) {
-					questionPosition += PaperDoPaperActivity.this.ruleList
-							.get(i).getTotal();
+					questionPosition += PaperDoPaperActivity.this.ruleList.get(
+							i).getTotal();
 				}
-				PaperDoPaperActivity.this.examTypeTextView.setText(rule.getTitle());
+				PaperDoPaperActivity.this.examTypeTextView.setText(rule
+						.getTitle());
 				PaperDoPaperActivity.this.questionAdapter.clearCheck();
 				PaperDoPaperActivity.this.questionCursor = questionPosition; // cursor从0开始
 				PaperDoPaperActivity.this.viewFlow.setSelection(questionCursor);
@@ -854,7 +789,7 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		record.setLastTime(StringUtils.toStandardDateStr(new Date()));
 		record.setStatus(AppConstant.STATUS_DONE);
 		record.setUsedTime((time - paperTime));
-//		PaperRecordDao.saveOrUpdateRecord(record);
+		// PaperRecordDao.saveOrUpdateRecord(record);
 		this.exitDialog.dismiss();
 		this.finish();
 	}
@@ -864,7 +799,8 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		if (this.exitDialog != null && this.exitDialog.isShowing()) {
 			this.exitDialog.dismiss();
 		}
-		if (record.getItems() == null || record.getItems().size() == 0) {
+		if ((record.getItems() == null || record.getItems().size() == 0)
+				&& paperTime != 0) {
 			Toast.makeText(this, "亲,您一题都没有做吖!", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -882,8 +818,9 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 				record.setLastTime(StringUtils.toStandardDateStr(new Date()));
 				record.setStatus(AppConstant.STATUS_DONE);
 				record.setUsedTime((time - paperTime));
-				//TODO 保存考试记录
-//				PaperRecordDao.saveOrUpdateRecord(record);
+				record.setItems(itemRecords);
+				// 保存考试记录
+				PaperRecordDao.updatePaperRecord(record);
 				timeHandler.sendEmptyMessage(10);
 			};
 		}.start();
@@ -910,7 +847,7 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							submitPaper();
+							submitExam();
 							dialog.dismiss();
 						}
 					});
@@ -933,35 +870,37 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		}
 		exitDialog.show();
 	}
-	//显示考试设置菜单项
-	private void showMenuPop(View parent){
-		if(menuPop == null){
-			menuPop = new ExamMenuPopupWindow(this,new ExamMenuItemClickListener() {
-				@Override
-				public void setting() {
-					showAnswerSettingPop();
-				}
-				
-				@Override
-				public void restart() {
-					restartExam();
-				}
-				
-				@Override
-				public void answerCard() {
-					gotoAnswerCardActivity();
-				}
-			});
+
+	// 显示考试设置菜单项
+	private void showMenuPop(View parent) {
+		if (menuPop == null) {
+			menuPop = new ExamMenuPopupWindow(this,
+					new ExamMenuItemClickListener() {
+						@Override
+						public void setting() {
+							showAnswerSettingPop();
+						}
+
+						@Override
+						public void restart() {
+							restartExam();
+						}
+
+						@Override
+						public void answerCard() {
+							gotoAnswerCardActivity();
+						}
+					});
 		}
-		if (menuPop.isShowing())
-		{
+		if (menuPop.isShowing()) {
 			menuPop.dismiss();
 			return;
 		}
 		menuPop.showAsDropDown(parent, 0, -10);
 	}
-	//跳转到答题卡界面
-	private void gotoAnswerCardActivity(){
+
+	// 跳转到答题卡界面
+	private void gotoAnswerCardActivity() {
 		menuPop.dismiss();
 		Intent mIntent = new Intent(this, AnswerCardActivity.class);
 		// 绑数据
@@ -971,11 +910,51 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			mIntent.putExtra("trueOfFalse", GsonUtil.objectToJson(tOrF));
 		} else {
 			mIntent.putExtra("action", "otherChooseQuestion");
-//			mIntent.putExtra("questionList", gson.toJson(questionList));
+			// mIntent.putExtra("questionList", gson.toJson(questionList));
 		}
 		this.startActivityForResult(mIntent, 1);
 	}
-	//显示考试设置菜单项
+	
+	// 跳转到答题总结界面
+	private void gotoAnswerSummaryActivity(){
+		Intent mIntent = new Intent(this, AnswerCardActivity.class);
+		// 绑数据
+		mIntent.putExtra("action", "submitPaper");
+		mIntent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
+		mIntent.putExtra("trueOfFalse", GsonUtil.objectToJson(tOrF));
+		mIntent.putExtra("paperScore", paperScore);
+		mIntent.putExtra("paperTime", time / 60);
+		mIntent.putExtra("username", username);
+		mIntent.putExtra("paperid", paperId);
+		mIntent.putExtra("useTime", record.getUsedTime());
+		mIntent.putExtra("userScore", record.getScore()); // 本次得分
+		mIntent.putExtra("hasDoneNum", getHasDone()); // 做了多少题
+		this.startActivityForResult(mIntent, 1);
+	}
+	//获取做了多少题
+	private int getHasDone(){
+		int sum = 0;
+		for(int i=0;i<tOrF.length;i++)
+		{
+			if(tOrF[i]!=0)
+			{
+				sum++;
+			}
+		}
+		return sum;
+	}
+	private int getRightNum(){
+		int sum = 0;
+		for(int i=0;i<tOrF.length;i++)
+		{
+			if(tOrF[i]==1)
+			{
+				sum++;
+			}
+		}
+		return sum;
+	}
+	// 显示考试设置菜单项
 	private void showAnswerSettingPop() {
 		menuPop.dismiss();
 		if (answerSettingPop == null) {
@@ -1020,7 +999,8 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			answerSettingPop.setOutsideTouchable(true);
 
 			// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
-			answerSettingPop.setBackgroundDrawable(new ColorDrawable(0000000000));
+			answerSettingPop
+					.setBackgroundDrawable(new ColorDrawable(0000000000));
 			answerSettingPop.setOnDismissListener(new OnDismissListener() {
 				@Override
 				public void onDismiss() {
@@ -1032,7 +1012,8 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 				}
 			});
 		}
-		answerSettingPop.showAtLocation(findViewById(R.id.parent), Gravity.CENTER, 0, 0);
+		answerSettingPop.showAtLocation(findViewById(R.id.parent),
+				Gravity.CENTER, 0, 0);
 	}
 
 	/*
@@ -1047,9 +1028,9 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO 清除答案,返回耗时
+				clearUserAnswer();
 				questionCursor = 0;
-				questionAdapter.notifyDataSetChanged();
+				// questionAdapter.notifyDataSetChanged();
 				viewFlow.setSelection(questionCursor);
 			}
 		});
@@ -1061,15 +1042,17 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		});
 		builder.create().show();
 	}
-	//震动
-	private void vibrate(){
+
+	// 震动
+	private void vibrate() {
 		if (preferences.getInt("isVibrate", 0) == 1)
 			vibrator.vibrate(new long[] { 800, 50, 400, 1000 }, -1);
 	}
-	public String getAction(){
+
+	public String getAction() {
 		return action;
 	}
-	
+
 	@Override
 	protected void onStart() {
 		if ("DoExam".equals(action)) {
@@ -1095,7 +1078,7 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		// 保存记录
 		if (record != null) {
 			record.setLastTime(StringUtils.toStandardDateStr(new Date()));
-			//保存考试记录
+			// 保存考试记录
 		}
 		timerFlag = false;
 		super.onPause();
@@ -1126,11 +1109,11 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 		if (exitDialog != null) {
 			exitDialog.dismiss();
 		}
-		//TODO 是否收藏
+		// TODO 是否收藏
 		super.onDestroy();
 	}
-	
-	//接收来自答题卡页面的消息
+
+	// 接收来自答题卡页面的消息
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (20 == resultCode) {
@@ -1141,8 +1124,7 @@ public class PaperDoPaperActivity extends BaseActivity implements OnClickListene
 			action = data.getStringExtra("action");
 			// 更新
 			data.setAction(action);
-			System.out.println("data.getAction = " + action);
-			questionAdapter.notifyDataSetChanged();
+			// questionAdapter.notifyDataSetChanged();
 			viewFlow.setSelection(questionCursor);
 		} else if (30 == resultCode) {
 			action = "DoExam";

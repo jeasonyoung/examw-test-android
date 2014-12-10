@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
+import com.examw.test.util.StringUtils;
 
 public class CheckBoxGroup extends LinearLayout{
 	private List<OptionLayout> checkboxList = new ArrayList<OptionLayout>();
@@ -133,7 +134,7 @@ public class CheckBoxGroup extends LinearLayout{
 		}
 		for(OptionLayout cb: checkboxList)
 		{
-			if(userAnswer.contains(cb.getValue()))
+			if(StringUtils.isEmpty(userAnswer) && userAnswer.contains(cb.getValue()))
 			{
 				cb.setFontColor(wrongColor);
 				cb.setButtonDrawable(R.drawable.exercise_option_f);

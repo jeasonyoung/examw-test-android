@@ -1,13 +1,10 @@
 package com.examw.test.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +17,7 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.adapter.AnswerCardStructureListAdatper;
+import com.examw.test.adapter.AnswerScoreGridAdatper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.util.GsonUtil;
 import com.google.gson.reflect.TypeToken;
@@ -36,14 +34,11 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private GridView scoreGridView;
 	private ListView questionListView;
 	private List<StructureInfo> ruleList;
-	private int[] tOrF;
-	private String action,ruleListJson,questionListJson;
+	private String action,ruleListJson;
 	private String[] data ;
 	private int[] trueOfFalse;
 	private Intent intent;
-	private String username;
-	private SparseBooleanArray isDone;
-//	private ExamRecord r;
+	private String paperId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,7 +61,6 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		this.scoreLayout = (LinearLayout) this.findViewById(R.id.exam_scoreLayout);
 		this.loadingLayout = (LinearLayout) this.findViewById(R.id.loadingLayout);
 		this.nodataLayout = (LinearLayout) this.findViewById(R.id.nodataLayout);
-//		this.examDirectoryLayout = (LinearLayout) this.findViewById(R.id.examDirectoryLayout);
 		this.scoreGridView = (GridView) this.findViewById(R.id.scoreGridView);
 		this.questionListView = (ListView) this.findViewById(R.id.question_directoryListView);
 		this.lookBtn = (LinearLayout) this.findViewById(R.id.question_directory_lookBtn_Layout);
@@ -80,10 +74,10 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	{
 		intent = this.getIntent();
 		this.action = intent.getStringExtra("action");
+		this.paperId = intent.getStringExtra("paperId");
 		this.ruleListJson = intent.getStringExtra("ruleListJson");
 		this.ruleList = GsonUtil.getGson().fromJson(ruleListJson, new TypeToken<ArrayList<StructureInfo>>(){}.getType());
 		this.trueOfFalse = GsonUtil.getGson().fromJson(intent.getStringExtra("trueOfFalse"), int[].class);
-		Log.d(TAG,Arrays.toString(trueOfFalse));
 	}
 	private void initView()
 	{
@@ -94,7 +88,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 			this.loadingLayout.setVisibility(View.GONE);
 			if(this.ruleList!=null&&this.ruleList.size()>0)
 			{
-				this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse));
+				this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,false));
 			}else
 			{
 				this.nodataLayout.setVisibility(View.VISIBLE);
@@ -103,23 +97,24 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		{
 			this.scoreLayout.setVisibility(View.VISIBLE);
 			this.data = new String[10];
-			this.data[0] = "试题总分:"+intent.getIntExtra("paperScore",0)+"分";//总分
+			int hasDone = intent.getIntExtra("hasDoneNum",0);
+			this.data[0] = "试题总分:"+intent.getDoubleExtra("paperScore",0)+"分";//总分
 			this.data[1] = "试题限时:"+intent.getIntExtra("paperTime",0)+"分钟";//总时
 			this.data[2] = "本次得分:"+intent.getDoubleExtra("userScore",0)+"分";//本次得分[红色]
 			this.data[3] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
-			this.data[4] = "已做:"+isDone.size()+"题";//已做
-			this.data[5] = "未做:"+(tOrF.length-isDone.size())+"题";//未做
+			this.data[4] = "已做:"+hasDone+"题";//已做
+			this.data[5] = "未做:"+(trueOfFalse.length-hasDone)+"题";//未做
 			int right = getRightNum();
-			this.data[6] = "做对:"+right+"题";//做对
-			this.data[7] = "做错:"+(isDone.size()-right)+"题";//做错
-			this.data[8] = "共计:"+tOrF.length+"题";//共计题
-			if(isDone.size()==0)
+			this.data[6] = "做对:"+right+"题";	//做对
+			this.data[7] = "做错:"+(hasDone - right)+"题";	//做错
+			this.data[8] = "共计:"+trueOfFalse.length+"题";		//共计题
+			if(hasDone ==0)
 			{
 				this.data[9] = "正确率:0.0%";
 			}else
-				this.data[9] = "正确率:"+(((int)(right*10000/isDone.size())/100.0))+"%";//正确率
-//			this.scoreGridView.setAdapter(new QuestionGridAdapter2(this,null,data));
-//			this.questionListView.setAdapter(new ChooseListAdapter2(this,this,tOrF,action));
+				this.data[9] = "正确率:"+(((int)(right*10000/hasDone)/100.0))+"%";//正确率
+			this.scoreGridView.setAdapter(new AnswerScoreGridAdatper(this,data));
+			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
 			this.loadingLayout.setVisibility(View.GONE);
 		}else
 		{
@@ -132,7 +127,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	{
 		//将错题加入错题集
 		int count = 0;
-		for(int i:tOrF)
+		for(int i:trueOfFalse)
 		{
 			if(i==1)
 			{
@@ -140,30 +135,6 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 			}
 		}
 		return count;
-//		StringBuilder errorBuf = new StringBuilder();
-//		for(ExamQuestion q:questionList)
-//		{
-//			if(q.getAnswer().equals(q.getUserAnswer()))
-//			{
-//				count++;
-//			}
-//			if("submitPaper".equals(action)&&q.getUserAnswer()!=null&&!q.getUserAnswer().equals(q.getAnswer()))
-//			{
-//				errorBuf.append(q.getQid()).append("_").append(q.getUserAnswer()).append("_").append(q.getAnswer()).append(":");
-//				ExamErrorQuestion error = new ExamErrorQuestion(q.getQid(),username,paperId,q.getUserAnswer());
-//				dao.insertError(error);
-//			}
-//		}
-//		if(errorBuf.length()>0)
-//		{
-//			final String error = errorBuf.substring(0,errorBuf.length()-1); 	//11.11修改
-//			new Thread(){
-//				public void run() {
-//					((AppContext) getApplication()).uploadError(error);
-//				};
-//			}.start();
-//		}
-//		return count;
 	}
 	@Override
 	public void onClick(View v) {
@@ -220,24 +191,13 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		}else
 		{
 			//启动DoExamQuestion
-//			Intent mIntent = new Intent(this,QuestionDoExamActivity2.class);
-//			mIntent.putExtra("action", "DoExam");
-//			mIntent.putExtra("paperName", r.getPapername());
-//			mIntent.putExtra("paperId", r.getPaperId());
-//			mIntent.putExtra("ruleListJson",ruleListJson);
-//			mIntent.putExtra("username", username);
-//			mIntent.putExtra("tempTime",0);
-//			mIntent.putExtra("paperTime", r.getPapertime());
-//			mIntent.putExtra("paperScore", r.getPaperscore());
-//			r.setTempAnswer("");
-//			r.setIsDone(null);
-//			r.setTempTime(r.getPapertime()*60);
-//			dao.saveOrUpdateRecord(r);
-////			setNull4UserAnswer();
-////			mIntent.putExtra("questionListJson", gson.toJson(questionList));
-//			this.startActivity(mIntent);
+			Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
+			mIntent.putExtra("action", "DoExam");
+			mIntent.putExtra("paperId", paperId);
+			this.startActivity(mIntent);
 		}
 	}
+	//TODO 选择项
 	public void showAnswer(int cursor)
 	{
 		if("submitPaper".equals(action))
@@ -251,7 +211,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		}else if("chooseQuestion".equals(action)||"otherChooseQuestion".equals(action))
 		{
 			Intent data=new Intent();  
-         	data.putExtra("action", "showQuestionWithAnswer");  
+         	data.putExtra("action", "DoExam");  
          	data.putExtra("cursor", cursor);  
          	//设置请求代码  
          	this.setResult(20, data);  
@@ -270,20 +230,11 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		else
 		{
 			//启动DoExamQuestion
-//			Intent mIntent = new Intent(this,QuestionDoExamActivity2.class);
-//			mIntent.putExtra("action", "showQuestionWithAnswer");  
-//			mIntent.putExtra("paperName", r.getPapername());
-//			mIntent.putExtra("paperId", r.getPaperId());
-//			mIntent.putExtra("ruleListJson",ruleListJson);
-//			mIntent.putExtra("username", username);
-//			mIntent.putExtra("cursor", cursor);
-//			mIntent.putExtra("tempTime", r.getTempTime());
-//			mIntent.putExtra("paperTime", r.getPapertime());
-//			mIntent.putExtra("paperScore", r.getPaperscore());
-////			mIntent.putExtra("questionListJson", questionListJson);
-//			this.startActivity(mIntent);
+			Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
+			mIntent.putExtra("action", "DoExam");
+			mIntent.putExtra("paperId", paperId);
+			this.startActivity(mIntent);
 		}
-			//��doexamQuestion
 	}
 	public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent)
 	{

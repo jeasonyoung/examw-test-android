@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -46,7 +47,8 @@ import android.widget.Scroller;
  * 
  */
 public class ViewFlow extends AdapterView<Adapter> {
-
+	private static final String TAG = "ViewFlow";
+	
 	private static final int SNAP_VELOCITY = 1000;
 	private static final int INVALID_SCREEN = -1;
 	private final static int TOUCH_STATE_REST = 0;
@@ -74,6 +76,9 @@ public class ViewFlow extends AdapterView<Adapter> {
 	private AdapterDataSetObserver mDataSetObserver;
 	private FlowIndicator mIndicator;
 	private int mLastOrientation = -1;
+	
+	//AddByFW 2014.12.10
+	private TranslateAnimation translateAnimation;
 
 	private OnGlobalLayoutListener orientationChangeListener = new OnGlobalLayoutListener() {
 
@@ -138,6 +143,10 @@ public class ViewFlow extends AdapterView<Adapter> {
 				.get(getContext());
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+		//AddByFW 2014.12.10
+		translateAnimation = new TranslateAnimation(-300f, 0f, 0, 0);
+		translateAnimation.setDuration(500);
+		
 	}
 
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -446,7 +455,30 @@ public class ViewFlow extends AdapterView<Adapter> {
 		mScroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);
 		invalidate();
 	}
-
+	/**
+	 * 滑动至下一题
+	 */
+	public boolean snapToNext()
+	{
+		if(mCurrentScreen < getChildCount() - 1)
+		{
+			snapToScreen(mCurrentScreen + 1);
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 滑动至上一题
+	 */
+	public boolean snapToPrevious(){
+		if(mCurrentScreen > 0)
+		{
+			snapToScreen(mCurrentScreen - 1);
+			return true;
+		}
+		return false;
+		
+	}
 	@Override
 	public void computeScroll() {
 		if (mScroller.computeScrollOffset()) {
@@ -569,10 +601,13 @@ public class ViewFlow extends AdapterView<Adapter> {
 		
 		position = Math.max(position, 0);
 		position = Math.min(position, mAdapter.getCount()-1);
-
+		
 		recycleViews();
 
 		View currentView = makeAndAddView(position, true);
+		//AddByFW 2014.12.10.
+		currentView.startAnimation(translateAnimation);
+		
 		mLoadedViews.addLast(currentView);
 
 		if (mViewInitializeListener != null)

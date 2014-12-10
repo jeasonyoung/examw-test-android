@@ -2,7 +2,6 @@ package com.examw.test.dao;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,7 +24,7 @@ public class PaperRecordDao {
 	 * @param record
 	 * @return
 	 */
-	public static boolean saveOrUpdate(PaperRecord record)
+	public static boolean save(PaperRecord record)
 	{
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
@@ -35,25 +34,11 @@ public class PaperRecordDao {
 		 */
 		if (record == null)	return false;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
-		Cursor cursor = db
-				.rawQuery("select * from PaperRecordTab where paperId = ? and userName = ?",
-						new String[] { record.getPaperId(), record.getUserName() });
-		if (cursor.getCount() > 0) {
-			Log.d(TAG,"更新考试记录");
-			cursor.close();
-			String sql = "update PaperRecordTab set score = ?,useTime=?,lasttime = datetime(?),status = ?,rightNum = ? where paperid = ? and username = ? ";
-			Object[] params = new Object[] { record.getScore(), record.getUsedTime(),
-										record.getLastTime(),record.getStatus(),record.getRightNum()};
-			db.execSQL(sql, params);
-			db.close();
-			return true;
-		}
 		Log.d(TAG,"插入考试记录");
-		cursor.close();
-		String sql = "insert into PaperRecordTab(recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "insert into PaperRecordTab(recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,torf) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		Object[] params = new Object[] {
-			UUID.randomUUID().toString(),record.getPaperId(),record.getPaperName(),record.getPaperType(),
-			record.getUserId(),record.getUserName(),AppConfig.PRODUCTID,AppConfig.TERMINALID,record.getStatus(),0,0,0
+			record.getRecordId(),record.getPaperId(),record.getPaperName(),record.getPaperType(),
+			record.getUserId(),record.getUserName(),AppConfig.PRODUCTID,AppConfig.TERMINALID,record.getStatus(),0,0,0,record.getTorf()
 		};
 		db.execSQL(sql, params);
 		db.close();
@@ -74,7 +59,7 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime from PaperRecordTab order by lastTime desc ";
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab order by lastTime desc ";
 		String[] params = new String[] {};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
@@ -87,7 +72,7 @@ public class PaperRecordDao {
 					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
 					cursor.getString(5), cursor.getString(6),cursor.getString(7),
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13));
+					cursor.getString(12),cursor.getString(13),cursor.getString(14));
 		cursor.close();
 		db.close();
 		return record;
@@ -115,7 +100,7 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime from s where recordId = ? ";
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from s where recordId = ? ";
 		String[] params = new String[] {};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
@@ -128,7 +113,7 @@ public class PaperRecordDao {
 					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
 					cursor.getString(5), cursor.getString(6),cursor.getString(7),
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13));
+					cursor.getString(12),cursor.getString(13),cursor.getString(14));
 		cursor.close();
 		db.close();
 		return record;
@@ -144,7 +129,7 @@ public class PaperRecordDao {
 	{
 		Log.d(TAG,String.format("查询[paperId = %1$s,userName = %2$s]的最新考试记录", paperId,userName));
 		SQLiteDatabase db = UserDBUtil.getDatabase();
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime from PaperRecordTab where paperId = ? and userName = ?";
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where paperId = ? and userName = ?";
 		String[] params = new String[] {paperId,userName};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
@@ -157,7 +142,7 @@ public class PaperRecordDao {
 					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
 					cursor.getString(5), cursor.getString(6),cursor.getString(7),
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13));
+					cursor.getString(12),cursor.getString(13),cursor.getString(14));
 		cursor.close();
 		//是否带上试题 
 		if(withItems)
@@ -181,5 +166,58 @@ public class PaperRecordDao {
 		}
 		db.close();
 		return record;
+	}
+	/**
+	 * 更新考试记录
+	 * @param record
+	 */
+	public static void updatePaperRecord(PaperRecord record){
+		Log.d(TAG,"更新考试记录"); 
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		String sql = "update PaperRecordTab set score = ?,useTime=?,lasttime = datetime(?),status = ?,rightNum = ?,torf = ? where recordId = ? ";
+		Object[] params = new Object[] { record.getScore(), record.getUsedTime(),
+									record.getLastTime(),record.getStatus(),record.getRightNum(),record.getTorf(),record.getRecordId()};
+		db.execSQL(sql, params);
+		if(record.getItems()!=null && record.getItems().size()>0)
+		{
+			db.execSQL("delete from ItemRecordTab where recordId = ? "); //先删除原来的考试记录
+			ArrayList<ItemRecord> list = record.getItems();
+			String insertSql = "insert into ItemRecordTab(recordId,structureId,itemId,itemContent,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,datetime(?),datetime(?))";
+			for(ItemRecord item:list)
+			{
+				//插入试题的考试记录recordId ,structureId ,itemId ,itemContent ,answer ,termialId ,status ,score ,useTime ,createTime lastTime
+				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
+				db.execSQL(insertSql, attrs);
+			}
+		}
+		db.close();
+	}
+	
+	private static void saveOrUpdateItem(SQLiteDatabase db,ItemRecord item)
+	{
+		Cursor cursor = db.rawQuery("select * from ItemRecordTab where itemId = ? and recordId = ?", new String[]{item.getItemId(),item.getRecordId()});
+		if(cursor.getCount() > 0)
+		{
+			cursor.close();
+			//更新
+			db.execSQL("update ItemRecordTab set answer = ?,status = ?,score=?,lasttime = datetime(?) where itemId = ? and recordId = ?",
+					new Object[]{item.getAnswer(),item.getStatus(),item.getScore().doubleValue(),item.getLastTime(),item.getItemId(),item.getRecordId()});
+			return;
+		}
+		cursor.close();
+		//插入
+		db.execSQL("insert into ItemRecordTab(recordId,structureId,itemId,itemContent,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,datetime(?),datetime(?))", 
+				new Object[]{item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
+	}
+	/**
+	 * 插入或更新item
+	 * @param item
+	 */
+	public static void saveOrUpdateItem(ItemRecord item)
+	{
+		if(item == null) return;
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		saveOrUpdateItem(db, item);
+		db.close();
 	}
 }
