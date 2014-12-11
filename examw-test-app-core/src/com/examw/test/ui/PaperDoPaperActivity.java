@@ -33,7 +33,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,6 +50,7 @@ import com.examw.test.adapter.QuestionAdapter.ContentViewHolder;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
+import com.examw.test.dao.FavoriteDao;
 import com.examw.test.dao.PaperDao;
 import com.examw.test.dao.PaperRecordDao;
 import com.examw.test.domain.FavoriteItem;
@@ -72,7 +72,6 @@ import com.examw.test.widget.QuestionMaterialLayout;
 
 /**
  * 试卷考试界面 继续考试,查看答案
- * 
  * @author fengwei.
  * @since 2014年12月8日 上午9:00:02.
  */
@@ -85,19 +84,16 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	private TextView timeCountDown;
 	private LinearLayout nodataLayout, loadingLayout;
 	private RelativeLayout ruleTitleLayout;
-	private EditText answerEditText;
 	// 数据
 	private String username;
 	private String paperId;
 	private String action;
-	private StringBuilder favorQids;
 	private int paperTime, time;
 	private double paperScore;
 	private List<StructureInfo> ruleList;
 	private ArrayList<StructureItemInfo> questionList;
 	private StructureItemInfo currentQuestion;
 	private Integer questionCursor;
-	private int initCursor;
 	private StructureInfo currentRule;
 	private PaperRecord record;
 	private FavoriteItem favor;
@@ -105,7 +101,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	// 计时器
 	private Handler timeHandler;
-	private static boolean timerFlag = true;
+	private boolean timerFlag = true;
+	private boolean hasRecordSaved = false;
 	// 选择弹出框
 	private PopupWindow popupWindow;
 	private ListView lv_group;
@@ -114,7 +111,6 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	private PopupWindow menuPop;
 	// 提示界面
 	private PopupWindow tipWindow;
-	private Handler mHandler;
 	private SharedPreferences guidefile;
 	// 数据库操作
 	private ViewFlow viewFlow;
@@ -133,13 +129,15 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "考试界面启动");
+		Log.d(TAG, "考试界面启动onCreate");
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_do_real_paper);
 		preferences = this.getSharedPreferences("wdkaoshi", 0);
 		if (preferences.getInt("isFullScreen", 0) == 1) {
 			setFullScreen();
 		}
+		timerFlag = true;
+		hasRecordSaved = false;
 		initView();
 		initData();
 		// 数据初始化
@@ -204,6 +202,12 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			@Override
 			public void onSwitched(View view, int position) {
 				questionCursor = position;
+				//收藏试题
+				if (favor != null && favor.isNeedDelete() != null) {
+					FavoriteDao.favorOrCancel(favor);
+					favor = null;
+					if(currentQuestion!=null) currentQuestion.setIsCollected(!favor.isNeedDelete());
+				}
 				currentQuestion = questionList.get(position);
 				if (!StringUtils.isEmpty(currentQuestion.getParentContent())) {
 					material.setVisibility(View.VISIBLE);
@@ -215,7 +219,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					StructureInfo currentRule = getCurrentRule(currentQuestion);
 					examTypeTextView.setText(currentRule.getTitle());
 				}
-				if (currentQuestion.getIsCollected()) {
+				if (Boolean.TRUE.equals(currentQuestion.getIsCollected())) {
 					favoriteBtn.setImageResource(R.drawable.exam_favorited_img);
 				} else {
 					favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
@@ -237,19 +241,6 @@ public class PaperDoPaperActivity extends BaseActivity implements
 							.getTag(R.id.tag_first)).examOption
 							.forbidden(false);
 				}
-				if (favor != null && favor.getItemId() != null) {
-					// 收藏一个
-					System.out.println("收藏或者取消了收藏");
-					new Thread() {
-						public void run() {
-							// if (favor.isNeedDelete()) {
-							// dao.deleteFavor(favor);
-							// } else
-							// dao.insertFavor(favor);
-							// favor.setQid(null);
-						};
-					}.start();
-				}
 			}
 
 			private StructureInfo getCurrentRule(
@@ -266,11 +257,10 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	// 初始化数据
 	private void initData() {
+		Log.d(TAG,"初始化数据");
 		// 数据初始化
 		guidefile = this.getSharedPreferences("guidefile", 0);
-		action = getIntent().getStringExtra("action");
 		timeHandler = new TimerHandler(this);
-		mHandler = new Handler();
 		handler = new MyHandler(this);
 
 		Intent intent = getIntent();
@@ -285,15 +275,14 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			public void run() {
 				try {
 					String content = PaperDao.findPaperContent(paperId);
-					record = PaperRecordDao.findLastPaperRecord(paperId,
-							username, true);
+					record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
 					if (StringUtils.isEmpty(content)) {
 						handler.sendEmptyMessage(-1);
 						return;
 					}
-					PaperPreview paper = GsonUtil.jsonToBean(content,
-							PaperPreview.class);
-					if (record == null) // 保存考试记录
+					PaperPreview paper = GsonUtil.jsonToBean(content,PaperPreview.class);
+					//是做题模式,若找到最新的记录已经做完则添加新的纪录
+					if ("DoExam".equals(action) && (record == null || AppConstant.STATUS_DONE.equals(record.getStatus()))) // 保存考试记录
 					{
 						record = new PaperRecord();
 						record.setRecordId(UUID.randomUUID().toString());
@@ -303,6 +292,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 						record.setStatus(AppConstant.STATUS_NONE);
 						record.setScore(0.0);
 						record.setPaperName(paper.getName());
+						record.setPaperType(paper.getType());
 						record.setCreateTime(StringUtils
 								.toStandardDateStr(new Date()));
 						record.setTerminalId(AppConfig.TERMINALID);
@@ -314,12 +304,19 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					itemRecords = record.getItems(); // 考试题目记录
 					ruleList = paper.getStructures();
 					// 初始化试题数据
-					questionList = DataConverter.findItems(ruleList,
-							itemRecords);
-					tOrF = new int[questionList.size()]; // 对错
+					questionList = DataConverter.findItems(ruleList,itemRecords,username);
+					//初始化答题情况
+					if(!StringUtils.isEmpty(record.getTorf()))
+						tOrF = GsonUtil.jsonToBean(record.getTorf(), int[].class);
+					else
+						tOrF = new int[questionList.size()]; // 对错
 					paperTime = paper.getTime() * 60 - record.getUsedTime(); // 考试剩余时间
 					paperScore = paper.getScore().doubleValue();
 					time = paper.getTime() * 60;
+					if("DoExam".equals(action))
+					{
+						questionCursor = getInitCursor(tOrF);	//初始化选项
+					}
 					Message msg = handler.obtainMessage();
 					msg.what = 1;
 					msg.arg1 = questionCursor;
@@ -329,6 +326,15 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					return;
 				}
 			};
+			private int getInitCursor(int[] torf)
+			{
+				for(int i=0;i<torf.length;i++)
+				{
+					if(torf[i] == 0 )
+						return i; 
+				}
+				return 0;
+			}
 		}.start();
 	}
 
@@ -366,7 +372,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 						.setText(getTimeText(theActivity.paperTime));
 				if (theActivity.paperTime == 0) {
 					// 交卷
-					timerFlag = false;
+					theActivity.timerFlag = false;
 					Toast.makeText(theActivity, "Time Over", Toast.LENGTH_LONG)
 							.show();
 					theActivity.submitExam();
@@ -402,29 +408,33 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		public void handleMessage(Message msg) {
 			PaperDoPaperActivity q2 = weak.get();
 			switch (msg.what) {
-			case 1:
-				if ("DoExam".equals(q2.action)
-						|| "showQuestionWithAnswer".equals(q2.action)) {
+			case 1:		//初始化完成
+				Log.d(TAG,"数据初始化完成");
+				if ("DoExam".equals(q2.action) || "showQuestionWithAnswer".equals(q2.action)) {
 					if (q2.ruleList != null && q2.ruleList.size() > 0) {
 						q2.currentRule = q2.ruleList.get(0);
 						q2.examTypeTextView.setText(q2.currentRule.getTitle()); // 大题名字
-						// q2.ruleTypeLayout.setOnClickListener(q2);
-						q2.questionCursor = msg.arg1;
-						// 初始化已经选择了0
-						// q2.viewFlow.setSelection(q2.questionCursor);
 					} else {
 						q2.nodataLayout.setVisibility(0);
+						return;
 					}
 				}
-				q2.questionAdapter = new QuestionAdapter(q2, q2,
-						q2.questionList, q2.username, q2.paperId);
+				//初始化题目适配器
+				q2.questionAdapter = new QuestionAdapter(q2, q2,q2.questionList, q2.username, q2.paperId);
 				q2.viewFlow.setAdapter(q2.questionAdapter);
+				q2.questionCursor = msg.arg1;
+				// 初始化已经选择了0
+				if(q2.questionCursor!=0)
+					q2.viewFlow.setSelection(q2.questionCursor);
 				q2.loadingLayout.setVisibility(View.GONE);
+				//若第一次考试,显示提示
 				int firstExam = q2.guidefile.getInt("isFirstExam", 0);
 				if (firstExam == 0 && "DoExam".equals(q2.action)) {
 					// q2.openPopupwin();
 				}
-				q2.new TimerThread().start(); // 时间线程启动
+				//如果是考试,则启动时间线程
+				if("DoExam".equals(q2.action))
+					q2.new TimerThread().start(); // 时间线程启动
 				break;
 			case 33: // 切题
 				q2.nextQuestion();	//自动切换到下一题
@@ -459,7 +469,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			favorQuestion();
 			break;
 		case R.id.btn_goback: // 返回
-			if ("DoExam".equals(action)) {
+			if ("DoExam".equals(action) || !nodataLayout.isShown()) {
 				showDialog();
 			} else {
 				this.finish();
@@ -469,6 +479,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			if (ruleList != null && ruleList.size() > 0) {
 				showStructureWindow(v);
 			}
+			break;
 		case R.id.answerBtn:	//答案按钮
 			submitOrSeeAnswer();
 			break;
@@ -500,37 +511,34 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	// 收藏
 	private void favorQuestion() {
 		currentQuestion = questionList.get(questionCursor);
-		String qid = currentQuestion.getId();
-		favor.setItemId(qid);
-		favor.setUsername(((AppContext) getApplication()).getUsername());
-		if ("myFavors".equals(action)) {
-			// 表示已经收藏了,现在要取消收藏
-			if (favorQids.indexOf(qid) == -1) {
-				Toast.makeText(this, "已经取消", Toast.LENGTH_SHORT).show();
-				return;
+		if(favor == null)
+		{
+			if(currentQuestion.getIsCollected() == null)
+			{
+				favor = new FavoriteItem();
+				favor.setItemId(currentQuestion.getId());
+				favor.setItemContent(GsonUtil.objectToJson(currentQuestion));
+				favor.setSubjectId(currentQuestion.getSubjectId());
+				favor.setItemType(currentQuestion.getType());
+				favor.setUserAnswer(currentQuestion.getUserAnswer());
+				favor.setUsername(((AppContext) getApplication()).getUsername());
+			}else{
+				favor = new FavoriteItem();
+				favor.setItemId(currentQuestion.getId());
+				favor.setUsername(username);
+				favor.setNeedDelete(!currentQuestion.getIsCollected());
 			}
-			this.favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
-			// dao.deleteFavor(favor);
-			favor.setNeedDelete(true);
-			favorQids.replace(favorQids.indexOf(qid), favorQids.indexOf(qid)
-					+ qid.length() + 1, "");
-			Toast.makeText(this, "取消成功,下次不再显示", Toast.LENGTH_SHORT).show();
-			return;
 		}
-		if (favorQids.indexOf(qid) != -1) {
-			this.favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
-			favorQids.replace(favorQids.indexOf(qid), favorQids.indexOf(qid)
-					+ qid.length() + 1, "");
-			favor.setNeedDelete(true);
-			Toast.makeText(this, "取消收藏", Toast.LENGTH_SHORT).show();
-			return;
-		} else {
-			// 没收藏,要收藏
+		if(favor.isNeedDelete() == null || favor.isNeedDelete())	//需要删除表示未收藏状态
+		{
 			this.favoriteBtn.setImageResource(R.drawable.exam_favorited_img);
-			// dao.insertFavor(favor);
-			favorQids.append(qid).append(",");
+			favor.setNeedDelete(false);
 			Toast.makeText(this, "收藏成功", Toast.LENGTH_SHORT).show();
+			return;
 		}
+		this.favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
+		favor.setNeedDelete(currentQuestion.getIsCollected() == null?null:true);
+		Toast.makeText(this, "取消收藏", Toast.LENGTH_SHORT).show();
 	}
 	//交卷或者查看隐藏答案
 	@Override
@@ -592,6 +600,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		if (currentRecord == null) {
 			currentRecord = new ItemRecord();
 			currentRecord.setItemId(currentQuestion.getId());
+			currentRecord.setItemType(currentQuestion.getType());
 			currentRecord.setItemContent(GsonUtil.objectToJson(currentQuestion));
 			currentRecord.setCreateTime(StringUtils.toStandardDateStr(new Date()));
 			currentRecord.setRecordId(record.getRecordId());
@@ -615,7 +624,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			return false;
 		}
 		// 题目没有答案
-		if (StringUtils.isEmpty(item.getAnalysis())) { // 没有正确答案(题目有问题)
+		if (StringUtils.isEmpty(item.getAnswer())) { // 没有正确答案(题目有问题)
 			itemRecord.setScore(BigDecimal.ZERO); // 得0分或者负分
 			itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 算答错
 			tOrF[questionCursor] = AppConstant.ANSWER_WRONG; // 对错表
@@ -623,7 +632,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		}
 		// 单选题或判断题
 		if (item.isSingle()) {
-			if (itemRecord.getAnswer().equals(answer)) // 答对
+			if (answer.equals(item.getAnswer())) // 答对
 			{
 				itemRecord.setScore(per); // 得标准分
 				itemRecord.setStatus(AppConstant.ANSWER_RIGHT);// 答对
@@ -655,7 +664,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					total++;
 				}
 			}
-			if (total == answer.split(",").length) { // 全对,得满分
+			if (total == arr.length) { // 全对,得满分
 				itemRecord.setScore(per); // 得标准分
 				itemRecord.setStatus(AppConstant.ANSWER_RIGHT);// 答对
 				tOrF[questionCursor] = AppConstant.ANSWER_RIGHT;
@@ -684,6 +693,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		currentQuestion.setUserAnswer(txtAnswer);
 		ItemRecord itemRecord = getItemRecord();
 		itemRecord.setAnswer(txtAnswer);
+		itemRecord.setScore(BigDecimal.ZERO);
+		itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 少选
 		Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
 	}
 
@@ -711,7 +722,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			if(ruleScore.compareTo(BigDecimal.ZERO)==-1) ruleScore = BigDecimal.ZERO;
 			userScore = userScore.add(ruleScore);
 		}
-		record.setRightNum(getRightNum());
+		record.setRightNum(DataConverter.getRightNum(tOrF));
 		record.setScore(userScore.doubleValue());
 		record.setTorf(GsonUtil.objectToJson(tOrF));
 	}
@@ -745,41 +756,41 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			int width = (int) (wm.getDefaultDisplay().getWidth() / 2.4);
 			popupWindow = new PopupWindow(view, width,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
+			// 使其聚集
+			popupWindow.setFocusable(true);
+			// 设置允许在外点击消失
+			popupWindow.setOutsideTouchable(true);
+			// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+			popupWindow.setBackgroundDrawable(new ColorDrawable(00000000));
+			//设置大题项的点击事件
+			lv_group.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> adapterView, View view,
+						int position, long id) {
+					// 切题,改变大题名称,切到该大题第一题
+					// 当前大题
+					StructureInfo rule = PaperDoPaperActivity.this.ruleList
+							.get(position);
+					int questionPosition = 0;
+					for (int i = position - 1; i >= 0; i--) {
+						questionPosition += PaperDoPaperActivity.this.ruleList.get(
+								i).getTotal();
+					}
+					PaperDoPaperActivity.this.examTypeTextView.setText(rule
+							.getTitle());
+					PaperDoPaperActivity.this.questionAdapter.clearCheck();
+					PaperDoPaperActivity.this.questionCursor = questionPosition; // cursor从0开始
+					PaperDoPaperActivity.this.viewFlow.setSelection(questionCursor);
+					if (popupWindow != null) {
+						popupWindow.dismiss();
+					}
+				}
+			});
 		}
-		// 使其聚集
-		popupWindow.setFocusable(true);
-		// 设置允许在外点击消失
-		popupWindow.setOutsideTouchable(true);
-		// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
-		popupWindow.setBackgroundDrawable(new ColorDrawable(00000000));
 		// 显示的位置为:屏幕的宽度的一半-PopupWindow的高度的一半
 		int xPos = parent.getWidth() / 2 - popupWindow.getWidth() / 2;
 		popupWindow.showAsDropDown(parent, xPos, -5);
-
-		lv_group.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view,
-					int position, long id) {
-				// 切题,改变大题名称,切到该大题第一题
-				// 当前大题
-				StructureInfo rule = PaperDoPaperActivity.this.ruleList
-						.get(position);
-				int questionPosition = 0;
-				for (int i = position - 1; i >= 0; i--) {
-					questionPosition += PaperDoPaperActivity.this.ruleList.get(
-							i).getTotal();
-				}
-				PaperDoPaperActivity.this.examTypeTextView.setText(rule
-						.getTitle());
-				PaperDoPaperActivity.this.questionAdapter.clearCheck();
-				PaperDoPaperActivity.this.questionCursor = questionPosition; // cursor从0开始
-				PaperDoPaperActivity.this.viewFlow.setSelection(questionCursor);
-				if (popupWindow != null) {
-					popupWindow.dismiss();
-				}
-			}
-		});
 	}
 
 	// 退出考试(不交卷直接退出)
@@ -787,9 +798,13 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		// 更新一次record
 		timerFlag = false;
 		record.setLastTime(StringUtils.toStandardDateStr(new Date()));
-		record.setStatus(AppConstant.STATUS_DONE);
+		record.setStatus(AppConstant.STATUS_NONE);	//还是未做完状态
 		record.setUsedTime((time - paperTime));
-		// PaperRecordDao.saveOrUpdateRecord(record);
+		record.setItems(itemRecords);
+		record.setTorf(GsonUtil.objectToJson(tOrF));
+		hasRecordSaved = true;
+		//TODO 需不需要另加线程
+		PaperRecordDao.updatePaperRecord(record);
 		this.exitDialog.dismiss();
 		this.finish();
 	}
@@ -811,6 +826,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		} else {
 			proDialog.show();
 		}
+		hasRecordSaved = true;
 		new Thread() {
 			public void run() {
 				submitPaper();// 交卷
@@ -830,7 +846,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
 		if ((paramKeyEvent.getKeyCode() == 4)
 				&& (paramKeyEvent.getRepeatCount() == 0)) {
-			if ("DoExam".equals(action)) {
+			if ("DoExam".equals(action) || !nodataLayout.isShown()) {
 				showDialog();
 				return true;
 			}
@@ -906,12 +922,11 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		// 绑数据
 		if ("DoExam".equals(action) || "practice".equals(action)) {
 			mIntent.putExtra("action", "chooseQuestion");
-			mIntent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
-			mIntent.putExtra("trueOfFalse", GsonUtil.objectToJson(tOrF));
 		} else {
 			mIntent.putExtra("action", "otherChooseQuestion");
-			// mIntent.putExtra("questionList", gson.toJson(questionList));
 		}
+		mIntent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
+		mIntent.putExtra("trueOfFalse", GsonUtil.objectToJson(tOrF));
 		this.startActivityForResult(mIntent, 1);
 	}
 	
@@ -928,31 +943,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		mIntent.putExtra("paperid", paperId);
 		mIntent.putExtra("useTime", record.getUsedTime());
 		mIntent.putExtra("userScore", record.getScore()); // 本次得分
-		mIntent.putExtra("hasDoneNum", getHasDone()); // 做了多少题
 		this.startActivityForResult(mIntent, 1);
-	}
-	//获取做了多少题
-	private int getHasDone(){
-		int sum = 0;
-		for(int i=0;i<tOrF.length;i++)
-		{
-			if(tOrF[i]!=0)
-			{
-				sum++;
-			}
-		}
-		return sum;
-	}
-	private int getRightNum(){
-		int sum = 0;
-		for(int i=0;i<tOrF.length;i++)
-		{
-			if(tOrF[i]==1)
-			{
-				sum++;
-			}
-		}
-		return sum;
 	}
 	// 显示考试设置菜单项
 	private void showAnswerSettingPop() {
@@ -1055,6 +1046,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onStart() {
+		Log.d(TAG, "onStart");
 		if ("DoExam".equals(action)) {
 			this.answerBtn.setImageResource(R.drawable.exam_submit_img);
 		} else {
@@ -1065,39 +1057,40 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onResume() {
-		Log.d(TAG, "onResume");
-		if ("DoExam".equals(action) && timerFlag == false) {
+		Log.d(TAG, "onResume, timerFlag="+timerFlag);
+		if ("DoExam".equals(action) && !timerFlag) {
+			Log.d(TAG, "onResume,启动计时线程");
 			timerFlag = true;
 			new TimerThread().start();
 		}
+		hasRecordSaved = false;
 		super.onResume();
 	}
 
 	@Override
 	protected void onPause() {
-		// 保存记录
-		if (record != null) {
+		Log.d(TAG, "onPause");
+		// 保存记录,不重复保存
+		if (record != null && "DoExam".equals(action) && !hasRecordSaved) {
 			record.setLastTime(StringUtils.toStandardDateStr(new Date()));
+			record.setItems(itemRecords);
+			record.setTorf(GsonUtil.objectToJson(tOrF));
+			PaperRecordDao.updatePaperRecord(record);
 			// 保存考试记录
+		}
+		//收藏试题
+		if (favor != null && favor.isNeedDelete() != null) {
+			FavoriteDao.favorOrCancel(favor);
+			favor = null;
+			if(currentQuestion!=null) currentQuestion.setIsCollected(!favor.isNeedDelete());
 		}
 		timerFlag = false;
 		super.onPause();
 	}
 
-	private int calcErrorNum(int[] arr) {
-		if (tOrF == null)
-			return 0;
-		int sum = 0;
-		for (int i = 0; i < arr.length; i++) {
-			if (arr[i] == -1) {
-				sum++;
-			}
-		}
-		return sum;
-	}
-
 	@Override
 	protected void onStop() {
+		Log.d(TAG, "onStop");
 		if (vibrator != null) {
 			vibrator.cancel();
 		}
@@ -1106,6 +1099,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
 		if (exitDialog != null) {
 			exitDialog.dismiss();
 		}

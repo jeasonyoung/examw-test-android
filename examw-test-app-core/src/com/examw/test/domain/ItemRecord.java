@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class ItemRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String recordId,userId,structureId,userName,answer,itemId,itemContent,terminalId;
-	private Integer status;
+	private Integer itemType,status;
 	private BigDecimal score;
 	private String createTime;
 	private String lastTime;
@@ -161,6 +161,23 @@ public class ItemRecord implements Serializable{
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	
+	/**
+	 * 获取 题型
+	 * @return itemType
+	 * 题型
+	 */
+	public Integer getItemType() {
+		return itemType;
+	}
+	/**
+	 * 设置 题型
+	 * @param itemType
+	 * 题型
+	 */
+	public void setItemType(Integer itemType) {
+		this.itemType = itemType;
+	}
 	/**
 	 * 获取 得分
 	 * @return score
@@ -195,17 +212,17 @@ public class ItemRecord implements Serializable{
 	}
 	
 	/**
-	 * 获取 
+	 * 获取 更新时间
 	 * @return lastTime
-	 * 
+	 * 更新时间
 	 */
 	public String getLastTime() {
 		return lastTime;
 	}
 	/**
-	 * 设置 
+	 * 设置 更新时间
 	 * @param lastTime
-	 * 
+	 * 更新时间
 	 */
 	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;

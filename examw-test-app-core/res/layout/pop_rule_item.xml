@@ -11,6 +11,7 @@
         android:layout_marginBottom="3.0dip"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:singleLine="true"
         android:gravity="center" 
         android:padding="8.0dip"
         />

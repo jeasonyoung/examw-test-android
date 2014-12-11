@@ -182,11 +182,11 @@ public class PaperRecordDao {
 		{
 			db.execSQL("delete from ItemRecordTab where recordId = ? "); //先删除原来的考试记录
 			ArrayList<ItemRecord> list = record.getItems();
-			String insertSql = "insert into ItemRecordTab(recordId,structureId,itemId,itemContent,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,datetime(?),datetime(?))";
+			String insertSql = "insert into ItemRecordTab(recordId,structureId,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))";
 			for(ItemRecord item:list)
 			{
 				//插入试题的考试记录recordId ,structureId ,itemId ,itemContent ,answer ,termialId ,status ,score ,useTime ,createTime lastTime
-				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
+				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
 				db.execSQL(insertSql, attrs);
 			}
 		}
@@ -206,8 +206,8 @@ public class PaperRecordDao {
 		}
 		cursor.close();
 		//插入
-		db.execSQL("insert into ItemRecordTab(recordId,structureId,itemId,itemContent,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,datetime(?),datetime(?))", 
-				new Object[]{item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
+		db.execSQL("insert into ItemRecordTab(recordId,structureId,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))", 
+				new Object[]{item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
 	}
 	/**
 	 * 插入或更新item

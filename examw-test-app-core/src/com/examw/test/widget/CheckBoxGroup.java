@@ -134,7 +134,7 @@ public class CheckBoxGroup extends LinearLayout{
 		}
 		for(OptionLayout cb: checkboxList)
 		{
-			if(StringUtils.isEmpty(userAnswer) && userAnswer.contains(cb.getValue()))
+			if(!StringUtils.isEmpty(userAnswer) && userAnswer.contains(cb.getValue()))
 			{
 				cb.setFontColor(wrongColor);
 				cb.setButtonDrawable(R.drawable.exercise_option_f);

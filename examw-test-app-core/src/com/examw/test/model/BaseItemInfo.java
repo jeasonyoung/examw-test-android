@@ -469,7 +469,7 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 		return index;
 	}
 	//增加属性
-	private boolean isCollected;    // 是否被收藏
+	private Boolean isCollected;    // 是否被收藏
 	private String userAnswer;	    // 用户答案
 	private BigDecimal userScore;	// 用户得分
 	private Integer answerStatus;	// 回答状态
@@ -481,7 +481,7 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	 * @return isCollected
 	 * 是否被收藏
 	 */
-	public boolean getIsCollected() {
+	public Boolean getIsCollected() {
 		return isCollected;
 	}
 	/**
@@ -489,7 +489,7 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	 * @param isCollected
 	 * 是否被收藏
 	 */
-	public void setIsCollected(boolean isCollected) {
+	public void setIsCollected(Boolean isCollected) {
 		this.isCollected = isCollected;
 	}
 	/**

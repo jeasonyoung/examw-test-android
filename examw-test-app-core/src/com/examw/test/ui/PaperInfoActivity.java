@@ -140,6 +140,11 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			intent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
 			intent.putExtra("trueOfFalse", record.getTorf());
 			intent.putExtra("action", "showResult");
+			intent.putExtra("paperScore", paper.getScore().doubleValue());
+			intent.putExtra("paperTime", paper.getTime());
+			intent.putExtra("username", username);
+			intent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
+			intent.putExtra("userScore", record.getScore()); // 本次得分
 		}else{
 			intent = new Intent(this, PaperDoPaperActivity.class);
 			intent.putExtra("paperId", paper.getId());

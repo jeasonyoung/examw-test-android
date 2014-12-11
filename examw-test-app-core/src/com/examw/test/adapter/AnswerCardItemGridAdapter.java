@@ -53,14 +53,15 @@ public class AnswerCardItemGridAdapter extends BaseAdapter{
 				v.setBackgroundColor(context.getResources().getColor(R.color.lightbule));
 		}else	//显示正确与否
 		{
-			int colorid = trueOfFalse[Integer.parseInt(data[position])-1]==1?	//答对绿色
+			if(trueOfFalse[Integer.parseInt(data[position])-1]!=0)
+			{
+				int colorid = trueOfFalse[Integer.parseInt(data[position])-1]==1?	//答对绿色
 								context.getResources().getColor(R.color.green)
 									:trueOfFalse[Integer.parseInt(data[position])-1]==-1?	//答错红色
-											context.getResources().getColor(R.color.red)
-												:trueOfFalse[Integer.parseInt(data[position])-1]==2?	//少答橙色
-														context.getResources().getColor(R.color.orange)
-													:context.getResources().getColor(R.color.transparent);	//未答白色
-			v.setBackgroundColor(colorid);
+											context.getResources().getColor(R.color.red):		
+														context.getResources().getColor(R.color.orange);//少答橘色
+				v.setBackgroundColor(colorid);
+			}
 		}
 		return v;
 	};
