@@ -1,6 +1,7 @@
 package com.examw.test.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,9 @@ import android.util.Log;
 import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.domain.Paper;
 import com.examw.test.model.FrontPaperInfo;
+import com.examw.test.model.PaperPreview;
+import com.examw.test.model.StructureInfo;
+import com.examw.test.util.GsonUtil;
 import com.examw.test.util.StringUtils;
 
 /**
@@ -162,6 +166,28 @@ public class PaperDao {
 		return content;
 	}
 	/**
+	 * 查询大题
+	 * @param paperId
+	 * @return
+	 */
+	public static String findPaperStructureContent(String paperId)
+	{
+		Log.d(TAG, String.format("查询试卷[PaperId= %s]的大题内容",paperId));
+		if(StringUtils.isEmpty(paperId)) return null;
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select structures from PaperTab where paperid = ?", new String[]{paperId});
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			db.close();
+			return null;
+		}
+		cursor.moveToNext();
+		String content = cursor.getString(0);
+		cursor.close();
+		db.close();
+		return content;
+	}
+	/**
 	 * 插入试卷的内容
 	 * @return
 	 */
@@ -170,11 +196,31 @@ public class PaperDao {
 		Log.d(TAG, String.format("插入试卷[PaperId= %s]的内容",paperId));
 		if (StringUtils.isEmpty(content) || StringUtils.isEmpty(paperId)) return;
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
-		db.execSQL("update PaperTab set content = ? where paperid = ?", new Object[]{content,paperId});
+		PaperPreview paper = GsonUtil.jsonToBean(content, PaperPreview.class);
+		String ruleContent = getRuleList(paper);
+		db.execSQL("update PaperTab set content = ?,structures = ? where paperid = ?", new Object[]{content,ruleContent,paperId});
 		db.close();
 	}
-	
-
+	//获取大题结构
+	private static String getRuleList(PaperPreview paper)
+	{
+		List<StructureInfo> rules = paper.getStructures();
+		if(rules == null) return "";
+		clearItems(rules);
+		return GsonUtil.objectToJson(paper);
+	}
+	private static void clearItems(List<StructureInfo> rules)
+	{
+		for(StructureInfo info:rules)
+		{
+			if(info == null) continue;
+			if(info.getChildren()!=null && info.getChildren().size()>0)
+			{
+				clearItems(info.getChildren());
+			}
+			info.setItems(null);
+		}
+	}
 //	public PaperList findAllPapers(String classid, int page) {
 //		PaperList list = new PaperList();
 //		SQLiteDatabase db = LibraryDBUtil.getDatabase();

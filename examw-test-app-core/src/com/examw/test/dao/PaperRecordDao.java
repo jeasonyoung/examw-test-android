@@ -8,9 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.examw.test.app.AppConfig;
+import com.examw.test.app.AppConstant;
 import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.ItemRecord;
 import com.examw.test.domain.PaperRecord;
+import com.examw.test.domain.Subject;
+import com.examw.test.util.StringUtils;
 
 /**
  * 考试记录DAO
@@ -90,7 +93,7 @@ public class PaperRecordDao {
 	 * @param recordId
 	 * @return
 	 */
-	public static PaperRecord findById(String recordId)
+	public static PaperRecord findById(String recordId,boolean withItems)
 	{
 		Log.d(TAG,String.format("查询[recordId = %s]的记录", recordId));
 		SQLiteDatabase db = UserDBUtil.getDatabase();
@@ -100,7 +103,7 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from s where recordId = ? ";
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where recordId = ? ";
 		String[] params = new String[] {};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
@@ -115,6 +118,23 @@ public class PaperRecordDao {
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
 					cursor.getString(12),cursor.getString(13),cursor.getString(14));
 		cursor.close();
+		if(withItems)
+		{
+//			/recordId,structureId,itemId,itemContent,answer,termialId,status,score,useTime,createTime
+			String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
+			Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{record.getRecordId()});
+			if (cursorItem.getCount() > 0) {
+				ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
+				while (cursorItem.moveToNext()) {
+					ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
+							cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
+							new BigDecimal(cursorItem.getDouble(5)));
+					items.add(itemRecord);
+				}
+				record.setItems(items);
+			}
+			cursorItem.close();
+		}
 		db.close();
 		return record;
 	}
@@ -150,9 +170,7 @@ public class PaperRecordDao {
 //			/recordId,structureId,itemId,itemContent,answer,termialId,status,score,useTime,createTime
 			String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
 			Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{record.getRecordId()});
-			if (cursorItem.getCount() == 0) {
-				cursorItem.close();
-			}else{
+			if (cursorItem.getCount() > 0) {
 				ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
 				while (cursorItem.moveToNext()) {
 					ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
@@ -162,7 +180,7 @@ public class PaperRecordDao {
 				}
 				record.setItems(items);
 			}
-			
+			cursorItem.close();
 		}
 		db.close();
 		return record;
@@ -182,11 +200,11 @@ public class PaperRecordDao {
 		{
 			db.execSQL("delete from ItemRecordTab where recordId = ? "); //先删除原来的考试记录
 			ArrayList<ItemRecord> list = record.getItems();
-			String insertSql = "insert into ItemRecordTab(recordId,structureId,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))";
+			String insertSql = "insert into ItemRecordTab(recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))";
 			for(ItemRecord item:list)
 			{
 				//插入试题的考试记录recordId ,structureId ,itemId ,itemContent ,answer ,termialId ,status ,score ,useTime ,createTime lastTime
-				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
+				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
 				db.execSQL(insertSql, attrs);
 			}
 		}
@@ -206,8 +224,8 @@ public class PaperRecordDao {
 		}
 		cursor.close();
 		//插入
-		db.execSQL("insert into ItemRecordTab(recordId,structureId,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))", 
-				new Object[]{item.getRecordId(),item.getStructureId(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
+		db.execSQL("insert into ItemRecordTab(recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))", 
+				new Object[]{item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
 	}
 	/**
 	 * 插入或更新item
@@ -219,5 +237,56 @@ public class PaperRecordDao {
 		SQLiteDatabase db = UserDBUtil.getDatabase();
 		saveOrUpdateItem(db, item);
 		db.close();
+	}
+	/**
+	 * 查询用户所有的考试记录
+	 * @param username
+	 * @return
+	 */
+	public static ArrayList<PaperRecord> findRecordsByUsername(String username) {
+		if(StringUtils.isEmpty(username))	return null;
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		/*
+		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
+			private BigDecimal score;
+			private Integer usedTime,rightNum;
+			private Date createTime,lastTime;
+		 */
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab order by lastTime desc ";
+		String[] params = new String[] {};
+		Cursor cursor = db.rawQuery(sql, params);
+		ArrayList<PaperRecord> list = new ArrayList<PaperRecord>();
+		while(cursor.moveToNext())
+		{
+			PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
+					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
+					cursor.getString(5), cursor.getString(6),cursor.getString(7),
+					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
+					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+			list.add(record);
+		}
+		cursor.close();
+		db.close();
+		return list;
+	}
+	public static ArrayList<Subject> getCount(ArrayList<Subject> subjects,String username)
+	{
+		if(username == null) return subjects;
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		for(Subject subject:subjects)
+		{
+			subject.setTotal(getCount(db,subject.getSubjectId(),username));
+		}
+		db.close();
+		return subjects;
+	}
+	
+	private static int getCount(SQLiteDatabase db,String subjectId,String username)
+	{
+		Cursor cursor = db.rawQuery("select count(distinct itemId) from ItemRecordTab where subjectId = ? and username = ? and status = ?", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
+		cursor.moveToNext();
+		int sum = cursor.getInt(0);
+		cursor.close();
+		return sum;
 	}
 }

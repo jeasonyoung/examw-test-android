@@ -1,5 +1,7 @@
 package com.examw.test.dao;
 
+import java.util.ArrayList;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -8,6 +10,7 @@ import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.FavoriteItem;
+import com.examw.test.domain.Subject;
 
 /**
  * 收藏DAO
@@ -73,5 +76,25 @@ public class FavoriteDao {
 		cursor.close();
 		db.close();
 		return AppConstant.STATUS_DONE.equals(status);
+	}
+	public static ArrayList<Subject> getCount(ArrayList<Subject> subjects,String username)
+	{
+		if(username == null) return subjects;
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		for(Subject subject:subjects)
+		{
+			subject.setTotal(getCount(db,subject.getSubjectId(),username));
+		}
+		db.close();
+		return subjects;
+	}
+	
+	private static int getCount(SQLiteDatabase db,String subjectId,String username)
+	{
+		Cursor cursor = db.rawQuery("select count(distinct itemId) from FavoriteTab where subjectId = ? and username = ?", new String[]{subjectId,username});
+		cursor.moveToNext();
+		int sum = cursor.getInt(0);
+		cursor.close();
+		return sum;
 	}
 }

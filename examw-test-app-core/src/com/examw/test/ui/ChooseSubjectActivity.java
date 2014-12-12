@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +25,16 @@ import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
 import com.examw.test.R;
+import com.examw.test.adapter.SubjectListAdapter;
+import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
+import com.examw.test.dao.FavoriteDao;
 import com.examw.test.dao.PaperRecordDao;
 import com.examw.test.dao.ProductDao;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.domain.Subject;
 import com.examw.test.support.ApiClient;
+import com.examw.test.util.ToastUtils;
 
 /**
  * 科目选择
@@ -45,29 +50,64 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	private Button btnLast,btnShowPop;
 	private PopupWindow popWindow;
 	private PaperRecord r;
-	
+	private int action;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_choose_subject);
+		action = getIntent().getIntExtra("action", 0);
 		initViews();
 		initData();
 	}
 	private void initData()
 	{
-		subjects = ProductDao.findSubjects();
-		if(subjects==null||subjects.size()==0)
-		{
-			new GetDataTask().execute();
-		}else
-		{
-			courseList.setAdapter(new ArrayAdapter<Subject>(ChooseSubjectActivity.this,R.layout.item_choose_subject_list,R.id.list_title,subjects));
-		}
+		final Handler handler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				switch(msg.what)
+				{
+				case 0:
+					new GetDataTask().execute();
+				case 1:
+					proDialog.dismiss();
+					courseList.setAdapter(new SubjectListAdapter(ChooseSubjectActivity.this,subjects,action));
+					break;
+				case -1:
+					proDialog.dismiss();
+					ToastUtils.show(ChooseSubjectActivity.this, "暂无记录");
+					break;
+				}
+			}
+		};
+		final String username = ((AppContext) getApplication()).getUsername();
+		proDialog = ProgressDialog.show(ChooseSubjectActivity.this, null, "加载中...",true, true);
+		proDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		new Thread(){
+			public void run() {
+				try{
+					subjects = ProductDao.findSubjects();
+					if(subjects!=null&&subjects.size()>0)
+					{
+						if(action == AppConstant.ACTION_ERROR)
+							subjects = PaperRecordDao.getCount(subjects, username);
+						else if(action == AppConstant.ACTION_FAVORITE)
+							subjects = FavoriteDao.getCount(subjects, username);
+						handler.sendEmptyMessage(1);
+					}else
+						handler.sendEmptyMessage(0);
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+					handler.sendEmptyMessage(-1);
+				}
+			};
+		}.start();
 	}
 	private void initViews()
 	{
-		((TextView) this.findViewById(R.id.title)).setText("模拟考试");
+		String title = action == AppConstant.ACTION_ERROR?"错题记录":action == AppConstant.ACTION_ERROR?"我的收藏":"模拟考试";
+		((TextView) this.findViewById(R.id.title)).setText(title);
 		this.courseList = (ListView) this.findViewById(R.id.course_list);
 		this.reloadLayout = (LinearLayout) this.findViewById(R.id.reload);//重载视图
 		this.btnShowPop = (Button) this.findViewById(R.id.showPop);	//显示上一次的练习
@@ -76,15 +116,36 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 		this.findViewById(R.id.btn_reload).setOnClickListener(this);//重载按钮
 		this.courseList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Intent intent = new Intent(ChooseSubjectActivity.this,SimulateActivity.class);
-				intent.putExtra("subjectId", subjects.get(arg2).getSubjectId());
-				intent.putExtra("subjectName",subjects.get(arg2).getName());
-				ChooseSubjectActivity.this.startActivity(intent);
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
+				itemClick(subjects.get(arg2));
 			}
 		});
 	}
+	private void itemClick(Subject subject)
+	{
+		Intent intent = null;
+		switch(action)
+		{
+		case AppConstant.ACTION_ERROR:
+		case AppConstant.ACTION_FAVORITE:
+			if(subject.getTotal()==null || subject.getTotal().equals(0))
+			{
+				ToastUtils.show(this, "暂无记录");
+				return;
+			}
+			intent = new Intent(ChooseSubjectActivity.this,PaperDoPracticeActivity.class);
+			intent.putExtra("subjectId", subject.getSubjectId());
+			intent.putExtra("action", action);
+			break;
+		case AppConstant.ACTION_NONE:
+			intent = new Intent(ChooseSubjectActivity.this,SimulateActivity.class);
+			intent.putExtra("subjectId", subject.getSubjectId());
+			intent.putExtra("subjectName",subject.getName());
+			break;
+		}
+		this.startActivity(intent);
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch(v.getId())
@@ -118,9 +179,8 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	{
 		@Override
 		protected void onPreExecute() {
-			proDialog = ProgressDialog.show(ChooseSubjectActivity.this, null, "数据初始化...",
-					true, true);
-			proDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			if(proDialog!=null && !proDialog.isShowing())
+				proDialog.show();
 			super.onPreExecute();
 		}
 		@Override
@@ -215,6 +275,12 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 		super.onStart();
 		if(subjects == null || subjects.size()==0)
 			return;
-		initPop();
+		if(action == AppConstant.ACTION_NONE)
+			initPop();
+	}
+	@Override
+	protected void onDestroy() {
+		if(proDialog != null) proDialog.dismiss();
+		super.onDestroy();
 	}
 }

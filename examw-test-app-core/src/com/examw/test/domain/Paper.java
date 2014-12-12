@@ -2,19 +2,18 @@ package com.examw.test.domain;
 
 import java.io.Serializable;
 
-import org.litepal.crud.DataSupport;
-
 /**
  * 试卷[已经发布过的试卷]
  * @author fengwei.
  * @since 2014年11月27日 下午3:56:12.
  */
-public class Paper extends DataSupport implements Serializable {
+public class Paper implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String paperId,name,description,content,examId,subjectId,sourceName,areaName;
 	private Integer type,price,time,year,total,userTotal;
 	private Double score;
 	private String publishTime;
+	private String structures;
 	/**
 	 * 获取 试卷ID
 	 * @return paperId
@@ -262,6 +261,23 @@ public class Paper extends DataSupport implements Serializable {
 	 */
 	public Integer getUserTotal() {
 		return userTotal;
+	}
+	
+	/**
+	 * 获取 结构json
+	 * @return structures
+	 * 结构json
+	 */
+	public String getStructures() {
+		return structures;
+	}
+	/**
+	 * 设置 结构json
+	 * @param structures
+	 * 结构json
+	 */
+	public void setStructures(String structures) {
+		this.structures = structures;
 	}
 	/**
 	 * 设置 参考人数

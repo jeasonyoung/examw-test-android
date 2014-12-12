@@ -87,6 +87,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	// 数据
 	private String username;
 	private String paperId;
+	private String recordId;
 	private String action;
 	private int paperTime, time;
 	private double paperScore;
@@ -265,6 +266,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 		Intent intent = getIntent();
 		paperId = intent.getStringExtra("paperId");
+		recordId = intent.getStringExtra("recordId");
 		username = ((AppContext) getApplication()).getUsername();
 		action = intent.getStringExtra("action");
 		questionCursor = intent.getIntExtra("cursor", 0);
@@ -275,7 +277,11 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			public void run() {
 				try {
 					String content = PaperDao.findPaperContent(paperId);
-					record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
+					if(!StringUtils.isEmpty(recordId))
+					{
+						record = PaperRecordDao.findById(recordId,true);
+					}else
+						record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
 					if (StringUtils.isEmpty(content)) {
 						handler.sendEmptyMessage(-1);
 						return;
@@ -469,7 +475,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			favorQuestion();
 			break;
 		case R.id.btn_goback: // 返回
-			if ("DoExam".equals(action) || !nodataLayout.isShown()) {
+			if ("DoExam".equals(action) || ruleList == null || ruleList.size() == 0) {
 				showDialog();
 			} else {
 				this.finish();
@@ -600,7 +606,9 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		if (currentRecord == null) {
 			currentRecord = new ItemRecord();
 			currentRecord.setItemId(currentQuestion.getId());
+			currentRecord.setSubjectId(currentQuestion.getSubjectId());
 			currentRecord.setItemType(currentQuestion.getType());
+			currentRecord.setUserName(username);
 			currentRecord.setItemContent(GsonUtil.objectToJson(currentQuestion));
 			currentRecord.setCreateTime(StringUtils.toStandardDateStr(new Date()));
 			currentRecord.setRecordId(record.getRecordId());
@@ -717,6 +725,10 @@ public class PaperDoPaperActivity extends BaseActivity implements
 				if(r.getId().equals(item.getStructureId()))
 				{
 					ruleScore = ruleScore.add(item.getScore());
+				}else if(r.getMin()!=null && r.getMin().compareTo(BigDecimal.ZERO) == -1)
+				{
+					//答错和不答都扣分
+					ruleScore =  ruleScore.add(r.getMin());
 				}
 			}
 			if(ruleScore.compareTo(BigDecimal.ZERO)==-1) ruleScore = BigDecimal.ZERO;
@@ -846,7 +858,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
 		if ((paramKeyEvent.getKeyCode() == 4)
 				&& (paramKeyEvent.getRepeatCount() == 0)) {
-			if ("DoExam".equals(action) || !nodataLayout.isShown()) {
+			if ("DoExam".equals(action) || ruleList == null || ruleList.size() == 0) {
 				showDialog();
 				return true;
 			}
@@ -1081,8 +1093,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		//收藏试题
 		if (favor != null && favor.isNeedDelete() != null) {
 			FavoriteDao.favorOrCancel(favor);
-			favor = null;
 			if(currentQuestion!=null) currentQuestion.setIsCollected(!favor.isNeedDelete());
+			favor = null;
 		}
 		timerFlag = false;
 		super.onPause();

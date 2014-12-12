@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
+import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.SubjectInfo;
@@ -46,17 +47,16 @@ public class MainFragment extends Fragment {
 	private static final Class<?>[] classes = {
 			KnowledgeActivity.class,
 			ChapterActivity.class, 
-			FavoriteActivity.class, 
-			ErrorItemActivity.class,
+			ChooseSubjectActivity.class, 
+			ChooseSubjectActivity.class,
 			ChooseSubjectActivity.class,
 			DailyActivity.class,
 			ForumActivity.class,
-			RecordActivity.class,
+			PaperRecordActivity.class,
 			ExamInfoActivity.class
 			
 	};
-	private static final String[] actionName = { null, null, "myFavors",
-			"myErrors", null, "myNotes", null, null, null };
+	private static final int[] action = { 0, 0,AppConstant.ACTION_FAVORITE,AppConstant.ACTION_ERROR, 0, 0, 0, 0, 0 };
 	//是否需要登录
 	private static final boolean[] needLogin = { false, true, true, true, true,
 			true, false, true, false };
@@ -312,8 +312,8 @@ public class MainFragment extends Fragment {
 		{
 			Intent intent = new Intent(MainFragment.this.getActivity(),
 				classes[arg2]);
-			if (actionName[arg2] != null) {
-				intent.putExtra("actionName", actionName[arg2]);
+			if (action[arg2] != 0) {
+				intent.putExtra("action", action[arg2]);
 			}
 			startActivity(intent);
 		}else
@@ -322,8 +322,8 @@ public class MainFragment extends Fragment {
 					MainFragment.this.getActivity(),
 					LoginActivity.class);
 			intent2.putExtra("className", classes[arg2].getName());
-			if (actionName[arg2] != null) {
-				intent2.putExtra("actionName", actionName[arg2]);
+			if (action[arg2] != 0) {
+				intent2.putExtra("action", action[arg2]);
 			}
 			startActivity(intent2);
 		}

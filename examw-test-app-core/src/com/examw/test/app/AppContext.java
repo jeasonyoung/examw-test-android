@@ -13,8 +13,6 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.litepal.exceptions.GlobalException;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;

@@ -90,22 +90,22 @@
         </activity>
         <!-- 章节练习界面  -->
         <activity
-            android:name="com.examw.test.ui.ChapterActivity"
+            android:name=".ui.ChapterActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 每日一练界面  -->
         <activity
-            android:name="com.examw.test.ui.DailyActivity"
+            android:name=".ui.DailyActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 收藏界面  -->
         <activity
-            android:name="com.examw.test.ui.FavoriteActivity"
+            android:name=".ui.FavoriteActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 错题界面  -->
         <activity
-            android:name="com.examw.test.ui.ErrorItemActivity"
+            android:name=".ui.ErrorItemActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 知识点界面 -->
@@ -125,12 +125,12 @@
         </activity>
         <!-- 考试记录界面  -->
         <activity
-            android:name="com.examw.test.ui.RecordActivity"
+            android:name=".ui.PaperRecordActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 关于应用界面  -->
         <activity
-            android:name="com.examw.test.ui.AboutActivity"
+            android:name=".ui.AboutActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 隐私协议界面 -->

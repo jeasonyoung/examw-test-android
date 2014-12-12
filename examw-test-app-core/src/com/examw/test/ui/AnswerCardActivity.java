@@ -41,6 +41,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private int[] trueOfFalse;
 	private Intent intent;
 	private String paperId;
+	private String recordId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.e(TAG, "onCreate");
@@ -79,6 +80,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		intent = this.getIntent();
 		this.action = intent.getStringExtra("action");
 		this.paperId = intent.getStringExtra("paperId");
+		this.recordId = intent.getStringExtra("recordId");
 		this.ruleListJson = intent.getStringExtra("ruleListJson");
 		this.ruleList = GsonUtil.getGson().fromJson(ruleListJson, new TypeToken<ArrayList<StructureInfo>>(){}.getType());
 		this.trueOfFalse = GsonUtil.getGson().fromJson(intent.getStringExtra("trueOfFalse"), int[].class);
@@ -199,10 +201,18 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
          	//设置请求代码 
         	this.setResult(20, data);
         	this.finish();
-		}else if("chooseQuestion".equals(action)||"otherChooseQuestion".equals(action))
+		}else if("chooseQuestion".equals(action))
 		{
 			Intent data=new Intent();  
          	data.putExtra("action", "DoExam");  
+         	data.putExtra("cursor", cursor);  
+         	//设置请求代码  
+         	this.setResult(20, data);  
+         	//结束Activity
+         	this.finish();
+		}else if("otherChooseQuestion".equals(action)){
+			Intent data=new Intent();  
+         	data.putExtra("action", "showQuestionWithAnswer");  
          	data.putExtra("cursor", cursor);  
          	//设置请求代码  
          	this.setResult(20, data);  
@@ -224,6 +234,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 			Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
 			mIntent.putExtra("action", "showQuestionWithAnswer");
 			mIntent.putExtra("paperId", paperId);
+			mIntent.putExtra("recordId", recordId);
 			mIntent.putExtra("cursor", cursor);
 			this.startActivity(mIntent);
 		}

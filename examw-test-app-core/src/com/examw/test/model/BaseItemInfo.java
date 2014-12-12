@@ -68,7 +68,8 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	 * @return 题型名称。
 	 */
 	public String getTypeName() {
-		return typeName;
+		if(type == null) return typeName;
+		return AppConstant.getItemTypeName(type);
 	}
 	/**
 	 * 设置题型名称。

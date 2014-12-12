@@ -3,6 +3,8 @@ package com.examw.test.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.examw.test.app.AppConstant;
+
 /**
  * 做题记录
  * @author fengwei.
@@ -10,7 +12,7 @@ import java.math.BigDecimal;
  */
 public class ItemRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private String recordId,userId,structureId,userName,answer,itemId,itemContent,terminalId;
+	private String recordId,userId,structureId,subjectId,userName,answer,itemId,itemContent,terminalId;
 	private Integer itemType,status;
 	private BigDecimal score;
 	private String createTime;
@@ -227,6 +229,23 @@ public class ItemRecord implements Serializable{
 	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
 	}
+	
+	/**
+	 * 获取 科目ID
+	 * @return subjectId
+	 * 科目ID
+	 */
+	public String getSubjectId() {
+		return subjectId;
+	}
+	/**
+	 * 设置科目ID 
+	 * @param subjectId
+	 * 科目ID
+	 */
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
+	}
 	public ItemRecord() {}
 	
 //	/recordId,structureId,itemId,answer,status,score
@@ -238,5 +257,11 @@ public class ItemRecord implements Serializable{
 		this.answer = answer;
 		this.status = status;
 		this.score = score;
+	}
+	
+	public String getItemTypeName()
+	{
+		if(itemType == null) return "";
+		return AppConstant.getPaperTypeName(itemType);
 	}
 }

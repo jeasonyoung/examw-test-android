@@ -23,7 +23,7 @@ public class LibraryDBHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("create table ProductTab(_id integer primary key autoincrement,productId text,name text,info text)");
 		db.execSQL("create table SubjectTab(_id integer primary key autoincrement,subjectId text,name text,orderno integer)");
-		db.execSQL("create table PaperTab(_id integer primary key autoincrement,paperId text,name text,description text,content text,examId text,subjectId text,sourceName text,areaName text,type integer,price integer,time integer,year integer,total integer,userTotal integer,score double,publishTime datetime default (datetime('now','localtime')))");
+		db.execSQL("create table PaperTab(_id integer primary key autoincrement,paperId text,name text,description text,content text,structures text,examId text,subjectId text,sourceName text,areaName text,type integer,price integer,time integer,year integer,total integer,userTotal integer,score double,publishTime datetime default (datetime('now','localtime')))");
 		db.execSQL("create table KnowledgeTab(_id integer primary key autoincrement,knowledgeid text,knowledgetitle text,knowledgecontent text,chapterid text,classid text,orderid integer)");
 		db.execSQL("create table SyllabusTab(_id integer primary key autoincrement,chapterId text,chapterTitle text,orderNo integer)");
 		db.execSQL("create table ItemTab(_id integer primary key autoincrement,itemId text,subjectId text,content text,material text,type integer)");

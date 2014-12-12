@@ -3,6 +3,8 @@ package com.examw.test.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.examw.test.app.AppConstant;
+
 /**
  * 考试记录
  * @author fengwei.
@@ -329,5 +331,10 @@ public class PaperRecord implements Serializable{
 		this.lastTime = lastTime;
 		this.torf = torf;
 	}
-
+	
+	public String getPaperTypeName()
+	{
+		if(paperType == null) return "";
+		return AppConstant.getPaperTypeName(paperType);
+	}
 }
