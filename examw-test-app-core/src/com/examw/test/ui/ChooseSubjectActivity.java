@@ -58,7 +58,8 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 		this.setContentView(R.layout.ui_choose_subject);
 		action = getIntent().getIntExtra("action", 0);
 		initViews();
-		initData();
+		if(action != AppConstant.ACTION_FAVORITE)
+			initData();
 	}
 	private void initData()
 	{
@@ -69,6 +70,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 				{
 				case 0:
 					new GetDataTask().execute();
+					break;
 				case 1:
 					proDialog.dismiss();
 					courseList.setAdapter(new SubjectListAdapter(ChooseSubjectActivity.this,subjects,action));
@@ -106,7 +108,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	}
 	private void initViews()
 	{
-		String title = action == AppConstant.ACTION_ERROR?"错题记录":action == AppConstant.ACTION_ERROR?"我的收藏":"模拟考试";
+		String title = action == AppConstant.ACTION_ERROR?"错题记录":action == AppConstant.ACTION_FAVORITE?"我的收藏":"模拟考试";
 		((TextView) this.findViewById(R.id.title)).setText(title);
 		this.courseList = (ListView) this.findViewById(R.id.course_list);
 		this.reloadLayout = (LinearLayout) this.findViewById(R.id.reload);//重载视图
@@ -235,7 +237,6 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 			popWindow.setOnDismissListener(new OnDismissListener() {
 				@Override
 				public void onDismiss() {
-					// TODO Auto-generated method stub
 					btnShowPop.setVisibility(View.VISIBLE);
 				}
 			});
@@ -277,6 +278,8 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 			return;
 		if(action == AppConstant.ACTION_NONE)
 			initPop();
+		if(action == AppConstant.ACTION_FAVORITE)
+			initData();
 	}
 	@Override
 	protected void onDestroy() {

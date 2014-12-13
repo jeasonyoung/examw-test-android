@@ -108,6 +108,10 @@
             android:name=".ui.ErrorItemActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ui.PaperDoPracticeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 知识点界面 -->
         <activity
             android:name=".ui.KnowledgeActivity"

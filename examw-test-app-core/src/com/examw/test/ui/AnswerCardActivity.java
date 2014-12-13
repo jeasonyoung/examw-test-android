@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.adapter.AnswerCardStructureListAdatper;
 import com.examw.test.adapter.AnswerScoreGridAdatper;
+import com.examw.test.app.AppConstant;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.support.DataConverter;
 import com.examw.test.util.GsonUtil;
@@ -36,12 +37,13 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private GridView scoreGridView;
 	private ListView questionListView;
 	private List<StructureInfo> ruleList;
-	private String action,ruleListJson;
+	private String ruleListJson;
 	private String[] data ;
 	private int[] trueOfFalse;
 	private Intent intent;
 	private String paperId;
 	private String recordId;
+	private int action;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.e(TAG, "onCreate");
@@ -78,7 +80,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private void initData()
 	{
 		intent = this.getIntent();
-		this.action = intent.getStringExtra("action");
+		this.action = intent.getIntExtra("action",AppConstant.ACTION_CHOOSE_ITEM);
 		this.paperId = intent.getStringExtra("paperId");
 		this.recordId = intent.getStringExtra("recordId");
 		this.ruleListJson = intent.getStringExtra("ruleListJson");
@@ -87,8 +89,9 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	}
 	private void initView()
 	{
-		if("chooseQuestion".equals(action))
+		switch(action)
 		{
+		case AppConstant.ACTION_CHOOSE_ITEM:
 			((ImageView)this.findViewById(R.id.colorTipsIV)).setImageResource(R.drawable.answer_color_tips2);
 			this.scoreLayout.setVisibility(View.GONE);
 			this.loadingLayout.setVisibility(View.GONE);
@@ -99,8 +102,9 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 			{
 				this.nodataLayout.setVisibility(View.VISIBLE);
 			}
-		}else if("submitPaper".equals(action)||"showResult".equals(action))
-		{
+			break;
+		case  AppConstant.ACTION_SHOW_ANSWER:
+		case AppConstant.ACTION_SUBMIT:
 			this.scoreLayout.setVisibility(View.VISIBLE);
 			this.data = new String[10];
 			int hasDone = DataConverter.getHasDone(trueOfFalse);
@@ -122,11 +126,12 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 			this.scoreGridView.setAdapter(new AnswerScoreGridAdatper(this,data));
 			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
 			this.loadingLayout.setVisibility(View.GONE);
-		}else
-		{
+			break;
+		default:
 			this.scoreLayout.setVisibility(View.GONE);
 			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
 			this.loadingLayout.setVisibility(View.GONE);
+			break;
 		}
 	}
 	@Override
@@ -149,7 +154,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	}
 	private void returnMethod()
 	{
-		if("chooseQuestion".equals(action)||"otherChooseQuestion".equals(action))
+		if(action == AppConstant.ACTION_CHOOSE_ITEM)
 		{
 			this.setResult(50);
 			this.finish();
@@ -175,17 +180,17 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	}
 	private void doItAgain()
 	{
-		if("submitPaper".equals(action))
+		if(action == AppConstant.ACTION_SUBMIT)
 		{
 			Intent data = new Intent();
-			data.putExtra("action", "DoExam");
+			data.putExtra("action", AppConstant.ACTION_DO_EXAM);
 			this.setResult(30, data);
 			this.finish();
 		}else
 		{
 			//启动DoExamQuestion
 			Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
-			mIntent.putExtra("action", "DoExam");
+			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
 			mIntent.putExtra("paperId", paperId);
 			this.startActivity(mIntent);
 		}
@@ -193,57 +198,50 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	//查看题目
 	public void showAnswer(int cursor)
 	{
-		if("submitPaper".equals(action))
+		Intent data = null;
+		switch(action)
 		{
-			Intent data = new Intent();
-			data.putExtra("action", "showQuestionWithAnswer");  
+		case AppConstant.ACTION_SUBMIT:
+			data = new Intent();
+			data.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);  
         	data.putExtra("cursor", 0);  
          	//设置请求代码 
         	this.setResult(20, data);
         	this.finish();
-		}else if("chooseQuestion".equals(action))
-		{
-			Intent data=new Intent();  
-         	data.putExtra("action", "DoExam");  
+        	break;
+		case AppConstant.ACTION_CHOOSE_ITEM:
+			data=new Intent();  
+         	data.putExtra("action", AppConstant.ACTION_DO_EXAM);  
          	data.putExtra("cursor", cursor);  
          	//设置请求代码  
          	this.setResult(20, data);  
          	//结束Activity
          	this.finish();
-		}else if("otherChooseQuestion".equals(action)){
-			Intent data=new Intent();  
-         	data.putExtra("action", "showQuestionWithAnswer");  
+         	break;
+		case AppConstant.ACTION_CHOOSE_ITEM_WITH_ANSWER:
+			data=new Intent();  
+         	data.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);  
          	data.putExtra("cursor", cursor);  
          	//设置请求代码  
          	this.setResult(20, data);  
          	//结束Activity
          	this.finish();
-		}else if("myErrors".equals(action))
-		{
-			Intent data=new Intent();  
-         	data.putExtra("action", "myErrors");  
-         	data.putExtra("cursor", cursor);
-         	//设置请求代码  
-         	this.setResult(20, data);  
-         	//结束Activity
-         	this.finish();
-		}
-		else
-		{
-			//启动DoExamQuestion,显示答案
-			Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
-			mIntent.putExtra("action", "showQuestionWithAnswer");
-			mIntent.putExtra("paperId", paperId);
-			mIntent.putExtra("recordId", recordId);
-			mIntent.putExtra("cursor", cursor);
-			this.startActivity(mIntent);
+         	break;
+         default:
+         	//启动DoExamQuestion,显示答案
+    		Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
+    		mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
+    		mIntent.putExtra("paperId", paperId);
+    		mIntent.putExtra("recordId", recordId);
+    		mIntent.putExtra("cursor", cursor);
+    		this.startActivity(mIntent);
 		}
 	}
 	public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent)
 	{
 	    if ((paramKeyEvent.getKeyCode() == 4) && (paramKeyEvent.getRepeatCount() == 0))
 	    {
-	    	if("chooseQuestion".equals(action))
+	    	if(action == AppConstant.ACTION_CHOOSE_ITEM)
 	    	{
 	    		this.setResult(50);
 				this.finish();

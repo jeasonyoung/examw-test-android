@@ -14,15 +14,15 @@ public abstract class ExamMenuItemClickListener implements OnItemClickListener{
 	public void onItemClick(AdapterView<?> parent, View view, int position,long id){
 		switch (position) {
 		case 0:
-			restart();
-			break;
-		case 1:
 			// 答题卡,选题
 			answerCard();
 			break;
-		case 2:
+		case 1:
 			// 设置
 			setting();
+			break;
+		case 2:
+			restart();
 			break;
 		}
 	}

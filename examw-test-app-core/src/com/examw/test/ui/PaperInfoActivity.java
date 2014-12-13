@@ -125,7 +125,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 	 */
 	private void restart() {
 		Intent mIntent = new Intent(this, PaperDoPaperActivity.class);
-		mIntent.putExtra("action", "DoExam");
+		mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
 		mIntent.putExtra("paperId", record.getPaperId());
 		this.startActivity(mIntent);
 		this.finish();
@@ -139,7 +139,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			intent.putExtra("paperId", paper.getId());
 			intent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
 			intent.putExtra("trueOfFalse", record.getTorf());
-			intent.putExtra("action", "showResult");
+			intent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
 			intent.putExtra("paperScore", paper.getScore().doubleValue());
 			intent.putExtra("paperTime", paper.getTime());
 			intent.putExtra("username", username);
@@ -148,7 +148,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 		}else{
 			intent = new Intent(this, PaperDoPaperActivity.class);
 			intent.putExtra("paperId", paper.getId());
-			intent.putExtra("action", "DoExam");
+			intent.putExtra("action", AppConstant.ACTION_DO_EXAM);
 		}
 		this.startActivity(intent);
 		this.finish(); // 结束生命

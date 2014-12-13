@@ -23,16 +23,17 @@ public class ExamMenuPopupWindow extends PopupWindow {
 	    super(context);
 	}
 	
-	public ExamMenuPopupWindow(Context context,ExamMenuItemClickListener itemClickListener) {
+	public ExamMenuPopupWindow(Context context,ExamMenuItemClickListener itemClickListener,boolean restart) {
 		super(context);
 		View v = LayoutInflater.from(context).inflate(
 				R.layout.pop_question_more_menu, null);
 		ListView listView = (ListView) v
 				.findViewById(R.id.question_menu_listView1);
 		SampleAdapter adapter = new SampleAdapter(context);
-		adapter.add(new SampleItem("重新开始", R.drawable.btn_restart));
 		adapter.add(new SampleItem("答题卡", R.drawable.btn_answer_card));
 		adapter.add(new SampleItem("答题设置", R.drawable.btn_settting));
+		if(restart)
+			adapter.add(new SampleItem("重新开始", R.drawable.btn_restart));
 		// adapter.add(new SampleItem("笔记", R.drawable.btn_analyze));
 		// adapter.add(new SampleItem("截图",R.drawable.btn_analyze));
 		listView.setAdapter(adapter);

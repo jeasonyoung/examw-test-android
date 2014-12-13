@@ -41,21 +41,20 @@ import com.examw.test.R;
 import com.examw.test.app.AppConstant;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.ui.BaseActivity;
-import com.examw.test.ui.PaperDoPaperActivity;
+import com.examw.test.ui.PaperDoPracticeActivity;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.CheckBoxGroup;
 import com.examw.test.widget.OptionLayout;
 
 /**
- * 试题适配器
+ * 
  * @author fengwei.
- * @since 2014年12月8日 上午11:03:12.
+ * @since 2014年12月13日 上午11:00:54.
  */
-public class QuestionAdapter extends BaseAdapter {
+public class PracticeQuestionAdapter extends BaseAdapter {
 	private static final String TAG = "QuestionAdatper";
 	private Context context;
-	private PaperDoPaperActivity activity2;
-//	private QuestionDoExamActivity1 activity1;
+	private PaperDoPracticeActivity activity1;
 	private BaseActivity activity;
 	private ArrayList<StructureItemInfo> questionList;
 	private ContentViewHolder contentHolder;
@@ -66,17 +65,16 @@ public class QuestionAdapter extends BaseAdapter {
 	private static TextViewLongClickListener tvLongClickListener;
 	private static ShowAnswerListener showAnswerLinsener;
 
-	public QuestionAdapter(Context context, BaseActivity activity,
-			ArrayList<StructureItemInfo> questionList, String username,
-			String paperid) {
+	public PracticeQuestionAdapter(Context context, BaseActivity activity,
+			ArrayList<StructureItemInfo> questionList, String username) {
 		this.context = context;
 		this.pref = context.getSharedPreferences("wdkaoshi", 0);
 		// /mnt/sdcard/eschool/hahaha/image/1001
 		this.imageSavePath = Environment.getExternalStorageDirectory()
-				.getPath()+ File.separator+ "examw"+ File.separator+ username+ File.separator+ "image"+ File.separator+ paperid;
+				.getPath()+ File.separator+ "examw"+ File.separator+ username+ File.separator+ "image"+ File.separator+ "question";
 		this.activity = activity;
-		if (activity instanceof PaperDoPaperActivity)
-			this.activity2 = (PaperDoPaperActivity) activity;
+		if (activity instanceof PaperDoPracticeActivity)
+			this.activity1 = (PaperDoPracticeActivity) activity;
 //		else if (activity instanceof QuestionDoExamActivity1)
 //			this.activity1 = (QuestionDoExamActivity1) activity;
 		this.questionList = questionList;
@@ -105,9 +103,9 @@ public class QuestionAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View v, ViewGroup parent) {
-		int action = AppConstant.ACTION_DO_EXAM;
-		if (activity2 != null) {
-			action = activity2.getAction();
+		int action = 0;
+		if (activity1 != null) {
+			action = activity1.getAction();
 		} else {
 //			action = activity1.getAction();
 		}
@@ -118,49 +116,48 @@ public class QuestionAdapter extends BaseAdapter {
 			v = LayoutInflater.from(context).inflate(R.layout.single_question,null);
 			contentHolder = new ContentViewHolder();
 			v.setTag(R.id.tag_first, contentHolder);
-			contentHolder.modeLayout = (LinearLayout) v
-					.findViewById(R.id.doexam_mode2layout);
-			contentHolder.examContent = (TextView) v
-					.findViewById(R.id.exam_Content2);// 题目内容
-			contentHolder.examContent.setTextSize(size);
-			contentHolder.examContent
-					.setOnLongClickListener(tvLongClickListener);
-			contentHolder.examOption = (CheckBoxGroup) v
-					.findViewById(R.id.examOption2);// checkbox组的容器
-			contentHolder.modeLayout4 = (LinearLayout) v
-					.findViewById(R.id.doexam_mode3layout);
-			contentHolder.examImages = (LinearLayout) v
-					.findViewById(R.id.examImages2);
-			contentHolder.answerEditText = (EditText) v
-					.findViewById(R.id.exam_answerEditText);
-			contentHolder.submitExamBtn = (Button) v
-					.findViewById(R.id.submitExamBtn);
-			contentHolder.showAnswerBtn = (Button) v
-					.findViewById(R.id.showAnswerBtn);
-			contentHolder.scrollView = (ScrollView) v
-					.findViewById(R.id.ContentscrollView);
-			contentHolder.checkBoxListener = new CheckBoxClickListener(
-					activity, contentHolder.examOption);
+			//选择题的整个选项布局
+			contentHolder.modeLayout = (LinearLayout) v.findViewById(R.id.doexam_mode2layout);
+			//题目内容
+			contentHolder.examContent = (TextView) v.findViewById(R.id.exam_Content2);// 题目内容
+			//checkbox组容器
+			contentHolder.examOption = (CheckBoxGroup) v.findViewById(R.id.examOption2);// checkbox组的容器
+			//文字题答题布局
+			contentHolder.modeLayout4 = (LinearLayout) v.findViewById(R.id.doexam_mode3layout);
+			//图片
+			contentHolder.examImages = (LinearLayout) v.findViewById(R.id.examImages2);
+			//文字题答题控件
+			contentHolder.answerEditText = (EditText) v.findViewById(R.id.exam_answerEditText);
+			//答案提交按钮
+			contentHolder.submitExamBtn = (Button) v.findViewById(R.id.submitExamBtn);
+			//显示答案按钮
+			contentHolder.showAnswerBtn = (Button) v.findViewById(R.id.showAnswerBtn);
+			//
+			//contentHolder.scrollView = (ScrollView) v.findViewById(R.id.ContentscrollView);
+			//checkbox点选事件监听
+			contentHolder.checkBoxListener = new CheckBoxClickListener(activity, contentHolder.examOption);
+			//显示答案按钮
 			contentHolder.showAnswerBtn.setOnClickListener(showAnswerLinsener);
 			contentHolder.showAnswerBtn.setVisibility(View.GONE);
-			// contentHolder.examAnswerLayout.setVisibility(View.GONE);
+			contentHolder.modeLayout4.setVisibility(View.GONE);
 
 		} else {
 			contentHolder = (ContentViewHolder) v.getTag(R.id.tag_first);
 			contentHolder.examOption.clearCheck();
 		}
-		AnswerViewHolder answerHolder = new AnswerViewHolder(v);
-		//设置字体
-		setFontSize(answerHolder, size, v);
-		//设置TAG
+		AnswerViewHolder answerHolder =  new AnswerViewHolder(v);
 		v.setTag(R.id.tag_second, answerHolder);
+		//设置字号
+		setFontSize(contentHolder, answerHolder, size);
+		//设置题目内容以及答案
 		// holder.scrollView.fullScroll(33); //滑动到最开始?
 		contentHolder.examImages.removeAllViews();
 		String answer = currentQuestion.getUserAnswer(); // 学员的答案
 		Integer type = currentQuestion.getType();
-		contentHolder.modeLayout4.setVisibility(View.GONE);
 		if (currentQuestion.isChoose()) { // 选择题
-			contentHolder.modeLayout.setVisibility(0);
+			//显示选项布局
+			contentHolder.modeLayout.setVisibility(View.VISIBLE);
+			contentHolder.modeLayout4.setVisibility(View.GONE);
 			TreeSet<StructureItemInfo> children= new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
 			// 显示图片
 			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
@@ -181,11 +178,9 @@ public class QuestionAdapter extends BaseAdapter {
 					option.setId(i);
 					option.setFontColor(context.getResources().getColor(
 							R.color.black));
-					option.setFontSize(size);
 					contentHolder.examOption.addView(option, i - 1);
 				}
-				option = (OptionLayout) contentHolder.examOption
-						.getChildAt(i - 1);
+				option = (OptionLayout) contentHolder.examOption.getChildAt(i - 1);
 				option.resetColor();
 				option.setFontSize(size);
 				if(optionItem.getContent().matches("[A-Z]{1}[.][\\W\\w]*"))
@@ -208,9 +203,8 @@ public class QuestionAdapter extends BaseAdapter {
 			}
 		}
 		else if (type.equals(AppConstant.ITEM_TYPE_JUDGE)) { // 判断题
-			contentHolder.modeLayout.setVisibility(0);
-			contentHolder.modeLayout4.setVisibility(8);
-			contentHolder.showAnswerBtn.setVisibility(View.GONE);
+			contentHolder.modeLayout.setVisibility(View.VISIBLE);
+			contentHolder.modeLayout4.setVisibility(View.GONE);
 			// 显示图片
 			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
 					contentHolder.examImages, contentHolder.examContent);
@@ -281,8 +275,8 @@ public class QuestionAdapter extends BaseAdapter {
 				}
 			}
 		} else if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
-			contentHolder.modeLayout.setVisibility(8);
-			contentHolder.modeLayout4.setVisibility(8);
+			contentHolder.modeLayout.setVisibility(View.GONE);
+			contentHolder.modeLayout4.setVisibility(View.VISIBLE);
 			
 			//TODO 显示问答题的题干
 			
@@ -300,36 +294,19 @@ public class QuestionAdapter extends BaseAdapter {
 						}
 					});
 		}
-		if (action != AppConstant.ACTION_DO_EXAM) {
-			if (action == AppConstant.ACTION_DO_PRACTICE && currentQuestion.getUserAnswer() == null) {
-				answerHolder.examAnswerLayout.setVisibility(View.GONE);
-				//多选题显示按钮
-				if(type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN))
-					contentHolder.showAnswerBtn.setVisibility(View.VISIBLE);
-				else
-					contentHolder.showAnswerBtn.setVisibility(View.GONE);
-//				contentHolder.examOption.forbidden(true);
-			} else if ((action == AppConstant.ACTION_DO_PRACTICE || action == AppConstant.ACTION_SHOW_ANSWER)
-							&& currentQuestion.getUserAnswer() != null) {
-				answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
-				contentHolder.showAnswerBtn.setVisibility(View.GONE);
-				contentHolder.examOption.setFontColor(context.getResources()
-						.getColor(R.color.green), currentQuestion.getAnswer(),context.getResources()
-						.getColor(R.color.red), currentQuestion.getUserAnswer(),type);
-			} else {
-				answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
-				contentHolder.showAnswerBtn.setVisibility(View.GONE);
-				// 禁用选择
-			}
-			showAnswer(answerHolder, currentQuestion, answer);
-		}
+		if(type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN))
+			contentHolder.showAnswerBtn.setVisibility(View.VISIBLE);
+		else
+			contentHolder.showAnswerBtn.setVisibility(View.GONE);
+		showAnswer(answerHolder, currentQuestion, answer);
 		return v;
 	}
-
+	
 	private String answerToTF(String answer) {
 		return "1".equals(answer) ? " √" : "0".equals(answer) ? " ×" : answer;
 	}
-
+	
+	//题目内容Holder,公用
 	public static class ContentViewHolder {
 		ScrollView scrollView;
 		LinearLayout modeLayout, modeLayout4, examImages;
@@ -345,39 +322,34 @@ public class QuestionAdapter extends BaseAdapter {
 		OnClickListener showAnswerListener;
 		// public LinearLayout examAnswerLayout;
 	}
-
+	
+	//题目答案,一题一答案 [要显示和闭合不同切换,所以每一题都要new一个]
 	public static class AnswerViewHolder {
 		public ImageView answerResultImg;
-		TextView sysAnswerTextView, analysisTextView;
+		TextView sysAnswerTextView, analysisTextView,sysAnswerHint,myAnswerHint,analysisHint;
 		public LinearLayout examAnswerLayout;
 		public TextView myAnswerTextView;
+		
 		public AnswerViewHolder(View v) {
-			// 答案与解析
-			this.examAnswerLayout = (LinearLayout) v
-					.findViewById(R.id.exam_answer_layout); // 整个答案的布局
-			this.myAnswerTextView = (TextView) v
-					.findViewById(R.id.myAnswerTextView); // 我的答案
-			this.sysAnswerTextView = (TextView) v
-					.findViewById(R.id.sysAnswerTextView); // 正确答案
-			this.answerResultImg = (ImageView) v
-					.findViewById(R.id.answerResultImg); // 判断图片
-			this.analysisTextView = (TextView) v
-					.findViewById(R.id.exam_analysisTextView); // 解析
+			//整个答案的布局
+			this.examAnswerLayout = (LinearLayout) v.findViewById(R.id.exam_answer_layout); 
+			// 我的答案
+			this.myAnswerTextView = (TextView) v.findViewById(R.id.myAnswerTextView); 
+			// 正确答案
+			this.sysAnswerTextView = (TextView) v.findViewById(R.id.sysAnswerTextView); 
+			this.myAnswerHint =(TextView)v.findViewById(R.id.myAnswerStr);
+			this.sysAnswerHint =(TextView)v.findViewById(R.id.sysAnswerStr);
+			this.analysisHint =(TextView)v.findViewById(R.id.examAnalysisStr);
+			// 判断图片
+			this.answerResultImg = (ImageView) v.findViewById(R.id.answerResultImg); 
+			 // 解析
+			this.analysisTextView = (TextView) v.findViewById(R.id.exam_analysisTextView);
+			// 解析文字长按监听
 			this.analysisTextView.setOnLongClickListener(tvLongClickListener);
 			this.examAnswerLayout.setVisibility(View.GONE); // 隐藏答案
 		}
 	}
-	
-	private void setFontSize(AnswerViewHolder answerHolder,float size,View v)
-	{
-		contentHolder.examContent.setTextSize(size);
-		answerHolder.myAnswerTextView.setTextSize(size);
-		answerHolder.sysAnswerTextView.setTextSize(size);
-		answerHolder.analysisTextView.setTextSize(size);
-		((TextView)v.findViewById(R.id.myAnswerStr)).setTextSize(size);
-		((TextView)v.findViewById(R.id.sysAnswerStr)).setTextSize(size);
-		((TextView)v.findViewById(R.id.examAnalysisStr)).setTextSize(size);
-	}
+
 	// 显示答案
 	public void showAnswer(AnswerViewHolder holder,StructureItemInfo currentQuestion, String userAnswer) {
 		String trueAnswer = currentQuestion.getAnswer();
@@ -456,8 +428,10 @@ public class QuestionAdapter extends BaseAdapter {
 		answerHolder.myAnswerTextView.setTextSize(size);// 我的答案
 		answerHolder.sysAnswerTextView.setTextSize(size); // 正确答案
 		answerHolder.analysisTextView.setTextSize(size); // 解析
+		answerHolder.myAnswerHint.setTextSize(size);
+		answerHolder.sysAnswerHint.setTextSize(size);
+		answerHolder.analysisHint.setTextSize(size);
 	}
-
 	// 判断答案是否包含
 	private boolean isContain(String trueAnswer, String answer) {
 		if (answer.length() == 1) {
@@ -617,15 +591,6 @@ public class QuestionAdapter extends BaseAdapter {
 		}
 	}
 
-	// //显示或者隐藏答案
-	// public void showAnswer() {
-	// System.out.println("显示或者隐藏答案");
-	// if (holder.examAnswerLayout.getVisibility() == View.GONE) {
-	// holder.examAnswerLayout.setVisibility(View.VISIBLE);
-	// } else {
-	// holder.examAnswerLayout.setVisibility(View.GONE);
-	// }
-	// }
 	// 清除选择项
 	public void clearCheck() {
 		contentHolder.examOption.clearCheck();
@@ -670,7 +635,6 @@ public class QuestionAdapter extends BaseAdapter {
 		public ShowAnswerListener(BaseActivity activity) {
 			this.activity = activity;
 		}
-
 		@Override
 		public void onClick(View v) {
 			if("显 示 答 案".equals(((Button)v).getText()))
@@ -680,6 +644,7 @@ public class QuestionAdapter extends BaseAdapter {
 			activity.submitOrSeeAnswer();
 		}
 	}
+	//复制内容
 	@SuppressLint({ "NewApi", "ServiceCast" })
 	public void setClipBoard(String content) {
 		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
