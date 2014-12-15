@@ -19,9 +19,15 @@ public class URLs implements Serializable{
 	
 	//登录地址
 	public static final String LOGIN = "";
+	//产品信息 
 	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppConfig.PRODUCTID;
+	//科目列表
 	public static final String SUBJECT_LIST = BASE_URL + "/products/"+AppConfig.PRODUCTID+"/subjects";
+	//试卷列表
 	public static final String PAPER_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papers";
-	public static final String SINGLE_PAPER = BASE_URL + "/papers/%1$s"; 
+	//单个试卷内容
+	public static final String SINGLE_PAPER = BASE_URL + "/papers/%1$s";
+	//大纲内容
+	public static final String SYLLABUS = BASE_URL + "/subjects/%s/syllabuses";
 	public static final String BUY = "";
 }

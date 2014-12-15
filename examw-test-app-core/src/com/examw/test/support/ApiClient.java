@@ -92,6 +92,11 @@ public class ApiClient {
 		return result;
 	}
 	
+	public static String loadSyllabusContent(AppContext appContext,String subjectId) throws AppException{
+		String result = HttpUtils.http_get(appContext, String.format(URLs.SINGLE_PAPER,subjectId));
+		if(StringUtils.isEmpty(result)) return null;
+		return result;
+	}
 	/**
 	 * 获取网络图片
 	 * 

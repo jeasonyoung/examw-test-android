@@ -180,9 +180,9 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 				// 收藏试题
 				if (favor != null && favor.isNeedDelete() != null) {
 					FavoriteDao.favorOrCancel(favor);
-					favor = null;
 					if (currentQuestion != null)
 						currentQuestion.setIsCollected(!favor.isNeedDelete());
+					favor = null;
 				}
 				currentQuestion = questionList.get(position);
 				if (!StringUtils.isEmpty(currentQuestion.getParentContent())) {

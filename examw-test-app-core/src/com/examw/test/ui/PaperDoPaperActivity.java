@@ -207,8 +207,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 				//收藏试题
 				if (favor != null && favor.isNeedDelete() != null) {
 					FavoriteDao.favorOrCancel(favor);
-					favor = null;
 					if(currentQuestion!=null) currentQuestion.setIsCollected(!favor.isNeedDelete());
+					favor = null;
 				}
 				currentQuestion = questionList.get(position);
 				if (!StringUtils.isEmpty(currentQuestion.getParentContent())) {
@@ -226,18 +226,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 				} else {
 					favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
 				}
-				if ("myErrors".equals(action)) {
-					// 有答案了,禁止选择,没答案继续选择
-					if (currentQuestion.getUserAnswer() != null) {
-						((QuestionAdapter.ContentViewHolder) view
-								.getTag(R.id.tag_first)).examOption
-								.forbidden(false);
-					} else {
-						((QuestionAdapter.ContentViewHolder) view
-								.getTag(R.id.tag_first)).examOption
-								.forbidden(true);
-					}
-				} else if (!"DoExam".equals(action)) {
+				// 非做题模式,禁止选择选项
+				if (action != AppConstant.ACTION_DO_EXAM) {
 					// 禁止选择
 					((QuestionAdapter.ContentViewHolder) view
 							.getTag(R.id.tag_first)).examOption

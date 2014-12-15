@@ -174,16 +174,16 @@ public class PaperRecordDao {
 //			/recordId,structureId,itemId,itemContent,answer,termialId,status,score,useTime,createTime
 			String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
 			Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{record.getRecordId()});
+			ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
 			if (cursorItem.getCount() > 0) {
-				ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
 				while (cursorItem.moveToNext()) {
 					ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
 							cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
 							new BigDecimal(cursorItem.getDouble(5)));
 					items.add(itemRecord);
 				}
-				record.setItems(items);
 			}
+			record.setItems(items);
 			cursorItem.close();
 		}
 		db.close();

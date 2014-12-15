@@ -23,7 +23,10 @@ import com.examw.test.util.StringUtils;
 @SuppressLint("NewApi")
 public class AppConfig {
 	//产品ID
-	public static final String PRODUCTID = "615c758f-424f-4808-9528-67630125687e";
+	//中级经济师
+//	public static final String PRODUCTID = "615c758f-424f-4808-9528-67630125687e";
+	//湖南会计
+	public static final String PRODUCTID = "f91e46c8-f85f-4ea6-aafe-5fcc445ecff0";
 	//终端ID
 	public static final String TERMINALID = "4";
 	

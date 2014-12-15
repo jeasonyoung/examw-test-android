@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ import com.examw.test.util.ToastUtils;
  * @since 2014年12月4日 上午9:34:33.
  */
 public class ChooseSubjectActivity extends BaseActivity implements OnClickListener{
+	private static final String TAG = "ChooseSubjectActivity";
 	private ListView courseList;
 	private LinearLayout reloadLayout;
 	private ProgressDialog proDialog;
@@ -63,6 +65,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	}
 	private void initData()
 	{
+		Log.d(TAG,"初始化科目数据,action == "+action);
 		final Handler handler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -274,8 +277,6 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(subjects == null || subjects.size()==0)
-			return;
 		if(action == AppConstant.ACTION_NONE)
 			initPop();
 		if(action == AppConstant.ACTION_FAVORITE)

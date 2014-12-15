@@ -88,6 +88,7 @@ public class FavoriteDao {
 	}
 	public static ArrayList<Subject> getCount(ArrayList<Subject> subjects,String username)
 	{
+		Log.d(TAG,"查询各个科目的收藏情况");
 		if(username == null) return subjects;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
 		for(Subject subject:subjects)
@@ -120,6 +121,7 @@ public class FavoriteDao {
 	 */
 	public static SimplePaper loadFavoritePaper(String subjectId,String username)
 	{
+		Log.d(TAG,"查询单个科目的收藏试题");
 		if(username == null || subjectId==null) return null;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
 		int total = getCount(db,subjectId,username,null);
