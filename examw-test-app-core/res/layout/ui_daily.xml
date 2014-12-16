@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chapter_content"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/white" >
@@ -50,17 +51,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/ic_item_menu_bg_in" 
-                    />
+                    android:background="@drawable/ic_item_menu_bg_in" />
             </RelativeLayout>
         </LinearLayout>
     </FrameLayout>
-	<ListView
-        android:id="@+id/id_tree"
+
+    <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/layout_title"
-        android:divider="#aaa"
-        android:dividerHeight="1px" >
-    </ListView>
+        android:background="@color/white" >
+
+        <ListView
+            android:id="@+id/id_tree"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="#aaa"
+            android:dividerHeight="1px" />
+
+        <include layout="@layout/loading" />
+
+        <include layout="@layout/nodata_layout" />
+
+        <include layout="@layout/reload" />
+    </FrameLayout>
+
 </RelativeLayout>

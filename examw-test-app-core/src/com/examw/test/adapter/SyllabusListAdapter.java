@@ -1,21 +1,25 @@
 package com.examw.test.adapter;
 
-import java.util.List;
-
+import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.examw.test.model.SyllabusInfo;
+import com.examw.test.R;
+import com.examw.test.domain.Chapter;
+import com.examw.test.support.SyllabusHelper;
 
 /**
- * 
+ * 大纲适配器
  * @author fengwei.
  * @since 2014年12月15日 下午4:53:06.
  */
@@ -25,12 +29,12 @@ public class SyllabusListAdapter extends BaseAdapter {
 	/**
 	 * 存储所有可见的Node
 	 */
-	protected List<SyllabusInfo> mNodes;
+	protected ArrayList<Chapter> mNodes;
 	protected LayoutInflater mInflater;
 	/**
 	 * 存储所有的Node
 	 */
-	protected List<SyllabusInfo> mAllNodes;
+	protected ArrayList<Chapter> mAllNodes;
 
 	/**
 	 * 点击的回调接口
@@ -38,10 +42,10 @@ public class SyllabusListAdapter extends BaseAdapter {
 	private OnSyllabusNodeClickListener onSyllabusNodeClickListener;
 
 	public interface OnSyllabusNodeClickListener {
-		void onClick(SyllabusInfo node, int position);
+		void onClick(Chapter node, int position);
 	}
 
-	public void OnSyllabusNodeClickListener(
+	public void setOnSyllabusNodeClickListener(
 			OnSyllabusNodeClickListener onSyllabusNodeClickListener) {
 		this.onSyllabusNodeClickListener = onSyllabusNodeClickListener;
 	}
@@ -56,20 +60,19 @@ public class SyllabusListAdapter extends BaseAdapter {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	public SyllabusListAdapter(ListView mTree, Context context, List<SyllabusInfo> datas,
-			int defaultExpandLevel) throws IllegalArgumentException,
-			IllegalAccessException
+	public SyllabusListAdapter(ListView mTree, Context context, ArrayList<Chapter> datas) 
 	{
+		long start = System.currentTimeMillis();
 		mContext = context;
 		/**
 		 * 对所有的Node进行排序
 		 */
-		//TODO 
-//		mAllNodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
+//		mAllNodes = SyllabusHelper.getSortedNodes(datas, defaultExpandLevel);
+		mAllNodes = datas;
 		/**
 		 * 过滤出可见的Node
 		 */
-//		mNodes = TreeHelper.filterVisibleNode(mAllNodes);
+		mNodes = SyllabusHelper.filterVisibleNode(mAllNodes);
 		mInflater = LayoutInflater.from(context);
 
 		/**
@@ -91,7 +94,7 @@ public class SyllabusListAdapter extends BaseAdapter {
 			}
 
 		});
-
+		Log.d("Adapter","章节适配器初始化耗时:"+(System.currentTimeMillis()-start));
 	}
 
 	/**
@@ -101,19 +104,80 @@ public class SyllabusListAdapter extends BaseAdapter {
 	 */
 	public void expandOrCollapse(int position)
 	{
-		SyllabusInfo n = mNodes.get(position);
+		Chapter n = mNodes.get(position);
 
 		if (n != null)// 排除传入参数错误异常
 		{
-//			if (!n.isLeaf())
-//			{
-//				n.setExpand(!n.isExpand());
-//				mNodes = TreeHelper.filterVisibleNode(mAllNodes);
-//				notifyDataSetChanged();// 刷新视图
-//			}
+			if (!n.isLeaf())
+			{
+				n.setExpand(!n.isExpand());
+				mNodes = filterVisibleNode(n);
+				notifyDataSetChanged();// 刷新视图
+			}
 		}
 	}
+	
+	private ArrayList<Chapter> filterVisibleNode(Chapter node)
+	{
+		ArrayList<Chapter> parents = getParents(node);
+		ArrayList<Chapter> result = new ArrayList<Chapter>();
+		for(Chapter chapter:mAllNodes)
+		{
+			if(parents == null) //点击的是根节点
+			{
+				chapter.setExpand(node.isExpand());
+				setNodeIcon(chapter);
+				result.add(chapter);
+			}else if(chapter.getChapterId().equals(parents.get(parents.size()-1).getChapterId()))
+			{
+				chapter.setExpand(true);
+				setNodeIcon(chapter);
+				result.add(chapter);
+				//子节点
+			}else
+			{
+				chapter.setExpand(false);
+				setNodeIcon(chapter);
+				result.add(chapter);
+			}
+		}
+		return result;
+	}
+	private void filterVisibleNode(ArrayList<Chapter> result,Chapter node,Chapter current)
+	{
+		ArrayList<Chapter> children = node.getChildren();
+		
+	}
+	
+	/*
+	 * 设置节点的图标
+	 */
+	private void setNodeIcon(Chapter node)
+	{
+		if (node.getChildren().size() > 0 && node.isExpand())
+		{
+			node.setIcon(R.drawable.tree_ex);
+		} else if (node.getChildren().size() > 0 && !node.isExpand())
+		{
+			node.setIcon(R.drawable.tree_ec);
+		} else
+			node.setIcon(-1);
 
+	}
+	
+	private ArrayList<Chapter> getParents(Chapter node)
+	{
+		if(node.getParent()==null) return null;
+		ArrayList<Chapter> parents = new ArrayList<Chapter>();
+		Chapter parent = node;
+		while(parent.getParent()!=null)
+		{
+			parent = node.getParent();
+			parents.add(parent);
+		}
+		return parents;
+	}
+	
 	@Override
 	public int getCount()
 	{
@@ -135,17 +199,51 @@ public class SyllabusListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		SyllabusInfo node = mNodes.get(position);
+		Chapter node = mNodes.get(position);
 		convertView = getConvertView(node, position, convertView, parent);
 		// 设置内边距
-//		convertView.setPadding(node.getLevel() * 30, 3, 3, 3);
+		convertView.setPadding(node.getLevel() * 30, 3, 3, 3);
 		return convertView;
 	}
 
-	public View getConvertView(SyllabusInfo node, int position,
+	public View getConvertView(Chapter node, int position,
 			View convertView, ViewGroup parent)
 	{
-		return null;
+		
+		ViewHolder viewHolder = null;
+		if (convertView == null)
+		{
+			convertView = mInflater.inflate(R.layout.chapter_list_item, parent, false);
+			viewHolder = new ViewHolder();
+			viewHolder.icon = (ImageView) convertView
+					.findViewById(R.id.id_treenode_icon);
+			viewHolder.label = (TextView) convertView
+					.findViewById(R.id.id_treenode_label);
+			convertView.setTag(viewHolder);
+
+		} else
+		{
+			viewHolder = (ViewHolder) convertView.getTag();
+		}
+
+		if (node.getIcon() == -1)
+		{
+			viewHolder.icon.setVisibility(View.INVISIBLE);
+		} else
+		{
+			viewHolder.icon.setVisibility(View.VISIBLE);
+			viewHolder.icon.setImageResource(node.getIcon());
+		}
+
+		viewHolder.label.setText(node.getTitle());
+		
+		
+		return convertView;
 	}
 
+	private final class ViewHolder
+	{
+		ImageView icon;
+		TextView label;
+	}
 }

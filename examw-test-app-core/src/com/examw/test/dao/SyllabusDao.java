@@ -1,14 +1,22 @@
 package com.examw.test.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.examw.test.db.LibraryDBUtil;
+import com.examw.test.domain.Chapter;
+import com.examw.test.domain.Subject;
 import com.examw.test.domain.Syllabus;
 import com.examw.test.model.SyllabusInfo;
+import com.examw.test.util.GsonUtil;
+import com.examw.test.util.StringUtils;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 大纲DAO
@@ -96,7 +104,119 @@ public class SyllabusDao {
 		db.execSQL("update SyllabusTab set content = ? where syllabusId = ?", 
 				new Object[]{content,syllabusId});
 		//TODO 分开插入到章节表中
+		ArrayList<SyllabusInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<ArrayList<SyllabusInfo>>(){}.getType());
+		db.beginTransaction();
+		for(SyllabusInfo info:list)
+		{
+			insertChapter(db,info,syllabusId);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
 		db.close();
+	}
+	/**
+	 * 插入章节
+	 * @param db
+	 * @param info
+	 * @param syllabusId
+	 */
+	private static void insertChapter(SQLiteDatabase db,SyllabusInfo info,String syllabusId)
+	{
+		if(info.getChildren()!=null && info.getChildren().size()>0)
+		{
+			List<SyllabusInfo> children = info.getChildren();
+			for(SyllabusInfo child:children)
+			{
+				insertChapter(db, child,syllabusId);
+			}
+		}
+		db.execSQL("insert into ChapterTab(chapterId,syllabusId,chapterPid,title,orderNo)values(?,?,?,?,?)", 
+				new Object[]{info.getId(),syllabusId,info.getPid(),info.getTitle(),info.getOrderNo()});
+	}
+	
+	public static ArrayList<Chapter> loadAllChapters(String subjectId)
+	{
+		if(subjectId == null) return null;
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		try{
+			return loadAllChapters(db, subjectId);
+		}finally{
+			db.close();
+		}
+		
+	}
+	
+	private static ArrayList<Chapter> loadAllChapters(SQLiteDatabase db,String subjectId)
+	{
+		Cursor cursor = db.rawQuery("select c.chapterId,c.chapterPid,c.title,c.orderNo from ChapterTab c left join SyllabusTab s on c.syllabusId = s.syllabusId where s.subjectId = ? and chapterPid is null order by c.orderNo asc",
+				new String[]{subjectId});
+		ArrayList<Chapter> result = new ArrayList<Chapter>();
+		while(cursor.moveToNext())
+		{
+			Chapter chapter = new Chapter(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3));
+			result.add(chapter);
+		}
+		cursor.close();
+		if(!result.isEmpty())
+		{
+			for(Chapter parent:result)
+			{
+				loadChapterChildren(db,parent,0);
+			}
+		}
+		return result;
+	}
+	private static void loadChapterChildren(SQLiteDatabase db,Chapter parent,int level)
+	{
+		Cursor cursor = db.rawQuery("select chapterId,chapterPid,title,orderNo from ChapterTab where chapterPid = ? order by orderNo asc",
+				new String[]{parent.getChapterId()});
+		ArrayList<Chapter> children = parent.getChildren();
+		while(cursor.moveToNext())
+		{
+			Chapter chapter = new Chapter(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3));
+			chapter.setParent(parent);
+			chapter.setLevel(level);
+			children.add(chapter);
+		}
+		cursor.close();
+		if(!children.isEmpty())
+		{
+			for(Chapter child:children)
+			{
+				loadChapterChildren(db,child,++level);
+			}
+		}
+	}
+	
+	
+	public static ArrayList<Chapter> insertSyllabusAndLoadChapters(Subject subject,String content)
+	{
+		if(StringUtils.isEmpty(content)||content.equals("[]")) return null;
+		Log.d(TAG,"插入考试大纲,并且获取章节信息");	
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SyllabusInfo syllabus = new SyllabusInfo();
+		syllabus.setId(UUID.randomUUID().toString());
+		syllabus.setTitle(String.format("《%s》考试大纲", subject.getName()));
+		syllabus.setFullTitle(content);
+		syllabus.setSubjectId(subject.getSubjectId());
+		syllabus.setYear(Calendar.getInstance().get(Calendar.YEAR));
+		syllabus.setOrderNo(1);
+		ArrayList<SyllabusInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<ArrayList<SyllabusInfo>>(){}.getType());
+		try{
+			db.beginTransaction();
+			insert(db,syllabus);
+			Log.d(TAG,"插入考试大纲章节信息");	
+			for(SyllabusInfo info:list)
+			{
+				insertChapter(db,info,syllabus.getId());
+			}
+			ArrayList<Chapter> result = loadAllChapters(db,subject.getSubjectId());
+			db.setTransactionSuccessful();
+			db.endTransaction();
+			return result;
+		}finally{
+			db.close();
+		}
 	}
 	
 	public static String loadContent(String syllabusId)

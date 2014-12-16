@@ -1,19 +1,18 @@
 package com.examw.test.ui;
 
-import android.os.Bundle;
-
-import com.examw.test.R;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 /**
  * 每日一练
+ * 
  * @author fengwei.
  * @since 2014年11月26日 下午3:20:16.
  */
-public class DailyActivity extends BaseActivity{
-	private static final String TAG = "DailyActivity";
+public class DailyActivity extends BaseActivity implements OnClickListener {
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.empty);
+	public void onClick(View v) {
 	}
+	
 }
