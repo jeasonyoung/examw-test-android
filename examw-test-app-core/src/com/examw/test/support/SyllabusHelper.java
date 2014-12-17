@@ -23,11 +23,9 @@ public class SyllabusHelper {
 	{
 		ArrayList<Chapter> result = new ArrayList<Chapter>();
 		// 将用户数据转化为List<Node>
-		datas = convertChapter(datas);
 		// 拿到根节点
-		ArrayList<Chapter> rootNodes = getRootNodes(datas);
 		// 排序以及设置Node间关系
-		for (Chapter node : rootNodes)
+		for (Chapter node : datas)
 		{
 			addNode(result, node, defaultExpandLevel, 1);
 		}
@@ -110,22 +108,6 @@ public class SyllabusHelper {
 		return datas;
 	}
 	/**
-	 * 获取根节点
-	 * @param nodes
-	 * @return
-	 */
-	private static ArrayList<Chapter> getRootNodes(ArrayList<Chapter> nodes)
-	{
-		ArrayList<Chapter> root = new ArrayList<Chapter>();
-		for (Chapter node : nodes)
-		{
-			if (node.isRoot())
-				root.add(node);
-		}
-		return root;
-	}
-
-	/**
 	 * 把一个节点上的所有的内容都挂上去
 	 */
 	private static void addNode(ArrayList<Chapter> nodes, Chapter node,
@@ -141,8 +123,7 @@ public class SyllabusHelper {
 			return;
 		for (int i = 0; i < node.getChildren().size(); i++)
 		{
-			addNode(nodes, node.getChildren().get(i), defaultExpandLeval,
-					currentLevel + 1);
+			addNode(nodes, node.getChildren().get(i), defaultExpandLeval,currentLevel + 1);
 		}
 	}
 

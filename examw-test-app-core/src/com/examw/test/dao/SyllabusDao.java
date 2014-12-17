@@ -13,6 +13,7 @@ import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
 import com.examw.test.domain.Syllabus;
+import com.examw.test.model.KnowledgeInfo;
 import com.examw.test.model.SyllabusInfo;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.StringUtils;
@@ -234,5 +235,57 @@ public class SyllabusDao {
 		cursor.close();
 		db.close();
 		return null;
+	}
+	/**
+	 * 查询
+	 * @param chapterPid
+	 * @return
+	 */
+	public static ArrayList<Chapter> loadChapters(String chapterPid)
+	{
+		if(chapterPid == null) return null;
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select chapterId,chapterPid,title,orderNo from ChapterTab where chapterPid = ? order by orderNo asc",
+				new String[]{chapterPid});
+		ArrayList<Chapter> result = new ArrayList<Chapter>();
+		while(cursor.moveToNext())
+		{
+			Chapter chapter = new Chapter(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3));
+			result.add(chapter);
+		}
+		cursor.close();
+		db.close();
+		return result;
+	}
+	public static String insertChapters(KnowledgeInfo info)
+	{
+		if(info == null) return null;
+		//knowledgeId text,title text,content text,chapterId text,subjectId text,orderid integer
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		db.execSQL("insert into knowledgeTab(knowledgeId,title,content,chapterId)values(?,?,?,?)", 
+				new Object[]{info.getId(),info.getTitle(),info.getDescription(),info.getSyllabusId()});
+		db.close();
+		return info.getDescription();
+	}
+	/**
+	 * 加载知识点的内容
+	 * @param chapterId
+	 * @return
+	 */
+	public static String loadKnowledgeContent(String chapterId)
+	{
+		if(chapterId == null) return null;
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select content from knowledgeTab where chapterId = ? ", 
+				new String[]{chapterId});
+		String content = null;
+		if(cursor.getCount() > 0)
+		{
+			cursor.moveToNext();
+			content = cursor.getString(0);
+		}
+		cursor.close();
+		db.close();
+		return content;
 	}
 }

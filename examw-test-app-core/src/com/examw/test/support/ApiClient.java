@@ -91,9 +91,15 @@ public class ApiClient {
 		if(StringUtils.isEmpty(result)) return null;
 		return result;
 	}
-	
+	//获取科目所用大纲的内容
 	public static String loadSyllabusContent(AppContext appContext,String subjectId) throws AppException{
 		String result = HttpUtils.http_get(appContext, String.format(URLs.SYLLABUS,subjectId));
+		if(StringUtils.isEmpty(result)) return null;
+		return result;
+	}
+	//获取知识点的内容
+	public static String loadKnowledgeContent(AppContext appContext,String chapterId) throws AppException{
+		String result = HttpUtils.http_get(appContext, String.format(URLs.KNOWLEDGE,chapterId));
 		if(StringUtils.isEmpty(result)) return null;
 		return result;
 	}

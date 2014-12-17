@@ -68,7 +68,7 @@ public class SyllabusListAdapter extends BaseAdapter {
 		 * 对所有的Node进行排序
 		 */
 //		mAllNodes = SyllabusHelper.getSortedNodes(datas, defaultExpandLevel);
-		mAllNodes = datas;
+		mAllNodes = SyllabusHelper.getSortedNodes(datas, 1);
 		/**
 		 * 过滤出可见的Node
 		 */
@@ -111,71 +111,10 @@ public class SyllabusListAdapter extends BaseAdapter {
 			if (!n.isLeaf())
 			{
 				n.setExpand(!n.isExpand());
-				mNodes = filterVisibleNode(n);
+				mNodes = SyllabusHelper.filterVisibleNode(mAllNodes);
 				notifyDataSetChanged();// 刷新视图
 			}
 		}
-	}
-	
-	private ArrayList<Chapter> filterVisibleNode(Chapter node)
-	{
-		ArrayList<Chapter> parents = getParents(node);
-		ArrayList<Chapter> result = new ArrayList<Chapter>();
-		for(Chapter chapter:mAllNodes)
-		{
-			if(parents == null) //点击的是根节点
-			{
-				chapter.setExpand(node.isExpand());
-				setNodeIcon(chapter);
-				result.add(chapter);
-			}else if(chapter.getChapterId().equals(parents.get(parents.size()-1).getChapterId()))
-			{
-				chapter.setExpand(true);
-				setNodeIcon(chapter);
-				result.add(chapter);
-				//子节点
-			}else
-			{
-				chapter.setExpand(false);
-				setNodeIcon(chapter);
-				result.add(chapter);
-			}
-		}
-		return result;
-	}
-	private void filterVisibleNode(ArrayList<Chapter> result,Chapter node,Chapter current)
-	{
-		ArrayList<Chapter> children = node.getChildren();
-		
-	}
-	
-	/*
-	 * 设置节点的图标
-	 */
-	private void setNodeIcon(Chapter node)
-	{
-		if (node.getChildren().size() > 0 && node.isExpand())
-		{
-			node.setIcon(R.drawable.tree_ex);
-		} else if (node.getChildren().size() > 0 && !node.isExpand())
-		{
-			node.setIcon(R.drawable.tree_ec);
-		} else
-			node.setIcon(-1);
-
-	}
-	
-	private ArrayList<Chapter> getParents(Chapter node)
-	{
-		if(node.getParent()==null) return null;
-		ArrayList<Chapter> parents = new ArrayList<Chapter>();
-		Chapter parent = node;
-		while(parent.getParent()!=null)
-		{
-			parent = node.getParent();
-			parents.add(parent);
-		}
-		return parents;
 	}
 	
 	@Override

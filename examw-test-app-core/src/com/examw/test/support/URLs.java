@@ -29,5 +29,10 @@ public class URLs implements Serializable{
 	public static final String SINGLE_PAPER = BASE_URL + "/papers/%1$s";
 	//大纲内容
 	public static final String SYLLABUS = BASE_URL + "/subjects/%s/syllabuses";
+	//知识点内容
+	public static final String KNOWLEDGE = BASE_URL +"/syllabus/%1$s/knowledges";
+	
 	public static final String BUY = "";
+
+	
 }

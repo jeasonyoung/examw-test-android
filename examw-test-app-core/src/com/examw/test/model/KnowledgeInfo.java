@@ -1,7 +1,6 @@
 package com.examw.test.model;
 
 import java.io.Serializable;
-import java.util.Date;
 /**
  * 知识点信息。
  * @author lq.
@@ -12,7 +11,7 @@ public class KnowledgeInfo implements Serializable,Comparable<KnowledgeInfo> {
 	private String id,title,description,bookId,chapterId,chapterName,
 							topSyllabusId,topSyllabusName,syllabusId,syllabusName,lastUserId,lastUserName;
 	private Integer orderNo;
-	private Date createTime,lastTime;
+	private long createTime,lastTime;
 	/**
 	 * 获取知识点ID。
 	 * @return 知识点ID。
@@ -212,7 +211,7 @@ public class KnowledgeInfo implements Serializable,Comparable<KnowledgeInfo> {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
-	public Date getCreateTime() {
+	public long getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -220,14 +219,14 @@ public class KnowledgeInfo implements Serializable,Comparable<KnowledgeInfo> {
 	 * @param createTime 
 	 *	  创建时间。
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(long createTime) {
 		this.createTime = createTime;
 	}
 	/**
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
-	public Date getLastTime() {
+	public long getLastTime() {
 		return lastTime;
 	}
 	/**
@@ -235,7 +234,7 @@ public class KnowledgeInfo implements Serializable,Comparable<KnowledgeInfo> {
 	 * @param lastTime 
 	 *	  最后修改时间。
 	 */
-	public void setLastTime(Date lastTime) {
+	public void setLastTime(long lastTime) {
 		this.lastTime = lastTime;
 	}
 	/*

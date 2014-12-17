@@ -284,13 +284,9 @@ public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 									public void onClick(Chapter node,
 											int position) {
 										if (node.isLeaf()) {
-											Intent intent = new Intent(
-													k,
-													KnowledgeDetailActivity.class);
-											intent.putExtra("chapterId",
-													node.getChapterId());
-											intent.putExtra("pid",
-													node.getPid());
+											Intent intent = new Intent(k,KnowledgeDetailActivity.class);
+											intent.putExtra("chapterId",node.getChapterId());
+											intent.putExtra("chapterPid",node.getPid());
 											k.startActivity(intent);
 										}
 									}
