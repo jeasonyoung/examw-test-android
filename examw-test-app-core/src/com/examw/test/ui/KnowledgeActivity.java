@@ -37,16 +37,13 @@ import com.examw.test.util.StringUtils;
 import com.examw.test.util.ToastUtils;
 
 /**
- * 每日一练
- * 
+ * 每日知识大纲
  * @author fengwei.
  * @since 2014年11月26日 下午3:20:16.
  */
 public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 	private static final String TAG = "KnowledgeActivity";
-
 	private MyHandler mHandler;
-	private AppConfig appConfig;
 	private PopupWindow coursePop;
 	private ImageView menuIn;
 	private ArrayList<Subject> subjects;
@@ -61,10 +58,8 @@ public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui_daily);
-		appConfig = AppConfig.getAppConfig(this);
 		this.initView();
 		this.initData();
-
 	}
 
 	private void initView() {

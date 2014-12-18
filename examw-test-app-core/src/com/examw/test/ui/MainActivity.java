@@ -90,7 +90,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// 开线程去登录
 			new Thread() {
 				public void run() {
-					Message msg = new Message();
+					Message msg = mHandler.obtainMessage();
 					String username = appConfig.get("user.account");
 					String pwd = CyptoUtils.decode("changheng",
 							appConfig.get("user.pwd"));

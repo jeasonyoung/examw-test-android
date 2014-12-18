@@ -42,6 +42,7 @@ public class AppConstant {
 	public static final int ACTION_CHOOSE_ITEM = 6;	//答题卡选题
 	public static final int ACTION_SUBMIT = 7;		//提交答案
 	public static final int ACTION_CHOOSE_ITEM_WITH_ANSWER = 8;	//带答案
+	public static final int ACTION_CHAPTER = 9;	//章节练习
 	
 	
 	

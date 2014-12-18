@@ -46,7 +46,7 @@ public class MainFragment extends Fragment {
 	//主界面适配的Activity
 	private static final Class<?>[] classes = {
 			KnowledgeActivity.class,
-			ChapterActivity.class, 
+			ChooseSubjectActivity.class, 
 			ChooseSubjectActivity.class, 
 			ChooseSubjectActivity.class,
 			ChooseSubjectActivity.class,
@@ -56,7 +56,7 @@ public class MainFragment extends Fragment {
 			ExamInfoActivity.class
 			
 	};
-	private static final int[] action = { 0, 0,AppConstant.ACTION_FAVORITE,AppConstant.ACTION_ERROR, 0, 0, 0, 0, 0 };
+	private static final int[] action = { 0, AppConstant.ACTION_CHAPTER,AppConstant.ACTION_FAVORITE,AppConstant.ACTION_ERROR, 0, 0, 0, 0, 0 };
 	//是否需要登录
 	private static final boolean[] needLogin = { false, true, true, true, true,
 			true, false, true, false };

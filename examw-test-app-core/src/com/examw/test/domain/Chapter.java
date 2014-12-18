@@ -212,4 +212,9 @@ public class Chapter implements Serializable,Comparable<Chapter>{
 		}
 		return index;
 	}
+	
+	@Override
+	public String toString() {
+		return title;
+	}
 }

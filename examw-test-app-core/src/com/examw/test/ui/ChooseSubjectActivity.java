@@ -142,6 +142,12 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 			intent.putExtra("subjectId", subject.getSubjectId());
 			intent.putExtra("action", action);
 			break;
+		case AppConstant.ACTION_CHAPTER:
+			intent = new Intent(ChooseSubjectActivity.this,ChapterActivity.class);
+			intent.putExtra("subjectId", subject.getSubjectId());
+			intent.putExtra("subjectName",subject.getName());
+			intent.putExtra("action", action);
+			break;
 		case AppConstant.ACTION_NONE:
 			intent = new Intent(ChooseSubjectActivity.this,SimulateActivity.class);
 			intent.putExtra("subjectId", subject.getSubjectId());

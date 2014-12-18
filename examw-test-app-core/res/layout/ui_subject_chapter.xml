@@ -27,7 +27,8 @@
             android:fadingEdge="none"
             android:gravity="center"
             android:listSelector="@drawable/trans" />
-
+		<include layout="@layout/loading" />
+		<include layout="@layout/nodata_layout" />
         <include layout="@layout/reload" />
     </FrameLayout>
 

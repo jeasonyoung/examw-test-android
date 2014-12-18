@@ -169,7 +169,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 				} catch (AppException e) {
 					Message msg = handler.obtainMessage();
 					msg.what = -1;
-					msg.obj = e.getMessage();
+					msg.obj = e;
 					handler.sendMessage(msg);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -209,7 +209,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 				k.webView.onRefreshComplete();
 				break;
 			case -1:
-				ToastUtils.show(k, msg.obj.toString());
+				((AppException)msg.obj).makeToast(k);
 				k.nodata.setVisibility(View.GONE);
 				k.loading.setVisibility(View.GONE);
 				k.reload.setVisibility(View.VISIBLE);
@@ -276,7 +276,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 			} catch (AppException e) {
 				Message msg = handler.obtainMessage();
 				msg.what = -1;
-				msg.obj = e.getMessage();
+				msg.obj = e;
 				handler.sendMessage(msg);
 			} catch (Exception e) {
 				e.printStackTrace();
