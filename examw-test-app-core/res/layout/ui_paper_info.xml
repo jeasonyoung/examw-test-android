@@ -11,7 +11,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         layout="@layout/top_head" />
-
+    
+	<include layout="@layout/loading"/>
+	
     <com.examw.test.widget.BounceScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >

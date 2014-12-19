@@ -93,6 +93,11 @@
             android:name=".ui.ChapterActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 章节练习界面  -->
+        <activity
+            android:name=".ui.ChapterDetailActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 每日一练界面  -->
         <activity
             android:name=".ui.DailyActivity"

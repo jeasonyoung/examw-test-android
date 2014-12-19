@@ -2,7 +2,11 @@ package com.examw.test.support;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -158,5 +162,32 @@ public class ApiClient {
 			}
 		} while (time < 3);
 		return bitmap;
+	}
+	/**
+	 * 获取北京时间
+	 * @return
+	 */
+	public static long getStandardTime()
+	{
+		HttpURLConnection uc= null;
+		try
+		{
+			URL url=new URL("http://www.baidu.com");//取得资源对象
+			uc = (HttpURLConnection) url.openConnection();//生成连接对象
+			uc.setConnectTimeout(5000);
+			uc.setReadTimeout(5000);
+			uc.setRequestMethod("GET");
+			uc.connect(); //发出连接
+			return uc.getDate(); //取得网站日期时间
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return System.currentTimeMillis();
+		}finally{
+			if(uc != null)
+			{
+				uc.disconnect();
+			}
+		}
 	}
 }

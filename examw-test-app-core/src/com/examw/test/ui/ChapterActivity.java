@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -55,9 +57,6 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 		this.nodataLayout = (LinearLayout) this.findViewById(R.id.nodataLayout);
 		this.findViewById(R.id.btn_goback).setOnClickListener(this);
 		this.findViewById(R.id.btn_reload).setOnClickListener(this);
-//		this.btnShowPop = (Button) this.findViewById(R.id.showPop);
-//		this.btnShowPop.getBackground().setAlpha(200);
-//		this.btnShowPop.setOnClickListener(this);
 		expandView.setGroupIndicator(null); //去掉默认样式
 	}
 	private void initData()

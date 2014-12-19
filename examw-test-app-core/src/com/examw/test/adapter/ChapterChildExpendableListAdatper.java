@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.examw.test.R;
@@ -21,7 +20,7 @@ import com.examw.test.domain.Chapter;
  * @since 2014年12月18日 下午2:18:16.
  */
 public class ChapterChildExpendableListAdatper extends BaseExpandableListAdapter {
-	public static final int ItemHeight = 48;
+	public static final int ItemHeight = 55;
 	public static final int PaddingLeft = 18;
 	
 	private Context context;
@@ -41,7 +40,21 @@ public class ChapterChildExpendableListAdatper extends BaseExpandableListAdapter
 			return null;
 		}
 	}
-
+	
+	public ArrayList<Chapter> getChapters()
+	{
+		return groups;
+	}
+	
+	public void updateChapters(ArrayList<Chapter> chapters)
+	{
+		this.groups = chapters;
+	}
+	
+	public void removeAll() {
+		groups.clear();
+	}
+	
 	// 获得指定子项的ID
 	public long getChildId(int groupPosition, int childPosition) {
 		return childPosition;
@@ -56,11 +69,7 @@ public class ChapterChildExpendableListAdatper extends BaseExpandableListAdapter
 					R.layout.item_choose_subject_list, null);
 			holder = new ViewHolder();
 			holder.txt = (TextView) convertView.findViewById(R.id.list_title);
-			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT,
-					RelativeLayout.LayoutParams.WRAP_CONTENT); // , 1是可选写的
-			lp.setMargins(15, 0, 0, 0);
-			holder.txt.setLayoutParams(lp);
+			convertView.setPadding(PaddingLeft, 0, 0, 0);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();

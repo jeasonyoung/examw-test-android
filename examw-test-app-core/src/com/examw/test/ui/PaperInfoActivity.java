@@ -35,12 +35,11 @@ import com.examw.test.util.StringUtils;
  * @since 2014年11月28日 下午5:13:13.
  */
 public class PaperInfoActivity extends BaseActivity implements OnClickListener {
-	private LinearLayout ruleInfo;
+	private LinearLayout ruleInfo,loading;
 	private TextView totalNum, ruleSize, paperScore, paperTime;
 	private Button startBtn;
 	private Button restarBtn;
 	private String paperId;
-	private ProgressDialog dialog;
 	private Handler handler;
 	private String username;
 	private PaperRecord record;
@@ -63,6 +62,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 		this.ruleInfo = (LinearLayout) this.findViewById(R.id.ruleInfoLayout);
 		this.startBtn = (Button) this.findViewById(R.id.btn_pratice);
 		this.restarBtn = (Button) this.findViewById(R.id.btn_restart);
+		this.loading = (LinearLayout) this.findViewById(R.id.loadingLayout);
 		this.findViewById(R.id.btn_goback).setOnClickListener(this);
 		this.startBtn.setOnClickListener(this);
 		this.restarBtn.setOnClickListener(this);
@@ -76,8 +76,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 		// //恢复登录的状态，
 //		appContext.recoverLoginStatus();
 		username = appContext.getUsername();
-		dialog = ProgressDialog.show(PaperInfoActivity.this, null,"加载中请稍候...", true, true);
-		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		loading.setVisibility(View.VISIBLE);
 		handler = new MyHandler(this);
 		// 开线程 findRuleList
 		new Thread() {
@@ -166,7 +165,6 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			PaperInfoActivity theActivity = mActivity.get();
 			switch (msg.what) {
 			case 1:
-				theActivity.dialog.dismiss();
 				theActivity.ruleList = theActivity.paper.getStructures();
 				if (theActivity.ruleList.size() == 0) {
 					Toast.makeText(theActivity, "暂时没有试题数据", Toast.LENGTH_SHORT)
@@ -174,18 +172,19 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 				} else {
 					theActivity.initTextView(theActivity.ruleList);
 				}
+				theActivity.loading.setVisibility(View.GONE);
 				break;
 			case -2:
-				theActivity.dialog.dismiss();
 				Toast.makeText(theActivity,
 						((AppException) msg.obj).getMessage(),
 						Toast.LENGTH_SHORT).show();
+				theActivity.loading.setVisibility(View.GONE);
 				break;
 			case -1:
 				// 连不上,
-				theActivity.dialog.dismiss();
 				Toast.makeText(theActivity, "连不上服务器", Toast.LENGTH_SHORT)
 						.show();
+				theActivity.loading.setVisibility(View.GONE);
 				break;
 			}
 		}
@@ -219,9 +218,6 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onDestroy() {
-		if (dialog != null) {
-			dialog.dismiss();
-		}
 		super.onDestroy();
 	}
 }
