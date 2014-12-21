@@ -10,15 +10,29 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         layout="@layout/top_head" />
-    
-	<include layout="@layout/paper_list_top" />
-	
-	<FrameLayout
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <com.examw.test.widget.DateHorizontalScrollView
+            android:id="@+id/horizontal_scrollview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:paddingBottom="2dip"
+            android:paddingTop="2dip"
+            android:scrollbars="none" />
+    </LinearLayout>
+
+    <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-       	<ListView
-       	    android:id="@+id/practiceListView"
+        <ListView
+            android:id="@+id/practiceListView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@color/transparent"
@@ -28,9 +42,12 @@
             android:fadingEdge="none"
             android:scrollbars="none"
             android:visibility="visible" />
-       	
+
         <include layout="@layout/loading" />
-		<include layout="@layout/nodata_layout" />
+
+        <include layout="@layout/nodata_layout" />
+
         <include layout="@layout/reload" />
     </FrameLayout>
+
 </LinearLayout>

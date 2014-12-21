@@ -78,6 +78,10 @@ public class StringUtils {
 	{
 		return dateFormater.get().format(date);
 	}
+	public static String toStandardDateShort(Date date)
+	{
+		return dateFormater2.get().format(date);
+	}
 	/**
 	 * 以友好的方式显示时间
 	 * 

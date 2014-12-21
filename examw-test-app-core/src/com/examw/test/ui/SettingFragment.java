@@ -35,7 +35,7 @@ import com.examw.test.util.BrightnessUtil;
 
 public class SettingFragment extends Fragment implements OnClickListener {
 	private TextView dateTxt, versionTxt, cacheSizeTxt,
-//					usernameTxt,  loginTxt 
+//					usernameTxt,  loginTxt ,
 					newDataFlag,newVersionFlag;
 	private CheckBox checkBox;
 	private AppConfig appConfig;
@@ -48,7 +48,6 @@ public class SettingFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		View v = inflater.inflate(R.layout.setting_fragment, null);
 		dateTxt = (TextView) v.findViewById(R.id.txt_date);
 		versionTxt = (TextView) v.findViewById(R.id.txt_version);
@@ -118,6 +117,10 @@ public class SettingFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.layout_edit:
+			Intent intent = new Intent(mContext, SetTimeActivity.class);
+			startActivity(intent);
+			break;
 		//分享
 		case R.id.layout_share:
 //			share2();
@@ -191,9 +194,9 @@ public class SettingFragment extends Fragment implements OnClickListener {
 			showLogoutDialog();
 		} else {
 			// 转到登录界面
-//			Intent intent = new Intent(getActivity(), LoginActivity.class);
-//			intent.putExtra("loginFrom", LoginActivity.LOGIN_SETTING);
-//			startActivityForResult(intent, 10);
+			Intent intent = new Intent(getActivity(), LoginActivity.class);
+			intent.putExtra("loginFrom", LoginActivity.LOGIN_SETTING);
+			startActivityForResult(intent, 10);
 		}
 	}
 
@@ -230,79 +233,6 @@ public class SettingFragment extends Fragment implements OnClickListener {
 		}
 
 	}
-
-	// 调节屏幕亮度
-	// private void showDialog() {
-	// AlertDialog.Builder builder = new Builder(getActivity());
-	// builder.setTitle("调节亮度");
-	// final LayoutInflater inflater = LayoutInflater.from(mContext);
-	// View v = inflater.inflate(R.layout.brightness_dlg, null);
-	// final SeekBar seekBar = (SeekBar) v.findViewById(R.id.seekBar1);
-	// seekBar.setMax(BrightnessUtil.MAX_BRIGHTNESS);
-	// seekBar.setProgress((BrightnessUtil.getScreenBrightness(getActivity())));
-	// seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-	// @Override
-	// public void onProgressChanged(SeekBar seekBar, int progress,
-	// boolean fromUser) {
-	// // TODO Auto-generated method stub
-	// BrightnessUtil.setBrightness(getActivity(), progress);
-	// }
-	//
-	// @Override
-	// public void onStartTrackingTouch(SeekBar arg0) {
-	//
-	// // TODO Auto-generated method stub
-	// }
-	//
-	// @Override
-	// public void onStopTrackingTouch(SeekBar arg0) {
-	// }
-	// });
-	// CheckBox checkBox = (CheckBox) v.findViewById(R.id.checkBox1);
-	// checkBox.setChecked(BrightnessUtil.isAutoBrightness(mContext
-	// .getContentResolver()));
-	// if (checkBox.isChecked())
-	// seekBar.setEnabled(false);
-	// checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-	// @Override
-	// public void onCheckedChanged(CompoundButton buttonView,
-	// boolean isChecked) {
-	// // TODO Auto-generated method stub
-	// if (isChecked) {
-	// BrightnessUtil.startAutoBrightness(getActivity());
-	// seekBar.setEnabled(false);
-	// } else {
-	// BrightnessUtil.stopAutoBrightness(getActivity());
-	// seekBar.setEnabled(true);
-	// }
-	// }
-	// });
-	// builder.setView(v);
-	// builder.setPositiveButton("确定",
-	// new android.content.DialogInterface.OnClickListener() {
-	// @Override
-	// public void onClick(DialogInterface dialog, int which) {
-	// // TODO Auto-generated method stub
-	// if (seekBar.isEnabled()) {
-	// BrightnessUtil.saveBrightness(
-	// mContext.getContentResolver(),
-	// seekBar.getProgress());
-	// } else {
-	// dialog.dismiss();
-	// }
-	// }
-	// });
-	// builder.setNegativeButton("取消",
-	// new android.content.DialogInterface.OnClickListener() {
-	// @Override
-	// public void onClick(DialogInterface dialog, int which) {
-	// dialog.dismiss();
-	// }
-	// });
-	// AlertDialog downloadDialog = builder.create();
-	// downloadDialog.setCanceledOnTouchOutside(false);
-	// downloadDialog.show();
-	// }
 	private void showPop() {
 		if (pop == null) {
 			View v = LayoutInflater.from(this.getActivity()).inflate(

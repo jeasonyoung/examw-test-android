@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -15,6 +13,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.examw.test.app.AppContext;
 import com.examw.test.domain.Subject;
@@ -88,7 +87,12 @@ public class ApiClient {
 		if(StringUtils.isEmpty(result)) return null;
 		return GsonUtil.getGson().fromJson(result, new TypeToken<ArrayList<FrontPaperInfo>>(){}.getType());
 	}
-	
+	//加载每日一练
+	public static ArrayList<FrontPaperInfo> getDailyPaperList(AppContext appContext) throws AppException{
+		String result = HttpUtils.http_get(appContext, URLs.DAILY_PAPER_LIST);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.getGson().fromJson(result, new TypeToken<ArrayList<FrontPaperInfo>>(){}.getType());
+	}
 	//单个试卷
 	public static String loadPaperContent(AppContext appContext,String paperId) throws AppException{
 		String result = HttpUtils.http_get(appContext, String.format(URLs.SINGLE_PAPER,paperId));
@@ -172,6 +176,7 @@ public class ApiClient {
 		HttpURLConnection uc= null;
 		try
 		{
+			Log.d("ApiClient","获取百度的时间");
 			URL url=new URL("http://www.baidu.com");//取得资源对象
 			uc = (HttpURLConnection) url.openConnection();//生成连接对象
 			uc.setConnectTimeout(5000);

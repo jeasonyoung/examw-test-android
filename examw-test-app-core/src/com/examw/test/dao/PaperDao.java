@@ -1,12 +1,15 @@
 package com.examw.test.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.examw.test.app.AppConstant;
 import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.domain.Paper;
 import com.examw.test.model.FrontPaperInfo;
@@ -264,5 +267,39 @@ public class PaperDao {
 		cursor.close();
 		LibraryDBUtil.close();
 		return addtime;
+	}
+	//查找每日一练
+	public static ArrayList<Paper> findDailyPapers(long today,int dayOffset) {
+		Log.d(TAG,"查询每日一练的数据");
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		StringBuilder sql = new StringBuilder("select paperid,name,score,time,year,price,total,userTotal,publishTime from PaperTab where 1 = 1 and type = ? and publishTime > ? and publishTime < ? ");
+		ArrayList<String> params = new ArrayList<String>();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date(today));
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)-dayOffset, 0, 0, 0);
+		params.add(String.valueOf(AppConstant.PAPER_TYPE_DAILY));
+		params.add(StringUtils.toStandardDateShort(cal.getTime()));
+		Log.d(TAG,"当天的时间1:"+params.get(1));
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)+1, 0, 0, 0);
+		params.add(StringUtils.toStandardDateShort(cal.getTime()));
+		Log.d(TAG,"当天的时间2:"+params.get(2));
+		sql.append(" order by publishtime desc");
+		Cursor cursor = db.rawQuery(sql.toString(), params.toArray(new String[0]));
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			LibraryDBUtil.close();
+			return null;
+		}
+		ArrayList<Paper> list = new ArrayList<Paper>();
+		while (cursor.moveToNext()) {
+			Paper p = new Paper(cursor.getString(0), cursor.getString(1),
+					cursor.getDouble(2), cursor.getInt(3), cursor.getInt(4),
+					cursor.getInt(5), cursor.getInt(6),cursor.getInt(7),cursor.getString(8));
+			list.add(p);
+		}
+		sql = null;params.clear();params = null;
+		cursor.close();
+		LibraryDBUtil.close();
+		return list;
 	}
 }
