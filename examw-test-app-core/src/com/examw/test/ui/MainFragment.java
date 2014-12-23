@@ -30,6 +30,7 @@ import com.examw.test.app.AppContext;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.SubjectInfo;
 import com.examw.test.support.ApiClient;
+import com.examw.test.util.HttpUtils;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 
@@ -97,8 +98,7 @@ public class MainFragment extends Fragment {
 //				new Thread(){
 //					public void run() {
 //						try {
-//							 ArrayList<SubjectInfo> list = ApiClient.getSubjectList(appContext);
-//							 Log.d(TAG,list.size()+" " + list.get(0).getName());
+//							HttpUtils.http_get(appContext, "http://192.168.1.246:8080/examw-test/api/data/categories");
 //						} catch (AppException e) {
 //							// TODO Auto-generated catch block
 //							e.printStackTrace();

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
@@ -200,6 +201,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private void initViews() {
 		// this.menuLayout = (LinearLayout) this.findViewById(R.id.menuLayout);
+		((TextView)this.findViewById(R.id.examTitle)).setText(appConfig.get("exam_name"));
 		this.moreBtn = (RadioButton) this.findViewById(R.id.btn_more);
 		this.setBtn = (RadioButton) this.findViewById(R.id.btn_setting);
 		this.homeBtn = (RadioButton) this.findViewById(R.id.btn_home);

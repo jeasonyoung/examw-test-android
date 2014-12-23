@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
 import com.examw.test.domain.PaperRecord;
+import com.examw.test.util.GsonUtil;
 
 /**
  * 试卷考试记录
@@ -66,7 +67,7 @@ public class PaperRecordAdapter extends BaseAdapter{
 		if(r.getStatus().equals(AppConstant.STATUS_DONE))
 		{
 			if(r.getPaperType().equals(AppConstant.PAPER_TYPE_DAILY) || r.getPaperType().equals(AppConstant.PAPER_TYPE_CHAPTER))
-				holder.info.setText("答题进度: "+r.getScore().intValue()+"/"+r.getRightNum());
+				holder.info.setText("答题进度: "+r.getScore().intValue()+"/"+GsonUtil.jsonToBean(r.getTorf(),int[].class).length);
 			else
 				holder.info.setText("得分: "+r.getScore()+"分");
 			holder.info.setTextColor(context.getResources().getColor(R.color.red));

@@ -11,7 +11,7 @@
             android:resizeable="true"
             android:anyDensity="true" />
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="9"
         android:targetSdkVersion="19" />
     
 	<!-- 接入网络 -->
@@ -157,5 +157,8 @@
             android:name=".ui.SetTimeActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 校验用户 -->
+        <meta-data android:value="digest" android:name="username"></meta-data>
+        <meta-data android:value="d4i9g7e5s19t20" android:name="password"></meta-data>
     </application>
 </manifest>

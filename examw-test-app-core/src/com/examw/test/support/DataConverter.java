@@ -139,6 +139,7 @@ public class DataConverter {
 	 */
 	public static int getHasDone(int[] tOrF)
 	{
+		if(tOrF == null) return 0;
 		int sum = 0;
 		for(int i = 0;i<tOrF.length;i++)
 		{

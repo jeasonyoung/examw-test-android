@@ -99,7 +99,12 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 
 	@Override
 	public void onClick(View v) {
-
+		switch(v.getId())
+		{
+		case R.id.btn_goback:
+			this.finish();
+			break;
+		}
 	}
 
 	private class GetPaperListThread extends Thread {

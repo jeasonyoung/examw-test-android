@@ -120,6 +120,7 @@ public class PaperRecordActivity extends BaseActivity {
 		new Thread() {
 			public void run() {
 				try {
+					Thread.sleep(1000);
 					total = PaperRecordDao.findRecordTotalOfUser(username);// 查询总数
 					if (total > 0) {
 						currentPage = 0;
@@ -244,7 +245,7 @@ public class PaperRecordActivity extends BaseActivity {
 						theActivity.paperListView.setAdapter(theActivity.mAdapter);
 						if(theActivity.total<=PaperRecordDao.PAGESIZE)
                     	{
-                    		theActivity.lvPapers_footer.setVisibility(View.GONE);
+							theActivity.paperListView.removeFooterView(theActivity.lvPapers_footer);
                     	}else{
                     		theActivity.lvPapers_footer.setVisibility(View.VISIBLE);
                     		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
@@ -265,7 +266,7 @@ public class PaperRecordActivity extends BaseActivity {
              		theActivity.lvPapers_foot_more.setText("更多");
              	}else
              	{
-             		theActivity.lvPapers_footer.setVisibility(View.GONE);
+             		theActivity.paperListView.removeFooterView(theActivity.lvPapers_footer);
              	}
              	break;
 			case -11:

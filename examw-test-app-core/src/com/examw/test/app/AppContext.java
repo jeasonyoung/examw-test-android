@@ -846,6 +846,7 @@ public class AppContext extends Application {
 					if(info !=null)
 					{
 						saveObject(info, "productInfo");
+						setProperty("exam_name", info.getExamName());
 						ProductDao.insert(info);
 					}
 				} catch (AppException e) {

@@ -725,6 +725,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			record.setRightNum(0);
 			record.setScore(0.0);
 			record.setStatus(AppConstant.STATUS_NONE);
+			record.setTorf(GsonUtil.objectToJson(tOrF));
 			return;
 		}
 		int rightNum = 0;
@@ -742,6 +743,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		}
 		record.setRightNum(rightNum);
 		record.setScore((double) sum);
+		record.setTorf(GsonUtil.objectToJson(tOrF));
 		if(sum == paperScore)
 			record.setStatus(AppConstant.STATUS_DONE);
 		else
@@ -755,6 +757,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			record.setRightNum(0);
 			record.setScore(0.0);
 			record.setStatus(AppConstant.STATUS_DONE);
+			record.setTorf(GsonUtil.objectToJson(tOrF));
 			return;
 		}
 		BigDecimal userScore = BigDecimal.ZERO;
