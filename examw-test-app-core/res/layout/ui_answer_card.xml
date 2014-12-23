@@ -16,7 +16,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone" >
+        >
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -42,15 +42,14 @@
                 android:textSize="@dimen/title_medium_size"
                 android:textStyle="bold" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/scoreFlexImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10.0dip"
-                android:background="@color/none"
-                android:scaleType="centerInside"
-                android:src="@drawable/shrink" />
+                android:text="收缩"
+                android:textColor="@color/white"
+                android:background="@drawable/answer_card_btn_bg" />
         </RelativeLayout>
 
         <View
@@ -118,6 +117,7 @@
                     android:src="@drawable/answer_card_repeat_img" />
 
                 <TextView
+                    android:id="@+id/repeatTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10.0dip"

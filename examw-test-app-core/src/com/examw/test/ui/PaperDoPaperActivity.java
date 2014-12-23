@@ -90,6 +90,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	private String recordId;
 	private int action;
 	private int paperTime, time;
+	private Integer paperType;
 	private double paperScore;
 	private List<StructureInfo> ruleList;
 	private ArrayList<StructureItemInfo> questionList;
@@ -274,6 +275,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					}else
 						record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
 					if (StringUtils.isEmpty(content)) {
+						Log.d(TAG,"没有内容");
 						handler.sendEmptyMessage(-1);
 						return;
 					}
@@ -307,9 +309,17 @@ public class PaperDoPaperActivity extends BaseActivity implements
 						tOrF = GsonUtil.jsonToBean(record.getTorf(), int[].class);
 					else
 						tOrF = new int[questionList.size()]; // 对错
-					paperTime = paper.getTime() * 60 - record.getUsedTime(); // 考试剩余时间
-					paperScore = paper.getScore().doubleValue();
-					time = paper.getTime() * 60;
+					//如果是每日一练,不用计算时间
+					if(paper.getType().equals(AppConstant.PAPER_TYPE_DAILY))
+					{
+						paperTime = record.getUsedTime();
+					}else
+					{
+						paperTime = paper.getTime() * 60 - record.getUsedTime(); // 考试剩余时间
+						time = paper.getTime() * 60;
+					}
+					paperScore = paper.getScore()==null?paper.getTotal():paper.getScore().doubleValue();
+					paperType = paper.getType();
 					if(action == AppConstant.ACTION_DO_EXAM)
 					{
 						questionCursor = getInitCursor(tOrF);	//初始化选项
@@ -319,6 +329,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					msg.arg1 = questionCursor;
 					handler.sendMessage(msg);
 				} catch (Exception e) {
+					e.printStackTrace();
 					handler.sendEmptyMessage(-1);
 					return;
 				}
@@ -340,7 +351,11 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		@Override
 		public void run() {
 			while (timerFlag) {
-				timeHandler.sendEmptyMessage(1);
+				if(paperType.equals(AppConstant.PAPER_TYPE_DAILY))
+				{
+					timeHandler.sendEmptyMessage(2);
+				}else
+					timeHandler.sendEmptyMessage(1);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -374,6 +389,11 @@ public class PaperDoPaperActivity extends BaseActivity implements
 							.show();
 					theActivity.submitExam();
 				}
+				break;
+			case 2:
+				theActivity.paperTime++;
+				theActivity.timeCountDown
+						.setText(getTimeText(theActivity.paperTime));
 				break;
 			case 10:
 				if (theActivity.proDialog != null) {
@@ -615,6 +635,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	 */
 	private boolean judgeItemIsRight(ItemRecord itemRecord,
 			StructureItemInfo item, BigDecimal min, BigDecimal per) {
+		min = min==null?BigDecimal.ZERO:min;
+		per = per==null?BigDecimal.ZERO:per;
 		// 用户没有作答
 		String answer = itemRecord.getAnswer();
 		if (StringUtils.isEmpty(answer)) {
@@ -696,13 +718,43 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 少选
 		Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
 	}
-
+	private void  submitDailyPractice()
+	{
+		if(itemRecords ==null || itemRecords.size()==0)
+		{
+			record.setRightNum(0);
+			record.setScore(0.0);
+			record.setStatus(AppConstant.STATUS_NONE);
+			return;
+		}
+		int rightNum = 0;
+		int sum = 0;
+		for(int i:tOrF)
+		{
+			if(i == AppConstant.ANSWER_RIGHT)
+			{
+				rightNum ++ ;
+			}
+			if(i != AppConstant.ANSWER_NONE)
+			{
+				sum++;
+			}
+		}
+		record.setRightNum(rightNum);
+		record.setScore((double) sum);
+		if(sum == paperScore)
+			record.setStatus(AppConstant.STATUS_DONE);
+		else
+			record.setStatus(AppConstant.STATUS_NONE);
+		return;
+	}
 	// 交卷,评判分
 	private void submitPaper() {
 		if(itemRecords ==null || itemRecords.size()==0)
 		{
 			record.setRightNum(0);
 			record.setScore(0.0);
+			record.setStatus(AppConstant.STATUS_DONE);
 			return;
 		}
 		BigDecimal userScore = BigDecimal.ZERO;
@@ -728,6 +780,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		record.setRightNum(DataConverter.getRightNum(tOrF));
 		record.setScore(userScore.doubleValue());
 		record.setTorf(GsonUtil.objectToJson(tOrF));
+		record.setStatus(AppConstant.STATUS_DONE);
 	}
 
 	// 清除用户的答案
@@ -802,7 +855,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		timerFlag = false;
 		record.setLastTime(StringUtils.toStandardDateStr(new Date()));
 		record.setStatus(AppConstant.STATUS_NONE);	//还是未做完状态
-		record.setUsedTime((time - paperTime));
+		record.setUsedTime(time == 0?paperTime:(time - paperTime));	//每日一练只记录时间
 		record.setItems(itemRecords);
 		record.setTorf(GsonUtil.objectToJson(tOrF));
 		hasRecordSaved = true;
@@ -832,11 +885,14 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		hasRecordSaved = true;
 		new Thread() {
 			public void run() {
-				submitPaper();// 交卷
+				if(paperType.equals(AppConstant.PAPER_TYPE_DAILY)){
+					//交卷判断
+					submitDailyPractice();
+				}else
+					submitPaper();// 交卷
 				// 更新记录,转到 选题界面
 				record.setLastTime(StringUtils.toStandardDateStr(new Date()));
-				record.setStatus(AppConstant.STATUS_DONE);
-				record.setUsedTime((time - paperTime));
+				record.setUsedTime(time == 0?paperTime:(time - paperTime));
 				record.setItems(itemRecords);
 				// 保存考试记录
 				PaperRecordDao.updatePaperRecord(record);
@@ -944,7 +1000,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		mIntent.putExtra("paperTime", time / 60);
 		mIntent.putExtra("username", username);
 		mIntent.putExtra("paperid", paperId);
-		mIntent.putExtra("useTime", record.getUsedTime());
+		mIntent.putExtra("paperType", paperType);
+		mIntent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
 		mIntent.putExtra("userScore", record.getScore()); // 本次得分
 		this.startActivityForResult(mIntent, 1);
 	}
@@ -1077,6 +1134,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		if (record != null && action == AppConstant.ACTION_DO_EXAM && !hasRecordSaved) {
 			record.setLastTime(StringUtils.toStandardDateStr(new Date()));
 			record.setItems(itemRecords);
+			record.setUsedTime(time == 0?paperTime:(time - paperTime));
 			record.setTorf(GsonUtil.objectToJson(tOrF));
 			PaperRecordDao.updatePaperRecord(record);
 			// 保存考试记录
@@ -1122,10 +1180,15 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			// 更新
 			viewFlow.setSelection(questionCursor);
 		} else if (30 == resultCode) {
+			//重做
 			action = AppConstant.ACTION_DO_EXAM;
 			questionCursor = 0;
 			clearUserAnswer();
-		} else if (0 == resultCode) {
+		}else if (40 == resultCode) {
+			//继续做题
+			action = AppConstant.ACTION_DO_EXAM;
+			questionCursor = 0;
+		}else if (0 == resultCode) {
 			this.finish();
 		}
 		super.onActivityResult(requestCode, resultCode, data);

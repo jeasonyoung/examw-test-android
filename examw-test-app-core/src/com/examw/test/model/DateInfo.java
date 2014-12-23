@@ -1,12 +1,18 @@
 package com.examw.test.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * 
  * @author fengwei.
  * @since 2014年12月21日 下午2:22:52.
  */
-public class DateInfo {
+public class DateInfo implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int orderNo;
 	private String eee,mmdd;
+	private Date date;
 	/**
 	 * 获取 
 	 * @return orderNo
@@ -47,6 +53,23 @@ public class DateInfo {
 	public String getMmdd() {
 		return mmdd;
 	}
+	
+	/**
+	 * 获取 
+	 * @return date
+	 * 
+	 */
+	public Date getDate() {
+		return date;
+	}
+	/**
+	 * 设置 
+	 * @param date
+	 * 
+	 */
+	public void setDate(Date date) {
+		this.date = date;
+	}
 	/**
 	 * 设置 
 	 * @param mmdd
@@ -55,11 +78,12 @@ public class DateInfo {
 	public void setMmdd(String mmdd) {
 		this.mmdd = mmdd;
 	}
-	public DateInfo(int orderNo, String eee, String mmdd) {
+	public DateInfo(int orderNo, String eee, String mmdd,Date date) {
 		super();
 		this.orderNo = orderNo;
 		this.eee = eee;
 		this.mmdd = mmdd;
+		this.date = date;
 	}
 	
 }

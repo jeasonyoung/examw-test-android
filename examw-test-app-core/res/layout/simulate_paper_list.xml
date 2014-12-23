@@ -3,15 +3,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/layout_selector_background"
+    android:padding="5.0dp"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/paper_name_TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10.0dip"
-        android:layout_marginRight="10.0dip"
-        android:layout_marginTop="10.0dip"
+        android:layout_marginLeft="10.0dp"
+        android:layout_marginRight="10.0dp"
+        android:layout_marginTop="10.0dp"
         android:textColor="@color/black"
         android:textSize="@dimen/text_small_size" />
 
@@ -21,17 +22,18 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/paper_name_TextView"
         android:layout_below="@id/paper_name_TextView"
-        android:layout_marginTop="5.0dip"
+        android:layout_marginTop="5.0dp"
+        android:layout_marginBottom="5.0dp"
         android:textColor="@color/color_dark_grey"
         android:textSize="@dimen/text_little_size" />
 
     <LinearLayout
+        android:id="@+id/score_time_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/paper_name_TextView"
         android:layout_below="@id/paper_info_TextView"
-        android:layout_marginTop="5.0dip"
-        android:paddingBottom="10.0dip"
+        android:paddingBottom="5.0dp"
         android:orientation="horizontal" >
 
         <TextView
@@ -62,9 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="10.0dip"
-        android:layout_marginTop="5.0dip"
-        android:paddingBottom="10.0dip"
+        android:layout_marginRight="10.0dp"
+        android:layout_marginTop="5.0dp"
+        android:paddingBottom="5.0dp"
         android:textColor="@color/black"
         android:textSize="@dimen/text_little_size" />
 </RelativeLayout>

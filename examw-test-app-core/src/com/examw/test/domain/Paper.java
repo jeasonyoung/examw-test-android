@@ -288,11 +288,12 @@ public class Paper implements Serializable {
 		this.userTotal = userTotal;
 	}
 	public Paper() {}
-	public Paper(String paperId,String name,Double score,Integer time,Integer year,Integer price,Integer total,Integer userTotal,String publishTime){
+	public Paper(String paperId,String name,Double score,Integer type,Integer time,Integer year,Integer price,Integer total,Integer userTotal,String publishTime){
 		//paperid,name,score,time,year,price,total
 		this.paperId = paperId;
 		this.name = name;
 		this.score = score;
+		this.type = type;
 		this.time = time;
 		this.year = year;
 		this.price = price;
@@ -300,5 +301,6 @@ public class Paper implements Serializable {
 		this.userTotal = userTotal;
 		this.publishTime = publishTime;
 	}
+	
 	
 }

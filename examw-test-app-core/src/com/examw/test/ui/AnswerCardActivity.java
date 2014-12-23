@@ -9,8 +9,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -32,8 +32,8 @@ import com.google.gson.reflect.TypeToken;
  */
 public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private static final String TAG = "AnswerCardActivity";
-	private ImageButton scoreFlexImg;
-	private LinearLayout scoreLayout,loadingLayout,nodataLayout,lookBtn,doAgainBtn;
+	private Button scoreFlexImg;
+	private LinearLayout scoreLayout,loadingLayout,nodataLayout;
 	private GridView scoreGridView;
 	private ListView questionListView;
 	private List<StructureInfo> ruleList;
@@ -43,7 +43,9 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private Intent intent;
 	private String paperId;
 	private String recordId;
+	private Integer paperType;
 	private int action;
+	private TextView repeatTv;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.e(TAG, "onCreate");
@@ -64,18 +66,17 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private void findView()
 	{
 		((TextView)this.findViewById(R.id.title)).setText("答题情况");
-		this.scoreFlexImg = (ImageButton) this.findViewById(R.id.scoreFlexImg);
+		this.scoreFlexImg = (Button) this.findViewById(R.id.scoreFlexImg);
 		this.scoreLayout = (LinearLayout) this.findViewById(R.id.exam_scoreLayout);
 		this.loadingLayout = (LinearLayout) this.findViewById(R.id.loadingLayout);
 		this.nodataLayout = (LinearLayout) this.findViewById(R.id.nodataLayout);
 		this.scoreGridView = (GridView) this.findViewById(R.id.scoreGridView);
 		this.questionListView = (ListView) this.findViewById(R.id.question_directoryListView);
-		this.lookBtn = (LinearLayout) this.findViewById(R.id.question_directory_lookBtn_Layout);
-		this.doAgainBtn = (LinearLayout) this.findViewById(R.id.quesiton_directory_repeatBtn_layout);
+		this.repeatTv = (TextView) this.findViewById(R.id.repeatTv);
 		this.scoreFlexImg.setOnClickListener(this);
 		this.findViewById(R.id.btn_goback).setOnClickListener(this);
-		this.lookBtn.setOnClickListener(this);
-		this.doAgainBtn.setOnClickListener(this);
+		this.findViewById(R.id.question_directory_lookBtn_Layout).setOnClickListener(this);
+		 this.findViewById(R.id.quesiton_directory_repeatBtn_layout).setOnClickListener(this);
 	}
 	private void initData()
 	{
@@ -86,6 +87,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		this.ruleListJson = intent.getStringExtra("ruleListJson");
 		this.ruleList = GsonUtil.getGson().fromJson(ruleListJson, new TypeToken<ArrayList<StructureInfo>>(){}.getType());
 		this.trueOfFalse = GsonUtil.getGson().fromJson(intent.getStringExtra("trueOfFalse"), int[].class);
+		this.paperType = intent.getIntExtra("paperType", AppConstant.PAPER_TYPE_SIMU);
 	}
 	private void initView()
 	{
@@ -106,23 +108,36 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		case  AppConstant.ACTION_SHOW_ANSWER:
 		case AppConstant.ACTION_SUBMIT:
 			this.scoreLayout.setVisibility(View.VISIBLE);
-			this.data = new String[10];
+			int i = 0;
 			int hasDone = DataConverter.getHasDone(trueOfFalse);
-			this.data[0] = "试题总分:"+intent.getDoubleExtra("paperScore",0)+"分";//总分
-			this.data[1] = "试题限时:"+intent.getIntExtra("paperTime",0)+"分钟";//总时
-			this.data[2] = "本次得分:"+intent.getDoubleExtra("userScore",0)+"分";//本次得分[红色]
-			this.data[3] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
-			this.data[4] = "已做:"+hasDone+"题";//已做
-			this.data[5] = "未做:"+(trueOfFalse.length-hasDone)+"题";//未做
 			int right = DataConverter.getRightNum(trueOfFalse);
-			this.data[6] = "做对:"+right+"题";	//做对
-			this.data[7] = "做错:"+(hasDone - right)+"题";	//做错
-			this.data[8] = "共计:"+trueOfFalse.length+"题";		//共计题
-			if(hasDone ==0)
+			if(paperType.equals(AppConstant.PAPER_TYPE_DAILY))
 			{
-				this.data[9] = "正确率:0.0%";
+				this.data = new String[6];
+				i = 4;
+				if(hasDone < trueOfFalse.length)
+				{
+					repeatTv.setText("继续做题");
+				}
+				this.data[5] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
 			}else
-				this.data[9] = "正确率:"+(((int)(right*10000/hasDone)/100.0))+"%";//正确率
+			{
+				this.data = new String[10];
+				this.data[0] = "试题总分:"+intent.getDoubleExtra("paperScore",0)+"分";//总分
+				this.data[1] = "试题限时:"+intent.getIntExtra("paperTime",0)+"分钟";//总时
+				this.data[2] = "本次得分:"+intent.getDoubleExtra("userScore",0)+"分";//本次得分[红色]
+				this.data[3] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
+				if(hasDone ==0)
+				{
+					this.data[9] = "正确率:0.0%";
+				}else
+					this.data[9] = "正确率:"+(((int)(right*10000/hasDone)/100.0))+"%";//正确率
+			}
+			this.data[4-i] = "已做:"+hasDone+"题";//已做
+			this.data[5-i] = "未做:"+(trueOfFalse.length-hasDone)+"题";//未做
+			this.data[6-i] = "做对:"+right+"题";	//做对
+			this.data[7-i] = "做错:"+(hasDone - right)+"题";	//做错
+			this.data[8-i] = "共计:"+trueOfFalse.length+"题";		//共计题
 			this.scoreGridView.setAdapter(new AnswerScoreGridAdatper(this,data));
 			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
 			this.loadingLayout.setVisibility(View.GONE);
@@ -167,13 +182,13 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	{
 		if(this.scoreGridView.getVisibility()==View.GONE)
 		{
-			this.scoreFlexImg.setImageResource(R.drawable.shrink);
+			this.scoreFlexImg.setText("收缩");
 			this.scoreGridView.setVisibility(View.VISIBLE);
 			return;
 		}
 		if(this.scoreGridView.getVisibility()==View.VISIBLE)
 		{
-//			this.scoreFlexImg.setImageResource(R.drawable.unfold);
+			this.scoreFlexImg.setText("展开");
 			this.scoreGridView.setVisibility(View.GONE);
 			return;
 		}
@@ -184,7 +199,11 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		{
 			Intent data = new Intent();
 			data.putExtra("action", AppConstant.ACTION_DO_EXAM);
-			this.setResult(30, data);
+			if("继续做题".equals(repeatTv.getText()))
+			{
+				this.setResult(40,data);
+			}else
+				this.setResult(30, data);
 			this.finish();
 		}else
 		{

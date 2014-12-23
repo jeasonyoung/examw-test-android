@@ -73,7 +73,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10.0dip"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_logout"
+                    android:background="@drawable/btn_green"
                     android:padding="10.0dip"
                     android:text="重新开始"
                     android:textColor="@color/white"
@@ -151,6 +151,7 @@
                     android:layout_height="10.0dip" />
 
                 <LinearLayout
+                    android:id="@+id/scoreTimeLayout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10.0dip"

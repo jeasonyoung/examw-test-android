@@ -211,9 +211,8 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 	{
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			
-			if(PaperDao.hasPaper())
+			if(PaperDao.hasPaper(AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE))
 			{
 				//本地数据库中有试卷
 				handler.sendEmptyMessage(1);

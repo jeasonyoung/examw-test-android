@@ -57,7 +57,7 @@ public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.ui_daily);
+		setContentView(R.layout.ui_knowledge);
 		this.initView();
 		this.initData();
 	}

@@ -31,10 +31,15 @@ public class PaperDao {
 	 * 判断是否含有试卷
 	 * @return
 	 */
-	public static boolean hasPaper()
+	public static boolean hasPaper(String types)
 	{
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
-		Cursor cursor = db.rawQuery("select * from PaperTab",new String[] {});
+		StringBuilder sql = new StringBuilder("select * from PaperTab where 1 = 1 ");
+		if(!StringUtils.isEmpty(types))
+		{
+			sql.append(" and type in (").append(types).append(")");
+		}
+		Cursor cursor = db.rawQuery(sql.toString(),new String[] {});
 		boolean flag = cursor.getCount()>0;
 		cursor.close();
 		db.close();
@@ -116,7 +121,7 @@ public class PaperDao {
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		// String paperId, String paperName, int paperSorce, int
 		// paperTime,String courseId,String examId
-		StringBuilder sql = new StringBuilder("select paperid,name,score,time,year,price,total,userTotal,publishTime from PaperTab where 1 = 1 ");
+		StringBuilder sql = new StringBuilder("select paperid,name,score,type,time,year,price,total,userTotal,publishTime from PaperTab where 1 = 1 ");
 		ArrayList<String> params = new ArrayList<String>();
 		if(!StringUtils.isEmpty(subjectId))
 		{
@@ -137,8 +142,8 @@ public class PaperDao {
 		ArrayList<Paper> list = new ArrayList<Paper>();
 		while (cursor.moveToNext()) {
 			Paper p = new Paper(cursor.getString(0), cursor.getString(1),
-					cursor.getDouble(2), cursor.getInt(3), cursor.getInt(4),
-					cursor.getInt(5), cursor.getInt(6),cursor.getInt(7),cursor.getString(8));
+					cursor.getDouble(2), cursor.getInt(3),cursor.getInt(4), cursor.getInt(5),
+					cursor.getInt(6), cursor.getInt(7),cursor.getInt(8),cursor.getString(9));
 			list.add(p);
 		}
 		sql = null;params.clear();params = null;
@@ -160,12 +165,14 @@ public class PaperDao {
 		if (cursor.getCount() == 0) {
 			cursor.close();
 			LibraryDBUtil.close();
+			Log.d(TAG, String.format("试卷[PaperId= %s]没有内容",paperId));
 			return null;
 		}
 		cursor.moveToNext();
 		String content = cursor.getString(0);
 		cursor.close();
 		LibraryDBUtil.close();
+		Log.d(TAG, String.format("试卷[PaperId= %s]已有内容",paperId));
 		return content;
 	}
 	/**
@@ -272,7 +279,7 @@ public class PaperDao {
 	public static ArrayList<Paper> findDailyPapers(long today,int dayOffset) {
 		Log.d(TAG,"查询每日一练的数据");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
-		StringBuilder sql = new StringBuilder("select paperid,name,score,time,year,price,total,userTotal,publishTime from PaperTab where 1 = 1 and type = ? and publishTime > ? and publishTime < ? ");
+		StringBuilder sql = new StringBuilder("select paperid,name,score,type,time,year,price,total,userTotal,publishTime from PaperTab where 1 = 1 and type = ? and publishTime > ? and publishTime < ? ");
 		ArrayList<String> params = new ArrayList<String>();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date(today));
@@ -293,13 +300,21 @@ public class PaperDao {
 		ArrayList<Paper> list = new ArrayList<Paper>();
 		while (cursor.moveToNext()) {
 			Paper p = new Paper(cursor.getString(0), cursor.getString(1),
-					cursor.getDouble(2), cursor.getInt(3), cursor.getInt(4),
-					cursor.getInt(5), cursor.getInt(6),cursor.getInt(7),cursor.getString(8));
+					cursor.getDouble(2), cursor.getInt(3),cursor.getInt(4), cursor.getInt(5),
+					cursor.getInt(6), cursor.getInt(7),cursor.getInt(8),cursor.getString(9));
 			list.add(p);
 		}
 		sql = null;params.clear();params = null;
 		cursor.close();
 		LibraryDBUtil.close();
 		return list;
+	}
+	
+	public static void updatePaperUserTotal(String paperId,int total)
+	{
+		Log.d(TAG,"更新用户考试次数");
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		db.execSQL("update PaperTab set userTotal = ? where paperid = ?", new Object[]{total,paperId});
+		db.close();
 	}
 }

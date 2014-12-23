@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -34,11 +37,10 @@ import com.examw.test.widget.DateHorizontalScrollView;
 
 /**
  * 每日一练
- * 
  * @author fengwei.
  * @since 2014年11月26日 下午3:20:16.
  */
-public class DailyActivity extends BaseActivity implements OnClickListener {
+public class DailyActivity extends BaseActivity implements OnClickListener,OnGestureListener {
 	private static final String TAG = "DailyActivity";
 	private LinearLayout loadingLayout, nodataLayout, reloadLayout;
 	private ListView paperListView;
@@ -47,13 +49,18 @@ public class DailyActivity extends BaseActivity implements OnClickListener {
 	private Handler handler;
 	private long today;
 	private int currentDayOrder;
+	
 	private DateHorizontalScrollView mHorizontalScrollView;
-
+	private ArrayList<DateInfo> weekdays;
+	//手势
+	private GestureDetector mGestureDetector; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui_daily);
 		initViews();
+		//
+		mGestureDetector = new GestureDetector(this,this); 
 		initData();
 	}
 
@@ -77,11 +84,9 @@ public class DailyActivity extends BaseActivity implements OnClickListener {
 		});
 		mHorizontalScrollView
 				.setOnItemClickListener(new DateHorizontalScrollView.OnItemClickListener() {
-
 					@Override
 					public void click(int position) {
-						// TODO Auto-generated method stub
-						
+						findDailyPaper();
 					}
 				});
 	}
@@ -141,7 +146,6 @@ public class DailyActivity extends BaseActivity implements OnClickListener {
 		@Override
 		public void handleMessage(Message msg) {
 			DailyActivity theActivity = mActivity.get();
-			theActivity.loadingLayout.setVisibility(View.GONE);
 			switch (msg.what) {
 			case 1:
 				if (theActivity.paperList != null
@@ -152,15 +156,25 @@ public class DailyActivity extends BaseActivity implements OnClickListener {
 				} else {
 					theActivity.nodataLayout.setVisibility(View.VISIBLE);// 无数据显示
 				}
+				theActivity.loadingLayout.setVisibility(View.GONE);
 				break;
 			case 2:
 				theActivity.buildDailyDate();
 				break;
 			case -1:
 				// 连不上,
+				theActivity.loadingLayout.setVisibility(View.GONE);
 				theActivity.nodataLayout.setVisibility(View.GONE);
 				theActivity.reloadLayout.setVisibility(View.VISIBLE);// 无数据显示
 				Toast.makeText(theActivity, "暂时连不上服务器,请稍候", Toast.LENGTH_SHORT)
+						.show();// 提示
+				break;
+			case -2:
+				// 连不上,
+				theActivity.loadingLayout.setVisibility(View.GONE);
+				theActivity.nodataLayout.setVisibility(View.GONE);
+				theActivity.reloadLayout.setVisibility(View.VISIBLE);// 无数据显示
+				Toast.makeText(theActivity, "查询数据出错", Toast.LENGTH_SHORT)
 						.show();// 提示
 				break;
 			}
@@ -169,7 +183,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener {
 
 	private void buildDailyDate() {
 		Log.d(TAG,"构造滑动星期条");
-		ArrayList<DateInfo> navigations = new ArrayList<DateInfo>();
+		weekdays = new ArrayList<DateInfo>();
 		SimpleDateFormat weekFormat = new SimpleDateFormat("EEE",Locale.CHINA);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd",Locale.CHINA);
 		Calendar cal = Calendar.getInstance();
@@ -179,15 +193,83 @@ public class DailyActivity extends BaseActivity implements OnClickListener {
 		for (int i = 0; i < 7; i++) {
 			cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 					cal.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
-			navigations.add(new DateInfo(i, weekFormat.format(cal.getTime()),
-					dateFormat.format(cal.getTime())));
+			weekdays.add(new DateInfo(i, weekFormat.format(cal.getTime()),
+					dateFormat.format(cal.getTime()),cal.getTime()));
 		}
-		mHorizontalScrollView.setAdapter(new DailyDateAdapter(this,navigations));
+		mHorizontalScrollView.setAdapter(new DailyDateAdapter(this,weekdays));
 		mHorizontalScrollView.post(new Runnable() {
 			@Override
 			public void run() {
-				mHorizontalScrollView.startAnimation(6);
+				mHorizontalScrollView.startAnimation(6); //滚动到最后
 			}
 		});
+	}
+	
+	private void findDailyPaper()
+	{
+		loadingLayout.setVisibility(View.VISIBLE);
+		nodataLayout.setVisibility(View.GONE);
+		reloadLayout.setVisibility(View.GONE);
+		today = weekdays.get(mHorizontalScrollView.getCurrentPosition()).getDate().getTime();
+		new Thread(){
+			public void run() {
+				try
+				{
+					Thread.sleep(1000);
+					paperList = PaperDao.findDailyPapers(today,
+							currentDayOrder);
+					handler.sendEmptyMessage(1);
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+					handler.sendEmptyMessage(-2);
+				}
+			};
+		}.start();
+	}
+	//手势
+	@Override
+	public boolean onDown(MotionEvent e) {
+		
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		
+		return false;
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		if (e1.getX() - e2.getX() > 80) {
+			//向左滑
+			mHorizontalScrollView.startAnimation(mHorizontalScrollView.getPrevPosition());
+		} else if (e1.getX() - e2.getX() < -80) {
+			mHorizontalScrollView.startAnimation(mHorizontalScrollView.getNextPosition());
+		}
+		findDailyPaper();
+		return false;
+	}
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		mGestureDetector.onTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
 	}
 }

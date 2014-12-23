@@ -3,7 +3,6 @@ package com.examw.test.ui;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -105,7 +104,6 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_goback:
 			this.finish();
@@ -141,6 +139,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			intent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
 			intent.putExtra("paperScore", paper.getScore().doubleValue());
 			intent.putExtra("paperTime", paper.getTime());
+			intent.putExtra("paperType", paper.getType());
 			intent.putExtra("username", username);
 			intent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
 			intent.putExtra("userScore", record.getScore()); // 本次得分
@@ -189,12 +188,19 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 	}
+	
 	private void initTextView(List<StructureInfo> rules) {
 		((TextView) this.findViewById(R.id.papertitle)).setText(paper.getName());
-		this.paperScore.setText(paper.getScore() + "");
-		this.paperTime.setText(paper.getTime() + "");
 		int length = rules.size();
 		this.ruleSize.setText(length + "");
+		//每日一练,没有总分和时间
+		if(paper.getType().equals(AppConstant.PAPER_TYPE_DAILY))
+		{
+			this.findViewById(R.id.scoreTimeLayout).setVisibility(View.GONE);
+		}else{
+			this.paperScore.setText(paper.getScore() + "");
+			this.paperTime.setText(paper.getTime() + "");
+		}
 		if (record != null && AppConstant.STATUS_NONE.equals(record.getStatus())) {
 			this.startBtn.setText("继续考试");
 		} else if (record != null && AppConstant.STATUS_DONE.equals(record.getStatus())) {
@@ -208,7 +214,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 			StructureInfo r = rules.get(i);
 			View v = LayoutInflater.from(this).inflate(R.layout.item_structure_info,null);
 			TextView ruleTitle = (TextView) v.findViewById(R.id.ruleTitle);
-			ruleTitle.setText("第" + (i + 1) + "大题" + r.getTitle());
+			ruleTitle.setText("第" + (i + 1) + "大题 " + r.getTitle());
 			TextView ruleTitleInfo = (TextView) v.findViewById(R.id.ruleTitleInfo);
 			ruleTitleInfo.setText("说明:" + r.getDescription());
 			r.setItems(null);

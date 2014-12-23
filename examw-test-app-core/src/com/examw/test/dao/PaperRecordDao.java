@@ -26,6 +26,7 @@ import com.examw.test.util.StringUtils;
  */
 public class PaperRecordDao {
 	private static final String TAG = "PaperRecordDao";
+	public static final int PAGESIZE = 2;
 	/**
 	 * 保存考试记录
 	 * @param record
@@ -108,7 +109,7 @@ public class PaperRecordDao {
 			private Date createTime,lastTime;
 		 */
 		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where recordId = ? ";
-		String[] params = new String[] {};
+		String[] params = new String[] {recordId};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
 			cursor.close();
@@ -242,12 +243,24 @@ public class PaperRecordDao {
 		saveOrUpdateItem(db, item);
 		db.close();
 	}
-	/**
-	 * 查询用户所有的考试记录
-	 * @param username
-	 * @return
-	 */
-	public static ArrayList<PaperRecord> findRecordsByUsername(String username) {
+	//查询总的个数
+	public static int findRecordTotalOfUser(String username)
+	{
+		if(StringUtils.isEmpty(username))	return 0;
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select count(*) from PaperRecordTab where userName = ? ",  new String[] {username});
+		int total = 0;
+		while(cursor.moveToNext())
+		{
+			total = cursor.getInt(0);
+		}
+		cursor.close();
+		db.close();
+		return total;
+	}
+	//考试记录分页查询
+	public static ArrayList<PaperRecord> findRecordsByUsername(String username,int page)
+	{
 		if(StringUtils.isEmpty(username))	return null;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
 		/*
@@ -256,8 +269,8 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab order by lastTime desc ";
-		String[] params = new String[] {};
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where userName = ? order by lastTime desc limit ? offset ?";
+		String[] params = new String[] {username,PAGESIZE+"",page*PAGESIZE+""};
 		Cursor cursor = db.rawQuery(sql, params);
 		ArrayList<PaperRecord> list = new ArrayList<PaperRecord>();
 		while(cursor.moveToNext())
@@ -273,6 +286,8 @@ public class PaperRecordDao {
 		db.close();
 		return list;
 	}
+	
+	//科目总数
 	public static ArrayList<Subject> getCount(ArrayList<Subject> subjects,String username)
 	{
 		if(username == null) return subjects;

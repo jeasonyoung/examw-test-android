@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,12 @@ public class PaperRecordActivity extends BaseActivity {
 	private Handler handler;
 	private AppContext appContext;
 
+	// 分页
+	private View lvPapers_footer;
+	private ProgressBar lvPapers_foot_progress;
+	private TextView lvPapers_foot_more;
+	private int total, currentPage;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,15 +68,15 @@ public class PaperRecordActivity extends BaseActivity {
 				itemClickMethod();
 			}
 		});
-//		this.paperListView
-//				.setOnItemLongClickListener(new OnItemLongClickListener() {
-//					@Override
-//					public boolean onItemLongClick(AdapterView<?> arg0,
-//							View arg1, int arg2, long arg3) {
-//						showDeleteWindow(arg2);
-//						return true;
-//					}
-//				});
+		// this.paperListView
+		// .setOnItemLongClickListener(new OnItemLongClickListener() {
+		// @Override
+		// public boolean onItemLongClick(AdapterView<?> arg0,
+		// View arg1, int arg2, long arg3) {
+		// showDeleteWindow(arg2);
+		// return true;
+		// }
+		// });
 	}
 
 	private void findViews() {
@@ -78,6 +86,23 @@ public class PaperRecordActivity extends BaseActivity {
 		this.loadingLayout = (LinearLayout) this
 				.findViewById(R.id.loadingLayout);
 		this.paperListView = (ListView) this.findViewById(R.id.contentListView);
+
+		// 分页
+		this.lvPapers_footer = this.getLayoutInflater().inflate(
+				R.layout.listview_footer, null);
+		this.lvPapers_foot_more = (TextView) lvPapers_footer
+				.findViewById(R.id.listview_foot_more);
+		this.lvPapers_foot_progress = (ProgressBar) lvPapers_footer
+				.findViewById(R.id.listview_foot_progress);
+		this.paperListView.addFooterView(lvPapers_footer); // 在setAdapter之前addFooter
+		
+		this.lvPapers_footer.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				footerClick();
+			}
+		});
+
 		this.findViewById(R.id.btn_goback).setOnClickListener(
 				new ReturnBtnClickListener(this));
 		((TextView) (findViewById(R.id.title))).setText("学习记录");
@@ -91,78 +116,52 @@ public class PaperRecordActivity extends BaseActivity {
 	}
 
 	private void initData() {
-		final Handler handler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				loadingLayout.setVisibility(View.GONE);
-				switch (msg.what) {
-				case 1:
-					if (recordList == null || recordList.size() == 0) {
-						contentLayout.setVisibility(View.GONE);
-						nodataLayout.setVisibility(View.VISIBLE);
-					} else {
-						if(mAdapter == null){
-							mAdapter = new PaperRecordAdapter(
-									PaperRecordActivity.this, recordList);
-							paperListView.setAdapter(mAdapter);
-						}else{
-							mAdapter.notifyDataSetChanged();
-						}
-					}
-					break;
-				case -1:
-					Toast.makeText(PaperRecordActivity.this, "加载错误",
-							Toast.LENGTH_SHORT).show();
-					break;
-				}
-			}
-		};
 		loadingLayout.setVisibility(View.VISIBLE);
 		new Thread() {
 			public void run() {
 				try {
-					recordList = PaperRecordDao.findRecordsByUsername(username);
-					handler.sendEmptyMessage(1);
+					total = PaperRecordDao.findRecordTotalOfUser(username);// 查询总数
+					if (total > 0) {
+						currentPage = 0;
+						recordList = PaperRecordDao.findRecordsByUsername(
+								username, currentPage);
+					}
+					handler.sendEmptyMessage(11);
 				} catch (Exception e) {
 					e.printStackTrace();
-					handler.sendEmptyMessage(-1);
+					handler.sendEmptyMessage(-11);
+				}
+			};
+		}.start();
+	}
+	
+	private void footerClick()
+	{
+		lvPapers_foot_progress.setVisibility(View.VISIBLE);
+		lvPapers_foot_more.setText("玩命加载中");
+		currentPage++;
+		new Thread(){
+			public void run() {
+				try {
+					ArrayList<PaperRecord> records = PaperRecordDao.findRecordsByUsername(username,
+							currentPage);
+					Message msg = handler.obtainMessage();
+					msg.what = 14;
+					msg.obj = records;
+					handler.sendMessage(msg);
+				} catch (Exception e) {
+					e.printStackTrace();
+					handler.sendEmptyMessage(-11);
 				}
 			};
 		}.start();
 	}
 
-//	private void showDeleteWindow(final int index) {
-//		AlertDialog.Builder localBuilder = new AlertDialog.Builder(this);
-//		localBuilder.setTitle("删除").setMessage("是否删除此记录").setCancelable(false)
-//				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialog, int id) {
-//						// TODO Auto-generated method stub
-//						// 停止下载服务
-//						// dao.deleteRecord(recordList.get(index));
-//						recordList.remove(index);
-//						if (recordList.size() == 0) {
-//							contentLayout.setVisibility(View.GONE);
-//							nodataLayout.setVisibility(View.VISIBLE);
-//						} else
-//							mAdapter.notifyDataSetChanged();
-//					}
-//				})
-//				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialog, int id) {
-//						// TODO Auto-generated method stub
-//						dialog.cancel();
-//					}
-//				});
-//		localBuilder.create().show();
-//	}
-
 	private void itemClickMethod() {
 		Intent mIntent = null;
 		if (AppConstant.STATUS_NONE.equals(currentRecord.getStatus())) {
 			mIntent = new Intent(this, PaperDoPaperActivity.class);
-			mIntent.putExtra("action", "DoExam");
+			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
 			mIntent.putExtra("paperId", currentRecord.getPaperId());
 			mIntent.putExtra("recordId", currentRecord.getRecordId());
 			this.startActivity(mIntent);
@@ -194,15 +193,18 @@ public class PaperRecordActivity extends BaseActivity {
 		Intent mIntent = new Intent(this, AnswerCardActivity.class);
 		mIntent.putExtra("paperId", currentRecord.getPaperId());
 		mIntent.putExtra("trueOfFalse", currentRecord.getTorf());
-		mIntent.putExtra("action", "showResult");
+		mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
 		mIntent.putExtra("paperScore", currentRecord.getScore().doubleValue());
+		mIntent.putExtra("paperType", paper.getType());
 		// findPaper
 		mIntent.putExtra("paperTime", paper.getTime());
 		mIntent.putExtra("ruleListJson",
 				GsonUtil.objectToJson(paper.getStructures()));
 		mIntent.putExtra("username", username);
-		mIntent.putExtra("useTime",
-				currentRecord.getUsedTime() % 60 == 0 ? currentRecord.getUsedTime() / 60
+		mIntent.putExtra(
+				"useTime",
+				currentRecord.getUsedTime() % 60 == 0 ? currentRecord
+						.getUsedTime() / 60
 						: currentRecord.getUsedTime() / 60 + 1);
 		mIntent.putExtra("userScore", currentRecord.getScore()); // 本次得分
 		this.startActivity(mIntent); // 仍然是要启动这个Activity不带结果返回
@@ -230,6 +232,45 @@ public class PaperRecordActivity extends BaseActivity {
 				break;
 			case -1:
 				Toast.makeText(theActivity, "找不到试卷信息", Toast.LENGTH_SHORT).show();
+				break;
+			case 11:
+				if (theActivity.recordList == null || theActivity.recordList.size() == 0) {
+					//没有数据
+					theActivity.contentLayout.setVisibility(View.GONE);
+					theActivity.nodataLayout.setVisibility(View.VISIBLE);
+				} else {
+					if (theActivity.mAdapter == null) {
+						theActivity.mAdapter = new PaperRecordAdapter(theActivity, theActivity.recordList);
+						theActivity.paperListView.setAdapter(theActivity.mAdapter);
+						if(theActivity.total<=PaperRecordDao.PAGESIZE)
+                    	{
+                    		theActivity.lvPapers_footer.setVisibility(View.GONE);
+                    	}else{
+                    		theActivity.lvPapers_footer.setVisibility(View.VISIBLE);
+                    		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
+                    		theActivity.lvPapers_foot_more.setText("更多");
+                    	}
+					} else {
+						theActivity.mAdapter.notifyDataSetChanged();
+					}
+				}
+				break;
+			 case 14:
+             	theActivity.recordList.addAll((ArrayList<PaperRecord>) msg.obj);
+             	theActivity.mAdapter.notifyDataSetChanged();
+             	//判断剩余加载量
+             	if(theActivity.total > theActivity.recordList.size())
+             	{
+             		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
+             		theActivity.lvPapers_foot_more.setText("更多");
+             	}else
+             	{
+             		theActivity.lvPapers_footer.setVisibility(View.GONE);
+             	}
+             	break;
+			case -11:
+				Toast.makeText(theActivity, "加载错误",
+						Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
