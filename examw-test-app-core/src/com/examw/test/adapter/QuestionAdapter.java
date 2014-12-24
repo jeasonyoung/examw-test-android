@@ -348,7 +348,7 @@ public class QuestionAdapter extends BaseAdapter {
 
 	public static class AnswerViewHolder {
 		public ImageView answerResultImg;
-		TextView sysAnswerTextView, analysisTextView;
+		com.examw.test.widget.ImageTextView sysAnswerTextView, analysisTextView;
 		public LinearLayout examAnswerLayout;
 		public TextView myAnswerTextView;
 		public AnswerViewHolder(View v) {
@@ -357,11 +357,11 @@ public class QuestionAdapter extends BaseAdapter {
 					.findViewById(R.id.exam_answer_layout); // 整个答案的布局
 			this.myAnswerTextView = (TextView) v
 					.findViewById(R.id.myAnswerTextView); // 我的答案
-			this.sysAnswerTextView = (TextView) v
+			this.sysAnswerTextView = (com.examw.test.widget.ImageTextView) v
 					.findViewById(R.id.sysAnswerTextView); // 正确答案
 			this.answerResultImg = (ImageView) v
 					.findViewById(R.id.answerResultImg); // 判断图片
-			this.analysisTextView = (TextView) v
+			this.analysisTextView = (com.examw.test.widget.ImageTextView) v
 					.findViewById(R.id.exam_analysisTextView); // 解析
 			this.analysisTextView.setOnLongClickListener(tvLongClickListener);
 			this.examAnswerLayout.setVisibility(View.GONE); // 隐藏答案

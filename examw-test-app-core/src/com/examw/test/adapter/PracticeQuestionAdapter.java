@@ -44,10 +44,11 @@ import com.examw.test.ui.BaseActivity;
 import com.examw.test.ui.PaperDoPracticeActivity;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.CheckBoxGroup;
+import com.examw.test.widget.ImageTextView;
 import com.examw.test.widget.OptionLayout;
 
 /**
- * 
+ * 练习题的适配器
  * @author fengwei.
  * @since 2014年12月13日 上午11:00:54.
  */
@@ -326,7 +327,8 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 	//题目答案,一题一答案 [要显示和闭合不同切换,所以每一题都要new一个]
 	public static class AnswerViewHolder {
 		public ImageView answerResultImg;
-		TextView sysAnswerTextView, analysisTextView,sysAnswerHint,myAnswerHint,analysisHint;
+		TextView sysAnswerHint,myAnswerHint,analysisHint;
+		ImageTextView sysAnswerTextView, analysisTextView; 
 		public LinearLayout examAnswerLayout;
 		public TextView myAnswerTextView;
 		
@@ -336,14 +338,14 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			// 我的答案
 			this.myAnswerTextView = (TextView) v.findViewById(R.id.myAnswerTextView); 
 			// 正确答案
-			this.sysAnswerTextView = (TextView) v.findViewById(R.id.sysAnswerTextView); 
+			this.sysAnswerTextView = (ImageTextView) v.findViewById(R.id.sysAnswerTextView); 
 			this.myAnswerHint =(TextView)v.findViewById(R.id.myAnswerStr);
 			this.sysAnswerHint =(TextView)v.findViewById(R.id.sysAnswerStr);
 			this.analysisHint =(TextView)v.findViewById(R.id.examAnalysisStr);
 			// 判断图片
 			this.answerResultImg = (ImageView) v.findViewById(R.id.answerResultImg); 
 			 // 解析
-			this.analysisTextView = (TextView) v.findViewById(R.id.exam_analysisTextView);
+			this.analysisTextView = (ImageTextView) v.findViewById(R.id.exam_analysisTextView);
 			// 解析文字长按监听
 			this.analysisTextView.setOnLongClickListener(tvLongClickListener);
 			this.examAnswerLayout.setVisibility(View.GONE); // 隐藏答案

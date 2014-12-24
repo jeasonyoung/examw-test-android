@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,7 +22,6 @@ import com.examw.test.domain.Subject;
 import com.examw.test.exception.AppException;
 import com.examw.test.support.ApiClient;
 import com.examw.test.util.StringUtils;
-import com.examw.test.util.ToastUtils;
 
 /**
  * 章节练习
@@ -69,6 +67,7 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 			public void run() {
 				//去数据库查询章节列表
 				try{
+					Log.d(TAG,"查询章节信息...");
 					chapters = SyllabusDao.loadAllChapters(subjectId);
 					if(chapters == null || chapters.isEmpty())
 					{

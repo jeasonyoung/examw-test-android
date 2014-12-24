@@ -26,7 +26,9 @@ public class AppConfig {
 	//中级经济师
 //	public static final String PRODUCTID = "615c758f-424f-4808-9528-67630125687e";
 	//湖南会计
-	public static final String PRODUCTID = "f91e46c8-f85f-4ea6-aafe-5fcc445ecff0";
+//	public static final String PRODUCTID = "f91e46c8-f85f-4ea6-aafe-5fcc445ecff0";
+	//一建,建筑工程
+	public static final String PRODUCTID = "2f5a541a-c464-436a-9b82-798d6d24e2cb";
 	//终端ID
 	public static final String TERMINALID = "4";
 	

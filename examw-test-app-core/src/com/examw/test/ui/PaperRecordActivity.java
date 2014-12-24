@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -36,6 +37,7 @@ import com.examw.test.util.GsonUtil;
  * @since 2014年12月11日 下午5:03:03.
  */
 public class PaperRecordActivity extends BaseActivity {
+	private static final String TAG = "PaperRecordActivity";
 	private LinearLayout contentLayout, nodataLayout, loadingLayout;
 	private ListView paperListView;
 	private String username;
@@ -110,12 +112,14 @@ public class PaperRecordActivity extends BaseActivity {
 
 	@Override
 	protected void onStart() {
+		Log.d(TAG,"Record onStart");
 		this.loadingLayout.setVisibility(View.GONE);
 		super.onStart();
 		initData();
 	}
 
 	private void initData() {
+		Log.d(TAG,"初始化数据");
 		loadingLayout.setVisibility(View.VISIBLE);
 		new Thread() {
 			public void run() {
@@ -124,8 +128,15 @@ public class PaperRecordActivity extends BaseActivity {
 					total = PaperRecordDao.findRecordTotalOfUser(username);// 查询总数
 					if (total > 0) {
 						currentPage = 0;
-						recordList = PaperRecordDao.findRecordsByUsername(
-								username, currentPage);
+						if(recordList == null)
+						{
+							recordList = new ArrayList<PaperRecord>();
+						}else
+						{
+							recordList.clear();
+						}
+						recordList.addAll(PaperRecordDao.findRecordsByUsername(
+								username, currentPage));
 					}
 					handler.sendEmptyMessage(11);
 				} catch (Exception e) {
@@ -218,6 +229,7 @@ public class PaperRecordActivity extends BaseActivity {
 			mActivity = new WeakReference<PaperRecordActivity>(activity);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void handleMessage(Message msg) {
 			PaperRecordActivity theActivity = mActivity.get();
@@ -235,6 +247,7 @@ public class PaperRecordActivity extends BaseActivity {
 				Toast.makeText(theActivity, "找不到试卷信息", Toast.LENGTH_SHORT).show();
 				break;
 			case 11:
+				Log.d(TAG,"初始化数据完成");
 				if (theActivity.recordList == null || theActivity.recordList.size() == 0) {
 					//没有数据
 					theActivity.contentLayout.setVisibility(View.GONE);
@@ -245,7 +258,8 @@ public class PaperRecordActivity extends BaseActivity {
 						theActivity.paperListView.setAdapter(theActivity.mAdapter);
 						if(theActivity.total<=PaperRecordDao.PAGESIZE)
                     	{
-							theActivity.paperListView.removeFooterView(theActivity.lvPapers_footer);
+							theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
+                    		theActivity.lvPapers_foot_more.setText("已经加载全部");
                     	}else{
                     		theActivity.lvPapers_footer.setVisibility(View.VISIBLE);
                     		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
@@ -266,7 +280,8 @@ public class PaperRecordActivity extends BaseActivity {
              		theActivity.lvPapers_foot_more.setText("更多");
              	}else
              	{
-             		theActivity.paperListView.removeFooterView(theActivity.lvPapers_footer);
+             		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
+            		theActivity.lvPapers_foot_more.setText("已经加载全部");
              	}
              	break;
 			case -11:

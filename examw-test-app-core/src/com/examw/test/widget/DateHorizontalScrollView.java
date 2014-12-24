@@ -18,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.examw.test.R;
 
@@ -51,6 +50,7 @@ public class DateHorizontalScrollView extends HorizontalScrollView implements On
 	private LinearLayout backView;
 	private int screenWidth;
 	
+	@SuppressWarnings("deprecation")
 	private void init(Context context) {
 		mFrameLayout = new FrameLayout(getContext());
 		mFrameLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,

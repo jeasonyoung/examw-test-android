@@ -24,6 +24,7 @@ import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.Json;
 import com.examw.test.model.SubjectInfo;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.HttpUtils;
 import com.examw.test.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
@@ -97,7 +98,8 @@ public class ApiClient {
 	public static String loadPaperContent(AppContext appContext,String paperId) throws AppException{
 		String result = HttpUtils.http_get(appContext, String.format(URLs.SINGLE_PAPER,paperId));
 		if(StringUtils.isEmpty(result)) return null;
-		return result;
+		//过滤掉多余的P标签
+		return HtmlUtils.filterPTag(result);
 	}
 	//获取科目所用大纲的内容
 	public static String loadSyllabusContent(AppContext appContext,String subjectId) throws AppException{

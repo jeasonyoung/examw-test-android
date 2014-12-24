@@ -222,7 +222,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 						paper = FavoriteDao.loadFavoritePaper(subjectId, username);
 					}else if(action == AppConstant.ACTION_ERROR)
 					{
-						paper = PaperRecordDao.loadFavoritePaper(subjectId, username);
+						paper = PaperRecordDao.loadErrorPaper(subjectId, username);
 					}
 					if (paper == null) {
 						handler.sendEmptyMessage(-1);
@@ -236,6 +236,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 					msg.arg1 = questionCursor;
 					handler.sendMessage(msg);
 				} catch (Exception e) {
+					e.printStackTrace();
 					handler.sendEmptyMessage(-1);
 					return;
 				}

@@ -3,6 +3,7 @@ package com.examw.test.widget;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -14,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.examw.test.R;
+import com.examw.test.support.URLs;
+import com.examw.test.ui.ImageZoomActivity;
 import com.examw.test.util.BitmapManager;
 import com.examw.test.util.StringUtils;
 
@@ -47,6 +50,15 @@ public class ImageTextView extends LinearLayout {
 		this.bmpManager = new BitmapManager(BitmapFactory.decodeResource(
 				context.getResources(), R.drawable.img_empty));
 		addView(this.view);
+		this.imageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String url = (String) v.getTag();
+				Intent intent = new Intent(context,ImageZoomActivity.class);
+				intent.putExtra("url", url);
+				context.startActivity(intent);
+			}
+		});
 		this.view = null;
 		System.gc();
 	}
@@ -88,7 +100,8 @@ public class ImageTextView extends LinearLayout {
 			String url = temp.substring(0, temp.indexOf("\""));
 			if (arr.length == 1) {
 				this.tv_before.setText(arr[0]);
-				bmpManager.loadBitmap(url, imageView);
+				imageView.setTag(URLs.HOST+url);
+				bmpManager.loadBitmap(URLs.HOST+url, imageView);
 				this.tv_after.setVisibility(View.GONE);
 			} else if (arr.length == 2) {
 				this.tv_before.setText(arr[0]);

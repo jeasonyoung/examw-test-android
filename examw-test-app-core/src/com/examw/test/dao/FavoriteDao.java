@@ -74,11 +74,11 @@ public class FavoriteDao {
 	}
 	public static Boolean isCollected(SQLiteDatabase db,String itemId,String username)
 	{
+		Log.d(TAG,"判断题目有没有被收藏");
 		Cursor cursor = db.rawQuery("select status from FavoriteTab where itemId = ? and username = ?", new String[]{itemId,username});
 		if(cursor.getCount() == 0)
 		{
 			cursor.close();
-			db.close();
 			return null;
 		}
 		cursor.moveToNext();

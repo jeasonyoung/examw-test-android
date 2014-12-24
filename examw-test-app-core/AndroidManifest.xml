@@ -103,16 +103,7 @@
             android:name=".ui.DailyActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <!-- 收藏界面  -->
-        <activity
-            android:name=".ui.FavoriteActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <!-- 错题界面  -->
-        <activity
-            android:name=".ui.ErrorItemActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+        <!--错题,收藏的练习界面 -->
         <activity
             android:name=".ui.PaperDoPracticeActivity"
             android:screenOrientation="portrait" >
@@ -157,6 +148,12 @@
             android:name=".ui.SetTimeActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 图片缩放界面 -->
+        <activity 
+            android:name=".ui.ImageZoomActivity"
+            android:theme="@style/DialogTheme"
+            android:screenOrientation="portrait"
+            ></activity>
         <!-- 校验用户 -->
         <meta-data android:value="digest" android:name="username"></meta-data>
         <meta-data android:value="d4i9g7e5s19t20" android:name="password"></meta-data>

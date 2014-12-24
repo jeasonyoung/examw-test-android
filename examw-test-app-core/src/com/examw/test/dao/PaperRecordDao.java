@@ -26,7 +26,7 @@ import com.examw.test.util.StringUtils;
  */
 public class PaperRecordDao {
 	private static final String TAG = "PaperRecordDao";
-	public static final int PAGESIZE = 2;
+	public static final int PAGESIZE = 20;
 	/**
 	 * 保存考试记录
 	 * @param record
@@ -261,6 +261,7 @@ public class PaperRecordDao {
 	//考试记录分页查询
 	public static ArrayList<PaperRecord> findRecordsByUsername(String username,int page)
 	{
+		Log.d(TAG, "查询考试记录");
 		if(StringUtils.isEmpty(username))	return null;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
 		/*
@@ -280,6 +281,7 @@ public class PaperRecordDao {
 					cursor.getString(5), cursor.getString(6),cursor.getString(7),
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
 					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+			Log.d(TAG,record.getUsedTime()+"");
 			list.add(record);
 		}
 		cursor.close();
@@ -318,8 +320,9 @@ public class PaperRecordDao {
 	 * @param username
 	 * @return
 	 */
-	public static SimplePaper loadFavoritePaper(String subjectId,String username)
+	public static SimplePaper loadErrorPaper(String subjectId,String username)
 	{
+		Log.d(TAG,"加载错题试卷");
 		if(username == null || subjectId==null) return null;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
 		int total = getCount(db,subjectId,username,null);
@@ -327,6 +330,7 @@ public class PaperRecordDao {
 		SimplePaper paper = new SimplePaper();
 		Cursor cursor = db.rawQuery("select itemType from ItemRecordTab where subjectId = ? and username = ? and status = ? group by itemType order by itemType asc", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
 		ArrayList<StructureInfo> structures = new ArrayList<StructureInfo>();
+		Log.d(TAG,"加载错题试卷的大题");
 		while(cursor.moveToNext())
 		{
 			int type = cursor.getInt(0);
@@ -338,12 +342,13 @@ public class PaperRecordDao {
 		}
 		paper.setRuleList(structures);
 		cursor.close();
-		paper.setItems(loadFavoritePaperItems(db, subjectId, username));
+		paper.setItems(loadErrorPaperItems(db, subjectId, username));
 		db.close();
 		return paper;
 	}
-	private static ArrayList<StructureItemInfo> loadFavoritePaperItems(SQLiteDatabase db,String subjectId,String username)
+	private static ArrayList<StructureItemInfo> loadErrorPaperItems(SQLiteDatabase db,String subjectId,String username)
 	{
+		Log.d(TAG,"加载错题试卷的题目的集合");
 		Cursor cursor = db.rawQuery("select itemContent from ItemRecordTab where subjectId = ? and username = ? and status = ? group by itemId order by itemType asc", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
 		ArrayList<StructureItemInfo> items = new ArrayList<StructureItemInfo>();
 		while(cursor.moveToNext())

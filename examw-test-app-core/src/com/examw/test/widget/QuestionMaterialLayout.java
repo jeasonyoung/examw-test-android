@@ -14,6 +14,7 @@ import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
 import com.examw.test.R;
+import com.examw.test.support.URLs;
 
 /**
  * 材料题显示材料
@@ -127,6 +128,15 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 
 	public void initData(String text) {
 		// System.out.println(text);
+		// 过滤掉 img标签的width,height属性
+		text = text.replaceAll(
+				"(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
+		text = text.replaceAll(
+				"(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
+
+		// 添加点击图片放大支持
+		text = text.replaceAll("(<img[^>]+src=\")(\\S+)\"",
+				"$1"+URLs.HOST+"$2\" onClick=\"javascript:mWebViewImageListener.onImageClick('$2')\"");
 		textView.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
 		// testView = new WebView(context);
 		// testView.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
