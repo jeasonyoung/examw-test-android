@@ -14,17 +14,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" 
+        >
 
         <com.examw.test.widget.DateHorizontalScrollView
             android:id="@+id/horizontal_scrollview"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:paddingBottom="2dip"
-            android:paddingTop="2dip"
-            android:scrollbars="none" />
+            android:scrollbars="none" 
+            />
     </LinearLayout>
 
     <FrameLayout

@@ -557,7 +557,6 @@ public class QuestionAdapter extends BaseAdapter {
 		protected Bitmap doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			URL url;
-			byte[] b = null;
 			try {
 				fileName = fileName
 						+ params[0].substring(params[0].lastIndexOf("."));
@@ -680,6 +679,7 @@ public class QuestionAdapter extends BaseAdapter {
 			activity.submitOrSeeAnswer();
 		}
 	}
+	@SuppressWarnings("deprecation")
 	@SuppressLint({ "NewApi", "ServiceCast" })
 	public void setClipBoard(String content) {
 		int currentapiVersion = android.os.Build.VERSION.SDK_INT;

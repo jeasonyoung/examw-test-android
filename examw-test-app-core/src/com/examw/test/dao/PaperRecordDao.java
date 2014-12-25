@@ -67,7 +67,35 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab order by lastTime desc ";
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where userName = ? order by lastTime desc ";
+		String[] params = new String[] {userName};
+		Cursor cursor = db.rawQuery(sql, params);
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			db.close();
+			return null;
+		}
+		cursor.moveToNext();
+		PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
+					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
+					cursor.getString(5), cursor.getString(6),cursor.getString(7),
+					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
+					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+		cursor.close();
+		db.close();
+		return record;
+	}
+	public static PaperRecord findLastRecord(String userName,String types)
+	{
+		Log.d(TAG,String.format("查询用户[userName = %s]的记录", userName));
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		/*
+		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
+			private BigDecimal score;
+			private Integer usedTime,rightNum;
+			private Date createTime,lastTime;
+		 */
+		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where userName = ? and paperType in("+types+") order by lastTime desc ";
 		String[] params = new String[] {};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {

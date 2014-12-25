@@ -148,6 +148,11 @@
             android:name=".ui.SetTimeActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 同步界面 -->
+        <activity
+            android:name=".ui.SyncActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 图片缩放界面 -->
         <activity 
             android:name=".ui.ImageZoomActivity"

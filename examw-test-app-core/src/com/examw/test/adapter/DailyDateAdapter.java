@@ -51,7 +51,7 @@ public class DailyDateAdapter extends BaseAdapter {
 			convertView.setTag(holder);
 		}
 		holder = (ViewHolder) convertView.getTag();
-		holder.eee.setText(dates.get(position).getEee());
+		holder.eee.setText((position==getCount()-1)?"今天":dates.get(position).getEee());
 		holder.mmdd.setText(dates.get(position).getMmdd());
 		return convertView;
 	}

@@ -1,14 +1,21 @@
 package com.examw.test.support;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
+import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.dao.FavoriteDao;
 import com.examw.test.domain.ItemRecord;
+import com.examw.test.domain.PaperRecord;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
+import com.examw.test.model.UserItemRecordInfo;
+import com.examw.test.model.UserPaperRecordInfo;
 
 /**
  * 数据解析
@@ -166,5 +173,70 @@ public class DataConverter {
 			}
 		}
 		return sum;
+	}
+	
+	private static UserPaperRecordInfo paperRecordConvert(PaperRecord data)
+	{
+		if(data == null) return null;
+		/**
+		 *  private String id,userId,userName,paperId,productId,paperName,paperTypeName,subjectId;
+			private Integer status,terminalCode,paperType,rightNum;
+			private Long usedTime;
+			private BigDecimal score;
+			private Date createTime,lastTime;
+			private Set<UserItemRecordInfo> items;
+	    </set>
+		 */
+		UserPaperRecordInfo info = new UserPaperRecordInfo();
+		info.setProductId(AppConfig.PRODUCTID);
+		info.setUserId(data.getUserId());
+		info.setId(data.getRecordId());
+		info.setPaperType(data.getPaperType());
+		info.setPaperId(data.getPaperId());	//试卷Id
+		info.setUsedTime(data.getUsedTime().longValue());
+		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setStatus(data.getStatus()); //刚加入未完成
+		info.setScore(new BigDecimal(data.getScore()));
+		info.setRightNum(data.getRightNum());
+//		info.setCreateTime(data.getCreateTime());
+//		info.setLastTime(data.getLastTime());
+		ArrayList<ItemRecord> items = data.getItems();
+		if(items != null && !items.isEmpty())
+		{
+			Set<UserItemRecordInfo> set = new HashSet<UserItemRecordInfo>();
+			for(ItemRecord itemData:items)
+			{
+				UserItemRecordInfo itemInfo = itemRecordConvert(itemData);
+				if(itemInfo!=null)
+				{
+					set.add(itemInfo);
+				}
+			}
+			info.setItems(set);
+		}
+		return info;
+	}
+	private static UserItemRecordInfo itemRecordConvert(ItemRecord data)
+	{
+		if(data == null) return null;
+		/**
+		 *  private String id,structureId,itemId,itemContent,answer;
+			private Integer status,terminalCode;
+			private Long usedTime;
+			private BigDecimal score;
+			private Date createTime,lastTime;
+		 */
+		UserItemRecordInfo info = new UserItemRecordInfo();
+//		info.setId(id);
+		info.setStructureId(data.getStructureId());
+		info.setItemId(data.getItemId());
+		info.setItemContent(data.getItemContent());
+		info.setAnswer(data.getAnswer());
+		info.setStatus(data.getStatus());
+		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setScore(data.getScore());
+//		info.setCreateTime(data.getCreateTime());
+//		info.setLastTime(data.getLastTime());
+		return info;
 	}
 }

@@ -18,6 +18,7 @@ import com.examw.test.R;
 import com.examw.test.support.URLs;
 import com.examw.test.ui.ImageZoomActivity;
 import com.examw.test.util.BitmapManager;
+import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.StringUtils;
 
 public class ImageTextView extends LinearLayout {
@@ -99,19 +100,18 @@ public class ImageTextView extends LinearLayout {
 					text.length());
 			String url = temp.substring(0, temp.indexOf("\""));
 			if (arr.length == 1) {
-				this.tv_before.setText(arr[0]);
+				this.tv_before.setText(HtmlUtils.filterImgTag(arr[0]));
 				imageView.setTag(URLs.HOST+url);
 				bmpManager.loadBitmap(URLs.HOST+url, imageView);
 				this.tv_after.setVisibility(View.GONE);
 			} else if (arr.length == 2) {
-				this.tv_before.setText(arr[0]);
+				this.tv_before.setText(HtmlUtils.filterImgTag(arr[0]));
 				bmpManager.loadBitmap(url, imageView,BitmapFactory.decodeResource(
 						context.getResources(), R.drawable.img_empty),width,height);
-				this.tv_after.setText(arr[1]);
+				this.tv_after.setText(HtmlUtils.filterImgTag(arr[1]));
 			}
 		}
 	}
-
 	public void setTextColor(int rid) {
 		this.tv_before.setTextColor(rid);
 		this.tv_after.setTextColor(rid);

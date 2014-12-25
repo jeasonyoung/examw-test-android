@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.adapter.SubjectListAdapter;
+import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.FavoriteDao;
@@ -228,7 +229,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	{
 		btnShowPop.setVisibility(View.GONE);
 		String userName = ((AppContext)(ChooseSubjectActivity.this.getApplication())).getUsername();
-		r = PaperRecordDao.findLastRecord(userName);
+		r = PaperRecordDao.findLastRecord(userName,AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE);
 		if(r==null) return;
 		final Handler mHandler = new Handler();
 		if(popWindow == null)

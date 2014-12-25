@@ -125,7 +125,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 							.getDailyPaperList((AppContext) getApplication());
 					PaperDao.insertPaperList(list);
 					if (list == null || list.size() == 0)
-						handler.sendEmptyMessage(2);
+						handler.sendEmptyMessage(-3);
 					else {
 						paperList = PaperDao.findDailyPapers(today,
 								currentDayOrder);
@@ -182,6 +182,11 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 				Toast.makeText(theActivity, "查询数据出错", Toast.LENGTH_SHORT)
 						.show();// 提示
 				break;
+			case -3:
+				//没有数据
+				theActivity.loadingLayout.setVisibility(View.GONE);
+				theActivity.nodataLayout.setVisibility(View.VISIBLE);
+				theActivity.reloadLayout.setVisibility(View.GONE);// 无数据显示
 			}
 		}
 	}

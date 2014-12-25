@@ -1,13 +1,11 @@
 package com.examw.test.ui;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,9 +26,9 @@ import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.exception.AppException;
-import com.examw.test.model.SubjectInfo;
+import com.examw.test.model.FrontUserInfo;
+import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
-import com.examw.test.util.HttpUtils;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 
@@ -94,17 +92,22 @@ public class MainFragment extends Fragment {
 		this.setDateLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(getActivity(), SetTimeActivity.class));
-//				new Thread(){
-//					public void run() {
-//						try {
+//				startActivity(new Intent(getActivity(), SetTimeActivity.class));
+				new Thread(){
+					public void run() {
+						try {
 //							HttpUtils.http_get(appContext, "http://192.168.1.246:8080/examw-test/api/data/categories");
-//						} catch (AppException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					};
-//				}.start();
+							FrontUserInfo user = new FrontUserInfo();
+							user.setCode("265384");
+							user.setName("fw121fw4");
+							Json json = ApiClient.getProductUser(appContext,user);
+							Log.d(TAG, "验证用户:"+json.getData().toString());
+						} catch (AppException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					};
+				}.start();
 			}
 		});
 	}

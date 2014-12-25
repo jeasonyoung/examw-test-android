@@ -21,6 +21,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
@@ -279,7 +280,96 @@ public class HttpUtils {
 		Log.d(TAG, "响应:" + responseBody);
 		return responseBody;
 	}
+	
+	public static String http_post(AppContext appContext, String url,Object obj)
+			throws AppException {
+		int time = 0;
+		String responseBody = "";
+		getDigestUser(appContext);
+		do {
+			Log.d(TAG, String.format("正在进行第[%d]次请求", time));
+			try {
+				DigestAuthcProvider provider = new DigestAuthcProvider(
+						username, password, "GET", url);
+				responseBody = _post(appContext, url,obj, provider);
+				break;
+			} catch (Exception e) {
+				time++;
+				if (time < RETRY_TIME) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+					}
+					continue;
+				}
+				// 发生网络异常
+				e.printStackTrace();
+				throw AppException.network(e);
+			}
+		} while (time < RETRY_TIME);
+		Log.d(TAG, "响应:" + responseBody);
+		return responseBody;
+	}
+	/**
+	 * 传递对象
+	 * @param appContext
+	 * @param url
+	 * @param obj
+	 * @param provider
+	 * @return
+	 * @throws AppException
+	 */
+	public static String _post(AppContext appContext, String url,Object obj,DigestAuthcProvider provider) throws AppException
+	{
+		String cookie = getCookie(appContext);
+		String userAgent = getUserAgent(appContext);
 
+		HttpClient httpClient = null;
+		PostMethod httpPost = null;
+		String responseBody = "";
+		try {
+			httpClient = getHttpClient();
+			httpClient = getHttpClient();
+			httpPost = getHttpPost(url, cookie, userAgent);
+			String authz = provider.toAuthorization();
+			httpPost.setRequestEntity(new StringRequestEntity(GsonUtil.objectToJson(obj),"application/json","UTF-8"));
+			if (!StringUtils.isEmpty(authz)) {
+				httpPost.setRequestHeader(authorization_header, authz);
+			}
+			httpPost.setRequestHeader("Content-type","application/json;charset=UTF-8");
+			int status = httpClient.executeMethod(httpPost);
+			// 401
+			if (status == HttpURLConnection.HTTP_UNAUTHORIZED) {
+				if (provider.getNumberCount() > max_http_send_count) {
+					throw AppException.http(status);
+				}
+				String authc = httpPost.getResponseHeader(authenticate_header)
+						.getValue();
+				Log.d(TAG, String.format("获取HTTP摘要认证头信息：%1$s=%2$s",
+						authenticate_header, authc));
+				if (StringUtils.isEmpty(authc))
+					throw new RuntimeException("获取摘要认证头信息失败！");
+				provider.parser(authc);
+				httpPost.releaseConnection();
+				httpClient = null;
+				return _post(appContext, url,obj, provider);
+			}
+			// 200
+			if (status == HttpURLConnection.HTTP_OK) {
+				responseBody = changeInputStream2String(httpPost
+						.getResponseBodyAsStream());
+				httpPost.releaseConnection();
+				httpClient = null;
+				return responseBody;
+			} else {
+				throw AppException.http(status);
+			}
+		} catch (IOException e) {
+			throw AppException.http(e);
+		} catch (Exception e) {
+			throw AppException.http(e);
+		}
+	}
 	/**
 	 * 公用post方法
 	 * 

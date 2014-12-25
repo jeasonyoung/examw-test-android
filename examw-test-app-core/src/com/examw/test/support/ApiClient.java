@@ -21,6 +21,7 @@ import com.examw.test.domain.User;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.model.FrontProductInfo;
+import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.model.SubjectInfo;
 import com.examw.test.util.GsonUtil;
@@ -50,6 +51,19 @@ public class ApiClient {
 		user.setPassword("123456");
 		json.setData(user);
 		return json;
+	}
+	/**
+	 * 获取产品用户的信息
+	 * @param appContext
+	 * @param user
+	 * @return
+	 * @throws AppException
+	 */
+	public static Json getProductUser(AppContext appContext,FrontUserInfo user) throws AppException
+	{
+		String result = HttpUtils.http_post(appContext, URLs.VERIFYUSER,user);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.jsonToBean(result, Json.class);
 	}
 	
 	//获取产品信息

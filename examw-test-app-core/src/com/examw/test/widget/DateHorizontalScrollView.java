@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
@@ -79,7 +80,7 @@ public class DateHorizontalScrollView extends HorizontalScrollView implements On
 		layoutParams.gravity = Gravity.CENTER_VERTICAL;
 		backView = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.daily_date_item, null);
 		backView.setBackgroundResource(R.drawable.bg_view);
-		backView.setPadding(0, 5, 0, 5);
+		backView.setPadding(0, 5, 0, 15);
 		mFrameLayout.addView(backView, layoutParams);
 		mFrameLayout.addView(linearLayout);
 	}
@@ -119,6 +120,22 @@ public class DateHorizontalScrollView extends HorizontalScrollView implements On
 		/* 移动后不复原,不返回动画前的状态位置 */
 		animationSet.setFillAfter(true);
 		animationSet.setDuration(500);
+		backView.startAnimation(animationSet);
+		int v = screenWidth/3;
+		smoothScrollTo(v*(position-1));
+		oldPosition = position;
+		invalidate();
+	}
+	public void startWithoutAnimation(int position)
+	{
+		if(position == oldPosition) return;
+		AnimationSet animationSet = new AnimationSet(true);
+		animationSet
+		.addAnimation(buildTranslateAnimation(oldPosition, position));
+		animationSet.setInterpolator(new LinearInterpolator());
+		/* 移动后不复原,不返回动画前的状态位置 */
+		animationSet.setFillAfter(true);
+		animationSet.setDuration(100);
 		backView.startAnimation(animationSet);
 		int v = screenWidth/3;
 		scrollTo(v*(position-1));
@@ -172,12 +189,21 @@ public class DateHorizontalScrollView extends HorizontalScrollView implements On
 		return oldPosition + 1;
 	}
 	
-	private void scrollTo(final int x)
+	private void smoothScrollTo(final int x)
 	{
 		post(new Runnable(){
 			@Override
 			public void run() {
 				smoothScrollTo(x,0);
+			}
+		});
+	}
+	private void scrollTo(final int x)
+	{
+		post(new Runnable(){
+			@Override
+			public void run() {
+				scrollTo(x,0);
 			}
 		});
 	}
