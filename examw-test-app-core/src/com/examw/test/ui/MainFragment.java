@@ -3,6 +3,8 @@ package com.examw.test.ui;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -29,6 +31,7 @@ import com.examw.test.exception.AppException;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
+import com.examw.test.support.URLs;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 
@@ -93,21 +96,25 @@ public class MainFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 //				startActivity(new Intent(getActivity(), SetTimeActivity.class));
-				new Thread(){
-					public void run() {
-						try {
-//							HttpUtils.http_get(appContext, "http://192.168.1.246:8080/examw-test/api/data/categories");
-							FrontUserInfo user = new FrontUserInfo();
-							user.setCode("265384");
-							user.setName("fw121fw4");
-							Json json = ApiClient.getProductUser(appContext,user);
-							Log.d(TAG, "验证用户:"+json.getData().toString());
-						} catch (AppException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					};
-				}.start();
+				Intent intent = new Intent(getActivity(), ImageZoomActivity.class);
+				intent.putExtra("url", "/42c7f9f5-6088-4bc8-acc0-59162257a775");
+				startActivity(intent);
+//				new Thread(){
+//					public void run() {
+//						try {
+//							String content = ApiClient.loadPaperContent(appContext, "015cf90b-884e-46cb-8b22-55abcaeae57c");
+//							Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*[\\\\][\"]([^\"]+)[\\\\][\"][^>]*>");//<img[^<>]*src=[\'\"]([0-9A-Za-z.\\/]*)[\'\"].(.*?)>");
+//					        Matcher m = ps.matcher(content);
+//					        while(m.find()){
+//					        	String url = URLs.BASE_URL + m.group(1);
+//					        	Log.e("导入图片",url);
+//					        }
+//						} catch (AppException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					};
+//				}.start();
 			}
 		});
 	}

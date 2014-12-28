@@ -23,7 +23,7 @@ import android.util.Log;
  * @created 2012-3-21
  */
 public class FileUtils {
-    /**
+	/**
 	 * 写文本文件 在Android系统中，文件保存在 /data/data/PACKAGE_NAME/files 目录下
 	 * 
 	 * @param context
@@ -373,14 +373,14 @@ public class FileUtils {
 			status = false;
 		return status;
 	}
-	
+
 	/**
 	 * 检查是否安装外置的SD卡
 	 * 
 	 * @return
 	 */
 	public static boolean checkExternalSDExists() {
-		
+
 		Map<String, String> evn = System.getenv();
 		return evn.containsKey("SECONDARY_STORAGE");
 	}
@@ -394,7 +394,7 @@ public class FileUtils {
 	public static boolean deleteDirectory(String fileName) {
 		boolean status;
 		SecurityManager checker = new SecurityManager();
-		
+
 		if (!fileName.equals("")) {
 
 			File path = Environment.getExternalStorageDirectory();
@@ -505,9 +505,10 @@ public class FileUtils {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 清空一个文件夹
+	 * 
 	 * @param files
 	 */
 	public static void clearFileWithPath(String filePath) {
@@ -530,19 +531,19 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String getSDRoot() {
-		
+
 		return Environment.getExternalStorageDirectory().getAbsolutePath();
 	}
-	
+
 	/**
 	 * 获取手机外置SD卡的根目录
 	 * 
 	 * @return
 	 */
 	public static String getExternalSDRoot() {
-		
+
 		Map<String, String> evn = System.getenv();
-		
+
 		return evn.get("SECONDARY_STORAGE");
 	}
 
@@ -567,9 +568,10 @@ public class FileUtils {
 		}
 		return allDir;
 	}
-	
+
 	/**
 	 * 获取一个文件夹下的所有文件
+	 * 
 	 * @param root
 	 * @return
 	 */
@@ -582,7 +584,7 @@ public class FileUtils {
 		for (File f : files) {
 			if (f.isFile())
 				allDir.add(f);
-			else 
+			else
 				listPath(f.getAbsolutePath());
 		}
 		return allDir;
@@ -619,20 +621,94 @@ public class FileUtils {
 		int end = absolutePath.length();
 		return absolutePath.substring(start, end);
 	}
-	
+
 	/**
 	 * 获取应用程序缓存文件夹下的指定目录
+	 * 
 	 * @param context
 	 * @param dir
 	 * @return
 	 */
 	public static String getAppCache(Context context, String dir) {
-		String savePath = context.getCacheDir().getAbsolutePath() + "/" + dir + "/";
+		String savePath = context.getCacheDir().getAbsolutePath() + "/" + dir
+				+ "/";
 		File savedir = new File(savePath);
 		if (!savedir.exists()) {
 			savedir.mkdirs();
 		}
 		savedir = null;
 		return savePath;
+	}
+
+	/**
+	 * 复制单个文件
+	 * 
+	 * @param oldPath
+	 *            String 原文件路径 如：c:/fqf.txt
+	 * @param newPath
+	 *            String 复制后路径 如：f:/fqf.txt
+	 * @return boolean
+	 */
+	public void copyFile(String oldPath, String newPath) {
+		try {
+			int byteread = 0;
+			File oldfile = new File(oldPath);
+			if (oldfile.exists()) { // 文件存在时
+				InputStream inStream = new FileInputStream(oldPath); // 读入原文件
+				FileOutputStream fs = new FileOutputStream(newPath);
+				byte[] buffer = new byte[4*1024];
+				while ((byteread = inStream.read(buffer)) != -1) {
+					fs.write(buffer, 0, byteread);
+				}
+				fs.flush();
+				fs.close();
+				inStream.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 复制整个文件夹内容
+	 * 
+	 * @param oldPath
+	 *            String 原文件路径 如：c:/fqf
+	 * @param newPath
+	 *            String 复制后路径 如：f:/fqf/ff
+	 * @return boolean
+	 */
+	public void copyFolder(String oldPath, String newPath) {
+		try {
+			(new File(newPath)).mkdirs(); // 如果文件夹不存在 则建立新文件夹
+			File a = new File(oldPath);
+			String[] file = a.list();
+			File temp = null;
+			for (int i = 0; i < file.length; i++) {
+				if (oldPath.endsWith(File.separator)) {
+					temp = new File(oldPath + file[i]);
+				} else {
+					temp = new File(oldPath + File.separator + file[i]);
+				}
+				if (temp.isFile()) {
+					FileInputStream input = new FileInputStream(temp);
+					FileOutputStream output = new FileOutputStream(newPath
+							+ "/" + (temp.getName()).toString());
+					byte[] b = new byte[1024 * 5];
+					int len;
+					while ((len = input.read(b)) != -1) {
+						output.write(b, 0, len);
+					}
+					output.flush();
+					output.close();
+					input.close();
+				}
+				if (temp.isDirectory()) {// 如果是子文件夹
+					copyFolder(oldPath + "/" + file[i], newPath + "/" + file[i]);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

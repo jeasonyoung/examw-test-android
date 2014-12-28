@@ -1,12 +1,15 @@
 package com.examw.test.widget;
 
+import java.io.File;
 import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -15,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConfig;
 import com.examw.test.support.URLs;
 import com.examw.test.ui.ImageZoomActivity;
 import com.examw.test.util.BitmapManager;
@@ -102,15 +106,33 @@ public class ImageTextView extends LinearLayout {
 			if (arr.length == 1) {
 				this.tv_before.setText(HtmlUtils.filterImgTag(arr[0]));
 				imageView.setTag(URLs.HOST+url);
+				if(!loadLocaleImage(url))
 				bmpManager.loadBitmap(URLs.HOST+url, imageView);
 				this.tv_after.setVisibility(View.GONE);
 			} else if (arr.length == 2) {
 				this.tv_before.setText(HtmlUtils.filterImgTag(arr[0]));
+				if(!loadLocaleImage(url))
 				bmpManager.loadBitmap(url, imageView,BitmapFactory.decodeResource(
 						context.getResources(), R.drawable.img_empty),width,height);
 				this.tv_after.setText(HtmlUtils.filterImgTag(arr[1]));
 			}
 		}
+	}
+	private boolean loadLocaleImage(String url)
+	{
+		String myJpgPath = url.substring(url.lastIndexOf("/")+1); 
+		System.out.println(myJpgPath);
+        File file = new File(AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath);
+        if(file.exists())
+        {
+        	System.out.println(file.getPath());
+        	BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 2;
+            Bitmap bm = BitmapFactory.decodeFile(myJpgPath, options);
+            imageView.setImageBitmap(bm);
+            return true;
+        }
+        return false;
 	}
 	public void setTextColor(int rid) {
 		this.tv_before.setTextColor(rid);

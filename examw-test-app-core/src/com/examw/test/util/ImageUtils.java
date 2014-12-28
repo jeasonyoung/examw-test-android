@@ -162,7 +162,7 @@ public class ImageUtils {
 		}
 		return bitmap;
 	}
-
+	
 	/**
 	 * 获取bitmap
 	 * 

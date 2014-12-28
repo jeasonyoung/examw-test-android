@@ -1,16 +1,21 @@
 package com.examw.test.ui;
 
+import java.io.File;
+
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.FloatMath;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConfig;
 import com.examw.test.util.BitmapManager;
 
 /**
@@ -19,6 +24,7 @@ import com.examw.test.util.BitmapManager;
  * @since 2014年12月24日 下午4:57:48.
  */
 public class ImageZoomActivity extends BaseActivity{
+	private static final String TAG = "ImageZoomActivity";
 	ImageView imageView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,8 +32,22 @@ public class ImageZoomActivity extends BaseActivity{
         setContentView(R.layout.ui_image_zoom);
         imageView = (ImageView) findViewById(R.id.img);
         String url = getIntent().getStringExtra("url");
-        new BitmapManager(BitmapFactory.decodeResource(
-				this.getResources(), R.drawable.img_empty)).loadBitmap(url, imageView);
+        String myJpgPath = url.substring(url.lastIndexOf("/")+1); 
+        File file = new File(AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath);
+        if(file.exists())
+        {
+        	Log.d(TAG,"图片文件存在....");
+        	myJpgPath = "/mnt/sdcard/examw/image/2014.jpg";
+        	BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 2;
+            Bitmap bm = BitmapFactory.decodeFile(myJpgPath, null);
+            imageView.setImageBitmap(bm);
+        }
+        else
+        {
+        	 new BitmapManager(BitmapFactory.decodeResource(
+     				this.getResources(), R.drawable.img_empty)).loadBitmap(url, imageView);
+        }
         imageView.setOnTouchListener(new TounchListener());
     }
 

@@ -1,6 +1,7 @@
 package com.examw.test.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -39,13 +40,13 @@ public class MenuListFragment extends ListFragment {
 		appContext = (AppContext) getActivity().getApplication();
 		adapter = new SampleAdapter(getActivity());
 		adapter.add(new SampleItem("首页", R.drawable.slide_menu_home));
-		initAccountItem();
-		adapter.add(accountItem);
+//		initAccountItem();
+//		adapter.add(accountItem);
 //		adapter.add(new SampleItem("关于", R.drawable.slide_menu_qiehuan));
 		adapter.add(new SampleItem("设置", R.drawable.slide_menu_set));
 		adapter.add(new SampleItem("注销", R.drawable.slide_menu_logout));
 		adapter.add(new SampleItem("退出", R.drawable.slide_menu_exit));
-//		adapter.add(new SampleItem("导入数据",R.drawable.slide_menu_qiehuan));
+		adapter.add(new SampleItem("导入数据",R.drawable.slide_menu_qiehuan));
 		setListAdapter(adapter);
 	}
 
@@ -152,12 +153,12 @@ public class MenuListFragment extends ListFragment {
 //				adapter.notifyDataSetChanged();
 //			}
 			break;
-		case 4:	//退出
+		case 5:	//退出
 			AppManager.getAppManager().AppExit();
 			break;
-		case 5:	//导入数据
-//			Intent intent = new Intent(getActivity(), ImportDataActivity.class);
-//			startActivity(intent);
+		case 4:	//导入数据
+			Intent intent = new Intent(getActivity(), ImportDataActivity.class);
+			startActivity(intent);
 			break;
 		}
 	}

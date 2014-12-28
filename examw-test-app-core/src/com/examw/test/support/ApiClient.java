@@ -1,5 +1,6 @@
 package com.examw.test.support;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -24,6 +25,7 @@ import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.model.SubjectInfo;
+import com.examw.test.util.FileUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.HttpUtils;
@@ -182,6 +184,67 @@ public class ApiClient {
 			}
 		} while (time < 3);
 		return bitmap;
+	}
+	/**
+	 * 获取网络图片,并且保存到指定路径
+	 * @param url
+	 * @return
+	 */
+	public static void getNetImage(String url,String path) throws AppException {
+		HttpClient httpClient = null;
+		GetMethod httpGet = null;
+		int time = 0;
+		do {
+			try {
+				httpClient = HttpUtils.getHttpClient();
+				httpGet = HttpUtils.getHttpGet(url, null, null);
+				int statusCode = httpClient.executeMethod(httpGet);
+				if (statusCode != HttpStatus.SC_OK) {
+					throw AppException.http(statusCode);
+				}
+				InputStream inStream = httpGet.getResponseBodyAsStream();
+				String fileName = url.substring(url.lastIndexOf("/")+1);
+				FileOutputStream fs = new FileOutputStream(path+fileName);
+				byte[] buffer = new byte[4*1024];
+				int byteread = 0;
+				while ((byteread = inStream.read(buffer)) != -1) {
+					fs.write(buffer, 0, byteread);
+				}
+				fs.flush();
+				fs.close();
+				inStream.close();
+				inStream.close();
+				break;
+			} catch (HttpException e) {
+				time++;
+				if (time < 3) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+					}
+					continue;
+				}
+				// 发生致命的异常，可能是协议不对或者返回的内容有问题
+				e.printStackTrace();
+				throw AppException.http(e);
+			} catch (IOException e) {
+				time++;
+				if (time < 3) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+					}
+					continue;
+				}
+				// 发生网络异常
+				e.printStackTrace();
+				throw AppException.network(e);
+			} finally {
+				// 释放连接
+				httpGet.releaseConnection();
+				httpClient = null;
+			}
+		} while (time < 3);
 	}
 	/**
 	 * 获取北京时间

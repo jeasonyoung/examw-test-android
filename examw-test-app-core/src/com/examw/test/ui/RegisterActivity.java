@@ -31,7 +31,7 @@ import com.examw.test.support.ApiClient;
 import com.examw.test.widget.ImgRightEditText;
 
 /**
- * 
+ * 注册
  * @author fengwei.
  * @since 2014年12月1日 上午11:52:53.
  */
@@ -46,7 +46,6 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 	private InputMethodManager imm;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_register);
 		appContext = (AppContext) getApplication();
@@ -78,7 +77,6 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 		nameView.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
 				if(!hasFocus)
 				{
 					final String str1 = nameView.getText().toString().trim();
