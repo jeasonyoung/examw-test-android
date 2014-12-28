@@ -32,11 +32,10 @@ public class HtmlUtils {
 	 */
 	public static String replaceSpecialChars(String input) {
 		if(input == null) return null;
-		input = input.replaceAll("&nbsp;", "");
+		input = input.replaceAll("&nbsp;", " ");
 		input = input.replaceAll("&gt;", ">");
 		input = input.replaceAll("&lt;", "<");
 		input = input.replaceAll("&amp;", "&");
-		input = input.replaceAll("&quot;", "\"");
 		return input;
 	}
 	

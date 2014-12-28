@@ -25,11 +25,13 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.examw.test.dao.ProductDao;
+import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.User;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.FrontProductInfo;
 import com.examw.test.support.ApiClient;
+import com.examw.test.support.AssetFileManager;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.MethodsCompat;
 import com.examw.test.util.StringUtils;
@@ -838,21 +840,29 @@ public class AppContext extends Application {
 			Long start = System.currentTimeMillis();
 			SQLiteDatabase db = UserDBUtil.getDatabase();
 			db.close();
-			db = null;
-			if(!ProductDao.hasInsert())
-			{
-				try {
-					FrontProductInfo info = ApiClient.getProductInfo(AppContext.this);
-					if(info !=null)
-					{
-						saveObject(info, "productInfo");
-						setProperty("exam_name", info.getExamName());
-						ProductDao.insert(info);
-					}
-				} catch (AppException e) {
-					e.printStackTrace();
-				}
-			}
+			//复制Assets中的数据
+			String dbPath =AppConfig.DEFAULT_DATA_PATH + AppContext.this.getPackageName() + File.separator +"databases" + File.separator + AppConfig.DATABASE_NAME;
+			//复制数据
+			//AssetFileManager.copyDataBase(AppContext.this, "data/"+AppConfig.DATABASE_NAME, dbPath);
+			//复制图片
+			//AssetFileManager.copyImages(AppContext.this, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
+			//解压缩包
+//			AssetFileManager.upZipFile(AppContext.this, "data/examw.zip",AppConfig.DATABASE_NAME,dbPath, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
+//			db = null;
+//			if(!ProductDao.hasInsert())
+//			{
+//				try {
+//					FrontProductInfo info = ApiClient.getProductInfo(AppContext.this);
+//					if(info !=null)
+//					{
+//						saveObject(info, "productInfo");
+//						setProperty("exam_name", info.getExamName());
+//						ProductDao.insert(info);
+//					}
+//				} catch (AppException e) {
+//					e.printStackTrace();
+//				}
+//			}
 			Log.d(TAG,"初始化数据线程结束,耗时:"+(System.currentTimeMillis() - start));
 		}
 	}

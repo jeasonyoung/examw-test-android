@@ -52,11 +52,14 @@ public class AppConfig {
 	public final static String CONT_EXAM_FONT_SIZE = "perf_examfontsize";
 
 	public final static String SAVE_IMAGE_PATH = "save_image_path";
+	public final static String DATABASE_NAME = "examw_library.db";
 	@SuppressLint("NewApi")
 	public final static String DEFAULT_SAVE_IMAGE_PATH = Environment.getExternalStorageDirectory()
 													+ File.separator+ "examw"+ File.separator
 													+"image" + File.separator;
-			
+	@SuppressLint("NewApi")
+	public final static String DEFAULT_DATA_PATH = "/data" + File.separator + Environment.getDataDirectory().getAbsolutePath() + File.separator;
+
 	private Context mContext;
 	
 	private static AppConfig appConfig;

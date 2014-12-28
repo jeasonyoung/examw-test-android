@@ -25,7 +25,6 @@ import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.model.SubjectInfo;
-import com.examw.test.util.FileUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.HttpUtils;

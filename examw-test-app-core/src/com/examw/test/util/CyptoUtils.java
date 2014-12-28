@@ -1,7 +1,6 @@
 package com.examw.test.util;
 
-import android.annotation.SuppressLint;
-
+import java.security.InvalidAlgorithmParameterException;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 
@@ -9,6 +8,8 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
+
+import android.annotation.SuppressLint;
 
 /**
  * 加密解密工具包
@@ -104,5 +105,32 @@ public class CyptoUtils {
 		}
         return b2;
     }
-    
+    /**
+     * 加密试卷内容
+     * @param paperId
+     * @param content
+     * @return
+     */
+    public static String encodeContent(String paperId,String content)
+    {
+    	if(content==null) return null;
+    	if(paperId == null) paperId = "D4I9G7E5S19T20S19";
+    	byte[] encrypts = AESUtil.encrypt(content, paperId);
+		if(encrypts == null || encrypts.length == 0)return null;
+		return HexUtil.parseBytesHex(encrypts);
+    }
+    /**
+     * 解密试卷内容
+     * @param paperId
+     * @param content
+     * @return
+     */
+    public static String decodeContent(String paperId,String content)
+    {
+    	if(content==null) return null;
+    	if(paperId == null) paperId = "D4I9G7E5S19T20S19";
+    	byte[] encrypts = HexUtil.parseHexBytes(content);
+		if(encrypts == null || encrypts.length == 0) return null;
+		return AESUtil.decrypt(encrypts, paperId);
+    }
 }

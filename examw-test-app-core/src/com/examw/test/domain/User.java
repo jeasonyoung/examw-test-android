@@ -11,6 +11,8 @@ public class User implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String uid,username,password;
+	private String registerCode;
+	private String token;
 	private String info;
 	/**
 	 * 获取 ID
@@ -92,5 +94,36 @@ public class User implements Serializable{
 	public void setInfo(String info) {
 		this.info = info;
 	}
-	
+	/**
+	 * 获取 
+	 * @return registerCode
+	 * 
+	 */
+	public String getRegisterCode() {
+		return registerCode;
+	}
+	/**
+	 * 设置 
+	 * @param registerCode
+	 * 
+	 */
+	public void setRegisterCode(String registerCode) {
+		this.registerCode = registerCode;
+	}
+	/**
+	 * 获取 
+	 * @return token
+	 * 
+	 */
+	public String getToken() {
+		return token;
+	}
+	/**
+	 * 设置 
+	 * @param token
+	 * 
+	 */
+	public void setToken(String token) {
+		this.token = token;
+	}
 }

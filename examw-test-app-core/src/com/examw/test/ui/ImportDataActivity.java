@@ -24,10 +24,7 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.PaperDao;
-import com.examw.test.dao.ProductDao;
-import com.examw.test.dao.SyllabusDao;
-import com.examw.test.db.LibraryDBUtil;
+import com.examw.test.dao.ImportDao;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
 import com.examw.test.exception.AppException;
@@ -47,6 +44,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 	private ProgressDialog proDialog;
 	private Handler handler;
 	private ArrayList<Subject> subjects;
+	private ImportDao dao;
 //	private boolean productFlag,paperFlag,syllabusFlag,allFlag;
 //	//SD卡中数据库压缩文件保存目录  /mnt/sdcard/kuaiji/zipfiles/
 	private static final String dataDir = Environment
@@ -77,6 +75,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		this.findViewById(R.id.importSyllabus).setOnClickListener(this);
 		this.findViewById(R.id.importAll).setOnClickListener(this);
 		appContext = (AppContext) getApplication();
+		dao = new ImportDao(appContext);
 		handler = new Handler() {
 			public void handleMessage(android.os.Message msg) {
 				if (proDialog != null) {
@@ -154,16 +153,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		new Thread() {
 			public void run() {
 				try {
-					SQLiteDatabase db = LibraryDBUtil.getDatabase();
-					db.execSQL("delete from ProductTab");
-					db.execSQL("delete from SubjectTab");
-					db.execSQL("delete from PaperTab");
-					db.execSQL("delete from SyllabusTab");
-					db.execSQL("delete from ChapterTab");
-					db.execSQL("delete from KnowledgeTab");
-					db.execSQL("delete from ItemTab");
-					db.execSQL("delete from ItemsyllabusTab");
-					db.close();
+					dao.clear();
 					handler.sendEmptyMessage(1);
 				}catch(Exception e)
 				{
@@ -187,13 +177,13 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 			public void run() {
 				try {
 					//导入产品数据
-					if(!ProductDao.hasInsert())
+					if(!dao.hasInsert())
 					{
 						try {
 							FrontProductInfo info = ApiClient.getProductInfo(appContext);
 							if(info !=null)
 							{
-								ProductDao.insert(info);
+								dao.insert(info);
 								//构造科目
 								String[] subjectIds = info.getSubjectId();
 								if(subjectIds != null && subjectIds.length > 0)
@@ -233,7 +223,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 			public void run() {
 				try {
 					ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
-					PaperDao.insertPaperList(list);
+					dao.insertPaperList(list);
 					if(list == null || list.size()==0)
 						handler.sendEmptyMessage(3);
 					else
@@ -247,7 +237,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 						for(FrontPaperInfo paper:list)
 						{
 							String content = ApiClient.loadPaperContent(appContext,paper.getId());
-							PaperDao.updatePaperContent(paper.getId(), content);
+							dao.updatePaperContent(paper.getId(), content);
 							//加载试卷的图片
 							loadImage(content, dataDir);
 						}
@@ -296,14 +286,11 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 					{
 						for(Subject s:subjects)
 						{
-							ArrayList<Chapter> chapters = SyllabusDao.loadAllChapters(s.getSubjectId());
-							if (chapters == null || chapters.isEmpty()) {
-								String content = ApiClient.loadSyllabusContent(
-										(AppContext) getApplication(), s.getSubjectId());
-								if (!StringUtils.isEmpty(content)) {
-									chapters = SyllabusDao.insertSyllabusAndLoadChapters(
-											s, content);
-								}
+							String content = ApiClient.loadSyllabusContent(
+									(AppContext) getApplication(), s.getSubjectId());
+							if (!StringUtils.isEmpty(content)) {
+								dao.insertSyllabusAndLoadChapters(
+										s, content);
 							}
 						}
 					}
@@ -384,14 +371,14 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		new Thread() {
 			public void run() {
 				try {
-					if(!ProductDao.hasInsert())
+					if(!dao.hasInsert())
 					{
 						try {
 							FrontProductInfo info = ApiClient.getProductInfo(appContext);
 							if(info !=null)
 							{
 								//导入产品信息
-								ProductDao.insert(info);
+								dao.insert(info);
 								//构造科目
 								String[] subjectIds = info.getSubjectId();
 								if(subjectIds != null && subjectIds.length > 0)
@@ -405,7 +392,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 								}
 								//导入试卷
 								ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
-								PaperDao.insertPaperList(list);
+								dao.insertPaperList(list);
 								if(list == null || list.size()==0)
 									handler.sendEmptyMessage(2);
 								else
@@ -419,7 +406,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 									for(FrontPaperInfo paper:list)
 									{
 										String content = ApiClient.loadPaperContent(appContext,paper.getId());
-										PaperDao.updatePaperContent(paper.getId(), content);
+										dao.updatePaperContent(paper.getId(), content);
 										loadImage(content, dataDir);
 									}
 								}
@@ -428,14 +415,11 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 								{
 									for(Subject s:subjects)
 									{
-										ArrayList<Chapter> chapters = SyllabusDao.loadAllChapters(s.getSubjectId());
-										if (chapters == null || chapters.isEmpty()) {
-											String content = ApiClient.loadSyllabusContent(
-													(AppContext) getApplication(), s.getSubjectId());
-											if (!StringUtils.isEmpty(content)) {
-												chapters = SyllabusDao.insertSyllabusAndLoadChapters(
-														s, content);
-											}
+										String content = ApiClient.loadSyllabusContent(
+												(AppContext) getApplication(), s.getSubjectId());
+										if (!StringUtils.isEmpty(content)) {
+											dao.insertSyllabusAndLoadChapters(
+													s, content);
 										}
 									}
 								}

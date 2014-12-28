@@ -121,11 +121,10 @@ public class ImageTextView extends LinearLayout {
 	private boolean loadLocaleImage(String url)
 	{
 		String myJpgPath = url.substring(url.lastIndexOf("/")+1); 
-		System.out.println(myJpgPath);
-        File file = new File(AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath);
+		myJpgPath = AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath;
+        File file = new File(myJpgPath);
         if(file.exists())
         {
-        	System.out.println(file.getPath());
         	BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
             Bitmap bm = BitmapFactory.decodeFile(myJpgPath, options);

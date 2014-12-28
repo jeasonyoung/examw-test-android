@@ -15,6 +15,7 @@ import com.examw.test.domain.Paper;
 import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
+import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.StringUtils;
 
@@ -173,7 +174,7 @@ public class PaperDao {
 		cursor.close();
 		LibraryDBUtil.close();
 		Log.d(TAG, String.format("试卷[PaperId= %s]已有内容",paperId));
-		return content;
+		return CyptoUtils.decodeContent(paperId, content);
 	}
 	/**
 	 * 查询大题
@@ -208,6 +209,7 @@ public class PaperDao {
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		PaperPreview paper = GsonUtil.jsonToBean(content, PaperPreview.class);
 		String ruleContent = getRuleList(paper);
+		content = CyptoUtils.encodeContent(paperId, content);
 		db.execSQL("update PaperTab set content = ?,structures = ? where paperid = ?", new Object[]{content,ruleContent,paperId});
 		db.close();
 	}
@@ -316,5 +318,23 @@ public class PaperDao {
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		db.execSQL("update PaperTab set userTotal = ? where paperid = ?", new Object[]{total,paperId});
 		db.close();
+	}
+	/**
+	 * 查询最新的试卷时间,不包括每日一练
+	 * @return
+	 */
+	public static String findLastedPaperAddTime()
+	{
+		Log.d(TAG,"查询最新的试卷时间");
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select publishtime from PaperTab order by publishtime desc limit 1 where paperType != "+AppConstant.PAPER_TYPE_DAILY,new String[0]);
+		String time = null;
+		if(cursor.moveToNext())
+		{
+			time = cursor.getString(0);
+		}
+		cursor.close();
+		db.close();
+		return time;
 	}
 }

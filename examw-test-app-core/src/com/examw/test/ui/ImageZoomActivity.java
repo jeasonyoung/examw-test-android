@@ -32,12 +32,13 @@ public class ImageZoomActivity extends BaseActivity{
         setContentView(R.layout.ui_image_zoom);
         imageView = (ImageView) findViewById(R.id.img);
         String url = getIntent().getStringExtra("url");
-        String myJpgPath = url.substring(url.lastIndexOf("/")+1); 
-        File file = new File(AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath);
+        String myJpgPath = AppConfig.DEFAULT_SAVE_IMAGE_PATH + url.substring(url.lastIndexOf("/")+1); 
+        File file = new File(myJpgPath);
         if(file.exists())
         {
         	Log.d(TAG,"图片文件存在....");
-        	myJpgPath = "/mnt/sdcard/examw/image/2014.jpg";
+        	Log.d(TAG,myJpgPath);
+//        	myJpgPath = "/mnt/sdcard/examw/image/123456.bmp";
         	BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
             Bitmap bm = BitmapFactory.decodeFile(myJpgPath, null);

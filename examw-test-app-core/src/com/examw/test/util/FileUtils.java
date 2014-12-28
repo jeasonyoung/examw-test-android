@@ -649,7 +649,7 @@ public class FileUtils {
 	 *            String 复制后路径 如：f:/fqf.txt
 	 * @return boolean
 	 */
-	public void copyFile(String oldPath, String newPath) {
+	public static void copyFile(String oldPath, String newPath) {
 		try {
 			int byteread = 0;
 			File oldfile = new File(oldPath);
@@ -668,7 +668,28 @@ public class FileUtils {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * 复制单个文件
+	 * @param inStream
+	 * @param newPath
+	 */
+	public static void copyFile(InputStream inStream, String newPath) {
+		try {
+			int byteread = 0;
+			if (inStream!=null) { // 文件存在时
+				FileOutputStream fs = new FileOutputStream(newPath);
+				byte[] buffer = new byte[4*1024];
+				while ((byteread = inStream.read(buffer)) != -1) {
+					fs.write(buffer, 0, byteread);
+				}
+				fs.flush();
+				fs.close();
+				inStream.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 复制整个文件夹内容
 	 * 
@@ -678,7 +699,7 @@ public class FileUtils {
 	 *            String 复制后路径 如：f:/fqf/ff
 	 * @return boolean
 	 */
-	public void copyFolder(String oldPath, String newPath) {
+	public static void copyFolder(String oldPath, String newPath) {
 		try {
 			(new File(newPath)).mkdirs(); // 如果文件夹不存在 则建立新文件夹
 			File a = new File(oldPath);
