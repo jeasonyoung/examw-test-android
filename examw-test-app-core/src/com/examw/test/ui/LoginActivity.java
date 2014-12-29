@@ -31,6 +31,7 @@ import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.UserDao;
 import com.examw.test.domain.User;
+import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
 import com.examw.test.util.ToastUtils;
@@ -157,21 +158,38 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 							//TODO 模拟登录
 							Thread.sleep(2000);
 							Json result = ApiClient.login(appContext, username, password);
+							Message message = handler.obtainMessage();
 							//TODO 模拟登录
 							if (result.isSuccess()) { // 登陆成功
-								// 是否记住我
-								if (isRememberMe()) {
-									saveSharePreferences();
+								//远程去获取productUser的信息并且保存
+								User user = (User) result.getData();
+								FrontUserInfo userInfo = new FrontUserInfo();
+								userInfo.setCode(user.getUid());
+								userInfo.setName(username);
+								Json json = ApiClient.getProductUser(appContext, userInfo);
+								if(json.isSuccess())
+								{
+									// 是否记住我
+									if (isRememberMe()) {
+										saveSharePreferences();
+									}
+									// 保存是否自动登录的信息
+									saveAutoLoginPreferences(isAutoLogin());
+									// 保存信息至数据库[创建属于用户的数据库]
+									user.setProductUserId(json.getData().toString());
+									saveToLocaleDB(user);
+									message.what = 1;
+									message.obj = user;
+								}else
+								{
+									message.what = 0;
+									message.obj = "获取用户ID失败";
 								}
-								// 保存是否自动登录的信息
-								saveAutoLoginPreferences(isAutoLogin());
-								// 保存信息至数据库
-								saveToLocaleDB((User) result.getData());
+							}else{
+								message.what = 0;
+								message.obj = result.getMsg();
 							}
-							Message message = handler.obtainMessage();
-							message.what = 1;
-							message.obj = result;
-							handler.sendMessage(message);
+							handler.sendMessage(message); //登录失败
 						} catch (Exception e) {
 							e.printStackTrace();
 							handler.sendEmptyMessage(-1); // 连接问题
@@ -312,9 +330,8 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 			switch (msg.what) {
 			case 1:
 				// 登录成功
-				Json result = (Json) msg.obj;
-				if (result.isSuccess()) {
-					login.appContext.saveLoginInfo((User) result.getData());
+				User result = (User) msg.obj;
+					login.appContext.saveLoginInfo(result);
 					int code = 0;
 					if (login.curLoginType == LOGIN_MAIN) {
 						code = 20;
@@ -346,11 +363,11 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 							login.startActivity();
 						}
 					}
-				} else {
-					// 修改登录状态
-					login.appContext.setLoginState(AppContext.LOGIN_FAIL);
-					ToastUtils.show(login, result.getMsg());
-				}
+					break;
+			case 0:
+				// 修改登录状态
+				login.appContext.setLoginState(AppContext.LOGIN_FAIL);
+				ToastUtils.show(login, "登录失败 "+msg.obj);
 				break;
 			case -1:
 				// 修改登录状态

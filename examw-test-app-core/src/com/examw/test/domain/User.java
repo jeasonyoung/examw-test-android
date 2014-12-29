@@ -14,6 +14,7 @@ public class User implements Serializable{
 	private String registerCode;
 	private String token;
 	private String info;
+	private String productUserId;
 	/**
 	 * 获取 ID
 	 * @return id
@@ -125,5 +126,21 @@ public class User implements Serializable{
 	 */
 	public void setToken(String token) {
 		this.token = token;
+	}
+	/**
+	 * 获取 产品用户ID
+	 * @return productUserId
+	 * 
+	 */
+	public String getProductUserId() {
+		return productUserId;
+	}
+	/**
+	 * 设置 产品用户ID
+	 * @param productUserId
+	 * 
+	 */
+	public void setProductUserId(String productUserId) {
+		this.productUserId = productUserId;
 	}
 }

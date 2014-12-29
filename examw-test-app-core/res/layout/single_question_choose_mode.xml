@@ -10,22 +10,18 @@
     android:background="@color/none"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/exam_Content2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/exercise_bg_a"
-        android:padding="10.0dip"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_medium_size" />
-
-    <LinearLayout
+    <com.examw.test.widget.ImageTextView
+            android:id="@+id/exam_Content2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/exercise_bg_a"
+            android:padding="10.0dip" />
+	<LinearLayout 
         android:id="@+id/examImages2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-    </LinearLayout>
-
+        android:orientation="vertical"
+        ></LinearLayout>
     <com.examw.test.widget.CheckBoxGroup
         android:id="@+id/examOption2"
         android:layout_width="fill_parent"
@@ -41,7 +37,6 @@
         android:background="@drawable/btn_lightgreen"
         android:text="@string/show_answer"
         android:textColor="@color/white"
-        android:visibility="gone"
-         />
+        android:visibility="gone" />
 
 </LinearLayout>

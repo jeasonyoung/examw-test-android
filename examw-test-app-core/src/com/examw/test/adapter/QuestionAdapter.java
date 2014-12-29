@@ -44,6 +44,7 @@ import com.examw.test.ui.BaseActivity;
 import com.examw.test.ui.PaperDoPaperActivity;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.CheckBoxGroup;
+import com.examw.test.widget.ImageTextView;
 import com.examw.test.widget.OptionLayout;
 
 /**
@@ -120,7 +121,7 @@ public class QuestionAdapter extends BaseAdapter {
 			v.setTag(R.id.tag_first, contentHolder);
 			contentHolder.modeLayout = (LinearLayout) v
 					.findViewById(R.id.doexam_mode2layout);
-			contentHolder.examContent = (TextView) v
+			contentHolder.examContent = (ImageTextView) v
 					.findViewById(R.id.exam_Content2);// 题目内容
 			contentHolder.examContent.setTextSize(size);
 			contentHolder.examContent
@@ -163,8 +164,9 @@ public class QuestionAdapter extends BaseAdapter {
 			contentHolder.modeLayout.setVisibility(0);
 			TreeSet<StructureItemInfo> children= new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
 			// 显示图片
-			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
-					contentHolder.examImages, contentHolder.examContent);
+			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
+//			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
+//					contentHolder.examImages, contentHolder.examContent);
 			// this.examOption1.clearCheck();
 			if (contentHolder.examOption.getChildCount() > children.size() - 1) {
 				for (int j = children.size() - 1; j < contentHolder.examOption
@@ -212,8 +214,9 @@ public class QuestionAdapter extends BaseAdapter {
 			contentHolder.modeLayout4.setVisibility(8);
 			contentHolder.showAnswerBtn.setVisibility(View.GONE);
 			// 显示图片
-			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
-					contentHolder.examImages, contentHolder.examContent);
+			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
+//			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
+//					contentHolder.examImages, contentHolder.examContent);
 			//选项
 			OptionLayout rb_t, rb_f;
 			if (contentHolder.examOption.getChildCount() == 0) {
@@ -333,9 +336,8 @@ public class QuestionAdapter extends BaseAdapter {
 	public static class ContentViewHolder {
 		ScrollView scrollView;
 		LinearLayout modeLayout, modeLayout4, examImages;
-		TextView examContent, myAnswerTextView, sysAnswerTextView,
-				analysisTextView;
 		EditText answerEditText;
+		ImageTextView examContent;
 		public CheckBoxGroup examOption;
 		Button submitExamBtn;
 		Button showAnswerBtn;

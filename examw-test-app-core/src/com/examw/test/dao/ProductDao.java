@@ -35,7 +35,7 @@ public class ProductDao {
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		db.beginTransaction();
 		//插产品
-		db.execSQL("insert into ProductTab(productid,name,info)values(?,?,?)", new Object[]{product.getId(),product.getName(),product.getInfo()});
+		db.execSQL("insert into ProductTab(productid,name,examName,info)values(?,?,?,?)", new Object[]{product.getId(),product.getName(),product.getExamName(),product.getInfo()});
 		//插科目
 		db.execSQL("delete from SubjectTab");
 		String[] subjectIds = product.getSubjectId();
@@ -51,6 +51,20 @@ public class ProductDao {
 		db.setTransactionSuccessful();
 		db.endTransaction();
 		db.close();
+	}
+	public static String findExamName()
+	{
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select examName from ProductTab where productid = ?",
+				new String[] { AppConfig.PRODUCTID });
+		String name = "";
+		if(cursor.moveToNext())
+		{
+			name = cursor.getString(0);
+		}
+		cursor.close();
+		db.close();
+		return name;
 	}
 	/**
 	 * 查询科目信息

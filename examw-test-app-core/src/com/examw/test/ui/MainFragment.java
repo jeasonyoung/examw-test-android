@@ -95,7 +95,7 @@ public class MainFragment extends Fragment {
 		this.setDateLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(getActivity(), SetTimeActivity.class));
+				startActivity(new Intent(getActivity(), ImageTextViewActivity.class));
 //				Intent intent = new Intent(getActivity(), ImageZoomActivity.class);
 //				intent.putExtra("url", "/42c7f9f5-6088-4bc8-acc0-59162257a775");
 //				startActivity(intent);

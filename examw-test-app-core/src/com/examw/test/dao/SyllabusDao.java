@@ -13,8 +13,11 @@ import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
 import com.examw.test.domain.Syllabus;
+import com.examw.test.model.ItemInfo;
 import com.examw.test.model.KnowledgeInfo;
 import com.examw.test.model.SyllabusInfo;
+import com.examw.test.support.DataConverter;
+import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
@@ -287,5 +290,42 @@ public class SyllabusDao {
 		cursor.close();
 		db.close();
 		return content;
+	}
+	
+	//插入与大纲关联的试题
+	public static void insertSyllabusItems(String chapterId,List<ItemInfo> items)
+	{
+		if(chapterId == null) return ;
+		if(items == null || items.isEmpty()) return;
+		Log.d(TAG,"插入与大纲关联的试题");
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		for(ItemInfo info:items)
+		{
+			if(info == null) continue;
+			//插入或者更新试题
+			insertItem(db,info,chapterId);
+		}
+		db.close();
+	}
+	private static void insertItem(SQLiteDatabase db,ItemInfo item,String chapterId)
+	{
+		Cursor cursor = db.rawQuery("select itemId from ItemTab where itemId = ? ", 
+				new String[]{item.getId()});
+		String material = DataConverter.getItemMaterial(item);
+		//没有考虑 删除关联的情况
+		if(cursor.getCount()>0)
+		{
+			//itemId text,subjectId text,content text,material text,type integer,lasttime
+			db.execSQL("update ItemTab set content = ? ,material = ?, lasttime = datetime(?) where itemId = ?", 
+					new Object[]{CyptoUtils.encodeContent(item.getId(), item.getContent()),material,item.getLastTime(),item.getId()});
+		}else
+		{
+			//insert
+			db.execSQL("insert into ItemTab(itemId,subjectId,content,material,type,lasttime)values(?,?,?,?,?,datetime(?))", 
+					new Object[]{item.getId(),item.getSubjectId(),CyptoUtils.encodeContent(item.getId(), item.getContent()),material,item.getType(),item.getLastTime()});
+			db.execSQL("insert into ItemsyllabusTab(itemId,chapterId)values(?,?)",
+					new Object[]{item.getId(),chapterId});
+		}
+		cursor.close();
 	}
 }

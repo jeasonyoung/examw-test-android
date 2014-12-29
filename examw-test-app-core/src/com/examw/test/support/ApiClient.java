@@ -47,8 +47,8 @@ public class ApiClient {
 		json.setSuccess(true);
 		json.setMsg("登录成功");
 		User user = new User();
-		user.setUid("112358");
-		user.setUsername("hahaha");
+		user.setUid("265384");
+		user.setUsername("fw121fw41");
 		user.setPassword("123456");
 		json.setData(user);
 		return json;
@@ -125,6 +125,12 @@ public class ApiClient {
 	//获取知识点的内容
 	public static String loadKnowledgeContent(AppContext appContext,String chapterId) throws AppException{
 		String result = HttpUtils.http_get(appContext, String.format(URLs.KNOWLEDGE,chapterId));
+		if(StringUtils.isEmpty(result)) return null;
+		return result;
+	}
+	//获取知识点下的试题
+	public static String loadSyllabusItems(AppContext appContext, String syllabusId)  throws AppException{
+		String result = HttpUtils.http_get(appContext, String.format(URLs.SYLLABUS_ITEMS,syllabusId));
 		if(StringUtils.isEmpty(result)) return null;
 		return result;
 	}

@@ -10,13 +10,12 @@
     android:background="@color/none"
     android:orientation="vertical" >
 
-    <TextView
+    <com.examw.test.widget.ImageTextView
         android:id="@+id/exam_Content3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5.0dip"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_medium_size" />
+        />
 	<LinearLayout 
         android:id="@+id/examImages3"
         android:layout_width="fill_parent"

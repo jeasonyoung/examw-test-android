@@ -1,11 +1,6 @@
 package com.examw.test.util;
 
-import java.util.List;
-
-import android.util.Log;
-
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * GSON解析工具类
@@ -14,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
  */
 public class GsonUtil {
 	private static Gson gson;
-	private static final String TAG = "GSONUtil";
 	
 	public synchronized static Gson getGson(){
 		if(gson == null)

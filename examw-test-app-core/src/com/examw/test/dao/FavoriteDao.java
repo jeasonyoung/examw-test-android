@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
-import com.examw.test.db.UserDBUtil;
+import com.examw.test.db.UserDBManager;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.domain.Subject;
 import com.examw.test.model.SimplePaper;
@@ -31,8 +31,9 @@ public class FavoriteDao {
 	public static void favorOrCancel(FavoriteItem favor)
 	{
 		if(favor == null) return;
+		if(favor.getUsername() == null) return;
 		Log.d(TAG,"收藏或取消收藏");
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(favor.getUsername());
 		Cursor cursor = db.rawQuery("select status from FavoriteTab where itemId = ? and username = ?", new String[]{favor.getItemId(),favor.getUsername()});
 		if(cursor.getCount() == 0) //还没有收藏
 		{
@@ -67,14 +68,14 @@ public class FavoriteDao {
 	 */
 	public static Boolean isCollected(String itemId,String username)
 	{
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		if(username == null) return null;
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		Boolean status = isCollected(db,itemId,username);
 		db.close();
 		return status;
 	}
 	public static Boolean isCollected(SQLiteDatabase db,String itemId,String username)
 	{
-		Log.d(TAG,"判断题目有没有被收藏");
 		Cursor cursor = db.rawQuery("select status from FavoriteTab where itemId = ? and username = ?", new String[]{itemId,username});
 		if(cursor.getCount() == 0)
 		{
@@ -90,7 +91,7 @@ public class FavoriteDao {
 	{
 		Log.d(TAG,"查询各个科目的收藏情况");
 		if(username == null) return subjects;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		for(Subject subject:subjects)
 		{
 			subject.setTotal(getCount(db,subject.getSubjectId(),username,null));
@@ -123,7 +124,7 @@ public class FavoriteDao {
 	{
 		Log.d(TAG,"查询单个科目的收藏试题");
 		if(username == null || subjectId==null) return null;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		int total = getCount(db,subjectId,username,null);
 		if(total == 0) return null;
 		SimplePaper paper = new SimplePaper();

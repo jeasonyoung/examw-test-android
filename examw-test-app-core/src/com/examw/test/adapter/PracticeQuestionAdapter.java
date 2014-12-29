@@ -120,7 +120,7 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			//选择题的整个选项布局
 			contentHolder.modeLayout = (LinearLayout) v.findViewById(R.id.doexam_mode2layout);
 			//题目内容
-			contentHolder.examContent = (TextView) v.findViewById(R.id.exam_Content2);// 题目内容
+			contentHolder.examContent = (ImageTextView) v.findViewById(R.id.exam_Content2);// 题目内容
 			//checkbox组容器
 			contentHolder.examOption = (CheckBoxGroup) v.findViewById(R.id.examOption2);// checkbox组的容器
 			//文字题答题布局
@@ -161,8 +161,9 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			contentHolder.modeLayout4.setVisibility(View.GONE);
 			TreeSet<StructureItemInfo> children= new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
 			// 显示图片
-			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
-					contentHolder.examImages, contentHolder.examContent);
+			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
+//			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
+//					contentHolder.examImages, contentHolder.examContent);
 			// this.examOption1.clearCheck();
 			if (contentHolder.examOption.getChildCount() > children.size() - 1) {
 				for (int j = children.size() - 1; j < contentHolder.examOption
@@ -207,8 +208,9 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			contentHolder.modeLayout.setVisibility(View.VISIBLE);
 			contentHolder.modeLayout4.setVisibility(View.GONE);
 			// 显示图片
-			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
-					contentHolder.examImages, contentHolder.examContent);
+			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
+//			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
+//					contentHolder.examImages, contentHolder.examContent);
 			//选项
 			OptionLayout rb_t, rb_f;
 			if (contentHolder.examOption.getChildCount() == 0) {
@@ -311,9 +313,8 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 	public static class ContentViewHolder {
 		ScrollView scrollView;
 		LinearLayout modeLayout, modeLayout4, examImages;
-		TextView examContent, myAnswerTextView, sysAnswerTextView,
-				analysisTextView;
 		EditText answerEditText;
+		ImageTextView examContent;
 		public CheckBoxGroup examOption;
 		Button submitExamBtn;
 		Button showAnswerBtn;

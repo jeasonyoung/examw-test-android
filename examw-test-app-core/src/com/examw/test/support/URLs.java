@@ -33,9 +33,12 @@ public class URLs implements Serializable{
 	public static final String SYLLABUS = BASE_URL + "/subjects/%s/syllabuses";
 	//知识点内容
 	public static final String KNOWLEDGE = BASE_URL +"/syllabus/%1$s/knowledges";
+	//知识点试题
+	public static final String SYLLABUS_ITEMS = BASE_URL +"/syllabus/%1$s/items";
 	//验证用户
 	public static final String VERIFYUSER =  BASE_URL+"/user";
 	public static final String BUY = "";
+
 
 	
 }

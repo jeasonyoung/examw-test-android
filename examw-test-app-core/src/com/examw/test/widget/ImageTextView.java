@@ -26,6 +26,7 @@ import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.StringUtils;
 
 public class ImageTextView extends LinearLayout {
+	private static final String TAG = "ImageTextView";
 	private TextView tv_before;
 	private ImageView imageView;
 	private TextView tv_after;
@@ -96,9 +97,11 @@ public class ImageTextView extends LinearLayout {
 				.matcher(text).matches();
 		if (!bool1) {
 			this.tv_before.setText(text);
+			//共用的属性不能设置visible
 			this.imageView.setVisibility(View.GONE);
 			this.tv_after.setVisibility(View.GONE);
 		} else {
+			this.imageView.setVisibility(View.VISIBLE);
 			String[] arr = text.split("(<img[^>]+src=\")(\\S+)\"(/?>)");
 			String temp = text.substring(text.indexOf("src=\"") + 5,
 					text.length());
@@ -109,11 +112,14 @@ public class ImageTextView extends LinearLayout {
 				if(!loadLocaleImage(url))
 				bmpManager.loadBitmap(URLs.HOST+url, imageView);
 				this.tv_after.setVisibility(View.GONE);
-			} else if (arr.length == 2) {
+			} else if (arr.length >= 2) {
 				this.tv_before.setText(HtmlUtils.filterImgTag(arr[0]));
+				imageView.setTag(URLs.HOST+url);
 				if(!loadLocaleImage(url))
-				bmpManager.loadBitmap(url, imageView,BitmapFactory.decodeResource(
-						context.getResources(), R.drawable.img_empty),width,height);
+//				bmpManager.loadBitmap(url, imageView,BitmapFactory.decodeResource(
+//						context.getResources(), R.drawable.img_empty),width,height);
+				bmpManager.loadBitmap(URLs.HOST+url, imageView);
+				this.tv_after.setVisibility(View.VISIBLE);
 				this.tv_after.setText(HtmlUtils.filterImgTag(arr[1]));
 			}
 		}

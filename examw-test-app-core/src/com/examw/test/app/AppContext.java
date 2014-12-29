@@ -848,6 +848,8 @@ public class AppContext extends Application {
 			//AssetFileManager.copyImages(AppContext.this, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
 			//解压缩包
 //			AssetFileManager.upZipFile(AppContext.this, "data/examw.zip",AppConfig.DATABASE_NAME,dbPath, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
+			String examName = ProductDao.findExamName();
+			AppContext.this.setProperty("exam_name", examName);
 //			db = null;
 //			if(!ProductDao.hasInsert())
 //			{

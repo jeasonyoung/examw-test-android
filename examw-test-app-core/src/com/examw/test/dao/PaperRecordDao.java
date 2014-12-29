@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
-import com.examw.test.db.UserDBUtil;
+import com.examw.test.db.UserDBManager;
 import com.examw.test.domain.ItemRecord;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.domain.Subject;
@@ -41,7 +41,8 @@ public class PaperRecordDao {
 			private Date createTime,lastTime;
 		 */
 		if (record == null)	return false;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		if (record.getUserName() == null)	return false;
+		SQLiteDatabase db = UserDBManager.openDatabase(record.getUserName());
 		Log.d(TAG,"插入考试记录");
 		String sql = "insert into PaperRecordTab(recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,torf) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		Object[] params = new Object[] {
@@ -60,7 +61,7 @@ public class PaperRecordDao {
 	public static PaperRecord findLastRecord(String userName)
 	{
 		Log.d(TAG,String.format("查询用户[userName = %s]的记录", userName));
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
 			private BigDecimal score;
@@ -88,7 +89,7 @@ public class PaperRecordDao {
 	public static PaperRecord findLastRecord(String userName,String types)
 	{
 		Log.d(TAG,String.format("查询用户[userName = %s]的记录", userName));
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
 			private BigDecimal score;
@@ -126,10 +127,10 @@ public class PaperRecordDao {
 	 * @param recordId
 	 * @return
 	 */
-	public static PaperRecord findById(String recordId,boolean withItems)
+	public static PaperRecord findById(String userName,String recordId,boolean withItems)
 	{
 		Log.d(TAG,String.format("查询[recordId = %s]的记录", recordId));
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
 			private BigDecimal score;
@@ -181,7 +182,7 @@ public class PaperRecordDao {
 	public static PaperRecord findLastPaperRecord(String paperId,String userName,boolean withItems)
 	{
 		Log.d(TAG,String.format("查询[paperId = %1$s,userName = %2$s]的最新考试记录", paperId,userName));
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where paperId = ? and userName = ?";
 		String[] params = new String[] {paperId,userName};
 		Cursor cursor = db.rawQuery(sql, params);
@@ -224,7 +225,7 @@ public class PaperRecordDao {
 	 */
 	public static void updatePaperRecord(PaperRecord record){
 		Log.d(TAG,"更新考试记录"); 
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(record.getUserName());
 		String sql = "update PaperRecordTab set score = ?,useTime=?,lasttime = datetime(?),status = ?,rightNum = ?,torf = ? where recordId = ? ";
 		Object[] params = new Object[] { record.getScore(), record.getUsedTime(),
 									record.getLastTime(),record.getStatus(),record.getRightNum(),record.getTorf(),record.getRecordId()};
@@ -267,7 +268,7 @@ public class PaperRecordDao {
 	public static void saveOrUpdateItem(ItemRecord item)
 	{
 		if(item == null) return;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(item.getUserName());
 		saveOrUpdateItem(db, item);
 		db.close();
 	}
@@ -275,7 +276,7 @@ public class PaperRecordDao {
 	public static int findRecordTotalOfUser(String username)
 	{
 		if(StringUtils.isEmpty(username))	return 0;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		Cursor cursor = db.rawQuery("select count(*) from PaperRecordTab where userName = ? ",  new String[] {username});
 		int total = 0;
 		while(cursor.moveToNext())
@@ -291,7 +292,7 @@ public class PaperRecordDao {
 	{
 		Log.d(TAG, "查询考试记录");
 		if(StringUtils.isEmpty(username))	return null;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
 			private BigDecimal score;
@@ -321,7 +322,7 @@ public class PaperRecordDao {
 	public static ArrayList<Subject> getCount(ArrayList<Subject> subjects,String username)
 	{
 		if(username == null) return subjects;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		for(Subject subject:subjects)
 		{
 			subject.setTotal(getCount(db,subject.getSubjectId(),username,null));
@@ -352,7 +353,7 @@ public class PaperRecordDao {
 	{
 		Log.d(TAG,"加载错题试卷");
 		if(username == null || subjectId==null) return null;
-		SQLiteDatabase db = UserDBUtil.getDatabase();
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		int total = getCount(db,subjectId,username,null);
 		if(total == 0) return null;
 		SimplePaper paper = new SimplePaper();

@@ -49,7 +49,8 @@ public class AppConfig {
 	public final static String CONF_EXAMTIME = "perf_examtime";
 	public final static String CONF_AUTOLOGIN = "perf_autoLogin";
 	public final static String CONF_SELECTED_COURSEID = "perf_courseids";
-	public final static String CONT_EXAM_FONT_SIZE = "perf_examfontsize";
+	public final static String CONF_EXAM_FONT_SIZE = "perf_examfontsize";
+	public final static String CONF_LAST_SYNC_TIME = "perf_lastSyncTime";
 
 	public final static String SAVE_IMAGE_PATH = "save_image_path";
 	public final static String DATABASE_NAME = "examw_library.db";

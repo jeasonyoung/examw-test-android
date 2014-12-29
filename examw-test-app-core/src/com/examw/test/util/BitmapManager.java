@@ -120,7 +120,8 @@ public class BitmapManager {
      * @param width
      * @param height
      */
-    public void queueJob(final String url, final ImageView imageView, final int width, final int height) {  
+    public void queueJob(final String url, final ImageView imageView, final int width, final int height) { 
+    	System.out.println("线程加载图片");
         /* Create handler in UI thread. */  
         final Handler handler = new Handler() {  
             public void handleMessage(Message msg) {  

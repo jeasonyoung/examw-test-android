@@ -271,7 +271,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					String content = PaperDao.findPaperContent(paperId);
 					if(!StringUtils.isEmpty(recordId))
 					{
-						record = PaperRecordDao.findById(recordId,true);
+						record = PaperRecordDao.findById(username,recordId,true);
 					}else
 						record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
 					if (StringUtils.isEmpty(content)) {

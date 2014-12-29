@@ -169,6 +169,10 @@
             android:theme="@style/DialogTheme"
             android:screenOrientation="portrait"
             ></activity>
+        <activity 
+            android:name=".ui.ImageTextViewActivity"
+            android:screenOrientation="portrait"
+            ></activity>
         <!-- 校验用户 -->
         <meta-data android:value="digest" android:name="username"></meta-data>
         <meta-data android:value="d4i9g7e5s19t20" android:name="password"></meta-data>
