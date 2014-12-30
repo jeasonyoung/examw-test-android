@@ -2,7 +2,6 @@ package com.examw.test.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Set;
 /**
  * 用户试卷记录信息。
@@ -16,7 +15,7 @@ public class UserPaperRecordInfo implements Serializable {
 	private Integer status,terminalCode,paperType,rightNum;
 	private Long usedTime;
 	private BigDecimal score;
-	private Date createTime,lastTime;
+	private String createTime,lastTime;
 	private Set<UserItemRecordInfo> items;
 	/**
 	 * 获取记录ID。
@@ -142,7 +141,7 @@ public class UserPaperRecordInfo implements Serializable {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -150,14 +149,14 @@ public class UserPaperRecordInfo implements Serializable {
 	 * @param createTime 
 	 *	  创建时间。
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 	/**
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
-	public Date getLastTime() {
+	public String getLastTime() {
 		return lastTime;
 	}
 	/**
@@ -165,7 +164,7 @@ public class UserPaperRecordInfo implements Serializable {
 	 * @param lastTime 
 	 *	  最后修改时间。
 	 */
-	public void setLastTime(Date lastTime) {
+	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
 	}
 	/**

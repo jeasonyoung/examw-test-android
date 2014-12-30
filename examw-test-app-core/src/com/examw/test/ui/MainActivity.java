@@ -26,6 +26,7 @@ import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
 import com.examw.test.dao.UserDao;
 import com.examw.test.domain.User;
+import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.AppUpdateManager;
@@ -98,23 +99,50 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					try {
 						Log.e("登录线程", "启动");
 						appContext.setLoginState(AppContext.LOGINING); // 登录中
-						Json result = ApiClient
-								.login(appContext, username, pwd);
+						Json result = ApiClient.login(appContext, username, pwd);
 						msg.what = 1;
-						msg.obj = result;
-						if (result != null && (!result.isSuccess())) {
-							if (localLogin(username, pwd)) {
-								msg.what = 2;
+						if (result != null){
+							//查询本地数据库用户信息
+							User user = UserDao.findByUsername(username);
+							if(result.isSuccess())	//远程登录成功
+							{
+								if(user == null)
+								{
+									user = (User) result.getData();
+								}
+								if(user.getProductUserId()==null)
+								{
+									FrontUserInfo userInfo = new FrontUserInfo();
+									userInfo.setCode(((User) result.getData()).getUid());
+									userInfo.setName(username);
+									Json json = ApiClient.getProductUser(appContext, userInfo);
+									//失败则登录失败
+									if(json.isSuccess())
+									{
+										//保存至数据库
+										user.setProductUserId(json.getData().toString());
+										UserDao.saveOrUpdate(user);
+										msg.what = 1;
+									}else
+									{
+										msg.what = -2;	//登录失败
+									}
+								}
+							}else	//远程登录不成功
+							{
+								msg.what = 0;	//登录失败
+								msg.obj = result.getMsg();
 							}
-							msg.what = 1;
+							msg.obj = user;
+						}else	//登录失败
+						{
+							localLogin(msg, username, pwd);
 						}
-						// //////////////////////////////////////
+						/////////////////////////////////////////
 					} catch (Exception e) {
 						e.printStackTrace();
-						if (localLogin(username, pwd)) {
-							msg.what = 2;
-						}
-						// msg.what = -1;
+						//转本地登录
+						localLogin(msg, username, pwd);
 					}
 					mHandler.sendMessage(msg);
 				};
@@ -351,26 +379,26 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			MainActivity theActivity = mActivity.get();
 			switch (msg.what) {
 			case 1:
-				Json result = (Json) msg.obj;
-				if (result.isSuccess()) {
-					User user = (User) result.getData();
-					theActivity.appContext.saveLoginInfo(user);
-					theActivity.changeMenu();
-				} else {
-					theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL); // 登录失败
-					theActivity.changeMenu();
-				}
-				ToastUtils.show(theActivity, result.getMsg());
+				theActivity.appContext.saveLoginInfo((User)msg.obj);
+				theActivity.changeMenu();
+				ToastUtils.show(theActivity, "登录成功");
 				break;
-			case -1:
-				ToastUtils.show(theActivity, "亲,网络不给力");
+			case 0:
+				ToastUtils.show(theActivity, msg.obj.toString());
 				theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
 				theActivity.changeMenu();
 				break;
 			case 2:
 				ToastUtils.show(theActivity, "本地登录成功");
+				theActivity.appContext.saveLoginInfo((User)msg.obj);
 				theActivity.appContext.setLoginState(AppContext.LOCAL_LOGINED);
 				theActivity.changeMenu();
+				break;
+			case -2:
+				ToastUtils.show(theActivity, "登录失败");
+				theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
+				theActivity.changeMenu();
+				break;
 			}
 		}
 	}
@@ -428,18 +456,47 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	 *            密码
 	 * @return
 	 */
-	private boolean localLogin(String username, String password) {
-		if (StringUtils.isEmpty(username))
-			return false;
+	private void localLogin(Message msg,String username, String password){
+		//转本地登录
+		//查询本地数据库用户信息
+		try{
 		User user = UserDao.findByUsername(username);
-		if (user != null) {
-			if (password.equals(new String(Base64.decode(
-					Base64.decode(user.getPassword(), 0), 0)))) {
-				appContext.saveLocalLoginInfo(username);
-				return true;
+		if (user!=null && password.equals(new String(Base64.decode(
+				Base64.decode(user.getPassword(), 0), 0)))) {
+			Log.d("本地登录","本地登录密码能对上");
+			if(user.getProductUserId()==null)
+			{
+				FrontUserInfo userInfo = new FrontUserInfo();
+				userInfo.setCode(user.getUid());
+				userInfo.setName(username);
+				Json json = ApiClient.getProductUser(appContext, userInfo);
+				//失败则登录失败
+				if(json.isSuccess())
+				{
+					//保存至数据库
+					user.setProductUserId(json.getData().toString());
+					UserDao.saveOrUpdate(user);
+					msg.what = 2;
+				}else
+				{
+					msg.what = -2;	//登录失败
+				}
+			}else
+			{
+				msg.what = 2;
 			}
+			msg.obj = user;
+		}else
+		{
+			Log.d("本地登录","本地登录失败,"+user.getProductUserId());
+			//登录失败
+			msg.what = -2;
 		}
-		return false;
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			msg.what = -2;
+		}
 	}
 
 	/**

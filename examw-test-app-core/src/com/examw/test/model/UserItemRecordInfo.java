@@ -2,20 +2,19 @@ package com.examw.test.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 /**
  * 用户试题记录信息。
  * 
  * @author yangyong
  * @since 2014年10月11日
  */
-public class UserItemRecordInfo implements Serializable,Comparable<UserItemRecordInfo> {
+public class UserItemRecordInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,structureId,itemId,itemContent,answer;
 	private Integer status,terminalCode;
 	private Long usedTime;
 	private BigDecimal score;
-	private Date createTime,lastTime;
+	private String createTime,lastTime;
 	/**
 	 * 获取记录ID。
 	 * @return 记录ID。
@@ -155,7 +154,7 @@ public class UserItemRecordInfo implements Serializable,Comparable<UserItemRecor
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -163,14 +162,14 @@ public class UserItemRecordInfo implements Serializable,Comparable<UserItemRecor
 	 * @param createTime 
 	 *	  创建时间。
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 	/**
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
-	public Date getLastTime() {
+	public String getLastTime() {
 		return lastTime;
 	}
 	/**
@@ -178,26 +177,7 @@ public class UserItemRecordInfo implements Serializable,Comparable<UserItemRecor
 	 * @param lastTime 
 	 *	  最后修改时间。
 	 */
-	public void setLastTime(Date lastTime) {
+	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
-	}
-	/*
-	 * 排序比较。
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(UserItemRecordInfo o) {
-		if(this == o) return 0;
-		int index = 0;
-		if(this.getLastTime() != null && o.getLastTime() != null){
-			index = (int)(o.getLastTime().getTime() - this.getLastTime().getTime());
-		}
-		if((index == 0) && (this.getCreateTime() != null && o.getCreateTime() != null)){
-			index = (int)(o.getCreateTime().getTime() - this.getCreateTime().getTime());
-		}
-		if(index == 0){
-			index = this.getId().compareToIgnoreCase(o.getId());
-		}
-		return index;
 	}
 }

@@ -585,6 +585,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		// 取出题目记录或者新增一个题目记录
 		ItemRecord currentRecord = getItemRecord();
 		currentRecord.setAnswer(abcd);
+		currentRecord.setLastTime(StringUtils.toStandardDateStr(new Date()));
 		// 判断题目的对错
 		judgeItemIsRight(currentRecord, currentQuestion, currentRule.getMin(),
 				currentRule.getScore());
@@ -713,6 +714,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		// 单个题目记录的保存or修改
 		currentQuestion.setUserAnswer(txtAnswer);
 		ItemRecord itemRecord = getItemRecord();
+		itemRecord.setLastTime(StringUtils.toStandardDateStr(new Date()));
 		itemRecord.setAnswer(txtAnswer);
 		itemRecord.setScore(BigDecimal.ZERO);
 		itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 少选

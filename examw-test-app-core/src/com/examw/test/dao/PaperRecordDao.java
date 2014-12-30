@@ -118,9 +118,27 @@ public class PaperRecordDao {
 	 * 查询所有的记录
 	 * @return
 	 */
-	public static ArrayList<PaperRecord> findAll(String userName)
+	public static ArrayList<PaperRecord> findAll(String userName,String userId,String lastTime)
 	{
-		return null;
+		Log.d(TAG,String.format("查询用户[%1$s][%2$s]的全部记录", userName,userId));
+		if(userName == null || userId == null) return null;
+		if(StringUtils.isEmpty(lastTime)) lastTime = "1970-01-01 00:00:00";
+		SQLiteDatabase db = UserDBManager.openDatabase(userName);
+		ArrayList<PaperRecord> list = new ArrayList<PaperRecord>();
+		Cursor cursor = db.rawQuery("select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where status = 1 and createTime > ? ", 
+				new String[]{lastTime});
+		while(cursor.moveToNext())
+		{
+			PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
+					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
+					cursor.getString(5), cursor.getString(6),cursor.getString(7),
+					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
+					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+			record.setUserId(userId);
+			record.setItems(findItemRecords(db,record.getRecordId()));
+			list.add(record);
+		}
+		return list;
 	}
 	/**
 	 * 根据ID查询试卷记录
@@ -155,22 +173,28 @@ public class PaperRecordDao {
 		if(withItems)
 		{
 //			/recordId,structureId,itemId,itemContent,answer,termialId,status,score,useTime,createTime
-			String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
-			Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{record.getRecordId()});
-			if (cursorItem.getCount() > 0) {
-				ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
-				while (cursorItem.moveToNext()) {
-					ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
-							cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
-							new BigDecimal(cursorItem.getDouble(5)));
-					items.add(itemRecord);
-				}
-				record.setItems(items);
-			}
-			cursorItem.close();
+			record.setItems(findItemRecords(db,record.getRecordId()));
 		}
 		db.close();
 		return record;
+	}
+	private static ArrayList<ItemRecord> findItemRecords(SQLiteDatabase db,String recordId)
+	{
+		String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
+		Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{recordId});
+		ArrayList<ItemRecord> items = null;
+		if (cursorItem.getCount() > 0) {
+			items = new ArrayList<ItemRecord>();
+			while (cursorItem.moveToNext())
+			{
+				ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
+						cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
+						new BigDecimal(cursorItem.getDouble(5)));
+				items.add(itemRecord);
+			}
+		}
+		cursorItem.close();
+		return items;
 	}
 	/**
 	 * 查询试卷最近一次的考试记录
@@ -202,19 +226,7 @@ public class PaperRecordDao {
 		if(withItems)
 		{
 //			/recordId,structureId,itemId,itemContent,answer,termialId,status,score,useTime,createTime
-			String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
-			Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{record.getRecordId()});
-			ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
-			if (cursorItem.getCount() > 0) {
-				while (cursorItem.moveToNext()) {
-					ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
-							cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
-							new BigDecimal(cursorItem.getDouble(5)));
-					items.add(itemRecord);
-				}
-			}
-			record.setItems(items);
-			cursorItem.close();
+			record.setItems(findItemRecords(db, record.getRecordId()));
 		}
 		db.close();
 		return record;

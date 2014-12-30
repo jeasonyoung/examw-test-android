@@ -89,6 +89,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 						findDailyPaper();
 					}
 				});
+		this.findViewById(R.id.btn_goback).setOnClickListener(this);
 	}
 
 	private void initData() {

@@ -283,6 +283,7 @@ public class HttpUtils {
 	
 	public static String http_post(AppContext appContext, String url,Object obj)
 			throws AppException {
+		Log.d(TAG,"post请求地址:"+url);
 		int time = 0;
 		String responseBody = "";
 		getDigestUser(appContext);

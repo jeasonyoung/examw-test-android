@@ -63,7 +63,7 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 		checkBox = (CheckBox) v.findViewById(R.id.checkWhenStart);
 		// loginTxt = (TextView) v.findViewById(R.id.loginStr);
 		logoutBtn = (Button) v.findViewById(R.id.btn_logout);
-		newDataFlag = (TextView) v.findViewById(R.id.newDataFlag);
+//		newDataFlag = (TextView) v.findViewById(R.id.newDataFlag);
 		newVersionFlag = (TextView) v.findViewById(R.id.newVersionFlag);
 		parent = v.findViewById(R.id.setting_parent);
 		appConfig = AppConfig.getAppConfig(getActivity());
@@ -85,7 +85,7 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 		v.findViewById(R.id.layout_share).setOnClickListener(this);
 		v.findViewById(R.id.layout_edit).setOnClickListener(this);
 		v.findViewById(R.id.layout_checkupdate).setOnClickListener(this);
-		v.findViewById(R.id.layout_checkupdata).setOnClickListener(this);
+//		v.findViewById(R.id.layout_checkupdata).setOnClickListener(this);
 		v.findViewById(R.id.layout_clear_cache).setOnClickListener(this);
 		v.findViewById(R.id.layout_checkupdate_when_start).setOnClickListener(
 				this);
@@ -145,9 +145,9 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 					this.getActivity(), true);
 			break;
 		// 检测数据更新
-		case R.id.layout_checkupdata:
-			newDataFlag.setVisibility(View.GONE);
-			break;
+//		case R.id.layout_checkupdata:
+//			newDataFlag.setVisibility(View.GONE);
+//			break;
 		// 清理缓存
 		case R.id.layout_clear_cache:
 			// 清理缓存

@@ -13,9 +13,9 @@ public class URLs implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String HOST = "http://tiku.examw.com";
+	public static final String HOST = "http://192.168.1.246:8080";//"http://tiku.examw.com";
 	
-	public static final String BASE_URL = "http://tiku.examw.com/examw-test/api/data";
+	public static final String BASE_URL = HOST + "/examw-test/api/data";
 	
 	//登录地址
 	public static final String LOGIN = "";
@@ -37,6 +37,10 @@ public class URLs implements Serializable{
 	public static final String SYLLABUS_ITEMS = BASE_URL +"/syllabus/%1$s/items";
 	//验证用户
 	public static final String VERIFYUSER =  BASE_URL+"/user";
+	//上传用户考试记录
+	public static final String UPLOAD_RECORDS = BASE_URL + "/user/records/add";
+	//上传用户的收藏
+	public static final String UPLOAD_FAVORS = BASE_URL + "/user/favors/add";
 	public static final String BUY = "";
 
 

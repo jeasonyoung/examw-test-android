@@ -56,7 +56,7 @@ public class SettingFragment extends Fragment implements OnClickListener {
 		checkBox = (CheckBox) v.findViewById(R.id.checkWhenStart);
 //		loginTxt = (TextView) v.findViewById(R.id.loginStr);
 		logoutBtn = (Button) v.findViewById(R.id.btn_logout);
-		newDataFlag = (TextView) v.findViewById(R.id.newDataFlag);
+//		newDataFlag = (TextView) v.findViewById(R.id.newDataFlag);
 		newVersionFlag = (TextView) v.findViewById(R.id.newVersionFlag);
 		parent = v.findViewById(R.id.setting_parent);
 		appConfig = AppConfig.getAppConfig(getActivity());
@@ -78,7 +78,7 @@ public class SettingFragment extends Fragment implements OnClickListener {
 		v.findViewById(R.id.layout_share).setOnClickListener(this);
 		v.findViewById(R.id.layout_edit).setOnClickListener(this);
 		v.findViewById(R.id.layout_checkupdate).setOnClickListener(this);
-		v.findViewById(R.id.layout_checkupdata).setOnClickListener(this);
+//		v.findViewById(R.id.layout_checkupdata).setOnClickListener(this);
 		v.findViewById(R.id.layout_clear_cache).setOnClickListener(this);
 		v.findViewById(R.id.layout_checkupdate_when_start).setOnClickListener(
 				this);
@@ -140,9 +140,9 @@ public class SettingFragment extends Fragment implements OnClickListener {
 					true);
 			break;
 		//检测数据更新
-		case R.id.layout_checkupdata:
-			newDataFlag.setVisibility(View.GONE);
-			break;
+//		case R.id.layout_checkupdata:
+//			newDataFlag.setVisibility(View.GONE);
+//			break;
 		//清理缓存
 		case R.id.layout_clear_cache:
 			// 清理缓存
@@ -182,9 +182,9 @@ public class SettingFragment extends Fragment implements OnClickListener {
 			break;
 		//数据同步
 		case R.id.layout_sync:
-//			Intent mIntent = new Intent(this.getActivity(), SysncActivity.class);
-//			mIntent.putExtra("loginFrom", "sysnc");
-//			startActivity(mIntent);
+			Intent mIntent = new Intent(this.getActivity(), SyncActivity.class);
+			mIntent.putExtra("loginFrom", "sysnc");
+			startActivity(mIntent);
 			break;
 		}
 	}
@@ -206,7 +206,7 @@ public class SettingFragment extends Fragment implements OnClickListener {
 		intent.setType("image/*");
 		intent.putExtra(Intent.EXTRA_SUBJECT, "应用分享");
 		intent.putExtra(Intent.EXTRA_TEXT,
-				"会计证考试一点通，让考试一点就通 (分享自会计证考试一点通Android客户端)");
+				"考试一点通，让考试一点就通 (分享自考试一点通Android客户端)");
 		// Uri uri = Uri.fromFile(new
 		// File("file:///android_asset/other/logo-formobile.png"));
 		// intent.putExtra(Intent.EXTRA_STREAM, uri);

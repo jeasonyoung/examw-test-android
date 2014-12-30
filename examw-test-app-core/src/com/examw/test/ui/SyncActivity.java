@@ -1,12 +1,14 @@
 package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -19,18 +21,24 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
+import com.examw.test.dao.PaperRecordDao;
+import com.examw.test.domain.PaperRecord;
+import com.examw.test.model.Json;
+import com.examw.test.model.UserPaperRecordInfo;
+import com.examw.test.support.ApiClient;
+import com.examw.test.support.DataConverter;
 
 public class SyncActivity extends BaseActivity implements OnClickListener,
 		OnCheckedChangeListener {
-
+	private static final String TAG = "SyncActivity";
 	private CheckBox favorCB, paperCB;
-	private Button sysncBtn;
+	private Button sysncBtn,updateBtn;
 	private AppContext appContext;
 	private LinearLayout loadingLayout;
 	private MyHandler mHandler;
 	private int favorFlag, errorFlag, paperFlag;
 	private ProgressDialog proDialog;
-//	private ArrayList<Course> courses;
+	private TextView syncText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +55,17 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 		((TextView) findViewById(R.id.title)).setText("同步");
 		favorCB = (CheckBox) this.findViewById(R.id.ck_bookmark);
 		paperCB = (CheckBox) this.findViewById(R.id.ck_exam);
+		syncText = (TextView) findViewById(R.id.sync_text);
 		favorCB.setOnCheckedChangeListener(this);
 		paperCB.setOnCheckedChangeListener(this);
 		((Button) findViewById(R.id.btn_goback)).setOnClickListener(this);
 		sysncBtn = (Button) this.findViewById(R.id.btn_syn);
+		updateBtn = (Button) this.findViewById(R.id.btn_update);
 		sysncBtn.setOnClickListener(this);
+		updateBtn.setOnClickListener(this);
 		loadingLayout = (LinearLayout) this.findViewById(R.id.loadingLayout);
-		((TextView) findViewById(R.id.sync_text)).setText("同步中...");
 		loadingLayout.setVisibility(View.GONE);
+		loadingLayout.setOnClickListener(this);
 	}
 
 	@Override
@@ -77,6 +88,11 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 			break;
 		case R.id.btn_syn:
 			sync();
+			break;
+		case R.id.btn_update:
+			update();
+			break;
+		case R.id.loadingLayout:
 			break;
 		}
 	}
@@ -121,17 +137,59 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 //		} else {
 //			syncTruely();
 //		}
+		syncTruely();
+//		loadingLayout.setVisibility(View.VISIBLE);
+	}
+	
+	private void update()
+	{
+		syncText.setText("数据更新中...");
+		loadingLayout.setVisibility(View.VISIBLE);
+		
 	}
 
 	private void syncTruely() {
+		syncText.setText("数据同步中...");
 		loadingLayout.setVisibility(View.VISIBLE);
 		final String username = appContext.getUsername();
+		final String userId = appContext.getProductUserId();
+		final String lastTime = appContext.getProperty("last_sync_time");
+		if (paperCB.isChecked()) {
+			new Thread() {
+				public void run() {
+					try {
+						synchronized (SyncActivity.this) {
+							if(paperFlag!=0) return;
+							Log.d(TAG,"开始同步考试记录");
+							//查询用户的考试记录并且转换为上传数据对象
+							ArrayList<PaperRecord> list = PaperRecordDao.findAll(username,userId,lastTime);
+							Log.d(TAG,"需要同步的考试记录个数:"+list.size());
+							ArrayList<UserPaperRecordInfo> records = DataConverter.convertPaperRecords(list);
+							if(records == null || records.size() == 0)
+							{
+								mHandler.sendEmptyMessage(0);
+								return;
+							}
+							Json json = ApiClient.updateRecords(appContext, records);
+							Message msg = mHandler.obtainMessage();
+							msg.what = 4;
+							msg.obj = json;
+							mHandler.sendMessage(msg);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						mHandler.sendEmptyMessage(-4);
+					}
+				};
+			}.start();
+		}
 		if (favorCB.isChecked()) {
 			new Thread() {
 				public void run() {
 					try {
 						synchronized (SyncActivity.this) {
 							if(favorFlag!=0) return;
+							Log.d(TAG,"开始收藏记录");
 //							SyncData data = ApiClient.getSyncData(appContext,
 //									username, URLs.URL_SYNC_FAVOR,
 //									dao.findSyncFavorData(username));
@@ -150,33 +208,6 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 						mHandler.sendEmptyMessage(-2);
 					}
 
-				};
-			}.start();
-		}
-		if (paperCB.isChecked()) {
-			new Thread() {
-				public void run() {
-					try {
-						synchronized (SyncActivity.this) {
-							if(paperFlag!=0) return;
-//							SyncData data = ApiClient.getSyncData(appContext,
-//									username, URLs.URL_SYNC_EXAM,
-//									dao.findSyncRecordData(username));
-//							if (data == null) {
-//								mHandler.sendEmptyMessage(0);
-//								return;
-//							}
-//							dao.syncIntoDB(data);
-							// Message msg = mHandler.obtainMessage();
-							// msg.what = 4;
-							// msg.obj = data;
-							// mHandler.sendMessage(msg);
-							mHandler.sendEmptyMessage(4);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						mHandler.sendEmptyMessage(-4);
-					}
 				};
 			}.start();
 		}

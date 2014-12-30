@@ -83,7 +83,7 @@
     <string name="setting_clearcache">清除缓存</string>
     <string name="setting_deal">隐私协议</string>
     <string name="setting_aboutapp">关于应用</string>
-    <string name="setting_sync">同步</string>
+    <string name="setting_sync">同步与更新</string>
     <string name="setting_logout">注销登录</string>
     <string name="setting_login">注册登录</string>
     <string name="setting_logout_2">退出当前帐号</string>

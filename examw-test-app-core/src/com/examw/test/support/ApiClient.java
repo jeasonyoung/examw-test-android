@@ -25,6 +25,7 @@ import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.model.SubjectInfo;
+import com.examw.test.model.UserPaperRecordInfo;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.HttpUtils;
@@ -51,7 +52,7 @@ public class ApiClient {
 		user.setUsername("fw121fw41");
 		user.setPassword("123456");
 		json.setData(user);
-		return json;
+		return null;
 	}
 	/**
 	 * 获取产品用户的信息
@@ -67,6 +68,12 @@ public class ApiClient {
 		return GsonUtil.jsonToBean(result, Json.class);
 	}
 	
+	public static Json updateRecords(AppContext appContext,ArrayList<UserPaperRecordInfo> reocrds) throws AppException
+	{
+		String result = HttpUtils.http_post(appContext, URLs.UPLOAD_RECORDS,reocrds);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.jsonToBean(result, Json.class);
+	}
 	//获取产品信息
 	public static FrontProductInfo getProductInfo(AppContext appContext) throws AppException {
 		String result = HttpUtils.http_get(appContext, URLs.PRODUCT_INFO);

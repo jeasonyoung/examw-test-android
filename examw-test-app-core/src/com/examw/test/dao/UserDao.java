@@ -9,7 +9,7 @@ import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.User;
 
 /**
- * 
+ * 用户数据DAO
  * @author fengwei.
  * @since 2014年12月1日 下午4:07:28.
  */
@@ -29,10 +29,10 @@ public class UserDao {
 		Log.d(TAG, "addUser方法打开了数据库连接");
 		db.beginTransaction();
 		try{
-			String sql = "insert into UserTab(uid,username,password,info)values(?,?,?,?)";
+			String sql = "insert into UserTab(uid,username,password,info,productUserId)values(?,?,?,?,?)";
 			String pwd = new String(Base64.encode(Base64.encode(user.getPassword().getBytes(), 0), 0));
 			Object[] values = new Object[] { user.getUid(),
-					user.getUsername(), pwd,user.getInfo() };
+					user.getUsername(), pwd,user.getInfo(),user.getProductUserId() };
 			db.execSQL(sql, values);
 			db.setTransactionSuccessful();
 		}finally
@@ -55,13 +55,14 @@ public class UserDao {
 		try{
 			SQLiteDatabase db = UserDBUtil.getDatabase();
 			Log.d(TAG, "findByUsername方法打开了数据库连接");
-			cursor = db.rawQuery("select uid,username,password from UserTab where username = ?", new String[]{username});
+			cursor = db.rawQuery("select uid,username,password,productUserId from UserTab where username = ?", new String[]{username});
 			if(cursor.moveToNext())
 			{
 				user = new User();
 				user.setUid(cursor.getString(0));
 				user.setUsername(cursor.getString(1));
 				user.setPassword(cursor.getString(2));
+				user.setProductUserId(cursor.getString(3));
 			}
 		}catch(Exception e)
 		{
@@ -78,13 +79,14 @@ public class UserDao {
 	{
 		User user1 = null;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
-		Cursor cursor= db.rawQuery("select uid,username,password from UserTab where username = ?", new String[]{user.getUsername()});
+		Cursor cursor= db.rawQuery("select uid,username,password,productUserId from UserTab where username = ?", new String[]{user.getUsername()});
 		if(cursor.moveToNext())
 		{
 			user1 = new User();
 			user1.setUid(cursor.getString(0));
 			user1.setUsername(cursor.getString(1));
 			user1.setPassword(cursor.getString(2));
+			user1.setProductUserId(cursor.getString(3));
 		}
 		cursor.close();
 		String pwd = new String(Base64.encode(Base64.encode(user.getPassword().getBytes(), 0), 0));
@@ -93,10 +95,10 @@ public class UserDao {
 			//插入
 			db.beginTransaction();
 			try{
-				String sql1 = "insert into UserTab(uid,username,password,info)values(?,?,?,?)";
+				String sql1 = "insert into UserTab(uid,username,password,info,productUserId)values(?,?,?,?,?)";
 				System.out.println(user.getUid());
 				Object[] values = new Object[] { user.getUid(),
-						user.getUsername(), pwd,user.getInfo() };
+						user.getUsername(), pwd,user.getInfo(),user.getProductUserId() };
 				db.execSQL(sql1, values);
 				db.setTransactionSuccessful();
 			}finally
@@ -108,10 +110,23 @@ public class UserDao {
 			//更新
 			if(!user1.getPassword().equals(pwd))
 			{
-				String sql = "update UserTab set uid = ?,password = ? where username = ?";
-				db.execSQL(sql, new Object[] {user.getUid(),pwd,user.getUsername()});
+				String sql = "update UserTab set uid = ?,password = ?,productUserId = ? where username = ?";
+				db.execSQL(sql, new Object[] {user.getUid(),pwd,user.getProductUserId(),user.getUsername()});
 			}
 		}
 		UserDBUtil.close();
+	}
+	/**
+	 * 更新上次同步的时间
+	 * @param username
+	 * @param lastTime
+	 */
+	public static void updateLastTime(String username,String lastTime)
+	{
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		String sql = "update UserTab set lastSyncTime = date(?) where username = ?";
+		db.execSQL(sql, new Object[] {lastTime,username});
+		db.close();
+		return;
 	}
 }

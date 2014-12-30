@@ -60,7 +60,7 @@ public class AppContext extends Application {
 	private int loginState = 0; // 登录状态
 	private boolean isAutoCheckuped, isAutoLogined, hasNewVersion, hasNewData;
 	
-	private String loginUid = "";	//登录用户的id
+	private String loginUid = "",productUserId;	//登录用户的id
 	private Hashtable<String, Object> memCacheRegion = new Hashtable<String, Object>();
 	
 	private String saveImagePath;//保存图片路径
@@ -148,6 +148,15 @@ public class AppContext extends Application {
 		this.isAutoCheckuped = isAutoCheckuped;
 	}
 	
+	/**
+	 * 获取 产品用户ID
+	 * @return productUserId
+	 * 
+	 */
+	public String getProductUserId() {
+		return productUserId;
+	}
+
 	/**
 	 * 是否自动登录
 	 */
@@ -769,9 +778,11 @@ public class AppContext extends Application {
 
 	public void saveLoginInfo(final User user) {
 		this.loginUid = user.getUid();
+		this.productUserId = user.getProductUserId();
 		this.loginState = LOGINED;
 		this.username = user.getUsername();
-		setProperty("user.uid", String.valueOf(user.getUid()));
+		setProperty("user.productUserId", String.valueOf(user.getProductUserId()));
+		setProperty("user.uid",String.valueOf(user.getUid()));
 		setProperty("user.account", user.getUsername());
 		setProperty("user.pwd",CyptoUtils.encode("changheng", user.getPassword()));
 	}

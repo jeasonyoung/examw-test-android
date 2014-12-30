@@ -1,6 +1,7 @@
 package com.examw.test.support;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,8 @@ import com.examw.test.model.UserPaperRecordInfo;
  */
 public class DataConverter {
 	private static String userName;
-
+	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat formatter_upload = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	// 查询一个接一个的试题
 	public static ArrayList<StructureItemInfo> findItems(
 			List<StructureInfo> structures, ArrayList<ItemRecord> itemRecords,
@@ -186,7 +188,22 @@ public class DataConverter {
 		}
 		return sum;
 	}
-
+	public static ArrayList<UserPaperRecordInfo> convertPaperRecords(ArrayList<PaperRecord> list)
+	{
+		if(list == null || list.isEmpty()) return null;
+		ArrayList<UserPaperRecordInfo> result = new ArrayList<UserPaperRecordInfo>();
+		for(PaperRecord r:list)
+		{
+			UserPaperRecordInfo info = paperRecordConvert(r);
+			if(info != null)
+			{
+				result.add(info);
+			}
+		}
+		return result;
+	}
+	
+	
 	private static UserPaperRecordInfo paperRecordConvert(PaperRecord data) {
 		if (data == null)
 			return null;
@@ -208,8 +225,13 @@ public class DataConverter {
 		info.setStatus(data.getStatus()); // 刚加入未完成
 		info.setScore(new BigDecimal(data.getScore()));
 		info.setRightNum(data.getRightNum());
-		// info.setCreateTime(data.getCreateTime());
-		// info.setLastTime(data.getLastTime());
+		try{
+			info.setCreateTime(formatter_upload.format(formatter.parse(data.getCreateTime())));
+			info.setLastTime(formatter_upload.format(formatter.parse(data.getLastTime())));
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		ArrayList<ItemRecord> items = data.getItems();
 		if (items != null && !items.isEmpty()) {
 			Set<UserItemRecordInfo> set = new HashSet<UserItemRecordInfo>();
@@ -241,8 +263,13 @@ public class DataConverter {
 		info.setStatus(data.getStatus());
 		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
 		info.setScore(data.getScore());
-		// info.setCreateTime(data.getCreateTime());
-		// info.setLastTime(data.getLastTime());
+		try{
+			info.setCreateTime(formatter_upload.format(formatter.parse(data.getCreateTime())));
+			info.setLastTime(formatter_upload.format(formatter.parse(data.getLastTime())));
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		return info;
 	}
 
