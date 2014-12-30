@@ -159,6 +159,12 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 							Thread.sleep(2000);
 							Json result = ApiClient.login(appContext, username, password);
 							Message message = handler.obtainMessage();
+							if(result == null)
+							{
+								message.what = 0;
+								message.obj = "用户登录失败";
+								return;
+							}
 							//TODO 模拟登录
 							if (result.isSuccess()) { // 登陆成功
 								//远程去获取productUser的信息并且保存

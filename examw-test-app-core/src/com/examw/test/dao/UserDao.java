@@ -121,12 +121,32 @@ public class UserDao {
 	 * @param username
 	 * @param lastTime
 	 */
-	public static void updateLastTime(String username,String lastTime)
+	public static void updateLastTime(String username,String lastTime,String column)
 	{
 		SQLiteDatabase db = UserDBUtil.getDatabase();
-		String sql = "update UserTab set lastSyncTime = date(?) where username = ?";
+		String sql = "update UserTab set "+column+" = date(?) where username = ?";
 		db.execSQL(sql, new Object[] {lastTime,username});
 		db.close();
 		return;
+	}
+	/**
+	 * 获取时间
+	 * @param username
+	 * @param column
+	 * @return
+	 */
+	public static String getLastTime(String username,String column)
+	{
+		SQLiteDatabase db = UserDBUtil.getDatabase();
+		String sql = "select "+column+" form UserTab where username = ?";
+		Cursor cursor = db.rawQuery(sql, new String[] {username});
+		String time = null;
+		if(cursor.moveToNext())
+		{
+			time = cursor.getString(0);
+		}
+		cursor.close();
+		db.close();
+		return time;
 	}
 }

@@ -2,6 +2,7 @@ package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,12 +22,17 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
+import com.examw.test.dao.FavoriteDao;
 import com.examw.test.dao.PaperRecordDao;
+import com.examw.test.dao.UserDao;
+import com.examw.test.domain.FavoriteItem;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.model.Json;
+import com.examw.test.model.UserItemFavoriteInfo;
 import com.examw.test.model.UserPaperRecordInfo;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.DataConverter;
+import com.examw.test.util.StringUtils;
 
 public class SyncActivity extends BaseActivity implements OnClickListener,
 		OnCheckedChangeListener {
@@ -153,7 +159,6 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 		loadingLayout.setVisibility(View.VISIBLE);
 		final String username = appContext.getUsername();
 		final String userId = appContext.getProductUserId();
-		final String lastTime = appContext.getProperty("last_sync_time");
 		if (paperCB.isChecked()) {
 			new Thread() {
 				public void run() {
@@ -162,6 +167,7 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 							if(paperFlag!=0) return;
 							Log.d(TAG,"开始同步考试记录");
 							//查询用户的考试记录并且转换为上传数据对象
+							String lastTime = UserDao.getLastTime(username, "lastSyncPaperTime");
 							ArrayList<PaperRecord> list = PaperRecordDao.findAll(username,userId,lastTime);
 							Log.d(TAG,"需要同步的考试记录个数:"+list.size());
 							ArrayList<UserPaperRecordInfo> records = DataConverter.convertPaperRecords(list);
@@ -171,6 +177,10 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 								return;
 							}
 							Json json = ApiClient.updateRecords(appContext, records);
+							if(json !=null && json.isSuccess())
+							{
+								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date()), "lastSyncPaperTime");
+							}
 							Message msg = mHandler.obtainMessage();
 							msg.what = 4;
 							msg.obj = json;
@@ -190,18 +200,24 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 						synchronized (SyncActivity.this) {
 							if(favorFlag!=0) return;
 							Log.d(TAG,"开始收藏记录");
-//							SyncData data = ApiClient.getSyncData(appContext,
-//									username, URLs.URL_SYNC_FAVOR,
-//									dao.findSyncFavorData(username));
-//							if (data == null) {
-//								mHandler.sendEmptyMessage(0);
-//								return;
-//							}
-//							dao.syncIntoDB(data);
-							// Message msg = mHandler.obtainMessage();
-							// msg.what = 2;
-							// msg.obj = data;
-							mHandler.sendEmptyMessage(2);
+							//查询需要上传的收藏记录
+							ArrayList<FavoriteItem> list = FavoriteDao.findAll(username,userId);
+							Log.d(TAG,"需要同步的考试记录个数:"+list.size());
+							ArrayList<UserItemFavoriteInfo> records = DataConverter.convertFavors(list);
+							if(records == null || records.size() == 0)
+							{
+								mHandler.sendEmptyMessage(0);
+								return;
+							}
+							Json json = ApiClient.updateFavors(appContext, records);
+							if(json !=null && json.isSuccess())
+							{
+								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date()), "lastSyncFavorTime");
+							}
+							Message msg = mHandler.obtainMessage();
+							msg.what = 2;
+							msg.obj = json;
+							mHandler.sendMessage(msg);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

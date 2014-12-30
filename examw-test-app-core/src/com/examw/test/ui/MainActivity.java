@@ -461,6 +461,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		//查询本地数据库用户信息
 		try{
 		User user = UserDao.findByUsername(username);
+		System.out.println("密码:"+password);
+		System.out.println(new String(Base64.decode(
+				Base64.decode(user.getPassword(), 0), 0)));
 		if (user!=null && password.equals(new String(Base64.decode(
 				Base64.decode(user.getPassword(), 0), 0)))) {
 			Log.d("本地登录","本地登录密码能对上");

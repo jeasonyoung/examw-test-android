@@ -25,6 +25,7 @@ import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.model.SubjectInfo;
+import com.examw.test.model.UserItemFavoriteInfo;
 import com.examw.test.model.UserPaperRecordInfo;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.HtmlUtils;
@@ -71,6 +72,13 @@ public class ApiClient {
 	public static Json updateRecords(AppContext appContext,ArrayList<UserPaperRecordInfo> reocrds) throws AppException
 	{
 		String result = HttpUtils.http_post(appContext, URLs.UPLOAD_RECORDS,reocrds);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.jsonToBean(result, Json.class);
+	}
+	
+	public static Json updateFavors(AppContext appContext,
+			ArrayList<UserItemFavoriteInfo> records) throws AppException{
+		String result = HttpUtils.http_post(appContext, URLs.UPLOAD_FAVORS,records);
 		if(StringUtils.isEmpty(result)) return null;
 		return GsonUtil.jsonToBean(result, Json.class);
 	}

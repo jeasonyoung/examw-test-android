@@ -13,7 +13,7 @@ public class UserItemFavoriteInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String id,userId,subjectId,itemId,itemContent,remarks;
 	private Integer itemType,terminalCode;
-	private Date createTime;
+	private String createTime;
 	/**
 	 * 获取收藏ID。
 	 * @return 收藏ID。
@@ -138,7 +138,7 @@ public class UserItemFavoriteInfo implements Serializable{
 	 * 获取收藏时间。
 	 * @return 收藏时间。
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -146,7 +146,7 @@ public class UserItemFavoriteInfo implements Serializable{
 	 * @param createTime 
 	 *	  收藏时间。
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 }

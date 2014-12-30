@@ -228,4 +228,19 @@ public class FavoriteItem implements Serializable{
 	public void setUserAnswer(String userAnswer) {
 		this.userAnswer = userAnswer;
 	}
+	public FavoriteItem() {
+	}
+	public FavoriteItem(String itemId, String username, String itemContent,
+			String subjectId, String userAnswer, String remarks,
+			String createTime, Integer itemType) {
+		this.itemId = itemId;
+		this.username = username;
+		this.itemContent = itemContent;
+		this.subjectId = subjectId;
+		this.userAnswer = userAnswer;
+		this.remarks = remarks;
+		this.createTime = createTime;
+		this.itemType = itemType;
+	}
+	
 }

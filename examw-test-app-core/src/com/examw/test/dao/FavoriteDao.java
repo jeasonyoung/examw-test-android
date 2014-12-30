@@ -161,4 +161,33 @@ public class FavoriteDao {
 		cursor.close();
 		return items;
 	}
+	
+	public static ArrayList<FavoriteItem> findAll(String username,String userId)
+	{
+		if(username == null || userId == null) return null;
+		String time = UserDao.getLastTime(username, "lastSyncFavorTime");
+		if(time == null) time = "1970-01-01 00:00:00";
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
+		/**
+		 * this.itemId = itemId;
+		this.username = username;
+		this.itemContent = itemContent;
+		this.subjectId = subjectId;
+		this.userAnswer = userAnswer;
+		this.remarks = remarks;
+		this.createTime = createTime;
+		this.itemType = itemType;
+		 */
+		Cursor cursor = db.rawQuery("select itemId,username,itemContent,subjectId,userAnswer,remarks,createTime,itemType from FavoriteTab where status = 1 and createTime > ? order by createTime desc", new String[]{time});
+		ArrayList<FavoriteItem> list = new  ArrayList<FavoriteItem>();
+		while(cursor.moveToNext())
+		{
+			FavoriteItem item = new FavoriteItem(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
+					cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(7));
+			list.add(item);
+		}
+		cursor.close();
+		db.close();
+		return list;
+	}
 }

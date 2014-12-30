@@ -3,6 +3,7 @@ package com.examw.test.support;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,11 +12,13 @@ import java.util.TreeSet;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.dao.FavoriteDao;
+import com.examw.test.domain.FavoriteItem;
 import com.examw.test.domain.ItemRecord;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.model.ItemInfo;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
+import com.examw.test.model.UserItemFavoriteInfo;
 import com.examw.test.model.UserItemRecordInfo;
 import com.examw.test.model.UserPaperRecordInfo;
 
@@ -294,5 +297,40 @@ public class DataConverter {
 		default:
 			return null;
 		}
+	}
+	
+	public static ArrayList<UserItemFavoriteInfo> convertFavors(ArrayList<FavoriteItem> list)
+	{
+		if(list == null || list.isEmpty()) return null;
+		ArrayList<UserItemFavoriteInfo> result = new ArrayList<UserItemFavoriteInfo>();
+		for(FavoriteItem r:list)
+		{
+			UserItemFavoriteInfo info = favorConvert(r);
+			if(info != null)
+			{
+				result.add(info);
+			}
+		}
+		return result;
+	}
+
+	private static UserItemFavoriteInfo favorConvert(FavoriteItem r) {
+		if(r == null)
+		return null;
+		UserItemFavoriteInfo info = new UserItemFavoriteInfo();
+		info.setUserId(r.getUserId());
+		try{
+			info.setCreateTime(formatter_upload.format(formatter.parse(r.getCreateTime())));
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			info.setCreateTime(formatter_upload.format(new Date()));
+		}
+		info.setItemContent(r.getItemContent());
+		info.setItemId(r.getItemId());
+		info.setItemType(r.getItemType());
+		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setSubjectId(r.getSubjectId());
+		return info;
 	}
 }
