@@ -184,6 +184,7 @@ public class FavoriteDao {
 		{
 			FavoriteItem item = new FavoriteItem(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
 					cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(7));
+			item.setUserId(userId);
 			list.add(item);
 		}
 		cursor.close();

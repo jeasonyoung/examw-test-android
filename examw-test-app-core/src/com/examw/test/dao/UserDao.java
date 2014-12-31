@@ -138,7 +138,7 @@ public class UserDao {
 	public static String getLastTime(String username,String column)
 	{
 		SQLiteDatabase db = UserDBUtil.getDatabase();
-		String sql = "select "+column+" form UserTab where username = ?";
+		String sql = "select "+column+" from UserTab where username = ?";
 		Cursor cursor = db.rawQuery(sql, new String[] {username});
 		String time = null;
 		if(cursor.moveToNext())

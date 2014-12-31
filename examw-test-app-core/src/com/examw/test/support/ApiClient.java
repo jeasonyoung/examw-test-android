@@ -53,7 +53,7 @@ public class ApiClient {
 		user.setUsername("fw121fw41");
 		user.setPassword("123456");
 		json.setData(user);
-		return null;
+		return json;
 	}
 	/**
 	 * 获取产品用户的信息

@@ -138,6 +138,8 @@ public class PaperRecordDao {
 			record.setItems(findItemRecords(db,record.getRecordId()));
 			list.add(record);
 		}
+		cursor.close();
+		db.close();
 		return list;
 	}
 	/**

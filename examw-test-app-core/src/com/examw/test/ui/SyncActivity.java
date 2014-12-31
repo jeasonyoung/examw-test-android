@@ -33,6 +33,7 @@ import com.examw.test.model.UserPaperRecordInfo;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.DataConverter;
 import com.examw.test.util.StringUtils;
+import com.examw.test.util.ToastUtils;
 
 public class SyncActivity extends BaseActivity implements OnClickListener,
 		OnCheckedChangeListener {
@@ -118,6 +119,8 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 
 	private void sync() {
 		if (appContext.getLoginState() != AppContext.LOGINED) {
+			//当前不是在线登陆状态
+			ToastUtils.show(this, "当前不是在线登录状态,请先在线登录");
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 			return;
@@ -199,10 +202,10 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					try {
 						synchronized (SyncActivity.this) {
 							if(favorFlag!=0) return;
-							Log.d(TAG,"开始收藏记录");
+							Log.d(TAG,"开始收藏记录上传");
 							//查询需要上传的收藏记录
 							ArrayList<FavoriteItem> list = FavoriteDao.findAll(username,userId);
-							Log.d(TAG,"需要同步的考试记录个数:"+list.size());
+							Log.d(TAG,"需要同步的收藏记录个数:"+list.size());
 							ArrayList<UserItemFavoriteInfo> records = DataConverter.convertFavors(list);
 							if(records == null || records.size() == 0)
 							{
@@ -239,7 +242,7 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					SyncActivity.this.finish();
 					break;
 				case -1:
-					Toast.makeText(SyncActivity.this, "同步失败",
+					Toast.makeText(SyncActivity.this, "同步失败,请稍后重试",
 							Toast.LENGTH_SHORT).show();
 					break;
 				}
@@ -273,13 +276,11 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 		WeakReference<SyncActivity> weak;
 
 		public MyHandler(SyncActivity sync) {
-			// TODO Auto-generated constructor stub
 			weak = new WeakReference<SyncActivity>(sync);
 		}
 
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
 			SyncActivity sync = weak.get();
 			switch (msg.what) {
 			case 2:
