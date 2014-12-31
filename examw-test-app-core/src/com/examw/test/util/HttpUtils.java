@@ -288,7 +288,7 @@ public class HttpUtils {
 		String responseBody = "";
 		getDigestUser(appContext);
 		do {
-			Log.d(TAG, String.format("正在进行第[%d]次请求", time));
+			Log.d(TAG, String.format("正在进行第[%1$d]次请求 [url = %2$s]", time,url));
 			try {
 				DigestAuthcProvider provider = new DigestAuthcProvider(
 						username, password, "GET", url);

@@ -123,7 +123,7 @@ public class SettingFragment extends Fragment implements OnClickListener {
 			break;
 		//分享
 		case R.id.layout_share:
-//			share2();
+			share();
 			break;
 		//关于应用
 		case R.id.layout_about_app:

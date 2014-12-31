@@ -345,4 +345,14 @@ public class StringUtils {
 			return 0;
 		}
 	}
+	
+	public static long toDateLong(String date)
+	{
+		try{
+			return dateFormater.get().parse(date).getTime();
+		}catch(Exception e)
+		{
+			return 0;
+		}
+	}
 }

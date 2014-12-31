@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.examw.test.app.AppContext;
 import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
@@ -16,6 +17,7 @@ import com.examw.test.domain.Syllabus;
 import com.examw.test.model.ItemInfo;
 import com.examw.test.model.KnowledgeInfo;
 import com.examw.test.model.SyllabusInfo;
+import com.examw.test.support.ApiClient;
 import com.examw.test.support.DataConverter;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
@@ -208,6 +210,10 @@ public class SyllabusDao {
 		ArrayList<SyllabusInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<ArrayList<SyllabusInfo>>(){}.getType());
 		try{
 			db.beginTransaction();
+			//先删除这个科目的大纲
+			String syllabusId = findSyllabusId(db,subject.getSubjectId());
+			db.execSQL("delete from SyllabusTab where subjectId = ?",new String[]{subject.getSubjectId()});
+			db.execSQL("delete from ChapterTab where syllabusId = ?", new String[]{syllabusId});
 			insert(db,syllabus);
 			Log.d(TAG,"插入考试大纲章节信息");	
 			for(SyllabusInfo info:list)
@@ -222,7 +228,17 @@ public class SyllabusDao {
 			db.close();
 		}
 	}
-	
+	private static String findSyllabusId(SQLiteDatabase db,String subjectId)
+	{
+		Cursor cursor = db.rawQuery("select syllabusId from SyllabusTab where subjectId = ?", new String[]{subjectId});
+		String syllabusId = "";
+		if(cursor.moveToNext())
+		{
+			syllabusId = cursor.getString(0);
+		}
+		cursor.close();
+		return syllabusId;
+	}
 	public static String loadContent(String syllabusId)
 	{
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
@@ -308,6 +324,116 @@ public class SyllabusDao {
 		db.close();
 	}
 	private static void insertItem(SQLiteDatabase db,ItemInfo item,String chapterId)
+	{
+		Cursor cursor = db.rawQuery("select itemId from ItemTab where itemId = ? ", 
+				new String[]{item.getId()});
+		String material = DataConverter.getItemMaterial(item);
+		//没有考虑 删除关联的情况
+		if(cursor.getCount()>0)
+		{
+			//itemId text,subjectId text,content text,material text,type integer,lasttime
+			db.execSQL("update ItemTab set content = ? ,material = ?, lasttime = datetime(?) where itemId = ?", 
+					new Object[]{CyptoUtils.encodeContent(item.getId(), item.getContent()),material,item.getLastTime(),item.getId()});
+		}else
+		{
+			//insert
+			db.execSQL("insert into ItemTab(itemId,subjectId,content,material,type,lasttime)values(?,?,?,?,?,datetime(?))", 
+					new Object[]{item.getId(),item.getSubjectId(),CyptoUtils.encodeContent(item.getId(), item.getContent()),material,item.getType(),item.getLastTime()});
+			db.execSQL("insert into ItemsyllabusTab(itemId,chapterId)values(?,?)",
+					new Object[]{item.getId(),chapterId});
+		}
+		cursor.close();
+	}
+	/**
+	 * 更新大纲数据
+	 * @param appContext
+	 * @param s
+	 * @param content
+	 */
+	public static void updateSyllabusInfo(AppContext appContext, Subject s,
+			String content) {
+			if(StringUtils.isEmpty(content)||content.equals("[]")) return;
+			Log.d(TAG,"插入考试大纲,并且获取章节信息");	
+			SQLiteDatabase db = LibraryDBUtil.getDatabase();
+			SyllabusInfo syllabus = new SyllabusInfo();
+			syllabus.setId(UUID.randomUUID().toString());
+			syllabus.setTitle(String.format("《%s》考试大纲", s.getName()));
+			syllabus.setFullTitle(content);
+			syllabus.setSubjectId(s.getSubjectId());
+			syllabus.setYear(Calendar.getInstance().get(Calendar.YEAR));
+			syllabus.setOrderNo(1);
+			ArrayList<SyllabusInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<ArrayList<SyllabusInfo>>(){}.getType());
+			try{
+				db.beginTransaction();
+				//先删除这个科目的大纲
+				String syllabusId = findSyllabusId(db,s.getSubjectId());
+				db.execSQL("delete from SyllabusTab where subjectId = ?",new String[]{s.getSubjectId()});
+				db.execSQL("delete from ChapterTab where syllabusId = ?", new String[]{syllabusId});
+				insert(db,syllabus);
+				Log.d(TAG,"插入考试大纲章节信息");	
+				for(SyllabusInfo info:list)
+				{
+					updateChapter(appContext,db,info,syllabus.getId());
+				}
+				db.setTransactionSuccessful();
+				db.endTransaction();
+			}finally{
+				db.close();
+			}
+	}
+	private static void updateChapter(AppContext appContext,SQLiteDatabase db,SyllabusInfo info,String syllabusId)
+	{
+		if(info.getChildren()!=null && info.getChildren().size()>0)
+		{
+			List<SyllabusInfo> children = info.getChildren();
+			for(SyllabusInfo child:children)
+			{
+				insertChapter(db, child,syllabusId);
+			}
+		}
+		if(info.getChildren()==null || info.getChildren().isEmpty())
+		{
+			try{
+				String content = ApiClient.loadKnowledgeContent(appContext, info.getId());
+				if(content!=null)
+				{
+					//获取知识点
+					List<KnowledgeInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<List<KnowledgeInfo>>(){}.getType());
+					//插入知识点
+					insertChapters(db,list.get(0));
+				}
+				content = ApiClient.loadSyllabusItems(appContext, info.getId());;
+				if(content!=null)
+				{
+					//获取试题
+					List<ItemInfo> items = GsonUtil.getGson().fromJson(content, new TypeToken<List<ItemInfo>>(){}.getType());
+					//插入试题
+					for(ItemInfo item :items)
+					{
+						insertSyllabusItem(db,item,syllabusId);
+					}
+				}
+						
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		db.execSQL("insert into ChapterTab(chapterId,syllabusId,chapterPid,title,orderNo)values(?,?,?,?,?)", 
+				new Object[]{info.getId(),syllabusId,info.getPid(),info.getTitle(),info.getOrderNo()});
+	}
+	
+	public static void insertChapters(SQLiteDatabase db ,KnowledgeInfo info)
+	{
+		if(info == null) return;
+		//先删除
+		db.execSQL("delete from knowledgeTab where chapterId = ?",new String[]{info.getSyllabusId()});
+		//knowledgeId text,title text,content text,chapterId text,subjectId text,orderid integer
+		db.execSQL("insert into knowledgeTab(knowledgeId,title,content,chapterId)values(?,?,?,?)", 
+				new Object[]{info.getId(),info.getTitle(),info.getDescription(),info.getSyllabusId()});
+	}
+	
+	private static void insertSyllabusItem(SQLiteDatabase db,ItemInfo item,String chapterId)
 	{
 		Cursor cursor = db.rawQuery("select itemId from ItemTab where itemId = ? ", 
 				new String[]{item.getId()});

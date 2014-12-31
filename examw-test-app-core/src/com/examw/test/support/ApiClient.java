@@ -118,6 +118,18 @@ public class ApiClient {
 		if(StringUtils.isEmpty(result)) return null;
 		return GsonUtil.getGson().fromJson(result, new TypeToken<ArrayList<FrontPaperInfo>>(){}.getType());
 	}
+	/**
+	 * 获取试卷的更新
+	 * @param lastTime
+	 * @return
+	 * @throws AppException
+	 */
+	public static ArrayList<FrontPaperInfo> getUpdatePaperInfo(AppContext appContext,String lastTime) throws AppException{
+		String url = URLs.PAPER_UPDATE_LIST + StringUtils.toDateLong(lastTime);
+		String result = HttpUtils.http_get(appContext,url);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.getGson().fromJson(result, new TypeToken<ArrayList<FrontPaperInfo>>(){}.getType());
+	}
 	//加载每日一练
 	public static ArrayList<FrontPaperInfo> getDailyPaperList(AppContext appContext) throws AppException{
 		String result = HttpUtils.http_get(appContext, URLs.DAILY_PAPER_LIST);

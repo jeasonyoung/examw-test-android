@@ -26,6 +26,8 @@ public class URLs implements Serializable{
 	public static final String SUBJECT_LIST = BASE_URL + "/products/"+AppConfig.PRODUCTID+"/subjects";
 	//试卷列表
 	public static final String PAPER_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papers";
+	//试卷的更新列表
+	public static final String PAPER_UPDATE_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papersupdate?lastTime=";
 	//每日一练试卷列表
 	public static final String DAILY_PAPER_LIST = BASE_URL + "/daily/papers/" + AppConfig.PRODUCTID ;
 	//单个试卷内容
