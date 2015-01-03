@@ -3,8 +3,6 @@ package com.examw.test.ui;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -27,11 +25,6 @@ import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.exception.AppException;
-import com.examw.test.model.FrontUserInfo;
-import com.examw.test.model.Json;
-import com.examw.test.support.ApiClient;
-import com.examw.test.support.URLs;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 

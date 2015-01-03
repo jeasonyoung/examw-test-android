@@ -1,5 +1,10 @@
 package com.examw.test.widget;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -14,6 +19,7 @@ import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConfig;
 import com.examw.test.support.URLs;
 
 /**
@@ -27,7 +33,8 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 	private View view;
 	private View iv;
 	private WebView textView;
-
+	private static final Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)/([^/'\"]+)['\"][^>]*>");
+	
 	public int getTvHeight() {
 		return tvHeight;
 	}
@@ -129,14 +136,16 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 	public void initData(String text) {
 		// System.out.println(text);
 		// 过滤掉 img标签的width,height属性
-		text = text.replaceAll(
-				"(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
-		text = text.replaceAll(
-				"(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
+//		text = text.replaceAll(
+//				"(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
+//		text = text.replaceAll(
+//				"(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
 
-		// 添加点击图片放大支持
-		text = text.replaceAll("(<img[^>]+src=\")(\\S+)\"",
-				"$1"+URLs.HOST+"$2\" onClick=\"javascript:mWebViewImageListener.onImageClick('$2')\"");
+		// 添加点击图片放大支持	(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(/[^'\"]+)\"
+//		text = text.replaceAll("(<img[^>]+src=\")(\\S+)\"",
+//				"$1"+URLs.HOST+"$2\" onClick=\"javascript:mWebViewImageListener.onImageClick('$2')\"");
+		text = convertContentImages(text);
+		
 		textView.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
 		// testView = new WebView(context);
 		// testView.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
@@ -347,5 +356,33 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 	private int px2sp(Context context, float pxValue) {
 		final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
 		return (int) (pxValue / fontScale + 0.5f);
+	}
+	
+	private static String convertContentImages(String content)
+	{
+		if(content == null || !content.matches("[\\S\\s]*<img[^>]+[/?]>[\\S\\s]*")) return content;
+		Matcher m = ps.matcher(content);
+		ArrayList<String> images = new ArrayList<String>();
+		while(m.find()){
+//            System.out.println(m.group());	//.replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(/[^/'\"]+)(['\"][^>]*>)", "file://$2/aaaaaaa"
+            String fileUrl = AppConfig.DEFAULT_SAVE_IMAGE_PATH + m.group(2);
+            if(new File(fileUrl).exists())
+            	images.add(m.group().replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(/[^/'\"]+)(['\"][^>]*>)", "$1file:///"+fileUrl+"$4"));
+            else
+            	images.add(m.group().replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(['\"][^>]*>)", "$1"+URLs.HOST+"\" onClick=\"javascript:mWebViewImageListener.onImageClick('$2')$3"));
+        }
+		int j = 0;
+		while(content.matches("[\\S\\s]*<img[^>]+[/?]>[\\S\\s]*"))
+		{
+			content = content.replaceFirst("<img[^>]+[/?]>", "######"+j);
+			j++;
+		}
+		j=0;
+		while(content.matches("[\\S\\s]*######[\\d][\\S\\s]*"))
+		{
+			content = content.replaceFirst("######"+j, images.get(j));
+			j++;
+		}
+		return content;
 	}
 }

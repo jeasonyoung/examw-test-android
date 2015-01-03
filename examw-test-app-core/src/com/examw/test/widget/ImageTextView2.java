@@ -25,18 +25,23 @@ import com.examw.test.ui.ImageZoomActivity;
 import com.examw.test.util.BitmapManager;
 import com.examw.test.util.StringUtils;
 
-public class ImageTextView extends LinearLayout {
+/**
+ * 
+ * @author fengwei.
+ * @since 2015年1月3日 下午4:01:56.
+ */
+public class ImageTextView2 extends LinearLayout {
 	private static final String TAG = "ImageTextView2";
 	private ArrayList<TextView> textViews = new ArrayList<TextView>();
 	private Context context;
 	private static BitmapManager bmpManager;
 	private static LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
-	public ImageTextView(Context paramContext) {
+	public ImageTextView2(Context paramContext) {
 		super(paramContext);
 	}
 
-	public ImageTextView(Context paramContext, AttributeSet paramAttributeSet) {
+	public ImageTextView2(Context paramContext, AttributeSet paramAttributeSet) {
 		super(paramContext, paramAttributeSet);
 		this.context = paramContext;
 		init();
@@ -105,6 +110,7 @@ public class ImageTextView extends LinearLayout {
 					}
 //					iv.setImageResource(R.drawable.welcome);
 					iv.setOnClickListener(imageViewOnClick);
+					iv.setVisibility(View.VISIBLE);
 					this.addView(iv);
 				}
 			}
@@ -153,4 +159,3 @@ public class ImageTextView extends LinearLayout {
 		}
 	}
 }
-

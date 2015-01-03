@@ -24,11 +24,13 @@ import com.examw.test.util.StringUtils;
 public class AppConfig {
 	//产品ID
 	//中级经济师
-	public static final String PRODUCTID = "615c758f-424f-4808-9528-67630125687e";
+//	public static final String PRODUCTID = "615c758f-424f-4808-9528-67630125687e";
+	//人力资源管理
+//	public static final String PRODUCTID = "d5518100-3229-4f7a-993d-940330a3f7d5";
 	//湖南会计
 //	public static final String PRODUCTID = "f91e46c8-f85f-4ea6-aafe-5fcc445ecff0";
 	//一建,建筑工程
-//	public static final String PRODUCTID = "2f5a541a-c464-436a-9b82-798d6d24e2cb";
+	public static final String PRODUCTID = "2f5a541a-c464-436a-9b82-798d6d24e2cb";
 	//终端ID
 	public static final String TERMINALID = "4";
 	

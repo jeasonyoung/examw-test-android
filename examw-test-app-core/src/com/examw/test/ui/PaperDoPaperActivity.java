@@ -609,6 +609,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	// 获取或更新考试记录
 	private ItemRecord getItemRecord() {
 		ItemRecord currentRecord = null;
+		Log.d(TAG,"itemRecords == null ? "+(itemRecords == null));
 		for (ItemRecord ir : itemRecords) {
 			if (ir.getItemId().equals(currentQuestion.getId())) {
 				currentRecord = ir;

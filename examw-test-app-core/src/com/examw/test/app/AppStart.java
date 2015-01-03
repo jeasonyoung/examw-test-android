@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.LinearLayout;
 
 import com.examw.test.R;
-import com.examw.test.db.UserDBUtil;
 import com.examw.test.ui.GuideActivity;
 import com.examw.test.ui.MainActivity;
 import com.examw.test.util.FileUtils;

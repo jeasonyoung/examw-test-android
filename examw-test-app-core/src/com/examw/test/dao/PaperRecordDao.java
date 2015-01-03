@@ -123,6 +123,7 @@ public class PaperRecordDao {
 		Log.d(TAG,String.format("查询用户[%1$s][%2$s]的全部记录", userName,userId));
 		if(userName == null || userId == null) return null;
 		if(StringUtils.isEmpty(lastTime)) lastTime = "1970-01-01 00:00:00";
+		Log.d(TAG,String.format("上次的同步时间为[%s]", lastTime));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		ArrayList<PaperRecord> list = new ArrayList<PaperRecord>();
 		Cursor cursor = db.rawQuery("select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where status = 1 and createTime > ? ", 
@@ -184,9 +185,8 @@ public class PaperRecordDao {
 	{
 		String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
 		Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{recordId});
-		ArrayList<ItemRecord> items = null;
+		ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
 		if (cursorItem.getCount() > 0) {
-			items = new ArrayList<ItemRecord>();
 			while (cursorItem.moveToNext())
 			{
 				ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),

@@ -154,6 +154,8 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 			public void run() {
 				try {
 					dao.clear();
+					//删除图片文件夹
+					new File(dataDir).delete();
 					handler.sendEmptyMessage(1);
 				}catch(Exception e)
 				{

@@ -123,8 +123,9 @@ public class UserDao {
 	 */
 	public static void updateLastTime(String username,String lastTime,String column)
 	{
+		Log.d(TAG,String.format("更新[%1$s]的时间[%2$s]", column,lastTime));
 		SQLiteDatabase db = UserDBUtil.getDatabase();
-		String sql = "update UserTab set "+column+" = date(?) where username = ?";
+		String sql = "update UserTab set "+column+" = datetime(?) where username = ?";
 		db.execSQL(sql, new Object[] {lastTime,username});
 		db.close();
 		return;
@@ -147,6 +148,7 @@ public class UserDao {
 		}
 		cursor.close();
 		db.close();
+		Log.d(TAG,String.format("查询[%1$s]的时间是[%2$s]", column,time));
 		return time;
 	}
 }
