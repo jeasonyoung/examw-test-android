@@ -66,10 +66,11 @@ public class ImageTextView extends LinearLayout {
 		if (StringUtils.isEmpty(text)) {
 			return;
 		}
-		Log.d("imageTExtView",text);
 		if(!text.matches("[\\S\\s]*<img[^>]+[/?]>[\\S\\s]*")){	//不包含图片
 			TextView tv = new TextView(context, null, R.style.question_text);
 			tv.setText(text);
+			tv.setLayoutParams(lp);
+			tv.setTextColor(tv.getResources().getColor(R.color.black));
 			this.addView(tv);
 			this.textViews.add(tv);
 		} else {
@@ -105,6 +106,7 @@ public class ImageTextView extends LinearLayout {
 					}
 //					iv.setImageResource(R.drawable.welcome);
 					iv.setOnClickListener(imageViewOnClick);
+					iv.setVisibility(View.VISIBLE);
 					this.addView(iv);
 				}
 			}

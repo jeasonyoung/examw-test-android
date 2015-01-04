@@ -151,8 +151,6 @@ public class QuestionAdapter extends BaseAdapter {
 			contentHolder.examOption.clearCheck();
 		}
 		AnswerViewHolder answerHolder = new AnswerViewHolder(v);
-		//设置字体
-		setFontSize(answerHolder, size, v);
 		//设置TAG
 		v.setTag(R.id.tag_second, answerHolder);
 		// holder.scrollView.fullScroll(33); //滑动到最开始?
@@ -326,6 +324,8 @@ public class QuestionAdapter extends BaseAdapter {
 			}
 			showAnswer(answerHolder, currentQuestion, answer);
 		}
+		//设置字体
+		setFontSize(answerHolder, size, v);
 		return v;
 	}
 
@@ -352,7 +352,7 @@ public class QuestionAdapter extends BaseAdapter {
 		public ImageView answerResultImg;
 		com.examw.test.widget.ImageTextView sysAnswerTextView, analysisTextView;
 		public LinearLayout examAnswerLayout;
-		public TextView myAnswerTextView;
+		public TextView myAnswerTextView,answerStr1,answerStr2,analysisStr;
 		public AnswerViewHolder(View v) {
 			// 答案与解析
 			this.examAnswerLayout = (LinearLayout) v
@@ -366,19 +366,24 @@ public class QuestionAdapter extends BaseAdapter {
 			this.analysisTextView = (com.examw.test.widget.ImageTextView) v
 					.findViewById(R.id.exam_analysisTextView); // 解析
 			this.analysisTextView.setOnLongClickListener(tvLongClickListener);
+			this.answerStr1 = ((TextView)v.findViewById(R.id.myAnswerStr));
+			this.answerStr2 = ((TextView)v.findViewById(R.id.sysAnswerStr));
+			this.analysisStr = ((TextView)v.findViewById(R.id.examAnalysisStr));
 			this.examAnswerLayout.setVisibility(View.GONE); // 隐藏答案
 		}
 	}
 	
 	private void setFontSize(AnswerViewHolder answerHolder,float size,View v)
 	{
+		Log.e(TAG,"getView中设置字体大小:"+size);
 		contentHolder.examContent.setTextSize(size);
+		contentHolder.examOption.setFontSize(size);
 		answerHolder.myAnswerTextView.setTextSize(size);
 		answerHolder.sysAnswerTextView.setTextSize(size);
 		answerHolder.analysisTextView.setTextSize(size);
-		((TextView)v.findViewById(R.id.myAnswerStr)).setTextSize(size);
-		((TextView)v.findViewById(R.id.sysAnswerStr)).setTextSize(size);
-		((TextView)v.findViewById(R.id.examAnalysisStr)).setTextSize(size);
+		answerHolder.analysisStr.setTextSize(size);
+		answerHolder.answerStr1.setTextSize(size);
+		answerHolder.answerStr2.setTextSize(size);
 	}
 	// 显示答案
 	public void showAnswer(AnswerViewHolder holder,StructureItemInfo currentQuestion, String userAnswer) {
@@ -451,10 +456,14 @@ public class QuestionAdapter extends BaseAdapter {
 	// 改变字体大小
 	public void setFontSize(ContentViewHolder contentHolder,
 			AnswerViewHolder answerHolder, float size) {
+		Log.e(TAG,"答题设置中改变字体大小:"+size);
 		// 标题
 		contentHolder.examContent.setTextSize(size);
 		contentHolder.examOption.setFontSize(size);
 		// 答案解析等
+		answerHolder.analysisStr.setTextSize(size);
+		answerHolder.answerStr1.setTextSize(size);
+		answerHolder.answerStr2.setTextSize(size);
 		answerHolder.myAnswerTextView.setTextSize(size);// 我的答案
 		answerHolder.sysAnswerTextView.setTextSize(size); // 正确答案
 		answerHolder.analysisTextView.setTextSize(size); // 解析
