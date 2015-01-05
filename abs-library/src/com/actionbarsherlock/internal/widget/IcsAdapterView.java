@@ -16,6 +16,7 @@
 
 package com.actionbarsherlock.internal.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.os.Parcelable;
@@ -23,6 +24,7 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewDebug;
@@ -31,7 +33,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Adapter;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Gallery;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 
 /**
@@ -47,6 +52,7 @@ import android.widget.ListView;
  * <a href="{@docRoot}guide/topics/ui/binding.html">Binding to Data with AdapterView</a>
  * developer guide.</p></div>
  */
+@SuppressLint("NewApi")
 public abstract class IcsAdapterView<T extends Adapter> extends ViewGroup {
 
     /**
@@ -711,7 +717,7 @@ public abstract class IcsAdapterView<T extends Adapter> extends ViewGroup {
             // Force one here to make sure that the state of the list matches
             // the state of the adapter.
             if (mDataChanged) {
-                this.onLayout(false, getLeft(), getTop(), getRight(), getBottom());
+                this.layout(getLeft(), getTop(), getRight(), getBottom());
             }
         } else {
             if (mEmptyView != null) mEmptyView.setVisibility(View.GONE);
