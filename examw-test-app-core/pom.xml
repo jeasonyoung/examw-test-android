@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  	<groupId>com.examw.test</groupId>
+  	<artifactId>examw-test-android</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  	<packaging>apk</packaging>
+	<name>examw-test-android</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<platform.version> 2.2.1  
+            </platform.version>
+		<android.plugin.version>3.5.3</android.plugin.version>
+		<artifactId>examw-test-android</artifactId>
+		<keyFilePath>D:/Program Files/Java/jdk1.6.0_10/bin/it-homer.keystore</keyFilePath>
+		<storePassword>123456</storePassword>
+		<keyPassword>123456</keyPassword>
+		<keyAlias>it-homer.keystore</keyAlias>
+		
+	</properties>
+
+	<dependencies>
+		<!-- android -->
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<version>${platform.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- android-support -->
+		<dependency>
+        	<groupId>com.google.android</groupId>
+        	<artifactId>support-v4</artifactId>
+        	<version>r7</version>
+        </dependency>
+        
+        <!-- gson -->
+        <dependency>
+  			<groupId>com.google.code.gson</groupId>
+  			<artifactId>gson</artifactId>
+  			<version>2.3.1</version>
+		</dependency>
+        <!-- httpclient -->
+    	<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+	</dependencies>
+	<build>  
+        <plugins>  
+            <plugin>  
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>  
+                <artifactId>android-maven-plugin</artifactId>  
+                <version>3.1.1</version>  
+                <configuration>  
+                    <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>  
+                    <assetsDirectory>${project.basedir}/assets</assetsDirectory>  
+                    <resourceDirectory>${project.basedir}/res</resourceDirectory>  
+                    <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>  
+                    <sdk>  
+                        <platform>8</platform>
+                        <path>D:/android-sdk-windows</path>
+                    </sdk>  
+                    <undeployBeforeDeploy>true</undeployBeforeDeploy>  
+                </configuration>  
+                <extensions>true</extensions>  
+            </plugin>  
+  
+            <plugin>  
+                <artifactId>maven-compiler-plugin</artifactId>  
+                <version>2.3.2</version>  
+                <configuration>  
+                    <source>1.6</source>  
+                    <target>1.6</target>  
+                    <encoding>UTF8</encoding>  
+                </configuration>  
+            </plugin>  
+              
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-jarsigner-plugin</artifactId>  
+                <version>1.2</version>  
+                <executions>  
+                  <execution>  
+                    <id>sign</id>  
+                    <goals>  
+                      <goal>sign</goal>  
+                    </goals>  
+                  </execution>  
+                  <execution>  
+                    <id>verify</id>  
+                    <goals>  
+                      <goal>verify</goal>  
+                    </goals>  
+                  </execution>  
+                </executions>  
+                <configuration>  
+                    <encoding>UTF-8</encoding>  
+                    <includes>  
+                            <include>target/${artifactId}.apk</include>  
+                            </includes>     
+                            <removeExistingSignatures>true</removeExistingSignatures>  
+                            <keystore>${keyFilePath}</keystore>  
+                    <storepass>${storePassword}</storepass>  
+                    <keypass>${keyPassword}</keypass>  
+                    <alias>${keyAlias}</alias>  
+                </configuration>  
+            </plugin>  
+                
+        <!-- <plugin>  
+                 <groupId>org.codehaus.mojo</groupId>  
+                 <artifactId>exec-maven-plugin</artifactId>  
+                 <version>1.2.1</version>  
+                 <executions>  
+                     <execution>  
+                         <id>zipalign</id>  
+                         <goals>  
+                             <goal>exec</goal>  
+                         </goals>  
+                         <phase>install</phase>  
+                         <configuration>  
+                             <executable>${ANDROID_HOME}/tools/zipalign</executable>  
+                              <arguments>  
+                                 <argument>-f</argument>  
+                                 <argument>4</argument>  
+                                 <argument>target/${project.build.finalName}.apk</argument>  
+                                 <argument>target/${project.build.finalName}-zipped.apk</argument>  
+                             </arguments>  
+                         </configuration>  
+                     </execution>  
+                 </executions>  
+        </plugin>   -->
+        </plugins>   
+    </build>  
+</project>
