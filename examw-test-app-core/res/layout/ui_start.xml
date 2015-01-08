@@ -5,6 +5,6 @@
     android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:gravity="bottom"
-    android:background="@drawable/start_background">
+    android:background="@drawable/app_start">
     
 </LinearLayout>

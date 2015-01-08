@@ -30,11 +30,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <com.changheng.accountant.view.MyWebView
+			<com.examw.test.widget.MyWebView
                 android:id="@+id/web_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />
-
+			
             <TextView
                 android:id="@+id/linkTv"
                 android:layout_width="fill_parent"

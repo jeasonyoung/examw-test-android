@@ -12,3 +12,5 @@ hs_err_pid*
 bin
 bin
 /abs-library/gen
+*.project
+.settings

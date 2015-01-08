@@ -77,13 +77,13 @@
                 />
             <!-- 使用viewflow 试试 -->
 
-            <org.taptwo.android.widget.ViewFlow
+            <com.examw.test.widget.viewflow.ViewFlow
                 android:id="@+id/viewflow"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_below="@id/questionMaterial"
                 app:sidebuffer="2" >
-            </org.taptwo.android.widget.ViewFlow>
+            </com.examw.test.widget.viewflow.ViewFlow>
         </RelativeLayout>
 
         <include layout="@layout/loading" />
