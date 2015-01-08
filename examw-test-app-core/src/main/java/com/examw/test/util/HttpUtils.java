@@ -245,8 +245,10 @@ public class HttpUtils {
 				throw AppException.http(status);
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw AppException.http(e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw AppException.http(e);
 		}
 	}
@@ -366,8 +368,10 @@ public class HttpUtils {
 				throw AppException.http(status);
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw AppException.http(e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw AppException.http(e);
 		}
 	}
