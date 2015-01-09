@@ -1,12 +1,11 @@
 package com.examw.test.ui;
 
-import com.examw.test.R;
-import com.examw.test.support.URLs;
-
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
+
+import com.examw.test.R;
+import com.examw.test.support.URLs;
 
 /**
  * 

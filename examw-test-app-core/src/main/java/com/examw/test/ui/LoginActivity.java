@@ -34,6 +34,7 @@ import com.examw.test.domain.User;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
+import com.examw.test.support.LoginTips;
 import com.examw.test.util.ToastUtils;
 
 /**
@@ -155,8 +156,6 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 							//设置登录状态为正在登陆
 							appContext.setLoginState(AppContext.LOGINING);// 正在登录
 							//解析登陆返回结果
-							//TODO 模拟登录
-							Thread.sleep(2000);
 							Json result = ApiClient.login(appContext, username, password);
 							Message message = handler.obtainMessage();
 							if(result == null)
@@ -165,7 +164,6 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 								message.obj = "用户登录失败";
 								return;
 							}
-							//TODO 模拟登录
 							if (result.isSuccess()) { // 登陆成功
 								//远程去获取productUser的信息并且保存
 								User user = (User) result.getData();
@@ -193,7 +191,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 								}
 							}else{
 								message.what = 0;
-								message.obj = result.getMsg();
+								message.obj = LoginTips.getLoginTip((Integer) result.getData(), null);
 							}
 							handler.sendMessage(message); //登录失败
 						} catch (Exception e) {

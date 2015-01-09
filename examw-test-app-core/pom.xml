@@ -61,13 +61,15 @@
 				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
 					<!-- hunxiao -->
-					<proguardConfig>${android-progurad-dir}\proguard-android.txt</proguardConfig>
-					<proguardSkip>false</proguardSkip>
-					<manifestDebuggable>false</manifestDebuggable>
+					<!-- <proguardConfig>${android-progurad-dir}\proguard-android.txt</proguardConfig>
+					<proguardSkip>false</proguardSkip> -->
 					<androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
 					<assetsDirectory>${project.basedir}/assets</assetsDirectory>
 					<resourceDirectory>${project.basedir}/res</resourceDirectory>
 					<nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
+					<manifest>
+                    	<debuggable>false</debuggable>
+                	</manifest>
 					<sdk>
 						<platform>10</platform>
 					</sdk>
@@ -78,10 +80,18 @@
 				</configuration>
 				<extensions>true</extensions>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-eclipse-plugin</artifactId> 
-				<configuration> <excludes> <exclude>com.google.android:android</exclude> 
-				<exclude>commons-logging:commons-logging</exclude> <exclude>xerces:xmlParserAPIs</exclude> 
-				<exclude>xpp3:xpp3</exclude> </excludes> </configuration> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>com.google.android:android</exclude>
+						<exclude>commons-logging:commons-logging</exclude>
+						<exclude>xerces:xmlParserAPIs</exclude>
+						<exclude>xpp3:xpp3</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -129,9 +139,10 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin>
+			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.4</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -142,7 +153,7 @@
 				</executions>
 				<configuration>
 					<obfuscate>true</obfuscate>
-					<proguardInclude>${android-progurad-dir}/proguard-android.txt</proguardInclude>
+					<proguardInclude>${android-progurad-dir}\proguard-android.txt</proguardInclude>
 					<libs>
 						<lib>${java.home}\lib\rt.jar</lib>
 						<lib>${java.home}\lib\jsse.jar</lib>
@@ -158,7 +169,7 @@
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
-			</plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 </project>

@@ -27,7 +27,6 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.adapter.SubjectListAdapter;
-import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.FavoriteDao;

@@ -25,7 +25,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.examw.test.dao.ProductDao;
-import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.User;
 import com.examw.test.exception.AppException;
@@ -369,6 +368,11 @@ public class AppContext extends Application {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public String getOsVersionName()
+	{
+		return android.os.Build.MODEL + "_Android_" 
+                + android.os.Build.VERSION.RELEASE; 
 	}
 	/**
 	 * 用户是否登录
@@ -885,5 +889,13 @@ public class AppContext extends Application {
 			//!!!!!!!!!!!!!!在线获取信息!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			Log.d(TAG,"初始化数据线程结束,耗时:"+(System.currentTimeMillis() - start));
 		}
+	}
+	
+	public void cleanLoginInfo() {
+		removeProperty(AppConfig.CONF_COOKIE);
+		this.cleanCookie();
+		this.loginState = UNLOGIN;
+		this.loginUid = null;
+		this.username = null;
 	}
 }

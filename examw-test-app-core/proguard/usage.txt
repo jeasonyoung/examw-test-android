@@ -323,6 +323,7 @@ com.examw.test.support.SyllabusHelper:
     14:14:public SyllabusHelper()
     58:69:private static void filterChildren(java.util.ArrayList,com.examw.test.domain.Chapter)
     83:108:private static java.util.ArrayList convertChapter(java.util.ArrayList)
+com.examw.test.support.TaoBaoMD5
 com.examw.test.support.URLs
 com.examw.test.ui.AboutusFragment
 com.examw.test.ui.AboutusFragment$SampleWebViewClient
@@ -494,11 +495,11 @@ com.examw.test.util.HttpUtils:
     49:49:public HttpUtils()
     74:75:public static void cleanCookie()
     183:197:public static java.lang.String _MakeURL(java.lang.String,java.util.Map)
-    386:453:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
-    486:532:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
+    390:457:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
+    490:536:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
 com.examw.test.util.HttpUtils$DigestAuthcProvider:
-    572:572:public java.lang.String getUri()
-    581:581:public java.lang.String getMethod()
+    576:576:public java.lang.String getUri()
+    585:585:public java.lang.String getMethod()
 com.examw.test.util.ImageUtils:
     public static final java.lang.String SDCARD_MNT
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD

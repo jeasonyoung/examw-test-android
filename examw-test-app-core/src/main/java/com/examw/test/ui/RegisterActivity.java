@@ -25,9 +25,10 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
-import com.examw.test.domain.User;
 import com.examw.test.exception.AppException;
+import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
+import com.examw.test.util.StringUtils;
 import com.examw.test.widget.ImgRightEditText;
 
 /**
@@ -36,13 +37,13 @@ import com.examw.test.widget.ImgRightEditText;
  * @since 2014年12月1日 上午11:52:53.
  */
 public class RegisterActivity  extends BaseActivity implements OnClickListener{
-	private TextView nameInfo, pwdInfo, pwd2Info, emailInfo, phoneInfo;
-	private ImgRightEditText nameView, pwdView, pwd2View, emailView, phoneView;
+	private TextView usernameInfo,nameInfo, pwdInfo, pwd2Info, emailInfo, phoneInfo;
+	private ImgRightEditText usernameView,nameView, pwdView, pwd2View, emailView, phoneView;
 	private ProgressDialog dialog;
 	private Handler handler;
 	private SharedPreferences abfile;
 	private AppContext appContext;
-	private String username,pwd,name,phone;
+	private String username,pwd,name,phone,email;
 	private InputMethodManager imm;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,8 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 	}
 
 	private void initViews() {
-		this.nameInfo = (TextView) this.findViewById(R.id.regist_tvUserName);
+		this.nameInfo = (TextView) this.findViewById(R.id.regist_tvName);
+		this.usernameInfo = (TextView) this.findViewById(R.id.regist_tvUserName);
 		this.pwdInfo = (TextView) this.findViewById(R.id.regist_tvPassword);
 		this.pwd2Info = (TextView) this
 				.findViewById(R.id.regist_tvConfirimPass);
@@ -62,6 +64,8 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 		this.phoneInfo = (TextView) this.findViewById(R.id.regist_tvPhone);
 
 		this.nameView = (ImgRightEditText) this
+				.findViewById(R.id.regist_name);
+		this.usernameView = (ImgRightEditText) this
 				.findViewById(R.id.regist_etUserName);
 		this.pwdView = (ImgRightEditText) this
 				.findViewById(R.id.regist_etPassword);
@@ -74,49 +78,29 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 		this.findViewById(R.id.regist_btnSubmit).setOnClickListener(this);
 		handler = new MyHandler(this);
 		abfile = getSharedPreferences("abfile", 0);
-		nameView.setOnFocusChangeListener(new OnFocusChangeListener() {
+		usernameView.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				if(!hasFocus)
 				{
-					final String str1 = nameView.getText().toString().trim();
+					final String str1 = usernameView.getText().toString().trim();
 					boolean bool6 = Pattern.compile("^[_,0-9,a-z,A-Z]+$").matcher(str1)
 							.matches();
 					if (str1.equals("")) {
-						showInfo("用户名不能为空!",nameInfo,nameView,0);
+						showInfo("用户名不能为空!",usernameInfo,usernameView,0);
 						return;
 					}
 					if (!bool6) {
-						showInfo("用户名只能使用字母,数字,下划线'_'组成!",nameInfo,nameView,0);
+						showInfo("用户名只能使用字母,数字,下划线'_'组成!",usernameInfo,usernameView,0);
 						return;
 					}
 					if ((str1.length() < 4) || (str1.length()> 20))
 				    {
-						showInfo("用户名应在4-18位之间！",nameInfo,nameView,0);
+						showInfo("用户名应在4-20位之间！",usernameInfo,usernameView,0);
 						return;
 				    }
+					showInfo("*用户名",usernameInfo,usernameView,1);
 					//开线程去验证用户名是否被占用
-					//
-					new Thread(){
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-//							ParseResult result = null;
-//							try{
-//								result = ApiClient.checkUsername2(appContext, str1);
-//								if(result.Ok())
-//								{
-//									handler.sendEmptyMessage(1001);
-//								}else
-//								{
-//									handler.sendEmptyMessage(1002);
-//								}
-//							}catch(Exception e)
-//							{
-//								e.printStackTrace();
-//							}
-						}
-					}.start();
 				}
 			}
 		});
@@ -154,8 +138,8 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 					showInfo("密码只能使用字母,数字组成!",pwdInfo,pwdView,0);
 					return ;
 				}
-				if ((str3.length() < 4) || (str3.length()> 15)) {
-					showInfo("密码4-15位字符!",pwdInfo,pwdView,0);
+				if ((str3.length() < 4) || (str3.length()> 20)) {
+					showInfo("密码4-20位字符!",pwdInfo,pwdView,0);
 					return ;
 				}
 				showInfo("*密码:",pwdInfo,pwdView,1);
@@ -185,6 +169,34 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 				}
 			}
 		});
+		nameView.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				String str2 = nameView.getText().toString().trim();
+//				boolean bool1 = Pattern
+//						.compile(
+//								"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")
+//						.matcher(str2).matches();
+				boolean bool1 = Pattern.compile("^([\\u4e00-\\u9fa5]+|([a-z]+\\s?)+)$").matcher(str2).matches();
+				if (str2.equals("")) {
+					showInfo("姓名不能为空!",nameInfo,nameView,0);
+					return ;
+				}
+				if (!bool1) {
+					showInfo("姓名格式错误!",nameInfo,nameView,0);
+					return ;
+				}
+				showInfo("*真实姓名:",nameInfo,nameView,1);
+			}
+		});
 		emailView.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void afterTextChanged(Editable s) {
@@ -197,20 +209,15 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				String str2 = emailView.getText().toString().trim();
-//				boolean bool1 = Pattern
-//						.compile(
-//								"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")
-//						.matcher(str2).matches();
-				boolean bool1 = Pattern.compile("^([\\u4e00-\\u9fa5]+|([a-z]+\\s?)+)$").matcher(str2).matches();
 				if (str2.equals("")) {
-					showInfo("姓名不能为空!",emailInfo,emailView,0);
+					showInfo("email不能为空!",emailInfo,emailView,0);
 					return ;
 				}
-				if (!bool1) {
-					showInfo("姓名格式错误!",emailInfo,emailView,0);
+				if (!StringUtils.isEmail(str2)) {
+					showInfo("email格式错误!",emailInfo,emailView,0);
 					return ;
 				}
-				showInfo("*真实姓名:",emailInfo,emailView,1);
+				showInfo("*Email:",emailInfo,emailView,1);
 			}
 		});
 		phoneView.addTextChangedListener(new TextWatcher(){
@@ -283,31 +290,32 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 			new Thread(){
 				public void run() {
-//					ParseResult result = null;
-//					Message msg = handler.obtainMessage();
-//					try
-//					{
-//						result = ApiClient.register2(appContext, username, pwd, appContext.getDeviceId(), name, phone, "北京");
-//						msg.what = 1;
-//						msg.obj = result;
-//						handler.sendMessage(msg);
-//					}catch(Exception e)
-//					{
-//						e.printStackTrace();
-//						msg.what = -1;
-//						msg.obj = e;
-//						handler.sendMessage(msg);
-//					}
+					Json result = null;
+					Message msg = handler.obtainMessage();
+					try
+					{
+						result = ApiClient.register(appContext, username, pwd, phone,name,email);
+						msg.what = 1;
+						msg.obj = result;
+						handler.sendMessage(msg);
+					}catch(Exception e)
+					{
+						e.printStackTrace();
+						msg.what = -1;
+						msg.obj = e;
+						handler.sendMessage(msg);
+					}
 				};
 			}.start();
 		}
 	}
 	private boolean checkInput() {
-		username = this.nameView.getText().toString().trim();
-		name = this.emailView.getText().toString().trim();
+		username = this.usernameView.getText().toString().trim();
+		name = this.nameView.getText().toString().trim();
 		pwd = this.pwdView.getText().toString().trim();
 		String str4 = this.pwd2View.getText().toString().trim();
 		phone = this.phoneView.getText().toString().trim();
+		email = this.emailView.getText().toString().trim();
 		boolean bool6 = Pattern.compile("^[_,0-9,a-z,A-Z]+$").matcher(username)
 				.matches();
 		if (username.equals("")) {
@@ -341,10 +349,6 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 			showMsg("两次密码输入不一致!");
 			return false;
 		}
-//		boolean bool1 = Pattern
-//				.compile(
-//						"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")
-//				.matcher(str2).matches();
 		boolean bool1 = Pattern
 				.compile(
 						"^([\\u4e00-\\u9fa5]+|([a-z]+\\s?)+)$")
@@ -357,7 +361,7 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 			showMsg("姓名格式错误!");
 			return false;
 		}
-		boolean bool3 = Pattern.compile("^[1][3,4,5,6,8]\\d{9}$")
+		boolean bool3 = Pattern.compile("^[1][3,4,5,6,7,8]\\d{9}$")
 				.matcher(phone).matches();
 		if("".equals(phone))
 		{
@@ -367,6 +371,16 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 		if(!bool3)
 		{
 			showMsg("手机号格式错误!");
+			return false;
+		}
+		if("".equals(email))
+		{
+			showMsg("Email不能为空!");
+			return false;
+		}
+		if(!StringUtils.isEmail(email))
+		{
+			showMsg("Email格式错误!");
 			return false;
 		}
 		return true;

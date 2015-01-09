@@ -1,11 +1,5 @@
 package com.examw.test.ui;
 
-import com.examw.test.R;
-import com.examw.test.app.AppConfig;
-import com.examw.test.app.AppContext;
-import com.examw.test.support.AppUpdateManager;
-import com.examw.test.util.BrightnessUtil;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,20 +12,26 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.SeekBar.OnSeekBarChangeListener;
+
+import com.examw.test.R;
+import com.examw.test.app.AppConfig;
+import com.examw.test.app.AppContext;
+import com.examw.test.support.AppUpdateManager;
+import com.examw.test.util.BrightnessUtil;
 
 /**
  * 

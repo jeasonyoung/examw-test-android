@@ -1,7 +1,6 @@
 package com.examw.test.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 用户试题收藏信息。

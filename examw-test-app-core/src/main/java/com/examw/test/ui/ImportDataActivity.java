@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.ProgressDialog;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.ImportDao;
-import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.FrontPaperInfo;

@@ -26,7 +26,6 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.adapter.SyllabusListAdapter;
 import com.examw.test.adapter.SyllabusListAdapter.OnSyllabusNodeClickListener;
-import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.ProductDao;
 import com.examw.test.dao.SyllabusDao;

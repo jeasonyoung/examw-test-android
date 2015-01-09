@@ -34,6 +34,8 @@ public class AppConfig {
 	//终端ID
 	public static final String TERMINALID = "4";
 	
+	public static String CLIENTKEY = "U8z2D0O5s7Li1Q3y4k6g";
+	
 	private final static String APP_CONFIG = "config";
 	
 	public static final String SHAREDPREFERENCES_NAME = "first_pref";  

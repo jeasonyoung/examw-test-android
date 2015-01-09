@@ -1,8 +1,8 @@
 package com.examw.test.ui;
 
-import com.examw.test.R;
-
 import android.os.Bundle;
+
+import com.examw.test.R;
 
 /**
  * 

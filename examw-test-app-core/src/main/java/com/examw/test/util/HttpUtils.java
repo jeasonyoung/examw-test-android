@@ -242,6 +242,7 @@ public class HttpUtils {
 				httpClient = null;
 				return responseBody;
 			} else {
+				Log.d(TAG,"返回的状态码:"+status);
 				throw AppException.http(status);
 			}
 		} catch (IOException e) {
@@ -695,5 +696,80 @@ public class HttpUtils {
 			}
 			return radomCodeBuffer.toString();
 		}
+	}
+
+	public static String login(AppContext appContext,String url,Map<String,Object> params) throws AppException
+	{
+		String cookie = getCookie(appContext);
+		String userAgent = getUserAgent(appContext);
+
+		HttpClient httpClient = null;
+		GetMethod httpGet = null;
+		url = _MakeURL(url, params);
+		Log.d(TAG,url);
+		String responseBody = "";
+		int time = 0;
+		do {
+			try {
+				httpClient = getHttpClient();
+				httpGet = getHttpGet(url, cookie, userAgent);
+				int statusCode = httpClient.executeMethod(httpGet);
+				if (statusCode != HttpStatus.SC_OK) {
+					throw AppException.http(statusCode);
+				}
+				// ///////////////////////////////////////
+				InputStream in = httpGet.getResponseBodyAsStream();
+				BufferedReader br = new BufferedReader(new InputStreamReader(in,"GBK"));
+				try {
+					StringBuffer buf = new StringBuffer();
+					String line = null;
+					while ((line = br.readLine()) != null) {
+						buf.append(line);
+					}
+				responseBody = buf.toString();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				break;
+			} catch (HttpException e) {
+				e.printStackTrace();
+				time++;
+				if (time < RETRY_TIME) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+					}
+					continue;
+				}
+				// 发生致命的异常，可能是协议不对或者返回的内容有问题
+				e.printStackTrace();
+				throw AppException.http(e);
+			} catch (IOException e) {
+				e.printStackTrace();
+				time++;
+				if (time < RETRY_TIME) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+					}
+					continue;
+				}
+				// 发生网络异常
+				e.printStackTrace();
+				throw AppException.network(e);
+			} finally {
+				// 释放连接
+				if (httpGet != null)
+					httpGet.releaseConnection();
+				httpClient = null;
+			}
+		} while (time < RETRY_TIME);
+		return responseBody;
 	}
 }

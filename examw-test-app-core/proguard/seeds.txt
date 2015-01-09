@@ -2845,8 +2845,6 @@ com.examw.test.R$drawable: int bg_frame_setting
 com.examw.test.R$drawable: int bg_view
 com.examw.test.R$drawable: int big_sun
 com.examw.test.R$drawable: int blue_button
-com.examw.test.R$drawable: int blue_button_down
-com.examw.test.R$drawable: int blue_button_up
 com.examw.test.R$drawable: int btn_answer_card
 com.examw.test.R$drawable: int btn_blue
 com.examw.test.R$drawable: int btn_fullscreen

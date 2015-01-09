@@ -19,7 +19,8 @@ public class URLs implements Serializable{
 	public static final String BASE_URL = HOST + "/examw-test/api/data";
 	
 	//登录地址
-	public static final String LOGIN = "";
+	public static final String LOGIN =  "http://test.examw.com/user/Login/CheckUser.asp";
+	public static final String REGIST = LOGIN;
 	//产品信息 
 	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppConfig.PRODUCTID;
 	//科目列表

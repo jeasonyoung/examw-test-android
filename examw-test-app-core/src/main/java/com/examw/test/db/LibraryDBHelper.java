@@ -1,11 +1,11 @@
 package com.examw.test.db;
 
-import com.examw.test.app.AppContext;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import com.examw.test.app.AppContext;
 
 /**
  * 题库数据库

@@ -2616,8 +2616,6 @@ com.examw.test.R$drawable -> com.examw.test.R$drawable:
     int bg_view -> bg_view
     int big_sun -> big_sun
     int blue_button -> blue_button
-    int blue_button_down -> blue_button_down
-    int blue_button_up -> blue_button_up
     int btn_answer_card -> btn_answer_card
     int btn_blue -> btn_blue
     int btn_fullscreen -> btn_fullscreen

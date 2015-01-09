@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import com.examw.test.app.AppConfig;
 import com.examw.test.util.FileUtils;
 
 /**

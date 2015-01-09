@@ -3,9 +3,14 @@ package com.examw.test.support;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -16,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.domain.Subject;
 import com.examw.test.domain.User;
@@ -24,6 +30,7 @@ import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
+import com.examw.test.model.RemoteUserInfo;
 import com.examw.test.model.SubjectInfo;
 import com.examw.test.model.UserItemFavoriteInfo;
 import com.examw.test.model.UserPaperRecordInfo;
@@ -41,18 +48,120 @@ import com.google.gson.reflect.TypeToken;
 public class ApiClient {
 	//登录
 	public static Json login(AppContext appContext,String username,String password) throws AppException{
-		//TODO 模拟登录
-//		String result;
-//		result = HttpUtils.http_get(appContext, URLs.LOGIN);
-//		if(StringUtils.isEmpty(result)) return null;
+		/*
+		 *  SubSource = "Mobile"  提交来源
+			ClientNo 客户端唯一标示
+			Md5Str 32位加密字符串
+			ClientKey 跟注册KEY一样
+			UserName  用户名
+			PassWord  密码
+			CheckType = "RegUser" 注册
+			CheckType = "Login"  登录
+			Md5Str = MD5(UserName&"#"&PassWord&ClientKey&"#"&SubSource&"#"&ClientNo)
+		 */
+		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+AppConfig.CLIENTKEY+"#Mobile#"+appContext.getDeviceId(), "", "GBK");
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("SubSource", "Mobile");
+		params.put("ClientNo", appContext.getDeviceId());
+		params.put("Md5Str", md5Str);
+		params.put("UserName", username);
+		params.put("PassWord", password);
+		params.put("CheckType", "Login");
+		String result = HttpUtils.login(appContext, URLs.LOGIN, params);
+		if(result == null || "".equals(result.trim())) return null;
 		Json json = new Json();
-		json.setSuccess(true);
-		json.setMsg("登录成功");
-		User user = new User();
-		user.setUid("265384");
-		user.setUsername("fw121fw41");
-		user.setPassword("123456");
-		json.setData(user);
+		try
+		{
+			//返回数字的都是没有登录成功的
+			Integer code = Integer.parseInt(result);
+			json.setSuccess(false);
+			json.setData(code);
+		}catch(Exception e)
+		{
+			json.setSuccess(true);
+			//解析字符串
+			if(result.startsWith("jsonpLogin"))
+			{
+				RemoteUserInfo userInfo = GsonUtil.jsonToBean(result.substring(11, result.length()-2), RemoteUserInfo.class);
+				User user = new User();
+				user.setInfo(result.substring(11, result.length()-2));
+				user.setUsername(userInfo.getUserName());
+				user.setUid(userInfo.getUid());
+				user.setPassword(password);
+				json.setData(user);
+			}else
+			{
+				Log.d("ApiClient","错误");
+				return null;
+			}
+		}
+		return json;
+	}
+	//注册
+	public static Json register(AppContext appContext,String username,String password,String phone,String name,String email)throws AppException, UnsupportedEncodingException
+	{
+		/*
+		 * UserName  用户名
+			PassWord   第一次密码
+			repsw  重复输入密码
+			e_mail 邮箱
+			r_name 真实姓名
+			Mobile 手机号
+			DoMain 频道  (固定值 根据考试来填写)
+			SubSource = "Mobile"  提交来源
+			ClientNo 客户端唯一标示
+			Client 客户端名称、版本
+			Version 软件版本（我们自己的客户端版本）
+			Md5Str 32位加密字符串
+			ClientKey = "U8z2D0O5s7Li1Q3y4k6g"
+			Md5Str = MD5(UserName&"#"&PassWord&"#"&repsw&"#"&e_mail&"#"&ClientKey&r_name&"#"&Mobile&"#"&DoMain&"#"&SubSource&"#"&ClientNo)
+		 */
+		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+password+"#"+email+"#"+AppConfig.CLIENTKEY + name +
+					"#"+phone+"#jzs1#Mobile#"+appContext.getDeviceId(), "", "GBK");
+		Log.d("APICLIENT",md5Str);
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("SubSource", "Mobile");
+		params.put("ClientNo", appContext.getDeviceId());
+		params.put("Md5Str", md5Str);
+		params.put("UserName", username);
+		params.put("PassWord", password);
+		params.put("repsw", password);
+		params.put("Mobile", phone);
+		params.put("DoMain","jzs1");
+		params.put("e_mail", email);
+		params.put("r_name", URLEncoder.encode(name, "UTF-8"));
+		params.put("Client", appContext.getOsVersionName());
+		params.put("Version", appContext.getVersionName());
+		params.put("CheckType", "RegUser");
+		String result = HttpUtils.login(appContext, URLs.REGIST, params);
+		Log.d("APICLIENT",result);
+		if(result == null || "".equals(result.trim())) return null;
+		Json json = new Json();
+		try
+		{
+			//返回数字的都是没有登录成功的
+			Integer code = Integer.parseInt(result);
+			json.setSuccess(false);
+			json.setData(code);
+		}catch(Exception e)
+		{
+			json.setSuccess(true);
+			//解析字符串
+			if(result.startsWith("jsonpLogin"))
+			{
+				RemoteUserInfo userInfo = GsonUtil.jsonToBean(result.substring(11, result.length()-2), RemoteUserInfo.class);
+				User user = new User();
+				user.setInfo(result.substring(11, result.length()-2));
+				user.setUsername(userInfo.getUserName());
+				user.setUid(userInfo.getUid());
+				user.setPassword(password);
+				json.setData(user);
+			}else
+			{
+				Log.d("ApiClient","错误");
+				return null;
+			}
+		}
 		return json;
 	}
 	/**

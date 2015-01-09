@@ -25,6 +25,8 @@ import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
+import com.examw.test.exception.AppException;
+import com.examw.test.support.ApiClient;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 
@@ -88,26 +90,20 @@ public class MainFragment extends Fragment {
 		this.setDateLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(getActivity(), ImageTextViewActivity.class));
+//				startActivity(new Intent(getActivity(), SetTimeActivity.class));
 //				Intent intent = new Intent(getActivity(), ImageZoomActivity.class);
 //				intent.putExtra("url", "/42c7f9f5-6088-4bc8-acc0-59162257a775");
 //				startActivity(intent);
-//				new Thread(){
-//					public void run() {
-//						try {
-//							String content = ApiClient.loadPaperContent(appContext, "015cf90b-884e-46cb-8b22-55abcaeae57c");
-//							Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*[\\\\][\"]([^\"]+)[\\\\][\"][^>]*>");//<img[^<>]*src=[\'\"]([0-9A-Za-z.\\/]*)[\'\"].(.*?)>");
-//					        Matcher m = ps.matcher(content);
-//					        while(m.find()){
-//					        	String url = URLs.BASE_URL + m.group(1);
-//					        	Log.e("导入图片",url);
-//					        }
-//						} catch (AppException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					};
-//				}.start();
+				new Thread(){
+					public void run() {
+						try {
+							ApiClient.register(appContext, "abcd", "123456", "13800000000", "中国", "abcd@163.com");
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					};
+				}.start();
 			}
 		});
 	}
