@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.examw.test.app.AppContext;
 import com.examw.test.db.LibraryDBUtil;
@@ -21,6 +20,7 @@ import com.examw.test.support.ApiClient;
 import com.examw.test.support.DataConverter;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -30,7 +30,6 @@ import com.google.gson.reflect.TypeToken;
  * @since 2014年12月15日 下午3:25:58.
  */
 public class SyllabusDao {
-	private static final String TAG = "SyllabusDao";
 	
 	public static ArrayList<Syllabus> insertSyllabus(List<SyllabusInfo> list)
 	{
@@ -198,7 +197,7 @@ public class SyllabusDao {
 	public static ArrayList<Chapter> insertSyllabusAndLoadChapters(Subject subject,String content)
 	{
 		if(StringUtils.isEmpty(content)||content.equals("[]")) return null;
-		Log.d(TAG,"插入考试大纲,并且获取章节信息");	
+		LogUtil.d("插入考试大纲,并且获取章节信息");	
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		SyllabusInfo syllabus = new SyllabusInfo();
 		syllabus.setId(UUID.randomUUID().toString());
@@ -215,7 +214,7 @@ public class SyllabusDao {
 			db.execSQL("delete from SyllabusTab where subjectId = ?",new String[]{subject.getSubjectId()});
 			db.execSQL("delete from ChapterTab where syllabusId = ?", new String[]{syllabusId});
 			insert(db,syllabus);
-			Log.d(TAG,"插入考试大纲章节信息");	
+			LogUtil.d("插入考试大纲章节信息");	
 			for(SyllabusInfo info:list)
 			{
 				insertChapter(db,info,syllabus.getId());
@@ -313,7 +312,7 @@ public class SyllabusDao {
 	{
 		if(chapterId == null) return ;
 		if(items == null || items.isEmpty()) return;
-		Log.d(TAG,"插入与大纲关联的试题");
+		LogUtil.d("插入与大纲关联的试题");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		for(ItemInfo info:items)
 		{
@@ -353,7 +352,7 @@ public class SyllabusDao {
 	public static void updateSyllabusInfo(AppContext appContext, Subject s,
 			String content) {
 			if(StringUtils.isEmpty(content)||content.equals("[]")) return;
-			Log.d(TAG,"插入考试大纲,并且获取章节信息");	
+			LogUtil.d("插入考试大纲,并且获取章节信息");	
 			SQLiteDatabase db = LibraryDBUtil.getDatabase();
 			SyllabusInfo syllabus = new SyllabusInfo();
 			syllabus.setId(UUID.randomUUID().toString());
@@ -370,7 +369,7 @@ public class SyllabusDao {
 				db.execSQL("delete from SyllabusTab where subjectId = ?",new String[]{s.getSubjectId()});
 				db.execSQL("delete from ChapterTab where syllabusId = ?", new String[]{syllabusId});
 				insert(db,syllabus);
-				Log.d(TAG,"插入考试大纲章节信息");	
+				LogUtil.d("插入考试大纲章节信息");	
 				for(SyllabusInfo info:list)
 				{
 					updateChapter(appContext,db,info,syllabus.getId());

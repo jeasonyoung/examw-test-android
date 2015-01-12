@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +34,7 @@ import com.examw.test.dao.ProductDao;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.domain.Subject;
 import com.examw.test.support.ApiClient;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.ToastUtils;
 
 /**
@@ -65,7 +65,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	}
 	private void initData()
 	{
-		Log.d(TAG,"初始化科目数据,action == "+action);
+		LogUtil.d("初始化科目数据,action == "+action);
 		final Handler handler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {

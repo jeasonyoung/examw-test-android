@@ -3,7 +3,6 @@ package com.examw.test.adapter;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.domain.Chapter;
 import com.examw.test.support.SyllabusHelper;
+import com.examw.test.util.LogUtil;
 
 /**
  * 大纲适配器
@@ -94,7 +94,7 @@ public class SyllabusListAdapter extends BaseAdapter {
 			}
 
 		});
-		Log.d("Adapter","章节适配器初始化耗时:"+(System.currentTimeMillis()-start));
+		LogUtil.d("章节适配器初始化耗时:"+(System.currentTimeMillis()-start));
 	}
 
 	/**

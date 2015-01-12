@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import com.examw.test.R;
 import com.examw.test.adapter.PaperListAdapter;
 import com.examw.test.dao.PaperDao;
 import com.examw.test.domain.Paper;
+import com.examw.test.util.LogUtil;
 import com.examw.test.widget.NewDataToast;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -36,7 +36,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
  * @since 2014年12月3日 上午11:07:46.
  */
 public class RealPaperFragment extends Fragment{
-	private static final String TAG = "RealPaperFragment";
 	private PullToRefreshListView paperListView;
 	private ArrayList<Paper> papers;
 	private Handler handler;
@@ -51,7 +50,7 @@ public class RealPaperFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG,"RealPaperFragment 创建");
+		LogUtil.d("RealPaperFragment 创建");
 		View v = inflater.inflate(R.layout.paper_fragment, null);
 		Bundle data = this.getArguments();
 		subjectId = data.getString("subjectId");

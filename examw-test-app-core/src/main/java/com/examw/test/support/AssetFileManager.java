@@ -13,6 +13,7 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.examw.test.util.FileUtils;
+import com.examw.test.util.LogUtil;
 
 /**
  * 资源文件管理
@@ -20,7 +21,6 @@ import com.examw.test.util.FileUtils;
  * @since 2014年12月26日 下午1:54:19.
  */
 public class AssetFileManager {
-	private static final String TAG = "AssetFileManager";
 	/**
 	 * 解压文件
 	 * @param is
@@ -38,7 +38,6 @@ public class AssetFileManager {
  			ZipEntry entry; // 每个zip条目的实例
  			while ((entry = zis.getNextEntry()) != null) {
  				try {
- 					Log.i("Unzip: ", "=" + entry);
  					int count;
  					byte data[] = new byte[BUFFER];
  					strEntry = entry.getName();
@@ -71,7 +70,7 @@ public class AssetFileManager {
 	 */
 	public static void copyDataBase(Context context,String fileName,String dbPath)
 	{
-		Log.d(TAG, String.format("复制[%1$s]数据库到指定应用数据位置[%2$s]",fileName,dbPath));
+		LogUtil.d( String.format("复制[%1$s]数据库到指定应用数据位置[%2$s]",fileName,dbPath));
 		AssetManager assetManager = context.getAssets();
 		try
 		{
@@ -96,7 +95,7 @@ public class AssetFileManager {
 			}
 			for(String path:filePaths)
 			{
-				Log.d(TAG,path);
+				LogUtil.d(path);
 				FileUtils.copyFile(assetManager.open("data/image/"+path), imagePath + path);
 			}
 		}catch(Exception e)
@@ -123,7 +122,7 @@ public class AssetFileManager {
  			ZipEntry entry; // 每个zip条目的实例
  			while ((entry = zis.getNextEntry()) != null) {
  				try {
- 					Log.i("Unzip: ", "=" + entry +" entry is a doc = "+entry.isDirectory());
+ 					if(entry.isDirectory()) continue;
  					int count;
  					byte data[] = new byte[BUFFER];
  					strEntry = entry.getName();

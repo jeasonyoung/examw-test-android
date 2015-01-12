@@ -121,7 +121,6 @@ public class SetTimeActivity extends BaseActivity implements OnClickListener{
 		{
 			datePop.dismiss();
 		}
-		System.out.println("courseids = "+appConfig.get(AppConfig.CONF_SELECTED_COURSEID));
 		super.onPause();
 	}
 	@Override
@@ -163,7 +162,6 @@ public class SetTimeActivity extends BaseActivity implements OnClickListener{
 			}else
 			{
 				long i = (thatDay.getTime()-now)/1000/60/60/24;
-				System.out.println("剩余天数："+i);
 				s = i+" 天";
 				if(i==0)
 				{

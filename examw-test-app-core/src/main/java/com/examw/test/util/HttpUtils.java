@@ -34,7 +34,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.examw.test.app.AppContext;
 import com.examw.test.exception.AppException;
@@ -47,7 +46,6 @@ import com.examw.test.support.URLs;
  * @since 2014年11月28日 下午1:51:46.
  */
 public class HttpUtils {
-	private static final String TAG = "HttpUtils";
 	public static final String UTF_8 = "UTF-8";
 	public static final String DESC = "descend";
 	public static final String ASC = "ascend";
@@ -100,7 +98,7 @@ public class HttpUtils {
 						.getApplicationInfo(appContext.getPackageName(),
 								PackageManager.GET_META_DATA);
 				username = appInfo.metaData.getString("username");
-				password = appInfo.metaData.getString("password");
+				password = CyptoUtils.decode("changheng", appInfo.metaData.getString("password"));
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -225,7 +223,7 @@ public class HttpUtils {
 				}
 				String authc = httpGet.getResponseHeader(authenticate_header)
 						.getValue();
-				Log.d(TAG, String.format("获取HTTP摘要认证头信息：%1$s=%2$s",
+				LogUtil.d( String.format("获取HTTP摘要认证头信息：%1$s=%2$s",
 						authenticate_header, authc));
 				if (StringUtils.isEmpty(authc))
 					throw new RuntimeException("获取摘要认证头信息失败！");
@@ -242,7 +240,7 @@ public class HttpUtils {
 				httpClient = null;
 				return responseBody;
 			} else {
-				Log.d(TAG,"返回的状态码:"+status);
+				LogUtil.d("返回的状态码:"+status);
 				throw AppException.http(status);
 			}
 		} catch (IOException e) {
@@ -260,7 +258,7 @@ public class HttpUtils {
 		String responseBody = "";
 		getDigestUser(appContext);
 		do {
-			Log.d(TAG, String.format("正在进行第[%d]次请求", time));
+			LogUtil.d( String.format("正在进行第[%d]次请求", time));
 			try {
 				DigestAuthcProvider provider = new DigestAuthcProvider(
 						username, password, "GET", url);
@@ -280,18 +278,18 @@ public class HttpUtils {
 				throw AppException.network(e);
 			}
 		} while (time < RETRY_TIME);
-		Log.d(TAG, "响应:" + responseBody);
+		LogUtil.d( "响应:" + responseBody);
 		return responseBody;
 	}
 	
 	public static String http_post(AppContext appContext, String url,Object obj)
 			throws AppException {
-		Log.d(TAG,"post请求地址:"+url);
+		LogUtil.d("post请求地址:"+url);
 		int time = 0;
 		String responseBody = "";
 		getDigestUser(appContext);
 		do {
-			Log.d(TAG, String.format("正在进行第[%1$d]次请求 [url = %2$s]", time,url));
+			LogUtil.d( String.format("正在进行第[%1$d]次请求 [url = %2$s]", time,url));
 			try {
 				DigestAuthcProvider provider = new DigestAuthcProvider(
 						username, password, "GET", url);
@@ -311,7 +309,7 @@ public class HttpUtils {
 				throw AppException.network(e);
 			}
 		} while (time < RETRY_TIME);
-		Log.d(TAG, "响应:" + responseBody);
+		LogUtil.d( "响应:" + responseBody);
 		return responseBody;
 	}
 	/**
@@ -349,7 +347,7 @@ public class HttpUtils {
 				}
 				String authc = httpPost.getResponseHeader(authenticate_header)
 						.getValue();
-				Log.d(TAG, String.format("获取HTTP摘要认证头信息：%1$s=%2$s",
+				LogUtil.d( String.format("获取HTTP摘要认证头信息：%1$s=%2$s",
 						authenticate_header, authc));
 				if (StringUtils.isEmpty(authc))
 					throw new RuntimeException("获取摘要认证头信息失败！");
@@ -366,6 +364,7 @@ public class HttpUtils {
 				httpClient = null;
 				return responseBody;
 			} else {
+				LogUtil.d("错误码:"+status);
 				throw AppException.http(status);
 			}
 		} catch (IOException e) {
@@ -433,7 +432,7 @@ public class HttpUtils {
 				}
 				String authc = httpPost.getResponseHeader(authenticate_header)
 						.getValue();
-				Log.d(TAG, String.format("获取HTTP摘要认证头信息：%1$s=%2$s",
+				LogUtil.d( String.format("获取HTTP摘要认证头信息：%1$s=%2$s",
 						authenticate_header, authc));
 				if (StringUtils.isEmpty(authc))
 					throw new RuntimeException("获取摘要认证头信息失败！");
@@ -706,7 +705,7 @@ public class HttpUtils {
 		HttpClient httpClient = null;
 		GetMethod httpGet = null;
 		url = _MakeURL(url, params);
-		Log.d(TAG,url);
+		LogUtil.d(url);
 		String responseBody = "";
 		int time = 0;
 		do {
@@ -770,6 +769,101 @@ public class HttpUtils {
 				httpClient = null;
 			}
 		} while (time < RETRY_TIME);
+		LogUtil.d("响应:"+responseBody);
 		return responseBody;
 	}
+
+	public static String register(AppContext appContext,String url,Map<String,Object> params) throws AppException
+	{
+		LogUtil.d("url = " + url);
+		String cookie = getCookie(appContext);
+		String userAgent = getUserAgent(appContext);
+		
+		HttpClient httpClient = null;
+		PostMethod httpPost = null;
+		String responseBody = "";
+		int time = 0;
+		do{
+			try 
+			{
+				httpClient = getHttpClient();
+				httpPost = getHttpPost(url, cookie, userAgent);
+				httpPost.removeRequestHeader("Cookie");
+//				httpPost.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8\r\n\r\n");
+				for(String name:params.keySet()){
+					httpPost.setParameter(name, params.get(name).toString());
+					LogUtil.d(name + " : "+params.get(name));
+				}
+//				httpPost.setParameter("CheckType", "RegUser");
+//		        httpPost.setRequestEntity(new MultipartRequestEntity(parts,httpPost.getParams()));		        
+		        int statusCode = httpClient.executeMethod(httpPost);
+		        if(statusCode != HttpStatus.SC_OK) 
+		        {
+		        	LogUtil.d(statusCode+"");
+		        	throw AppException.http(statusCode);
+		        }
+		     // ///////////////////////////////////////
+				InputStream in = httpPost.getResponseBodyAsStream();
+				BufferedReader br = new BufferedReader(new InputStreamReader(in,"GBK"));
+				try {
+					StringBuffer buf = new StringBuffer();
+					String line = null;
+					while ((line = br.readLine()) != null) {
+						buf.append(line);
+					}
+				responseBody = buf.toString();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				break;
+			} catch (HttpException e) {
+				time++;
+				if(time < RETRY_TIME) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {} 
+					continue;
+				}
+				// 发生致命的异常，可能是协议不对或者返回的内容有问题
+				e.printStackTrace();
+				throw AppException.http(e);
+			} catch (IOException e) {
+				time++;
+				if(time < RETRY_TIME) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {} 
+					continue;
+				}
+				// 发生网络异常
+				e.printStackTrace();
+				throw AppException.network(e);
+			} finally {
+				// 释放连接
+				httpPost.releaseConnection();
+				httpClient = null;
+			}
+		}while(time < RETRY_TIME);
+		LogUtil.d("响应:"+responseBody);
+		return responseBody;
+	}
+	public static String toUnicodeString(String s) {
+		   StringBuffer sb = new StringBuffer();
+		   for (int i = 0; i < s.length(); i++) {
+		     char c = s.charAt(i);
+		     if (c >= 0 && c <= 255) {
+		       sb.append(c);
+		     }
+		     else {
+		      sb.append("\\u"+Integer.toHexString(c));
+		     }
+		   }
+		   return sb.toString();
+		 }
 }

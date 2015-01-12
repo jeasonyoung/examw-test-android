@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +31,7 @@ import com.examw.test.dao.PaperDao;
 import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.ReturnBtnClickListener;
+import com.examw.test.util.LogUtil;
 
 
 
@@ -41,7 +41,6 @@ import com.examw.test.support.ReturnBtnClickListener;
  * @since 2014年11月26日 下午3:17:13.
  */
 public class SimulateActivity extends FragmentActivity implements OnClickListener{
-	private static final String TAG = "SimulateActivity";
 	private ViewPager mViewPager;
 	private FragmentPagerAdapter mAdapter;
 
@@ -136,7 +135,7 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 				return mDatas.get(arg0);
 			}
 		};
-		Log.d(TAG,"ViewPager设置适配器");
+		LogUtil.d("ViewPager设置适配器");
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
@@ -189,15 +188,12 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 	}
 	@Override
 	public void onClick(View v) {
-		Log.d(TAG,"onclick "+v.getId());
 		switch(v.getId())
 		{
 		case R.id.real_paper_layout:
-			Log.d(TAG,"onclick");
 			mViewPager.setCurrentItem(0);
 			break;
 		case R.id.simulate_paper_layout:
-			Log.d(TAG,"onclick");
 			mViewPager.setCurrentItem(1);
 			break;
 		}

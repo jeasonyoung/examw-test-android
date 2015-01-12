@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
@@ -15,6 +14,7 @@ import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 
 /**
  * 收藏DAO
@@ -22,8 +22,6 @@ import com.examw.test.util.GsonUtil;
  * @since 2014年12月11日 下午2:37:25.
  */
 public class FavoriteDao {
-	private static final String TAG = "FavoriteDao";
-	
 	/**
 	 * 收藏或取消收藏
 	 * @param favor
@@ -32,7 +30,7 @@ public class FavoriteDao {
 	{
 		if(favor == null) return;
 		if(favor.getUsername() == null) return;
-		Log.d(TAG,"收藏或取消收藏");
+		LogUtil.d("收藏或取消收藏");
 		SQLiteDatabase db = UserDBManager.openDatabase(favor.getUsername());
 		Cursor cursor = db.rawQuery("select status from FavoriteTab where itemId = ? and username = ?", new String[]{favor.getItemId(),favor.getUsername()});
 		if(cursor.getCount() == 0) //还没有收藏
@@ -89,7 +87,7 @@ public class FavoriteDao {
 	}
 	public static ArrayList<Subject> getCount(ArrayList<Subject> subjects,String username)
 	{
-		Log.d(TAG,"查询各个科目的收藏情况");
+		LogUtil.d("查询各个科目的收藏情况");
 		if(username == null) return subjects;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		for(Subject subject:subjects)
@@ -122,7 +120,7 @@ public class FavoriteDao {
 	 */
 	public static SimplePaper loadFavoritePaper(String subjectId,String username)
 	{
-		Log.d(TAG,"查询单个科目的收藏试题");
+		LogUtil.d("查询单个科目的收藏试题");
 		if(username == null || subjectId==null) return null;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		int total = getCount(db,subjectId,username,null);

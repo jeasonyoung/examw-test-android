@@ -7,7 +7,6 @@ import java.util.List;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.examw.test.app.AppConstant;
 import com.examw.test.db.LibraryDBUtil;
@@ -17,6 +16,7 @@ import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 
 /**
@@ -25,9 +25,6 @@ import com.examw.test.util.StringUtils;
  * @since 2014年12月3日 下午2:15:05.
  */
 public class PaperDao {
-	
-	private static final String TAG = "PaperDao";
-	
 	/**
 	 * 判断是否含有试卷
 	 * @return
@@ -60,7 +57,7 @@ public class PaperDao {
 		Cursor cursor = db.rawQuery("select * from PaperTab where paperid = ?",
 				new String[] { paper.getPaperId() });
 		if (cursor.getCount() > 0) {
-			Log.d(TAG, "该试卷已经加过了");
+			LogUtil.d( "该试卷已经加过了");
 			cursor.close();
 			LibraryDBUtil.close();
 			return;
@@ -159,21 +156,21 @@ public class PaperDao {
 	 */
 	public static String findPaperContent(String paperId)
 	{
-		Log.d(TAG, String.format("查询试卷[PaperId= %s]的内容",paperId));
+		LogUtil.d( String.format("查询试卷[PaperId= %s]的内容",paperId));
 		if(StringUtils.isEmpty(paperId)) return null;
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		Cursor cursor = db.rawQuery("select content from PaperTab where paperid = ?", new String[]{paperId});
 		if (cursor.getCount() == 0) {
 			cursor.close();
 			LibraryDBUtil.close();
-			Log.d(TAG, String.format("试卷[PaperId= %s]没有内容",paperId));
+			LogUtil.d( String.format("试卷[PaperId= %s]没有内容",paperId));
 			return null;
 		}
 		cursor.moveToNext();
 		String content = cursor.getString(0);
 		cursor.close();
 		LibraryDBUtil.close();
-		Log.d(TAG, String.format("试卷[PaperId= %s]已有内容",paperId));
+		LogUtil.d( String.format("试卷[PaperId= %s]已有内容",paperId));
 		return CyptoUtils.decodeContent(paperId, content);
 	}
 	/**
@@ -183,7 +180,7 @@ public class PaperDao {
 	 */
 	public static String findPaperStructureContent(String paperId)
 	{
-		Log.d(TAG, String.format("查询试卷[PaperId= %s]的大题内容",paperId));
+		LogUtil.d( String.format("查询试卷[PaperId= %s]的大题内容",paperId));
 		if(StringUtils.isEmpty(paperId)) return null;
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		Cursor cursor = db.rawQuery("select structures from PaperTab where paperid = ?", new String[]{paperId});
@@ -204,7 +201,7 @@ public class PaperDao {
 	 */
 	public static void updatePaperContent(String paperId,String content)
 	{
-		Log.d(TAG, String.format("插入试卷[PaperId= %s]的内容",paperId));
+		LogUtil.d( String.format("插入试卷[PaperId= %s]的内容",paperId));
 		if (StringUtils.isEmpty(content) || StringUtils.isEmpty(paperId)) return;
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		PaperPreview paper = GsonUtil.jsonToBean(content, PaperPreview.class);
@@ -279,7 +276,7 @@ public class PaperDao {
 	}
 	//查找每日一练
 	public static ArrayList<Paper> findDailyPapers(long today,int dayOffset) {
-		Log.d(TAG,"查询每日一练的数据");
+		LogUtil.d("查询每日一练的数据");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		StringBuilder sql = new StringBuilder("select paperid,name,score,type,time,year,price,total,userTotal,publishTime from PaperTab where 1 = 1 and type = ? and publishTime > ? and publishTime < ? ");
 		ArrayList<String> params = new ArrayList<String>();
@@ -288,10 +285,10 @@ public class PaperDao {
 		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)-dayOffset, 0, 0, 0);
 		params.add(String.valueOf(AppConstant.PAPER_TYPE_DAILY));
 		params.add(StringUtils.toStandardDateShort(cal.getTime()));
-		Log.d(TAG,"当天的时间1:"+params.get(1));
+		LogUtil.d("当天的时间1:"+params.get(1));
 		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)+1, 0, 0, 0);
 		params.add(StringUtils.toStandardDateShort(cal.getTime()));
-		Log.d(TAG,"当天的时间2:"+params.get(2));
+		LogUtil.d("当天的时间2:"+params.get(2));
 		sql.append(" order by publishtime desc");
 		Cursor cursor = db.rawQuery(sql.toString(), params.toArray(new String[0]));
 		if (cursor.getCount() == 0) {
@@ -314,7 +311,7 @@ public class PaperDao {
 	
 	public static void updatePaperUserTotal(String paperId,int total)
 	{
-		Log.d(TAG,"更新用户考试次数");
+		LogUtil.d("更新用户考试次数");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		db.execSQL("update PaperTab set userTotal = ? where paperid = ?", new Object[]{total,paperId});
 		db.close();
@@ -325,7 +322,7 @@ public class PaperDao {
 	 */
 	public static String findLastedPaperAddTime()
 	{
-		Log.d(TAG,"查询最新的试卷时间");
+		LogUtil.d("查询最新的试卷时间");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		Cursor cursor = db.rawQuery("select publishtime from PaperTab order by publishtime desc limit 1 where paperType != "+AppConstant.PAPER_TYPE_DAILY,new String[0]);
 		String time = null;

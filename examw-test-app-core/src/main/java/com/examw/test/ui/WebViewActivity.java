@@ -1,11 +1,11 @@
 package com.examw.test.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.WebView;
 
 import com.examw.test.R;
 import com.examw.test.support.URLs;
+import com.examw.test.util.LogUtil;
 
 /**
  * 
@@ -39,7 +39,7 @@ public class WebViewActivity extends BaseActivity{
 		// 添加点击图片放大支持	(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(/[^'\"]+)\"
 		text = text.replaceAll("(<img[^>]+src=\")(\\S+)\"",
 				"$1"+URLs.HOST+"$2\" onClick=\"javascript:mWebViewImageListener.onImageClick('$2')\"");
-		Log.d(TAG,text);
+		LogUtil.d(text);
 		webView.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
 	}
 }

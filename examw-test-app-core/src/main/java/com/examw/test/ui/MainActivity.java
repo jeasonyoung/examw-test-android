@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -59,7 +58,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.e("MainActivity", "onCreate");
 		super.onCreate(savedInstanceState);
 		// 添加Activity到堆栈
 		AppManager.getAppManager().addActivity(this);
@@ -96,7 +94,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					String pwd = CyptoUtils.decode("changheng",
 							appConfig.get("user.pwd"));
 					try {
-						Log.e("登录线程", "启动");
 						appContext.setLoginState(AppContext.LOGINING); // 登录中
 						Json result = ApiClient.login(appContext, username, pwd);
 						msg.what = 1;
@@ -271,7 +268,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private void initSlidingMenu() {
 		// 初始化滑动菜单
-		Log.e("MainActivity", "initSlidingMenu");
 		menu = new SlidingMenu(this);
 		menu.setMode(SlidingMenu.RIGHT);
 		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
@@ -317,14 +313,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		// 结束Activity&从堆栈中移除
-		Log.e("MainActivity ", "onDestroy");
 		AppManager.getAppManager().finishActivity(this);
 	}
 
 	@Override
 	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
 		super.onActivityResult(arg0, arg1, arg2);
-		Log.e("MainActivity onActivityResult", arg1 + "");
 		switch (arg1) {
 		case 20: // 来自menu的登录
 			if (flag != MAIN_ACCOUNT) {
@@ -460,12 +454,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		//查询本地数据库用户信息
 		try{
 		User user = UserDao.findByUsername(username);
-		System.out.println("密码:"+password);
-		System.out.println(new String(Base64.decode(
-				Base64.decode(user.getPassword(), 0), 0)));
 		if (user!=null && password.equals(new String(Base64.decode(
 				Base64.decode(user.getPassword(), 0), 0)))) {
-			Log.d("本地登录","本地登录密码能对上");
 			if(user.getProductUserId()==null)
 			{
 				FrontUserInfo userInfo = new FrontUserInfo();
@@ -490,7 +480,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			msg.obj = user;
 		}else
 		{
-			Log.d("本地登录","本地登录失败,"+user.getProductUserId());
 			//登录失败
 			msg.what = -2;
 		}

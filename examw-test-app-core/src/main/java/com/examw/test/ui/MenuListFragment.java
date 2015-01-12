@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
-import com.examw.test.support.ApiClient;
 
 /**
  * 菜单列表
@@ -32,12 +30,10 @@ public class MenuListFragment extends ListFragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.e("menu", "onCreateView");
 		return inflater.inflate(R.layout.home_menu_list, null);
 	}
 
 	public void onActivityCreated(Bundle savedInstanceState) {
-		Log.e("menu", "onActivityCreated");
 		super.onActivityCreated(savedInstanceState);
 		appContext = (AppContext) getActivity().getApplication();
 		adapter = new SampleAdapter(getActivity());
@@ -213,36 +209,27 @@ public class MenuListFragment extends ListFragment {
 
 	@Override
 	public void onStart() {
-		Log.e("menu", "onStart");
-		// changeLoginState();
 		super.onStart();
 	}
 
 	@Override
 	public void onResume() {
-		Log.e("menu", "onResume");
 		changeLoginState();
 		super.onResume();
 	}
 
 	@Override
 	public void onStop() {
-		// TODO Auto-generated method stub
-		Log.e("menu", "onStop");
 		super.onStop();
 	}
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub.
-		Log.e("menu", "onPause");
 		super.onPause();
 	}
 
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
-		Log.e("menu", "onDestroy");
 		super.onDestroy();
 	}
 

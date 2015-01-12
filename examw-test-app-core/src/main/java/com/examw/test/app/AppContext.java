@@ -22,7 +22,6 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.examw.test.dao.ProductDao;
 import com.examw.test.db.UserDBUtil;
@@ -32,6 +31,7 @@ import com.examw.test.model.FrontProductInfo;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.AssetFileManager;
 import com.examw.test.util.CyptoUtils;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.MethodsCompat;
 import com.examw.test.util.StringUtils;
 
@@ -42,7 +42,6 @@ import com.examw.test.util.StringUtils;
  * @created 2012-3-21
  */
 public class AppContext extends Application {
-	private static final String TAG = "APPLICATION" ;
 	public static final int NETTYPE_WIFI = 0x01;
 	public static final int NETTYPE_CMWAP = 0x02;
 	public static final int NETTYPE_CMNET = 0x03;
@@ -223,7 +222,9 @@ public class AppContext extends Application {
 
 	@Override
 	public void onCreate() {
-		Log.d(TAG,"应用Application onCreate执行....");
+		//应用初始化
+//		LogUtil.showLog = true;	//是否答应日志,默认为不打印,发布时注释
+		LogUtil.d("应用Application onCreate执行....");
 		super.onCreate();
         //注册App异常崩溃处理器
         //hread.setDefaultUncaughtExceptionHandler(AppException.getAppExceptionHandler());
@@ -851,7 +852,7 @@ public class AppContext extends Application {
 		@Override
 		public void run() {
 			//初始化数据库
-			Log.d(TAG,"初始化数据线程启动");
+			LogUtil.d("初始化数据线程启动");
 			Long start = System.currentTimeMillis();
 			SQLiteDatabase db = UserDBUtil.getDatabase();
 			db.close();
@@ -887,7 +888,7 @@ public class AppContext extends Application {
 				AppContext.this.setProperty("exam_name", examName);
 			}
 			//!!!!!!!!!!!!!!在线获取信息!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			Log.d(TAG,"初始化数据线程结束,耗时:"+(System.currentTimeMillis() - start));
+			LogUtil.d("初始化数据线程结束,耗时:"+(System.currentTimeMillis() - start));
 		}
 	}
 	

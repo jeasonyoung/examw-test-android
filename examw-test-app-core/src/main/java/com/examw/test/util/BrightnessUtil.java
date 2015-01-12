@@ -47,7 +47,7 @@ public class BrightnessUtil {
 	public static void setBrightness(Activity activity, int brightness) {
 		WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
 		lp.screenBrightness = Float.valueOf(brightness) * (1f / 255f);
-		Log.d("lxy", "set  lp.screenBrightness == " + lp.screenBrightness);
+		LogUtil.d("set  lp.screenBrightness == " + lp.screenBrightness);
 		activity.getWindow().setAttributes(lp);
 	}
 	/** * 停止自动亮度调节 */

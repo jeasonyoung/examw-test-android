@@ -29,7 +29,9 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- 震动 -->
     <uses-permission android:name="android.permission.VIBRATE" />
-        
+    <!-- QQ、QQ空间所需权限 -->
+	<uses-permission android:name="android.permission.GET_TASKS" />  
+	
     <application
         android:name="com.examw.test.app.AppContext"
         android:allowBackup="true"
@@ -179,6 +181,6 @@
             ></activity>
         <!-- 校验用户 -->
         <meta-data android:value="digest" android:name="username"></meta-data>
-        <meta-data android:value="d4i9g7e5s19t20" android:name="password"></meta-data>
+        <meta-data android:value="7F522E56248B559B2F443C8EC310F0E7" android:name="password"></meta-data>
     </application>
 </manifest>

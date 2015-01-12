@@ -56,7 +56,6 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 	private static final String TAG = "QuestionAdatper";
 	private Context context;
 	private PaperDoPracticeActivity activity1;
-	private BaseActivity activity;
 	private ArrayList<StructureItemInfo> questionList;
 	private ContentViewHolder contentHolder;
 	// 图片保存目录
@@ -73,7 +72,6 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 		// /mnt/sdcard/eschool/hahaha/image/1001
 		this.imageSavePath = Environment.getExternalStorageDirectory()
 				.getPath()+ File.separator+ "examw"+ File.separator+ username+ File.separator+ "image"+ File.separator+ "question";
-		this.activity = activity;
 		if (activity instanceof PaperDoPracticeActivity)
 			this.activity1 = (PaperDoPracticeActivity) activity;
 //		else if (activity instanceof QuestionDoExamActivity1)
@@ -107,10 +105,7 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 		int action = 0;
 		if (activity1 != null) {
 			action = activity1.getAction();
-		} else {
-//			action = activity1.getAction();
-		}
-		Log.d(TAG, "action = "+action);
+		} 
 		float size = this.pref.getFloat("fontsize", 16.0f);
 		StructureItemInfo currentQuestion = questionList.get(position); // 当前的题目
 		if (v == null) {
@@ -126,7 +121,7 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			//文字题答题布局
 			contentHolder.modeLayout4 = (LinearLayout) v.findViewById(R.id.doexam_mode3layout);
 			//图片
-			contentHolder.examImages = (LinearLayout) v.findViewById(R.id.examImages2);
+			contentHolder.textContent = (ImageTextView) v.findViewById(R.id.exam_Content3);	//文字题内容
 			//文字题答题控件
 			contentHolder.answerEditText = (EditText) v.findViewById(R.id.exam_answerEditText);
 			//答案提交按钮
@@ -136,7 +131,7 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			//
 			//contentHolder.scrollView = (ScrollView) v.findViewById(R.id.ContentscrollView);
 			//checkbox点选事件监听
-			contentHolder.checkBoxListener = new CheckBoxClickListener(activity, contentHolder.examOption);
+			contentHolder.checkBoxListener = new CheckBoxClickListener(activity1, contentHolder.examOption);
 			//显示答案按钮
 			contentHolder.showAnswerBtn.setOnClickListener(showAnswerLinsener);
 			contentHolder.showAnswerBtn.setVisibility(View.GONE);
@@ -152,7 +147,6 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 		setFontSize(contentHolder, answerHolder, size);
 		//设置题目内容以及答案
 		// holder.scrollView.fullScroll(33); //滑动到最开始?
-		contentHolder.examImages.removeAllViews();
 		String answer = currentQuestion.getUserAnswer(); // 学员的答案
 		Integer type = currentQuestion.getType();
 		if (currentQuestion.isChoose()) { // 选择题
@@ -162,9 +156,6 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			TreeSet<StructureItemInfo> children= new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
 			// 显示图片
 			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
-//			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
-//					contentHolder.examImages, contentHolder.examContent);
-			// this.examOption1.clearCheck();
 			if (contentHolder.examOption.getChildCount() > children.size() - 1) {
 				for (int j = children.size() - 1; j < contentHolder.examOption
 						.getChildCount(); j++) {
@@ -209,8 +200,6 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			contentHolder.modeLayout4.setVisibility(View.GONE);
 			// 显示图片
 			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
-//			showPics(position, currentQuestion.getContent(), imageSavePath, currentQuestion.getId(),
-//					contentHolder.examImages, contentHolder.examContent);
 			//选项
 			OptionLayout rb_t, rb_f;
 			if (contentHolder.examOption.getChildCount() == 0) {
@@ -282,9 +271,13 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			contentHolder.modeLayout4.setVisibility(View.VISIBLE);
 			
 			//TODO 显示问答题的题干
+			contentHolder.textContent.setText(position + 1 + "、"+currentQuestion.getContent());
 			
 			if (answer != null) {
 				contentHolder.answerEditText.setText(answer);
+			}else
+			{
+				contentHolder.answerEditText.setText("");
 			}
 			contentHolder.submitExamBtn.setVisibility(0);
 			contentHolder.submitExamBtn
@@ -293,7 +286,7 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 						public void onClick(View v) {
 							String txtAnswer = contentHolder.answerEditText
 									.getText().toString();
-							activity.saveTextAnswer(txtAnswer);
+							activity1.saveTextAnswer(txtAnswer);
 						}
 					});
 		}
@@ -312,9 +305,9 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 	//题目内容Holder,公用
 	public static class ContentViewHolder {
 		ScrollView scrollView;
-		LinearLayout modeLayout, modeLayout4, examImages;
+		LinearLayout modeLayout, modeLayout4;
 		EditText answerEditText;
-		ImageTextView examContent;
+		ImageTextView examContent,textContent;
 		public CheckBoxGroup examOption;
 		Button submitExamBtn;
 		Button showAnswerBtn;
@@ -426,6 +419,7 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 			AnswerViewHolder answerHolder, float size) {
 		// 标题
 		contentHolder.examContent.setTextSize(size);
+		contentHolder.textContent.setTextSize(size);
 		contentHolder.examOption.setFontSize(size);
 		// 答案解析等
 		answerHolder.myAnswerTextView.setTextSize(size);// 我的答案
@@ -601,7 +595,6 @@ public class PracticeQuestionAdapter extends BaseAdapter {
 
 
 	public void setRadioEnable(RadioGroup group, boolean flag) {
-		System.out.println("设置禁用radiobutton");
 		int viewCount = group.getChildCount();
 		for (int i = 0; i < viewCount; i++) {
 			group.getChildAt(i).setEnabled(flag);

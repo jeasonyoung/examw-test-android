@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.model.AppUpdateInfo;
+import com.examw.test.util.LogUtil;
 
 /**
  * 应用更新管理
@@ -40,7 +41,6 @@ import com.examw.test.model.AppUpdateInfo;
  * @since 2014年11月28日 下午12:05:24.
  */
 public class AppUpdateManager {
-	private static final String TAG = "AppUpdateManager";
 	private static final int DOWN_NOSDCARD = 0;
     private static final int DOWN_UPDATE = 1;
     private static final int DOWN_OVER = 2;
@@ -168,7 +168,7 @@ public class AppUpdateManager {
 			public void run() {
 				Message msg = new Message();
 				try {
-					Log.d(TAG,"启动了检测线程进行检测更新");
+					LogUtil.d("启动了检测线程进行检测更新");
 					Thread.sleep(3000);
 					//TODO 修改更新检测
 //					AppUpdateInfo update = new AppUpdateInfo();//appContext.getAppUpdate();
@@ -274,7 +274,7 @@ public class AppUpdateManager {
 		@Override
 		public void run() {
 			try {
-				Log.d(TAG,"启动了下载线程进行APK的下载");
+				LogUtil.d("启动了下载线程进行APK的下载");
 				String apkName = "AccountApp_"+mUpdateInfo.getVersionName()+".apk";
 				String tmpApk = "AccountApp_"+mUpdateInfo.getVersionName()+".tmp";
 				//判断是否挂载了SD卡

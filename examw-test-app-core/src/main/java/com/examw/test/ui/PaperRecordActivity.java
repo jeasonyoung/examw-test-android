@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -29,6 +28,7 @@ import com.examw.test.exception.AppException;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.support.ReturnBtnClickListener;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 
 /**
  * 考试记录
@@ -37,7 +37,6 @@ import com.examw.test.util.GsonUtil;
  * @since 2014年12月11日 下午5:03:03.
  */
 public class PaperRecordActivity extends BaseActivity {
-	private static final String TAG = "PaperRecordActivity";
 	private LinearLayout contentLayout, nodataLayout, loadingLayout;
 	private ListView paperListView;
 	private String username;
@@ -112,14 +111,14 @@ public class PaperRecordActivity extends BaseActivity {
 
 	@Override
 	protected void onStart() {
-		Log.d(TAG,"Record onStart");
+		LogUtil.d("Record onStart");
 		this.loadingLayout.setVisibility(View.GONE);
 		super.onStart();
 		initData();
 	}
 
 	private void initData() {
-		Log.d(TAG,"初始化数据");
+		LogUtil.d("初始化数据");
 		loadingLayout.setVisibility(View.VISIBLE);
 		new Thread() {
 			public void run() {
@@ -247,7 +246,7 @@ public class PaperRecordActivity extends BaseActivity {
 				Toast.makeText(theActivity, "找不到试卷信息", Toast.LENGTH_SHORT).show();
 				break;
 			case 11:
-				Log.d(TAG,"初始化数据完成");
+				LogUtil.d("初始化数据完成");
 				if (theActivity.recordList == null || theActivity.recordList.size() == 0) {
 					//没有数据
 					theActivity.contentLayout.setVisibility(View.GONE);

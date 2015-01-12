@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -23,6 +22,7 @@ import com.examw.test.app.AppConfig;
 import com.examw.test.support.URLs;
 import com.examw.test.ui.ImageZoomActivity;
 import com.examw.test.util.BitmapManager;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 
 public class ImageTextView extends LinearLayout {
@@ -100,7 +100,7 @@ public class ImageTextView extends LinearLayout {
 					iv.setScaleType(ScaleType.FIT_START);
 					String url = images.get(i);
 					iv.setTag(URLs.HOST+ url);
-					Log.d(TAG,URLs.HOST+ url);
+					LogUtil.d(URLs.HOST+ url);
 					if(!loadLocaleImage(images.get(i),iv)){
 						bmpManager.loadBitmap(URLs.HOST+url, iv);
 					}

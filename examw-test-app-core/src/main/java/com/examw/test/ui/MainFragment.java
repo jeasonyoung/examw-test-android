@@ -25,13 +25,10 @@ import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.exception.AppException;
-import com.examw.test.support.ApiClient;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 
 public class MainFragment extends Fragment {
-	private static final String TAG = "MainFragment";
 	private HomeGrid g;
 	private RelativeLayout setDateLayout;
 	private TextView restDay, usernameTv;
@@ -62,7 +59,6 @@ public class MainFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.i("Mainfragment", "onCreateView");
 		appConfig = AppConfig.getAppConfig(getActivity());
 		appContext = (AppContext) getActivity().getApplication();
 		View v = inflater.inflate(R.layout.main_fragment, null);
@@ -90,20 +86,20 @@ public class MainFragment extends Fragment {
 		this.setDateLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				startActivity(new Intent(getActivity(), SetTimeActivity.class));
+				startActivity(new Intent(getActivity(), SetTimeActivity.class));
 //				Intent intent = new Intent(getActivity(), ImageZoomActivity.class);
 //				intent.putExtra("url", "/42c7f9f5-6088-4bc8-acc0-59162257a775");
 //				startActivity(intent);
-				new Thread(){
-					public void run() {
-						try {
-							ApiClient.register(appContext, "abcd", "123456", "13800000000", "中国", "abcd@163.com");
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					};
-				}.start();
+//				new Thread(){
+//					public void run() {
+//						try {
+//							ApiClient.register(appContext, "dddd1111", "123456", "13800000000", "中国", "abcd12121@163.com");
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					};
+//				}.start();
 			}
 		});
 	}
@@ -179,118 +175,60 @@ public class MainFragment extends Fragment {
 				long arg3) {
 			// 下数据包
 			arg1.clearFocus();
-			startActivity(arg2,needLogin[arg2]);
-			// if () {
-			// UIHelper.ToastMessage(MainFragment.this.getActivity(),
-			// R.string.network_not_connected);
-			// // 没有网络连接，判断数据包有没有被下载
-			// return;
-			// }
-			// 如果数据不存在 并且需要 登录 先去下载数据包
-//			if (!(new MyDBManager(MainFragment.this.getActivity()).isDBExist())
-//					&& needLogin[arg2]) {
-//				// 下数据包
-//				if (appContext.isNetworkConnected())
-//					DBDownloadManager.getManager().showNoticeDialog(
-//							MainFragment.this.getActivity());
-//				else {
-//					UIHelper.ToastMessage(MainFragment.this.getActivity(),
-//							"必须先下载数据包,请检查网络!");
-//				}
-//			} else if (needLogin[arg2]) // 要登陆才能进入
-//			{
-//				switch (appContext.getLoginState()) {
-//				case AppContext.LOCAL_LOGINED:
-//				case AppContext.LOGINED:
-//					startActivity(arg2,needLogin[arg2]);
-//					break;
-//				case AppContext.LOGINING:
-//					if (appContext.getLoginState() == AppContext.LOGINING) // 正在登录,显示progress
-//					{
-//						if (mProDialog != null) {
-//							mProDialog.show();
-//							return;
-//						}
-//						mProDialog = ProgressDialog.show(getActivity(), null,
-//								"正在登录，请稍后...", true, true);
-//						final Handler mHandler = new Handler() {
-//							@Override
-//							public void handleMessage(Message msg) {
-//								// TODO Auto-generated method stub
-//								switch (msg.what) {
-//								case 1:
-//									if (mProDialog != null) {
-//										mProDialog.dismiss();
-//									}
-//									if (appContext.getLoginState() != AppContext.LOGINED
-//											|| appContext.getLoginState() != AppContext.LOCAL_LOGINED) {
-//										Intent intent2 = new Intent(
-//												MainFragment.this.getActivity(),
-//												LoginActivity.class);
-//										intent2.putExtra("className",
-//												classes[arg2].getName());
-//										startActivity(intent2);
-//									} else {
-//										startActivity(arg2,needLogin[arg2]);
-//									}
-//									break;
-//								}
-//							}
-//						};
-//						Runnable checkIsLogin = new Runnable() {
-//							@Override
-//							public void run() {
-//								if (appContext.getLoginState() != AppContext.LOGINING) {
-//									// 去掉提示Dialog
-//									mHandler.sendEmptyMessage(1);
-//									mHandler.removeCallbacks(this);
-//								} else {
-//									// 如果没有登录完毕则等待500毫秒再次检测
-//									mHandler.postDelayed(this, 500);
-//								}
-//							}
-//						};
-//						mHandler.post(checkIsLogin);
-//					}
-//					break;
-//				default:
-//					Intent intent2 = new Intent(
-//							MainFragment.this.getActivity(),
-//							LoginActivity.class);
-//					intent2.putExtra("className", classes[arg2].getName());
-//					if (actionName[arg2] != null) {
-//						intent2.putExtra("actionName", actionName[arg2]);
-//					}
-//					startActivity(intent2);
-//					break;
-//				}
-//			} else {
-//				if (KnowledgeTodayActivity.class.equals(classes[arg2])) {
-//					if (appConfig.getExamTime() == 0) {
-//						Intent intent = new Intent(
-//								MainFragment.this.getActivity(),
-//								SetTimeActivity.class);
-//						intent.putExtra("flag", 1);
-//						startActivity(intent);
-//						Toast.makeText(getActivity(), "请设置考试时间和科目",
-//								Toast.LENGTH_SHORT).show();
-//						return;
-//					}
-//					if (StringUtils.isEmpty(appConfig
-//							.get(AppConfig.CONF_SELECTED_COURSEID))) {
-//						Intent intent = new Intent(
-//								MainFragment.this.getActivity(),
-//								SetTimeActivity.class);
-//						intent.putExtra("flag", 2);
-//						startActivity(intent);
-//						Toast.makeText(getActivity(), "请设置考试科目",
-//								Toast.LENGTH_SHORT).show();
-//						return;
-//					}
-//				}
-//				//
-//				startActivity(arg2,needLogin[arg2]);
-//			}
+			if (needLogin[arg2]) // 要登陆才能进入
+			{
+				switch (appContext.getLoginState()) {
+				case AppContext.LOCAL_LOGINED:
+				case AppContext.LOGINED:
+					startActivity(arg2,needLogin[arg2]);
+					break;
+				case AppContext.LOGINING:
+					if (appContext.getLoginState() == AppContext.LOGINING) // 正在登录,显示progress
+					{
+						if (mProDialog != null) {
+							mProDialog.show();
+							return;
+						}
+						mProDialog = ProgressDialog.show(getActivity(), null,
+								"正在登录，请稍后...", true, true);
+						final Handler mHandler = new Handler() {
+							@Override
+							public void handleMessage(Message msg) {
+								// TODO Auto-generated method stub
+								switch (msg.what) {
+								case 1:
+									if (mProDialog != null) {
+										mProDialog.dismiss();
+									}
+									startActivity(arg2,needLogin[arg2]);
+									break;
+								}
+							}
+						};
+						Runnable checkIsLogin = new Runnable() {
+							@Override
+							public void run() {
+								if (appContext.getLoginState() != AppContext.LOGINING) {
+									// 去掉提示Dialog
+									mHandler.sendEmptyMessage(1);
+									mHandler.removeCallbacks(this);
+								} else {
+									// 如果没有登录完毕则等待500毫秒再次检测
+									mHandler.postDelayed(this, 500);
+								}
+							}
+						};
+						mHandler.post(checkIsLogin);
+					}
+					break;
+				default:
+					startActivity(arg2,needLogin[arg2]);
+					break;
+				}
+			}else
+			{
+				startActivity(arg2,needLogin[arg2]);
+			}
 		}
 	}
 

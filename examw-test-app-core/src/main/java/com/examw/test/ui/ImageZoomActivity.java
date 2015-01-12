@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.util.BitmapManager;
+import com.examw.test.util.LogUtil;
 
 /**
  * 图片缩放界面
@@ -36,8 +37,8 @@ public class ImageZoomActivity extends BaseActivity{
         File file = new File(myJpgPath);
         if(file.exists())
         {
-        	Log.d(TAG,"图片文件存在....");
-        	Log.d(TAG,myJpgPath);
+        	LogUtil.d("图片文件存在....");
+        	LogUtil.d(myJpgPath);
 //        	myJpgPath = "/mnt/sdcard/examw/image/123456.bmp";
         	BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;

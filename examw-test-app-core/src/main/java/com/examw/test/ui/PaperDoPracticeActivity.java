@@ -47,6 +47,7 @@ import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.AnswerSettingLayout;
 import com.examw.test.widget.AnswerSettingLayout.FontSizeChangeListerner;
@@ -104,7 +105,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "考试界面启动onCreate");
+		LogUtil.d( "考试界面启动onCreate");
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_do_real_paper);
 		preferences = this.getSharedPreferences("wdkaoshi", 0);
@@ -146,7 +147,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	// 取得主界面的组件,只取得不操作
 	private void initView() {
-		Log.d(TAG, "初始化组件");
+		LogUtil.d( "初始化组件");
 		this.favoriteBtn = (ImageButton) this.findViewById(R.id.favoriteBtn); // 收藏按钮
 		this.answerBtn = (ImageButton) this.findViewById(R.id.answerBtn); // 交卷按钮
 		this.answerBtn.setImageResource(R.drawable.exam_answer_img);
@@ -203,7 +204,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	// 初始化数据
 	private void initData() {
-		Log.d(TAG, "初始化数据");
+		LogUtil.d( "初始化数据");
 		Intent intent = getIntent();
 		username = ((AppContext) getApplication()).getUsername();
 		action = intent.getIntExtra("action", 0);
@@ -255,7 +256,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 			PaperDoPracticeActivity q2 = weak.get();
 			switch (msg.what) {
 			case 1: // 初始化完成
-				Log.d(TAG, "数据初始化完成");
+				LogUtil.d( "数据初始化完成");
 				if (q2.ruleList != null && q2.ruleList.size() > 0) {
 					q2.examTypeTextView.setText(q2.ruleList.get(0).getTitle()); // 大题名字
 				} else {
@@ -593,7 +594,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onPause() {
-		Log.d(TAG, "onPause");
+		LogUtil.d( "onPause");
 		// 收藏试题
 		if (favor != null && favor.isNeedDelete() != null) {
 			FavoriteDao.favorOrCancel(favor);
@@ -606,7 +607,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onStop() {
-		Log.d(TAG, "onStop");
+		LogUtil.d( "onStop");
 		if (vibrator != null) {
 			vibrator.cancel();
 		}
@@ -615,7 +616,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		LogUtil.d( "onDestroy");
 		if (exitDialog != null) {
 			exitDialog.dismiss();
 		}

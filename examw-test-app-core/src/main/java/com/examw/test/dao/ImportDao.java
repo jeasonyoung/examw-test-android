@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
@@ -24,6 +23,7 @@ import com.examw.test.support.ApiClient;
 import com.examw.test.support.DataConverter;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -34,14 +34,13 @@ import com.google.gson.reflect.TypeToken;
  * @since 2014年12月28日 下午2:37:27.
  */
 public class ImportDao {
-	public static final String TAG = "ImportDao";
 	ImportDBManager dbManager = new ImportDBManager();
 	AppContext appContext;
 	public ImportDao(AppContext appContext) {
 		this.appContext = appContext;
 	}
 	public boolean hasInsert() {
-		Log.d(TAG, "查询产品信息是否存在");
+		LogUtil.d( "查询产品信息是否存在");
 		SQLiteDatabase db = dbManager.openDatabase();
 		Cursor cursor = db.rawQuery(
 				"select * from ProductTab where productid = ?",
@@ -55,7 +54,7 @@ public class ImportDao {
 	public void insert(FrontProductInfo product) {
 		if (product == null)
 			return;
-		Log.d(TAG, "插入产品信息");
+		LogUtil.d( "插入产品信息");
 		SQLiteDatabase db = dbManager.openDatabase();
 		db.beginTransaction();
 		// 插产品
@@ -67,7 +66,7 @@ public class ImportDao {
 		db.execSQL("delete from SubjectTab");
 		String[] subjectIds = product.getSubjectId();
 		if (subjectIds != null && subjectIds.length > 0) {
-			Log.d(TAG, "插入科目信息");
+			LogUtil.d( "插入科目信息");
 			String[] subjectNames = product.getSubjectName();
 			for (int i = 0; i < subjectIds.length; i++) {
 				db.execSQL(
@@ -128,7 +127,7 @@ public class ImportDao {
 	 * @return
 	 */
 	public void updatePaperContent(String paperId, String content) {
-		Log.d(TAG, String.format("插入试卷[PaperId= %s]的内容", paperId));
+		LogUtil.d( String.format("插入试卷[PaperId= %s]的内容", paperId));
 		if (StringUtils.isEmpty(content) || StringUtils.isEmpty(paperId))
 			return;
 		SQLiteDatabase db = dbManager.openDatabase();
@@ -164,7 +163,7 @@ public class ImportDao {
 	public void insertSyllabusAndLoadChapters(Subject subject, String content) {
 		if (StringUtils.isEmpty(content) || content.equals("[]"))
 			return;
-		Log.d(TAG, "插入考试大纲,并且获取章节信息");
+		LogUtil.d( "插入考试大纲,并且获取章节信息");
 		SQLiteDatabase db = dbManager.openDatabase();
 		SyllabusInfo syllabus = new SyllabusInfo();
 		syllabus.setId(UUID.randomUUID().toString());
@@ -179,7 +178,7 @@ public class ImportDao {
 		try {
 			db.beginTransaction();
 			insertSyllabus(db, syllabus);
-			Log.d(TAG, "插入考试大纲章节信息");
+			LogUtil.d( "插入考试大纲章节信息");
 			for (SyllabusInfo info : list) {
 				insertChapter(db, info, syllabus.getId());
 			}

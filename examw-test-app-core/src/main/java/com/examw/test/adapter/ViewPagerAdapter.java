@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.ui.MainActivity;
@@ -58,7 +59,18 @@ public class ViewPagerAdapter  extends PagerAdapter {
         ((ViewPager) arg0).addView(views.get(arg1), 0);  
         if (arg1 == views.size() - 1) {  
 //            ImageView mStartWeiboImageButton = (ImageView) arg0  
-//                    .findViewById(R.id.iv_start_weibo);  
+//                    .findViewById(R.id.iv_start_weibo); 
+        	views.get(arg1).findViewById(R.id.start).setOnClickListener(new OnClickListener() {  
+  
+                @Override  
+                public void onClick(View v) {  
+                    // 设置已经引导  
+                    setGuided();  
+                    goMain();  
+  
+                }  
+  
+            });  
             views.get(arg1).setOnClickListener(new OnClickListener() {  
   
                 @Override  

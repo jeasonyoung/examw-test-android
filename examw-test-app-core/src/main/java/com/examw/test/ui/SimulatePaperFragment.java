@@ -54,7 +54,6 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		Log.d("SimulatePaper","模拟试题 Fragment创建");
 		View v = inflater.inflate(R.layout.setting_fragment, null);
 		dateTxt = (TextView) v.findViewById(R.id.txt_date);
 		versionTxt = (TextView) v.findViewById(R.id.txt_version);

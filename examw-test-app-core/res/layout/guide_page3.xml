@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<RelativeLayout 
     android:orientation="vertical" 
     android:background="@drawable/guide_3" 
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent"
-  	xmlns:android="http://schemas.android.com/apk/res/android" />
+  	xmlns:android="http://schemas.android.com/apk/res/android" >
+	<Button 
+	    android:id="@+id/start"
+	    android:layout_height="wrap_content"
+	    android:layout_width="wrap_content"
+	    android:paddingLeft="20dp"
+	    android:paddingRight="20dp"
+	    android:paddingTop="10dp"
+	    android:paddingBottom="10dp"
+	    android:background="@drawable/btn_gray"
+	    android:layout_alignParentBottom="true"
+	    android:layout_centerInParent="true"
+	    android:layout_marginBottom="60dp"
+	    android:textColor="@color/white"
+	    android:textSize="18.0sp"
+	    android:text="立即体验"
+	    />
+</RelativeLayout>

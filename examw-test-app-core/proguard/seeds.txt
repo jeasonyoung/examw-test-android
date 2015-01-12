@@ -3158,8 +3158,6 @@ com.examw.test.R$id: int errorSize
 com.examw.test.R$id: int examAnalysisStr
 com.examw.test.R$id: int examContentLayout
 com.examw.test.R$id: int examDirectoryLayout
-com.examw.test.R$id: int examImages2
-com.examw.test.R$id: int examImages3
 com.examw.test.R$id: int examOption2
 com.examw.test.R$id: int examTitle
 com.examw.test.R$id: int examTypeTextView
@@ -3298,9 +3296,11 @@ com.examw.test.R$id: int regist_email
 com.examw.test.R$id: int regist_etConfirimPass
 com.examw.test.R$id: int regist_etPassword
 com.examw.test.R$id: int regist_etUserName
+com.examw.test.R$id: int regist_name
 com.examw.test.R$id: int regist_tel
 com.examw.test.R$id: int regist_tvConfirimPass
 com.examw.test.R$id: int regist_tvEmail
+com.examw.test.R$id: int regist_tvName
 com.examw.test.R$id: int regist_tvPassword
 com.examw.test.R$id: int regist_tvPhone
 com.examw.test.R$id: int regist_tvUserName
@@ -4158,6 +4158,33 @@ com.examw.test.model.PaperPreview: java.math.BigDecimal getUserScore()
 com.examw.test.model.PaperPreview: void setUserScore(java.math.BigDecimal)
 com.examw.test.model.PaperPreview: void setLeftTime(java.lang.Long)
 com.examw.test.model.PaperPreview: java.lang.Long getLeftTime()
+com.examw.test.model.RemoteUserInfo
+com.examw.test.model.RemoteUserInfo: long serialVersionUID
+com.examw.test.model.RemoteUserInfo: java.lang.String UserName
+com.examw.test.model.RemoteUserInfo: java.lang.String uid
+com.examw.test.model.RemoteUserInfo: java.lang.String GroupID
+com.examw.test.model.RemoteUserInfo: java.lang.String GroupExpiry
+com.examw.test.model.RemoteUserInfo: java.lang.String RegTime
+com.examw.test.model.RemoteUserInfo: java.lang.String LoginTime
+com.examw.test.model.RemoteUserInfo: java.lang.Double ExamwB
+com.examw.test.model.RemoteUserInfo: java.lang.Double UserMoney
+com.examw.test.model.RemoteUserInfo: RemoteUserInfo()
+com.examw.test.model.RemoteUserInfo: java.lang.String getUserName()
+com.examw.test.model.RemoteUserInfo: void setUserName(java.lang.String)
+com.examw.test.model.RemoteUserInfo: java.lang.String getUid()
+com.examw.test.model.RemoteUserInfo: void setUid(java.lang.String)
+com.examw.test.model.RemoteUserInfo: java.lang.String getGroupID()
+com.examw.test.model.RemoteUserInfo: void setGroupID(java.lang.String)
+com.examw.test.model.RemoteUserInfo: java.lang.String getGroupExpiry()
+com.examw.test.model.RemoteUserInfo: void setGroupExpiry(java.lang.String)
+com.examw.test.model.RemoteUserInfo: java.lang.String getRegTime()
+com.examw.test.model.RemoteUserInfo: void setRegTime(java.lang.String)
+com.examw.test.model.RemoteUserInfo: java.lang.String getLoginTime()
+com.examw.test.model.RemoteUserInfo: void setLoginTime(java.lang.String)
+com.examw.test.model.RemoteUserInfo: java.lang.Double getExamwB()
+com.examw.test.model.RemoteUserInfo: void setExamwB(java.lang.Double)
+com.examw.test.model.RemoteUserInfo: java.lang.Double getUserMoney()
+com.examw.test.model.RemoteUserInfo: void setUserMoney(java.lang.Double)
 com.examw.test.model.SimplePaper
 com.examw.test.model.SimplePaper: long serialVersionUID
 com.examw.test.model.SimplePaper: java.lang.Integer total

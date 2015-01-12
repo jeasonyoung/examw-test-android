@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
@@ -17,6 +16,7 @@ import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 
 /**
@@ -25,7 +25,6 @@ import com.examw.test.util.StringUtils;
  * @since 2014年12月5日 上午11:31:59.
  */
 public class PaperRecordDao {
-	private static final String TAG = "PaperRecordDao";
 	public static final int PAGESIZE = 20;
 	/**
 	 * 保存考试记录
@@ -43,7 +42,7 @@ public class PaperRecordDao {
 		if (record == null)	return false;
 		if (record.getUserName() == null)	return false;
 		SQLiteDatabase db = UserDBManager.openDatabase(record.getUserName());
-		Log.d(TAG,"插入考试记录");
+		LogUtil.d("插入考试记录");
 		String sql = "insert into PaperRecordTab(recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,torf) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		Object[] params = new Object[] {
 			record.getRecordId(),record.getPaperId(),record.getPaperName(),record.getPaperType(),
@@ -60,7 +59,7 @@ public class PaperRecordDao {
 	 */
 	public static PaperRecord findLastRecord(String userName)
 	{
-		Log.d(TAG,String.format("查询用户[userName = %s]的记录", userName));
+		LogUtil.d(String.format("查询用户[userName = %s]的记录", userName));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
@@ -88,7 +87,7 @@ public class PaperRecordDao {
 	}
 	public static PaperRecord findLastRecord(String userName,String types)
 	{
-		Log.d(TAG,String.format("查询用户[userName = %s]的记录", userName));
+		LogUtil.d(String.format("查询用户[userName = %s]的记录", userName));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
@@ -120,10 +119,10 @@ public class PaperRecordDao {
 	 */
 	public static ArrayList<PaperRecord> findAll(String userName,String userId,String lastTime)
 	{
-		Log.d(TAG,String.format("查询用户[%1$s][%2$s]的全部记录", userName,userId));
+		LogUtil.d(String.format("查询用户[%1$s][%2$s]的全部记录", userName,userId));
 		if(userName == null || userId == null) return null;
 		if(StringUtils.isEmpty(lastTime)) lastTime = "1970-01-01 00:00:00";
-		Log.d(TAG,String.format("上次的同步时间为[%s]", lastTime));
+		LogUtil.d(String.format("上次的同步时间为[%s]", lastTime));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		ArrayList<PaperRecord> list = new ArrayList<PaperRecord>();
 		Cursor cursor = db.rawQuery("select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where status = 1 and createTime > ? ", 
@@ -150,7 +149,7 @@ public class PaperRecordDao {
 	 */
 	public static PaperRecord findById(String userName,String recordId,boolean withItems)
 	{
-		Log.d(TAG,String.format("查询[recordId = %s]的记录", recordId));
+		LogUtil.d(String.format("查询[recordId = %s]的记录", recordId));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		/*
 		 *  private String recordId,paperId,paperName,userId,userName,productId,terminalId,status;
@@ -207,7 +206,7 @@ public class PaperRecordDao {
 	 */
 	public static PaperRecord findLastPaperRecord(String paperId,String userName,boolean withItems)
 	{
-		Log.d(TAG,String.format("查询[paperId = %1$s,userName = %2$s]的最新考试记录", paperId,userName));
+		LogUtil.d(String.format("查询[paperId = %1$s,userName = %2$s]的最新考试记录", paperId,userName));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where paperId = ? and userName = ?";
 		String[] params = new String[] {paperId,userName};
@@ -238,7 +237,7 @@ public class PaperRecordDao {
 	 * @param record
 	 */
 	public static void updatePaperRecord(PaperRecord record){
-		Log.d(TAG,"更新考试记录"); 
+		LogUtil.d("更新考试记录"); 
 		SQLiteDatabase db = UserDBManager.openDatabase(record.getUserName());
 		String sql = "update PaperRecordTab set score = ?,useTime=?,lasttime = datetime(?),status = ?,rightNum = ?,torf = ? where recordId = ? ";
 		Object[] params = new Object[] { record.getScore(), record.getUsedTime(),
@@ -304,7 +303,7 @@ public class PaperRecordDao {
 	//考试记录分页查询
 	public static ArrayList<PaperRecord> findRecordsByUsername(String username,int page)
 	{
-		Log.d(TAG, "查询考试记录");
+		LogUtil.d( "查询考试记录");
 		if(StringUtils.isEmpty(username))	return null;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		/*
@@ -324,7 +323,7 @@ public class PaperRecordDao {
 					cursor.getString(5), cursor.getString(6),cursor.getString(7),
 					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
 					cursor.getString(12),cursor.getString(13),cursor.getString(14));
-			Log.d(TAG,record.getUsedTime()+"");
+			LogUtil.d(record.getUsedTime()+"");
 			list.add(record);
 		}
 		cursor.close();
@@ -365,7 +364,7 @@ public class PaperRecordDao {
 	 */
 	public static SimplePaper loadErrorPaper(String subjectId,String username)
 	{
-		Log.d(TAG,"加载错题试卷");
+		LogUtil.d("加载错题试卷");
 		if(username == null || subjectId==null) return null;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		int total = getCount(db,subjectId,username,null);
@@ -373,7 +372,7 @@ public class PaperRecordDao {
 		SimplePaper paper = new SimplePaper();
 		Cursor cursor = db.rawQuery("select itemType from ItemRecordTab where subjectId = ? and username = ? and status = ? group by itemType order by itemType asc", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
 		ArrayList<StructureInfo> structures = new ArrayList<StructureInfo>();
-		Log.d(TAG,"加载错题试卷的大题");
+		LogUtil.d("加载错题试卷的大题");
 		while(cursor.moveToNext())
 		{
 			int type = cursor.getInt(0);
@@ -391,7 +390,7 @@ public class PaperRecordDao {
 	}
 	private static ArrayList<StructureItemInfo> loadErrorPaperItems(SQLiteDatabase db,String subjectId,String username)
 	{
-		Log.d(TAG,"加载错题试卷的题目的集合");
+		LogUtil.d("加载错题试卷的题目的集合");
 		Cursor cursor = db.rawQuery("select itemContent from ItemRecordTab where subjectId = ? and username = ? and status = ? group by itemId order by itemType asc", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
 		ArrayList<StructureItemInfo> items = new ArrayList<StructureItemInfo>();
 		while(cursor.moveToNext())

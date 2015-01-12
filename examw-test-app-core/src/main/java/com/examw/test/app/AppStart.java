@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -28,13 +27,9 @@ import com.examw.test.util.StringUtils;
  * 
  */
 public class AppStart extends Activity {
-
-	private static final String TAG = "AppStart";
 	private boolean isFirstIn;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "初始界面显示...");
 		super.onCreate(savedInstanceState);
 		final View view = View.inflate(this, R.layout.ui_start, null);
 		LinearLayout wellcome = (LinearLayout) view
@@ -122,7 +117,6 @@ public class AppStart extends Activity {
 	 * 跳转到...
 	 */
 	private void redirectTo() {
-		Log.d(TAG, "跳转到界面...");
 		// 读取SharedPreferences中需要的数据
 		// 使用SharedPreferences来记录程序的使用次数
 		SharedPreferences preferences = getSharedPreferences(

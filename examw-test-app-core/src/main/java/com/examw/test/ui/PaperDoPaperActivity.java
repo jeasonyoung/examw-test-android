@@ -58,6 +58,7 @@ import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.support.DataConverter;
 import com.examw.test.util.GsonUtil;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.AnswerSettingLayout;
 import com.examw.test.widget.AnswerSettingLayout.FontSizeChangeListerner;
@@ -76,7 +77,6 @@ import com.examw.test.widget.viewflow.ViewFlow.ViewSwitchListener;
  */
 public class PaperDoPaperActivity extends BaseActivity implements
 		OnClickListener {
-	private static final String TAG = "PaperDoPaperActivity";
 	// 组件
 	private ImageButton favoriteBtn, answerBtn;
 	private TextView examTypeTextView;
@@ -130,7 +130,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "考试界面启动onCreate");
+		LogUtil.d( "考试界面启动onCreate");
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_do_real_paper);
 		preferences = this.getSharedPreferences("wdkaoshi", 0);
@@ -174,7 +174,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	// 取得主界面的组件,只取得不操作
 	private void initView() {
-		Log.d(TAG, "初始化组件");
+		LogUtil.d( "初始化组件");
 		this.favoriteBtn = (ImageButton) this.findViewById(R.id.favoriteBtn); // 收藏按钮
 		this.answerBtn = (ImageButton) this.findViewById(R.id.answerBtn); // 交卷按钮
 		this.examTypeTextView = (TextView) this
@@ -249,7 +249,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	// 初始化数据
 	private void initData() {
-		Log.d(TAG,"初始化数据");
+		LogUtil.d("初始化数据");
 		// 数据初始化
 		guidefile = this.getSharedPreferences("guidefile", 0);
 		timeHandler = new TimerHandler(this);
@@ -274,7 +274,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					}else
 						record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
 					if (StringUtils.isEmpty(content)) {
-						Log.d(TAG,"没有内容");
+						LogUtil.d("没有内容");
 						handler.sendEmptyMessage(-1);
 						return;
 					}
@@ -425,7 +425,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			PaperDoPaperActivity q2 = weak.get();
 			switch (msg.what) {
 			case 1:		//初始化完成
-				Log.d(TAG,"数据初始化完成");
+				LogUtil.d("数据初始化完成");
 				if (q2.action == AppConstant.ACTION_DO_EXAM || q2.action == AppConstant.ACTION_SHOW_ANSWER) {
 					if (q2.ruleList != null && q2.ruleList.size() > 0) {
 						q2.currentRule = q2.ruleList.get(0);
@@ -608,7 +608,6 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	// 获取或更新考试记录
 	private ItemRecord getItemRecord() {
 		ItemRecord currentRecord = null;
-		Log.d(TAG,"itemRecords == null ? "+(itemRecords == null));
 		for (ItemRecord ir : itemRecords) {
 			if (ir.getItemId().equals(currentQuestion.getId())) {
 				currentRecord = ir;
@@ -1111,7 +1110,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onStart() {
-		Log.d(TAG, "onStart");
+		LogUtil.d( "onStart");
 		if (action == AppConstant.ACTION_DO_EXAM) {
 			this.answerBtn.setImageResource(R.drawable.exam_submit_img);
 		} else {
@@ -1122,9 +1121,9 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onResume() {
-		Log.d(TAG, "onResume, timerFlag="+timerFlag);
+		LogUtil.d( "onResume, timerFlag="+timerFlag);
 		if (action == AppConstant.ACTION_DO_EXAM && !timerFlag) {
-			Log.d(TAG, "onResume,启动计时线程");
+			LogUtil.d( "onResume,启动计时线程");
 			timerFlag = true;
 			new TimerThread().start();
 		}
@@ -1134,7 +1133,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onPause() {
-		Log.d(TAG, "onPause");
+		LogUtil.d( "onPause");
 		// 保存记录,不重复保存
 		if (record != null && action == AppConstant.ACTION_DO_EXAM && !hasRecordSaved) {
 			record.setLastTime(StringUtils.toStandardDateStr(new Date()));
@@ -1156,7 +1155,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onStop() {
-		Log.d(TAG, "onStop");
+		LogUtil.d( "onStop");
 		if (vibrator != null) {
 			vibrator.cancel();
 		}
@@ -1165,7 +1164,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		LogUtil.d( "onDestroy");
 		if (exitDialog != null) {
 			exitDialog.dismiss();
 		}

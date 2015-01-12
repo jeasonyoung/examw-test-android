@@ -11,10 +11,10 @@ com.examw.test.adapter.ChapterChildExpendableListAdatper$ViewHolder:
 com.examw.test.adapter.ChapterExpendableListAdatper$ViewHolder
 com.examw.test.adapter.PracticeQuestionAdapter:
     private static final java.lang.String TAG
-    455:500:private void showPics(int,java.lang.String,java.lang.String,java.lang.String,android.widget.LinearLayout,android.widget.TextView)
-    504:519:private java.lang.String[] parseAddress(java.lang.String)
-    604:609:public void setRadioEnable(android.widget.RadioGroup,boolean)
-    63:63:static synthetic java.lang.String access$2(com.examw.test.adapter.PracticeQuestionAdapter)
+    449:494:private void showPics(int,java.lang.String,java.lang.String,java.lang.String,android.widget.LinearLayout,android.widget.TextView)
+    498:513:private java.lang.String[] parseAddress(java.lang.String)
+    598:602:public void setRadioEnable(android.widget.RadioGroup,boolean)
+    62:62:static synthetic java.lang.String access$2(com.examw.test.adapter.PracticeQuestionAdapter)
 com.examw.test.adapter.PracticeQuestionAdapter$ContentViewHolder:
     android.widget.ScrollView scrollView
     android.widget.Button noteBtn
@@ -22,14 +22,10 @@ com.examw.test.adapter.PracticeQuestionAdapter$ContentViewHolder:
 com.examw.test.adapter.PracticeQuestionAdapter$GetImageTask
 com.examw.test.adapter.QuestionAdapter:
     private static final java.lang.String TAG
-    489:534:private void showPics(int,java.lang.String,java.lang.String,java.lang.String,android.widget.LinearLayout,android.widget.TextView)
-    538:553:private java.lang.String[] parseAddress(java.lang.String)
-    646:651:public void setRadioEnable(android.widget.RadioGroup,boolean)
-    64:64:static synthetic java.lang.String access$2(com.examw.test.adapter.QuestionAdapter)
+    483:487:public void setRadioEnable(android.widget.RadioGroup,boolean)
 com.examw.test.adapter.QuestionAdapter$ContentViewHolder:
     android.widget.Button noteBtn
     android.view.View$OnClickListener showAnswerListener
-com.examw.test.adapter.QuestionAdapter$GetImageTask
 com.examw.test.app.AppConfig:
     public static final java.lang.String PRODUCTID
     public static final java.lang.String TERMINALID
@@ -52,17 +48,17 @@ com.examw.test.app.AppConfig:
     public static final java.lang.String CONF_LAST_SYNC_TIME
     public static final java.lang.String SAVE_IMAGE_PATH
     public static final java.lang.String DATABASE_NAME
-    82:82:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
-    89:89:public static boolean isLoadImage(android.content.Context)
-    93:93:public java.lang.String getCookie()
-    97:98:public void setAccessToken(java.lang.String)
-    101:101:public java.lang.String getAccessToken()
-    105:106:public void setAccessSecret(java.lang.String)
-    109:109:public java.lang.String getAccessSecret()
-    113:114:public void setExpiresIn(long)
-    117:117:public long getExpiresIn()
-    125:125:public java.lang.String getFormatExamTime()
-    183:186:public void set(java.util.Properties)
+    84:84:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
+    91:91:public static boolean isLoadImage(android.content.Context)
+    95:95:public java.lang.String getCookie()
+    99:100:public void setAccessToken(java.lang.String)
+    103:103:public java.lang.String getAccessToken()
+    107:108:public void setAccessSecret(java.lang.String)
+    111:111:public java.lang.String getAccessSecret()
+    115:116:public void setExpiresIn(long)
+    119:119:public long getExpiresIn()
+    127:127:public java.lang.String getFormatExamTime()
+    185:188:public void set(java.util.Properties)
 com.examw.test.app.AppConstant:
     public static final int SUCCESS
     public static final int FAILURE
@@ -106,43 +102,38 @@ com.examw.test.app.AppContext:
     public static final int LOGINED
     public static final int UNLOGIN
     public static final int LOCAL_LOGINED
-    122:123:public void setUsername(java.lang.String)
-    222:223:public void setHasNewData(boolean)
-    251:252:public boolean isAudioNormal()
-    260:260:public boolean isAppSound()
-    278:297:public int getNetworkType()
-    366:371:public java.lang.String getVersionName()
-    378:378:public boolean isLogin()
-    386:386:public java.lang.String getLoginUid()
-    394:399:public boolean isLoadImage()
-    408:409:public void setConfigLoadimage(boolean)
-    417:422:public boolean isVoice()
-    431:432:public void setConfigVoice(boolean)
-    454:455:public void setConfigCheckUp(boolean)
-    463:468:public boolean isScroll()
-    477:478:public void setConfigScroll(boolean)
-    486:491:public boolean isHttpsLogin()
-    500:501:public void setConfigHttpsLogin(boolean)
-    508:509:public void cleanCookie()
-    518:518:private boolean isReadDataCache(java.lang.String)
-    528:532:private boolean isExistDataCache(java.lang.String)
-    542:548:public boolean isCacheDataFailure(java.lang.String)
-    619:620:public void setMemCache(java.lang.String,java.lang.Object)
-    628:628:public java.lang.Object getMemCache(java.lang.String)
-    638:648:public void setDiskCache(java.lang.String,java.lang.String)
-    657:667:public java.lang.String getDiskCache(java.lang.String)
-    705:729:public java.io.Serializable readObject(java.lang.String)
-    733:734:public boolean containsProperty(java.lang.String)
-    738:739:public void setProperties(java.util.Properties)
-    760:761:public java.lang.String getDeviceId()
-    769:769:public java.lang.String getSaveImagePath()
-    776:777:public void setSaveImagePath(java.lang.String)
-    824:843:public com.examw.test.model.FrontProductInfo getProductInfo()
+    121:122:public void setUsername(java.lang.String)
+    221:222:public void setHasNewData(boolean)
+    250:251:public boolean isAudioNormal()
+    259:259:public boolean isAppSound()
+    277:296:public int getNetworkType()
+    382:382:public boolean isLogin()
+    390:390:public java.lang.String getLoginUid()
+    398:403:public boolean isLoadImage()
+    412:413:public void setConfigLoadimage(boolean)
+    421:426:public boolean isVoice()
+    435:436:public void setConfigVoice(boolean)
+    458:459:public void setConfigCheckUp(boolean)
+    467:472:public boolean isScroll()
+    481:482:public void setConfigScroll(boolean)
+    490:495:public boolean isHttpsLogin()
+    504:505:public void setConfigHttpsLogin(boolean)
+    522:522:private boolean isReadDataCache(java.lang.String)
+    532:536:private boolean isExistDataCache(java.lang.String)
+    546:552:public boolean isCacheDataFailure(java.lang.String)
+    623:624:public void setMemCache(java.lang.String,java.lang.Object)
+    632:632:public java.lang.Object getMemCache(java.lang.String)
+    642:652:public void setDiskCache(java.lang.String,java.lang.String)
+    661:671:public java.lang.String getDiskCache(java.lang.String)
+    709:733:public java.io.Serializable readObject(java.lang.String)
+    737:738:public boolean containsProperty(java.lang.String)
+    742:743:public void setProperties(java.util.Properties)
+    773:773:public java.lang.String getSaveImagePath()
+    780:781:public void setSaveImagePath(java.lang.String)
+    828:847:public com.examw.test.model.FrontProductInfo getProductInfo()
 com.examw.test.app.AppManager:
     46:48:public void finishActivity()
     63:68:public void finishActivity(java.lang.Class)
-com.examw.test.app.AppStart:
-    private static final java.lang.String TAG
 com.examw.test.dao.FavoriteDao:
     private static final java.lang.String TAG
     24:24:public FavoriteDao()
@@ -275,7 +266,6 @@ com.examw.test.domain.User:
     private java.lang.String token
     24:24:public java.lang.Integer getId()
     32:33:public void setId(java.lang.Integer)
-    96:97:public void setInfo(java.lang.String)
     104:104:public java.lang.String getRegisterCode()
     112:113:public void setRegisterCode(java.lang.String)
     120:120:public java.lang.String getToken()
@@ -302,7 +292,7 @@ com.examw.test.service.DownloadService$1
 com.examw.test.service.DownloadService$DownloadBinder
 com.examw.test.service.DownloadService$DownloadBinder$1
 com.examw.test.support.ApiClient:
-    41:41:public ApiClient()
+    46:46:public ApiClient()
 com.examw.test.support.AppUpdateManager:
     private static final java.lang.String TAG
     private static final int DOWN_NOSDCARD
@@ -313,17 +303,22 @@ com.examw.test.support.AppUpdateManager:
     private static final int DIALOG_TYPE_FAIL
 com.examw.test.support.AssetFileManager:
     private static final java.lang.String TAG
-    23:23:public AssetFileManager()
-    31:68:public static void Unzip(java.io.InputStream,java.lang.String)
-    75:84:public static void copyDataBase(android.content.Context,java.lang.String,java.lang.String)
-    90:107:public static void copyImages(android.content.Context,java.lang.String)
+    22:22:public AssetFileManager()
+    30:66:public static void Unzip(java.io.InputStream,java.lang.String)
+    73:82:public static void copyDataBase(android.content.Context,java.lang.String,java.lang.String)
+    88:105:public static void copyImages(android.content.Context,java.lang.String)
 com.examw.test.support.DataConverter:
     31:31:public DataConverter()
+com.examw.test.support.LoginTips:
+    8:8:public LoginTips()
+    70:107:public static java.lang.String getRegisterTip(int)
 com.examw.test.support.SyllabusHelper:
     14:14:public SyllabusHelper()
     58:69:private static void filterChildren(java.util.ArrayList,com.examw.test.domain.Chapter)
     83:108:private static java.util.ArrayList convertChapter(java.util.ArrayList)
-com.examw.test.support.TaoBaoMD5
+com.examw.test.support.TaoBaoMD5:
+    14:14:public TaoBaoMD5()
+    36:42:public static boolean verify(java.lang.String,java.lang.String,java.lang.String,java.lang.String)
 com.examw.test.support.URLs
 com.examw.test.ui.AboutusFragment
 com.examw.test.ui.AboutusFragment$SampleWebViewClient
@@ -369,8 +364,8 @@ com.examw.test.ui.ImageZoomActivity$TounchListener:
     private static final int DRAG
     private static final int ZOOM
 com.examw.test.ui.ImportDataActivity:
-    310:334:private void inputObject(java.io.Serializable,java.lang.String,java.lang.String)
-    337:362:private java.lang.Object outputObject(java.lang.String)
+    308:332:private void inputObject(java.io.Serializable,java.lang.String,java.lang.String)
+    335:360:private java.lang.Object outputObject(java.lang.String)
 com.examw.test.ui.KnowledgeActivity:
     private static final java.lang.String TAG
 com.examw.test.ui.KnowledgeDetailActivity:
@@ -387,8 +382,8 @@ com.examw.test.ui.MainActivity:
     public static final int MAIN_INDEX
     public static final int MAIN_ACCOUNT
     public static final int MAIN_ABOUT
-    313:313:public com.examw.test.app.AppContext getAppContext()
-    366:367:public void showFooter(int)
+    309:309:public com.examw.test.app.AppContext getAppContext()
+    360:361:public void showFooter(int)
 com.examw.test.ui.MainFragment:
     private static final java.lang.String TAG
     private android.app.ProgressDialog mProDialog
@@ -492,14 +487,13 @@ com.examw.test.util.HttpUtils:
     private static final java.lang.String authenticate_header
     private static final java.lang.String authorization_header
     private static final int max_http_send_count
-    49:49:public HttpUtils()
-    74:75:public static void cleanCookie()
-    183:197:public static java.lang.String _MakeURL(java.lang.String,java.util.Map)
-    390:457:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
-    490:536:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
+    51:51:public HttpUtils()
+    76:77:public static void cleanCookie()
+    393:460:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
+    493:539:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
 com.examw.test.util.HttpUtils$DigestAuthcProvider:
-    576:576:public java.lang.String getUri()
-    585:585:public java.lang.String getMethod()
+    579:579:public java.lang.String getUri()
+    588:588:public java.lang.String getMethod()
 com.examw.test.util.ImageUtils:
     public static final java.lang.String SDCARD_MNT
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD
@@ -555,7 +549,6 @@ com.examw.test.util.StringUtils:
     68:72:public static java.lang.String toDateStr(long)
     92:139:public static java.lang.String friendly_time(java.lang.String)
     149:159:public static boolean isToday(java.lang.String)
-    200:202:public static boolean isEmail(java.lang.String)
     214:217:public static int toInt(java.lang.String,int)
     227:229:public static int toInt(java.lang.Object)
     267:296:public static java.lang.String toConvertString(java.io.InputStream)

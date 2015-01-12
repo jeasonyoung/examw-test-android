@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
@@ -37,6 +34,7 @@ import com.examw.test.model.UserPaperRecordInfo;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.HttpUtils;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -91,7 +89,6 @@ public class ApiClient {
 				json.setData(user);
 			}else
 			{
-				Log.d("ApiClient","错误");
 				return null;
 			}
 		}
@@ -116,9 +113,8 @@ public class ApiClient {
 			ClientKey = "U8z2D0O5s7Li1Q3y4k6g"
 			Md5Str = MD5(UserName&"#"&PassWord&"#"&repsw&"#"&e_mail&"#"&ClientKey&r_name&"#"&Mobile&"#"&DoMain&"#"&SubSource&"#"&ClientNo)
 		 */
-		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+password+"#"+email+"#"+AppConfig.CLIENTKEY + name +
+		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+password+"#"+email+"#"+AppConfig.CLIENTKEY + "#" +name +
 					"#"+phone+"#jzs1#Mobile#"+appContext.getDeviceId(), "", "GBK");
-		Log.d("APICLIENT",md5Str);
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("SubSource", "Mobile");
 		params.put("ClientNo", appContext.getDeviceId());
@@ -129,12 +125,11 @@ public class ApiClient {
 		params.put("Mobile", phone);
 		params.put("DoMain","jzs1");
 		params.put("e_mail", email);
-		params.put("r_name", URLEncoder.encode(name, "UTF-8"));
+		params.put("r_name", HttpUtils.toUnicodeString(name));
 		params.put("Client", appContext.getOsVersionName());
 		params.put("Version", appContext.getVersionName());
 		params.put("CheckType", "RegUser");
-		String result = HttpUtils.login(appContext, URLs.REGIST, params);
-		Log.d("APICLIENT",result);
+		String result = HttpUtils.register(appContext, URLs.REGIST, params);
 		if(result == null || "".equals(result.trim())) return null;
 		Json json = new Json();
 		try
@@ -158,7 +153,6 @@ public class ApiClient {
 				json.setData(user);
 			}else
 			{
-				Log.d("ApiClient","错误");
 				return null;
 			}
 		}
@@ -396,7 +390,7 @@ public class ApiClient {
 		HttpURLConnection uc= null;
 		try
 		{
-			Log.d("ApiClient","获取百度的时间");
+			LogUtil.d("ApiClient"+"获取百度的时间");
 			URL url=new URL("http://www.baidu.com");//取得资源对象
 			uc = (HttpURLConnection) url.openConnection();//生成连接对象
 			uc.setConnectTimeout(5000);

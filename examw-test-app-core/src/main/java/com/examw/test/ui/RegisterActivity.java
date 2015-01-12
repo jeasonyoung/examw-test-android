@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
+import com.examw.test.domain.User;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
@@ -434,33 +436,23 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 			{
 			case 1:
 				//
-//				ParseResult result = (ParseResult)msg.obj;
-//				if(result.Ok())	//注册成功
-//				{
-//					User u = (User) (result.getObj());
-//					Toast.makeText(r, "注册成功,请登录", Toast.LENGTH_SHORT).show();
-//					r.abfile.edit().putString("n",u.getUsername()).commit();
-//					r.abfile.edit().putString("p","").commit();
-////					Intent intent = new Intent(r,LoginActivity.class);
-////					r.startActivity(intent);
-//					r.finish();
-//				}else
-//				{
-//					Toast.makeText(r, "注册失败,"+result.getErrorMsg(), Toast.LENGTH_SHORT).show();
-//				}
-//				break;
+				Json result = (Json)msg.obj;
+				if(result.isSuccess())	//注册成功
+				{
+					User u = (User) (result.getData());
+					Toast.makeText(r, "注册成功,请登录", Toast.LENGTH_SHORT).show();
+					r.abfile.edit().putString("n",u.getUsername()).commit();
+					r.abfile.edit().putString("p","").commit();
+					Intent intent = new Intent(r,LoginActivity.class);
+					r.startActivity(intent);
+					r.finish();
+				}else
+				{
+					Toast.makeText(r, "注册失败,"+result.getData(), Toast.LENGTH_SHORT).show();
+				}
+				break;
 			case -1:
 				((AppException)msg.obj).makeToast(r);
-				break;
-//			case -2:
-//			case -3:
-//				Toast.makeText(r, "注册失败", Toast.LENGTH_LONG).show();
-//				break;
-			case 1001:
-				r.showInfo("*用户名:",r.nameInfo,r.nameView,1);
-				break;
-			case 1002:
-				r.showInfo("*该用户名被占用",r.nameInfo,r.nameView,0);
 				break;
 			}
 		}

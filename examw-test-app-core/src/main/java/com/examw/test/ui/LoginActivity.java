@@ -11,7 +11,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +34,7 @@ import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.LoginTips;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.ToastUtils;
 
 /**
@@ -152,16 +152,18 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 				new Thread() {
 					public void run() {
 						try {
-							Log.d(TAG,"开线程进行登录");
+							LogUtil.d("开线程进行登录");
 							//设置登录状态为正在登陆
 							appContext.setLoginState(AppContext.LOGINING);// 正在登录
 							//解析登陆返回结果
+							Thread.sleep(10000);
 							Json result = ApiClient.login(appContext, username, password);
 							Message message = handler.obtainMessage();
 							if(result == null)
 							{
 								message.what = 0;
 								message.obj = "用户登录失败";
+								handler.sendMessage(message); //登录失败
 								return;
 							}
 							if (result.isSuccess()) { // 登陆成功

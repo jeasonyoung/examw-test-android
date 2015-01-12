@@ -43,6 +43,7 @@ import com.examw.test.model.UserPaperRecordInfo;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.DataConverter;
 import com.examw.test.support.URLs;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.examw.test.util.ToastUtils;
 
@@ -247,11 +248,11 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					try {
 						synchronized (SyncActivity.this) {
 							if(paperFlag!=0) return;
-							Log.d(TAG,"开始同步考试记录");
+							LogUtil.d("开始同步考试记录");
 							//查询用户的考试记录并且转换为上传数据对象
 							String lastTime = UserDao.getLastTime(username, "lastSyncPaperTime");
 							ArrayList<PaperRecord> list = PaperRecordDao.findAll(username,userId,lastTime);
-							Log.d(TAG,"需要同步的考试记录个数:"+list.size());
+							LogUtil.d("需要同步的考试记录个数:"+list.size());
 							ArrayList<UserPaperRecordInfo> records = DataConverter.convertPaperRecords(list);
 							if(records == null || records.size() == 0)
 							{
@@ -281,7 +282,7 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					try {
 						synchronized (SyncActivity.this) {
 							if(favorFlag!=0) return;
-							Log.d(TAG,"开始收藏记录上传");
+							LogUtil.d("开始收藏记录上传");
 							//查询需要上传的收藏记录
 							ArrayList<FavoriteItem> list = FavoriteDao.findAll(username,userId);
 							ArrayList<UserItemFavoriteInfo> records = DataConverter.convertFavors(list);

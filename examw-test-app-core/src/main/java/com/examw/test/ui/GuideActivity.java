@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,7 +34,6 @@ public class GuideActivity extends Activity implements OnPageChangeListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i("GuideActivity", "on Create");
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(1); // 去标题
 		this.setContentView(R.layout.ui_guide);
@@ -106,7 +104,6 @@ public class GuideActivity extends Activity implements OnPageChangeListener {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		Log.i("GuideActivity", "on destroy");
 		super.onDestroy();
 	}
 }

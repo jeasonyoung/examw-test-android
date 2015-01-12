@@ -71,7 +71,6 @@ public class ImageTextView2 extends LinearLayout {
 		if (StringUtils.isEmpty(text)) {
 			return;
 		}
-		Log.d("imageTExtView",text);
 		if(!text.matches("[\\S\\s]*<img[^>]+[/?]>[\\S\\s]*")){	//不包含图片
 			TextView tv = new TextView(context, null, R.style.question_text);
 			tv.setText(text);
@@ -104,7 +103,6 @@ public class ImageTextView2 extends LinearLayout {
 					iv.setScaleType(ScaleType.FIT_START);
 					String url = images.get(i);
 					iv.setTag(URLs.HOST+ url);
-					Log.d(TAG,URLs.HOST+ url);
 					if(!loadLocaleImage(images.get(i),iv)){
 						bmpManager.loadBitmap(URLs.HOST+url, iv);
 					}

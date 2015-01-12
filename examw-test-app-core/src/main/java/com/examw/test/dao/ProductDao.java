@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.domain.Subject;
 import com.examw.test.model.FrontProductInfo;
+import com.examw.test.util.LogUtil;
 
 /**
  * 
@@ -17,9 +17,8 @@ import com.examw.test.model.FrontProductInfo;
  * @since 2014年12月3日 下午4:14:06.
  */
 public class ProductDao {
-	private static final String TAG = "ProductDao";
 	public static boolean hasInsert(){
-		Log.d(TAG,"查询产品信息是否存在");
+		LogUtil.d("查询产品信息是否存在");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		Cursor cursor = db.rawQuery("select * from ProductTab where productid = ?",
 				new String[] { AppConfig.PRODUCTID });
@@ -31,7 +30,7 @@ public class ProductDao {
 	
 	public static void insert(FrontProductInfo product){
 		if(product == null) return;
-		Log.d(TAG,"插入产品信息");
+		LogUtil.d("插入产品信息");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		db.beginTransaction();
 		//插产品
@@ -41,7 +40,7 @@ public class ProductDao {
 		String[] subjectIds = product.getSubjectId();
 		if(subjectIds != null && subjectIds.length > 0)
 		{
-			Log.d(TAG,"插入科目信息");
+			LogUtil.d("插入科目信息");
 			String[] subjectNames = product.getSubjectName();
 			for(int i=0;i<subjectIds.length;i++)
 			{
@@ -72,7 +71,7 @@ public class ProductDao {
 	 */
 	public static ArrayList<Subject> findSubjects()
 	{
-		Log.d(TAG,"查询科目信息");
+		LogUtil.d("查询科目信息");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		Cursor cursor = db.rawQuery("select subjectid,name,orderno from SubjectTab order by orderno asc", new String[]{});
 		if(cursor.getCount() == 0)
@@ -93,7 +92,7 @@ public class ProductDao {
 
 	public static void saveSubjects(ArrayList<Subject> result) {
 		if(result == null || result.size() == 0) return;
-		Log.d(TAG,"插入科目信息");
+		LogUtil.d("插入科目信息");
 		SQLiteDatabase db = LibraryDBUtil.getDatabase();
 		db.beginTransaction();
 		db.execSQL("delete from SubjectTab");

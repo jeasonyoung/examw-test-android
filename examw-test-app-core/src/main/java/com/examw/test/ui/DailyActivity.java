@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -33,6 +32,7 @@ import com.examw.test.domain.Paper;
 import com.examw.test.model.DateInfo;
 import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.support.ApiClient;
+import com.examw.test.util.LogUtil;
 import com.examw.test.widget.DateHorizontalScrollView;
 
 /**
@@ -41,7 +41,6 @@ import com.examw.test.widget.DateHorizontalScrollView;
  * @since 2014年11月26日 下午3:20:16.
  */
 public class DailyActivity extends BaseActivity implements OnClickListener,OnGestureListener {
-	private static final String TAG = "DailyActivity";
 	private LinearLayout loadingLayout, nodataLayout, reloadLayout;
 	private ListView paperListView;
 	private ArrayList<Paper> paperList;
@@ -193,7 +192,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 	}
 
 	private void buildDailyDate() {
-		Log.d(TAG,"构造滑动星期条");
+		LogUtil.d("构造滑动星期条");
 		weekdays = new ArrayList<DateInfo>();
 		SimpleDateFormat weekFormat = new SimpleDateFormat("EEE",Locale.CHINA);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd",Locale.CHINA);

@@ -16,12 +16,12 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Environment;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
+import com.examw.test.util.LogUtil;
 
 /**
  * 自定义异常
@@ -59,7 +59,7 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 		this.type = type;
 		this.code = code;		
 		if(Debug){
-			this.saveErrorLog(excp);
+			this.saveErrorLogUtil(excp);
 		}
 	}
 	public int getCode() {
@@ -108,32 +108,32 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 	 * @param excp
 	 */
 	@SuppressWarnings("deprecation")
-	public void saveErrorLog(Exception excp) {
-		String errorlog = "errorlog.txt";
+	public void saveErrorLogUtil(Exception excp) {
+		String errorLogUtil = "errorLogUtil.txt";
 		String savePath = "";
-		String logFilePath = "";
+		String LogUtilFilePath = "";
 		FileWriter fw = null;
 		PrintWriter pw = null;
 		try {
 			//判断是否挂载了SD卡
 			String storageState = Environment.getExternalStorageState();		
 			if(storageState.equals(Environment.MEDIA_MOUNTED)){
-				savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/OSChina/Log/";
+				savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/OSChina/LogUtil/";
 				File file = new File(savePath);
 				if(!file.exists()){
 					file.mkdirs();
 				}
-				logFilePath = savePath + errorlog;
+				LogUtilFilePath = savePath + errorLogUtil;
 			}
 			//没有挂载SD卡，无法写文件
-			if(logFilePath == ""){
+			if(LogUtilFilePath == ""){
 				return;
 			}
-			File logFile = new File(logFilePath);
-			if (!logFile.exists()) {
-				logFile.createNewFile();
+			File LogUtilFile = new File(LogUtilFilePath);
+			if (!LogUtilFile.exists()) {
+				LogUtilFile.createNewFile();
 			}
-			fw = new FileWriter(logFile,true);
+			fw = new FileWriter(LogUtilFile,true);
 			pw = new PrintWriter(fw);
 			pw.println("--------------------"+(new Date().toLocaleString())+"---------------------");	
 			excp.printStackTrace(pw);
@@ -234,7 +234,7 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 			public void run() {
 				Looper.prepare();
 				//UIHelper.sendAppCrashReport(context, crashReport);
-				Log.d("崩溃日志:",crashReport);
+				LogUtil.d("崩溃日志:"+crashReport);
 				Looper.loop();
 			}
 
