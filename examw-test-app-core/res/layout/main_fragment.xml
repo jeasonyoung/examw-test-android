@@ -82,7 +82,7 @@
             android:layout_margin="@dimen/home_grid_space"
             android:cacheColorHint="@drawable/trans"
             android:gravity="center"
-            android:horizontalSpacing="1.0dip"
+            android:horizontalSpacing="2.0dip"
             android:listSelector="@drawable/trans"
             android:numColumns="3"
             android:stretchMode="columnWidth"

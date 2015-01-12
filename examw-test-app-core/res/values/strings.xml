@@ -128,6 +128,7 @@
     <!-- 写笔记 -->
     <string name="notebook_toptitle">随题笔记</string>
     <string name="notebook_write_hint">写入您的笔记</string>
+    <string name="feedback_write_hint">写入您的意见或者建议</string>
     <string name="notebook_notice">已输入 0/1000</string>
     <string name="notebook_submit">提交</string>
 	

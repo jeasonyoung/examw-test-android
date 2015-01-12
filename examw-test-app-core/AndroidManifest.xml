@@ -160,6 +160,11 @@
             android:name=".ui.SyncActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 意见界面 -->
+        <activity
+            android:name=".ui.FeedBackActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- 数据导入界面 -->
         <activity
             android:name=".ui.ImportDataActivity"

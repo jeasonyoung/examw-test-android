@@ -11,7 +11,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,6 +54,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private LinearLayout footer;
 	private BadgeView v;
 	private AlertDialog exitDialog;
+	private MainFragment mainFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +91,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				public void run() {
 					Message msg = mHandler.obtainMessage();
 					String username = appConfig.get("user.account");
-					String pwd = CyptoUtils.decode("changheng",
-							appConfig.get("user.pwd"));
+					String pwd = CyptoUtils.decode("changheng", appConfig.get("user.pwd")).trim();
 					try {
 						appContext.setLoginState(AppContext.LOGINING); // 登录中
 						Json result = ApiClient.login(appContext, username, pwd);
@@ -152,15 +151,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		switch (curFragment) {
 		case MAIN_INDEX:
 			flag = MAIN_INDEX;
-			f = new MainFragment();
+			f = mainFragment = new MainFragment();
 			break;
 		case MAIN_ACCOUNT:
 			flag = MAIN_ACCOUNT;
 			f = new UserInfoFragment();
+			mainFragment = null;
 			break;
 		case MAIN_SETTING:
 			f = new SettingFragment();
 			flag = MAIN_SETTING;
+			mainFragment = null;
 			break;
 		}
 		getSupportFragmentManager().beginTransaction()
@@ -177,8 +178,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				return;
 			}
 			flag = MAIN_INDEX;
+			mainFragment = new MainFragment();
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.fragment_replace_layout, new MainFragment())
+					.replace(R.id.fragment_replace_layout, mainFragment)
 					.commit();
 			break;
 		case R.id.btn_more:
@@ -196,6 +198,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				return;
 			}
 			flag = MAIN_SETTING;
+			mainFragment = null;
 			getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.fragment_replace_layout,
@@ -454,8 +457,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		//查询本地数据库用户信息
 		try{
 		User user = UserDao.findByUsername(username);
-		if (user!=null && password.equals(new String(Base64.decode(
-				Base64.decode(user.getPassword(), 0), 0)))) {
+		if (user!=null && password.equals(user.getPassword())) {
 			if(user.getProductUserId()==null)
 			{
 				FrontUserInfo userInfo = new FrontUserInfo();
@@ -532,5 +534,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				});
 		exitDialog = builder.create();
 		exitDialog.show();
+	}
+
+	public void setMainFragment(MainFragment f) {
+		this.mainFragment = f;
+	}
+
+	public void logout() {
+		if(this.mainFragment != null)
+		{
+			mainFragment.userLogout();
+		}
 	}
 }

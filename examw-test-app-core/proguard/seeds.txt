@@ -2849,6 +2849,7 @@ com.examw.test.R$drawable: int btn_answer_card
 com.examw.test.R$drawable: int btn_blue
 com.examw.test.R$drawable: int btn_fullscreen
 com.examw.test.R$drawable: int btn_goback
+com.examw.test.R$drawable: int btn_gray
 com.examw.test.R$drawable: int btn_green
 com.examw.test.R$drawable: int btn_icon_line
 com.examw.test.R$drawable: int btn_lightgreen
@@ -3335,6 +3336,7 @@ com.examw.test.R$id: int showAnswerBtn
 com.examw.test.R$id: int showPop
 com.examw.test.R$id: int simulate_paper_layout
 com.examw.test.R$id: int simulate_paper_tv
+com.examw.test.R$id: int start
 com.examw.test.R$id: int stroke
 com.examw.test.R$id: int submitExamBtn
 com.examw.test.R$id: int synLayout

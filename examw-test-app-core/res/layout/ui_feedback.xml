@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/lightbule2"
+    android:orientation="vertical" >
+
+    <include layout="@layout/top_head"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/lightbule2"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/editNoteEditText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="20.0dip"
+                android:background="@drawable/feedback_edit_bg"
+                android:gravity="top"
+                android:hint="@string/feedback_write_hint"
+                android:minLines="12"
+                android:padding="3.0dip"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_medium_size" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip" >
+
+                <TextView
+                    android:id="@+id/notebook_editSizeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10.0dip"
+                    android:paddingTop="5.0dip"
+                    android:text="@string/notebook_notice"
+                    android:textColor="@color/lightbule"
+                    android:textSize="@dimen/text_small_size" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/exam_notebook_btn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="20.0dip"
+                    android:layout_marginLeft="12.0dip"
+                    android:layout_marginRight="12.0dip"
+                    android:padding="10.0dip"
+                    android:background="@drawable/btn_blue"
+                    android:text="@string/notebook_submit" />
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="10.0dip"
+                    android:layout_below="@id/exam_notebook_btn" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

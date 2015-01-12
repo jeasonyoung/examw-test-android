@@ -84,7 +84,7 @@ public class MainGridAdapter extends BaseAdapter{
 	    this.i = (int)(((width - 22*destiny) / 3)-1);
 	    this.j = width/8;
 	    int column = texts.length%3 ==0?texts.length/3:texts.length/3+1;
-	    this.k = (int) ((height-230*destiny)/column); //计算一个格子的高度
+	    this.k = (int) ((height-240*destiny)/column); //计算一个格子的高度
 	}
 	static class ViewHolder 
 	{

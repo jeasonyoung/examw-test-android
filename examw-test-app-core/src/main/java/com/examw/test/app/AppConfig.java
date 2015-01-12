@@ -40,6 +40,8 @@ public class AppConfig {
 	
 	public static final String SHAREDPREFERENCES_NAME = "first_pref";  
 
+	public static final String CONF_REGISTRATION = "registration_code";
+	
 	public final static String CONF_APP_UNIQUEID = "APP_UNIQUEID";
 	public final static String CONF_COOKIE = "cookie";
 	public final static String CONF_ACCESSTOKEN = "accessToken";

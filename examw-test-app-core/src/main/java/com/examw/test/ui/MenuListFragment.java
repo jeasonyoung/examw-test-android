@@ -84,9 +84,11 @@ public class MenuListFragment extends ListFragment {
 			main.showContent();
 			Fragment f = null;
 			if (main.getFlag() != MainActivity.MAIN_INDEX) {
-				f = new MainFragment();
+				MainFragment m =  new MainFragment();
+				f = m;
 				createFragment(f);
 				main.setFlag(MainActivity.MAIN_INDEX);
+				main.setMainFragment(m);
 			}
 			break;
 //		case 1:	//用户页
@@ -124,6 +126,7 @@ public class MenuListFragment extends ListFragment {
 				f = new SettingFragment();
 				createFragment(f);
 				main.setFlag(MainActivity.MAIN_SETTING);
+				main.setMainFragment(null);
 			}
 			break;
 		case 2: //注销
@@ -137,7 +140,6 @@ public class MenuListFragment extends ListFragment {
 				new Thread() {
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
 						try {
 //							ApiClient.logout(appContext,
 //									appContext.getUsername());
@@ -146,6 +148,7 @@ public class MenuListFragment extends ListFragment {
 						}
 					}
 				}.start();
+				main.logout();
 				appContext.cleanLoginInfo();
 				accountItem.tag = "账户(未登录)";
 				adapter.notifyDataSetChanged();
@@ -233,38 +236,4 @@ public class MenuListFragment extends ListFragment {
 		super.onDestroy();
 	}
 
-	// //避免频繁创建fragment
-	// private FragmentPagerAdapter mFragmentPagerAdapter = new
-	// FragmentPagerAdapter(getActivity().getSupportFragmentManager()) {
-	//
-	// @Override
-	// public Fragment getItem(int position) {
-	// switch (position) {
-	// case 0:
-	// return new MainFragment();
-	// case 1:
-	// return new UserInfoFragment();
-	// case 2:
-	// return new AboutusFragment();
-	// case 3:
-	// return new SettingFragment();
-	// default:
-	// return new MainFragment();
-	// }
-	// }
-	//
-	// @Override
-	// public int getCount() {
-	// return 5;
-	// }
-	// };
-	// //instantiateItem从FragmentManager中查找Fragment，找不到就getItem新建一个，setPrimaryItem设置隐藏和显示，最后finishUpdate提交事务。
-	// private void createFragment(int index){
-	// ViewGroup mContainer = (ViewGroup)
-	// getActivity().findViewById(R.id.fragment_replace_layout);
-	// Fragment fragment = (Fragment)
-	// mFragmentPagerAdapter.instantiateItem(mContainer, index);
-	// mFragmentPagerAdapter.setPrimaryItem(mContainer, 0, fragment);
-	// mFragmentPagerAdapter.finishUpdate(mContainer);
-	// }
 }

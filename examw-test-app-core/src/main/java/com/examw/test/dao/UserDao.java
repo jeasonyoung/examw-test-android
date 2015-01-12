@@ -6,6 +6,7 @@ import android.util.Base64;
 
 import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.User;
+import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.LogUtil;
 
 /**
@@ -71,6 +72,7 @@ public class UserDao {
 				cursor.close();
 			UserDBUtil.close();
 		}
+		user.setPassword(CyptoUtils.decode("changheng", user.getPassword()));
 		return user;
 	}
 	
@@ -88,7 +90,7 @@ public class UserDao {
 			user1.setProductUserId(cursor.getString(3));
 		}
 		cursor.close();
-		String pwd = new String(Base64.encode(Base64.encode(user.getPassword().getBytes(), 0), 0));
+		String pwd = CyptoUtils.encode("changheng", user.getPassword());
 		if(user1 == null)
 		{
 			//插入

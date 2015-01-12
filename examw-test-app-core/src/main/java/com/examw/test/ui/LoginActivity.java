@@ -156,7 +156,6 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 							//设置登录状态为正在登陆
 							appContext.setLoginState(AppContext.LOGINING);// 正在登录
 							//解析登陆返回结果
-							Thread.sleep(10000);
 							Json result = ApiClient.login(appContext, username, password);
 							Message message = handler.obtainMessage();
 							if(result == null)
@@ -203,6 +202,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 					};
 				}.start();
 			} else {
+				ToastUtils.show(this, "无法连接,请检查网络...");
 				if (appContext.getLoginState() != AppContext.LOCAL_LOGINED
 						|| "sysnc".equals(curLoginType)) // 本地已经登录就不再显示
 					localLoginBtn.setVisibility(View.VISIBLE);
@@ -217,8 +217,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 			User user = UserDao.findByUsername(username);
 			if (user != null) {
 				String password = pwdText.getText().toString();
-				if (password.equals(new String(Base64.decode(
-						Base64.decode(user.getPassword(), 0), 0)))) {
+				if (password.equals(user.getPassword())) {
 					appContext.saveLocalLoginInfo(username);
 					ToastUtils.show(this,"本地登录成功");
 					if (fromClass == null) {

@@ -30,6 +30,7 @@ import com.examw.test.domain.User;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
+import com.examw.test.support.LoginTips;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.ImgRightEditText;
 
@@ -448,7 +449,11 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 					r.finish();
 				}else
 				{
-					Toast.makeText(r, "注册失败,"+result.getData(), Toast.LENGTH_SHORT).show();
+					String wrongMsg = "";
+					try{
+						wrongMsg = ","+LoginTips.getRegisterTip((Integer) result.getData());
+					}catch(Exception e){}
+					Toast.makeText(r, "注册失败"+wrongMsg, Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case -1:

@@ -5,16 +5,20 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
@@ -25,6 +29,7 @@ import com.examw.test.adapter.MainGridAdapter;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.HomeGrid;
 
@@ -36,25 +41,22 @@ public class MainFragment extends Fragment {
 	private AppConfig appConfig;
 	private AppContext appContext;
 	private ProgressDialog mProDialog;
-	
-	//主界面适配的Activity
-	private static final Class<?>[] classes = {
-			KnowledgeActivity.class,
-			ChooseSubjectActivity.class, 
-			ChooseSubjectActivity.class, 
-			ChooseSubjectActivity.class,
-			ChooseSubjectActivity.class,
-			DailyActivity.class,
-			ForumActivity.class,
-			PaperRecordActivity.class,
-			ExamInfoActivity.class
-			
+
+	// 主界面适配的Activity
+	private static final Class<?>[] classes = { KnowledgeActivity.class,
+			ChooseSubjectActivity.class, ChooseSubjectActivity.class,
+			ChooseSubjectActivity.class, ChooseSubjectActivity.class,
+			DailyActivity.class, ForumActivity.class,
+			PaperRecordActivity.class, ExamInfoActivity.class
+
 	};
-	private static final int[] action = { 0, AppConstant.ACTION_CHAPTER,AppConstant.ACTION_FAVORITE,AppConstant.ACTION_ERROR, 0, 0, 0, 0, 0 };
-	//是否需要登录
+	private static final int[] action = { 0, AppConstant.ACTION_CHAPTER,
+			AppConstant.ACTION_FAVORITE, AppConstant.ACTION_ERROR, 0, 0, 0, 0,
+			0 };
+	// 是否需要登录
 	private static final boolean[] needLogin = { false, true, true, true, true,
 			true, false, true, false };
-	private boolean flag = true;	//是否登录的标识
+	private boolean flag = true; // 是否登录的标识
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,9 +70,9 @@ public class MainFragment extends Fragment {
 		this.restDay = (TextView) v.findViewById(R.id.rest_day);
 		this.usernameTv = (TextView) v.findViewById(R.id.usernameTv);
 		this.usernameTv.setVisibility(View.GONE);
-		//下划线
-//		restDay.getPaint().setFlags(
-//				Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+		// 下划线
+		// restDay.getPaint().setFlags(
+		// Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 		format = new SimpleDateFormat("yyyy.MM.dd", Locale.CHINA);
 		((TextView) v.findViewById(R.id.day_date)).setText(format
 				.format(new Date()));
@@ -87,46 +89,56 @@ public class MainFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(getActivity(), SetTimeActivity.class));
-//				Intent intent = new Intent(getActivity(), ImageZoomActivity.class);
-//				intent.putExtra("url", "/42c7f9f5-6088-4bc8-acc0-59162257a775");
-//				startActivity(intent);
-//				new Thread(){
-//					public void run() {
-//						try {
-//							ApiClient.register(appContext, "dddd1111", "123456", "13800000000", "中国", "abcd12121@163.com");
-//						} catch (Exception e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					};
-//				}.start();
+				// Intent intent = new Intent(getActivity(),
+				// ImageZoomActivity.class);
+				// intent.putExtra("url",
+				// "/42c7f9f5-6088-4bc8-acc0-59162257a775");
+				// startActivity(intent);
+				// new Thread(){
+				// public void run() {
+				// try {
+				// ApiClient.register(appContext, "dddd1111", "123456",
+				// "13800000000", "中国", "abcd12121@163.com");
+				// } catch (Exception e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
+				// };
+				// }.start();
 			}
 		});
 	}
-	
+
 	@Override
 	public void onStart() {
+		LogUtil.d("MainFragment onStart");
 		super.onStart();
 		flag = true;
 		if (appConfig.getExamTime() == 0) {
 			this.restDay.setText("");
-		} else
-		{
+		} else {
 			String time = calculateRestDay(appConfig.getExamTime());
 			this.restDay.setText(time);
 			int dayNums = StringUtils.toInt2(time);
-			int color = dayNums<=0?getResources().getColor(R.color.black):
-							dayNums<=30?getResources().getColor(R.color.red):
-								dayNums<=90?getResources().getColor(R.color.blue):
-									getResources().getColor(R.color.green);
+			int color = dayNums <= 0 ? getResources().getColor(R.color.black)
+					: dayNums <= 30 ? getResources().getColor(R.color.red)
+							: dayNums <= 90 ? getResources().getColor(
+									R.color.blue) : getResources().getColor(
+									R.color.green);
 			this.restDay.setTextColor(color);
 		}
 		setUsername();
 	}
-
+	
+	public void userLogout()
+	{
+		usernameTv.setText("");
+		usernameTv.setVisibility(View.GONE);
+	}
+	
 	private void setUsername() {
 		// 开一个线程检测是不是已登录来更改主页用户名的设置
-		final Handler handler = new Handler(){
+		final Handler handler = new Handler() {
 			public void handleMessage(Message msg) {
 				usernameTv.setText(appContext.getUsername());
 				usernameTv.setVisibility(View.VISIBLE);
@@ -140,7 +152,7 @@ public class MainFragment extends Fragment {
 								|| appContext.getLoginState() == AppContext.LOCAL_LOGINED) {
 							flag = false;
 							handler.sendEmptyMessage(1);
-						}else
+						} else
 							Thread.sleep(1000);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -180,7 +192,7 @@ public class MainFragment extends Fragment {
 				switch (appContext.getLoginState()) {
 				case AppContext.LOCAL_LOGINED:
 				case AppContext.LOGINED:
-					startActivity(arg2,needLogin[arg2]);
+					startActivity(arg2, needLogin[arg2]);
 					break;
 				case AppContext.LOGINING:
 					if (appContext.getLoginState() == AppContext.LOGINING) // 正在登录,显示progress
@@ -200,7 +212,7 @@ public class MainFragment extends Fragment {
 									if (mProDialog != null) {
 										mProDialog.dismiss();
 									}
-									startActivity(arg2,needLogin[arg2]);
+									startActivity(arg2, needLogin[arg2]);
 									break;
 								}
 							}
@@ -222,41 +234,40 @@ public class MainFragment extends Fragment {
 					}
 					break;
 				default:
-					startActivity(arg2,needLogin[arg2]);
+					startActivity(arg2, needLogin[arg2]);
 					break;
 				}
-			}else
-			{
-				startActivity(arg2,needLogin[arg2]);
+			} else {
+				startActivity(arg2, needLogin[arg2]);
 			}
 		}
 	}
 
 	@Override
 	public void onPause() {
+		LogUtil.d("MainFragment onPause");
 		flag = false;
 		super.onPause();
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.i("MainFragment", "on Destroy");
+		LogUtil.d("MainFragment onDestroy");
 		super.onDestroy();
 	}
-	private void startActivity(int arg2,boolean needCheck)
-	{
-		if(!needCheck || appContext.getLoginState() == AppContext.LOCAL_LOGINED || appContext.getLoginState() == AppContext.LOGINED)
-		{
+
+	private void startActivity(int arg2, boolean needCheck) {
+		if (!needCheck
+				|| appContext.getLoginState() == AppContext.LOCAL_LOGINED
+				|| appContext.getLoginState() == AppContext.LOGINED) {
 			Intent intent = new Intent(MainFragment.this.getActivity(),
-				classes[arg2]);
+					classes[arg2]);
 			if (action[arg2] != 0) {
 				intent.putExtra("action", action[arg2]);
 			}
 			startActivity(intent);
-		}else
-		{
-			Intent intent2 = new Intent(
-					MainFragment.this.getActivity(),
+		} else {
+			Intent intent2 = new Intent(MainFragment.this.getActivity(),
 					LoginActivity.class);
 			intent2.putExtra("className", classes[arg2].getName());
 			if (action[arg2] != 0) {
@@ -264,5 +275,20 @@ public class MainFragment extends Fragment {
 			}
 			startActivity(intent2);
 		}
+	}
+
+	private void showDisplayInfo() {
+		WindowManager winMgr = (WindowManager) this.getActivity().getApplicationContext()
+				.getSystemService(Context.WINDOW_SERVICE);
+		Display display = winMgr.getDefaultDisplay();
+		int height = display.getHeight();
+		int width = display.getWidth();
+		LogUtil.d("width: "+width +"; height:"+height);
+		// densityDpi = 120dpi is ldpi, densityDpi = 160dpi is mdpi,
+		// densityDpi = 240dpi is hdpi, densityDpi = 320dpi is xhdpi
+		DisplayMetrics dm = new DisplayMetrics();
+		this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int densityDpi = dm.densityDpi;
+		LogUtil.d("densityDpi = "+densityDpi);
 	}
 }
