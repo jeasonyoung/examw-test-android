@@ -158,7 +158,7 @@ public class SettingFragment extends Fragment implements OnClickListener {
 			break;
 		//意见反馈
 		case R.id.layout_feedback:
-//			feedBack();
+			startActivity(new Intent(mContext, FeedBackActivity.class));
 			break;
 		//登录退出
 		case R.id.btn_logout:

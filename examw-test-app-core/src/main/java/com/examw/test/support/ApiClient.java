@@ -23,6 +23,7 @@ import com.examw.test.app.AppContext;
 import com.examw.test.domain.Subject;
 import com.examw.test.domain.User;
 import com.examw.test.exception.AppException;
+import com.examw.test.model.FeedBackInfo;
 import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.FrontUserInfo;
@@ -171,7 +172,12 @@ public class ApiClient {
 		if(StringUtils.isEmpty(result)) return null;
 		return GsonUtil.jsonToBean(result, Json.class);
 	}
-	
+	public static Json feedBack(AppContext appContext,FeedBackInfo feedback) throws AppException
+	{
+		String result = HttpUtils.http_post(appContext, URLs.FEEDBACK,feedback);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.jsonToBean(result, Json.class);
+	}
 	public static Json updateRecords(AppContext appContext,ArrayList<UserPaperRecordInfo> reocrds) throws AppException
 	{
 		String result = HttpUtils.http_post(appContext, URLs.UPLOAD_RECORDS,reocrds);

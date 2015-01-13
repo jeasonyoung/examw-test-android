@@ -1,23 +1,29 @@
 package com.examw.test.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.lang.ref.WeakReference;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.PaperDao;
+import com.examw.test.dao.ProductDao;
+import com.examw.test.model.FeedBackInfo;
+import com.examw.test.model.Json;
+import com.examw.test.support.ApiClient;
+import com.examw.test.util.ToastUtils;
 
 /**
  * 反馈界面
@@ -27,9 +33,11 @@ import com.examw.test.dao.PaperDao;
 public class FeedBackActivity extends BaseActivity implements OnClickListener {
 	private EditText editNoteEditText;
 	private TextView editSizeText;
-	private String qid,username,paperId,classId;
+	private AppContext appContext;
 	private final static int maxLength = 1000;
-	private PaperDao dao;
+	private ProgressDialog mDialog;
+	private FeedBackInfo info;
+	private FeedBackHandler mHandler;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -39,12 +47,8 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 				.findViewById(R.id.editNoteEditText);
 		this.editSizeText = (TextView) this
 				.findViewById(R.id.notebook_editSizeText);
-		Intent mIntent = this.getIntent();
-		this.qid = mIntent.getStringExtra("qid");
-
-		this.username = ((AppContext)getApplication()).getUsername();
-		this.paperId = mIntent.getStringExtra("paperid");
-		this.classId = mIntent.getStringExtra("classid");
+		appContext = (AppContext) this.getApplication();
+		mHandler = new FeedBackHandler(this);
 		this.editNoteEditText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
@@ -83,14 +87,68 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 	}
 	private void submit()
 	{
+		//隐藏键盘
+		((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(editNoteEditText.getWindowToken(), 0);
+		if(mDialog != null && !mDialog.isShowing())
+		{
+			mDialog.show();
+			if(info != null)
+			{
+				new FeedBackThread().start();
+				return;
+			}
+		}
 		String content = this.editNoteEditText.getText().toString();
 		if(content.trim().length()==0)
 		{
 			Toast.makeText(this, "请输入内容", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		String addTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA).format(new Date());
-		this.finish();
+		info = getInfo(content);
+		mDialog = ProgressDialog.show(this, null,
+				"提交中，请稍后...", true, true);
+		new FeedBackThread().start();
+	}
+	static class FeedBackHandler extends Handler {
+		WeakReference<FeedBackActivity> weak;
+
+		public FeedBackHandler(FeedBackActivity context) {
+			weak = new WeakReference<FeedBackActivity>(context);
+		}
+		
+		@Override
+		public void handleMessage(Message msg) {
+			FeedBackActivity a = weak.get();
+			a.mDialog.dismiss();
+			switch(msg.what)
+			{
+			case 1:
+				ToastUtils.show(a, "提交成功,感谢反馈");
+				a.info = null;
+				a.editNoteEditText.setText("");
+				break;
+			case 2:
+				ToastUtils.show(a, "提交失败,稍后再试");
+				break;
+			}
+		}
+	}
+	
+	class FeedBackThread extends Thread{
+		@Override
+		public void run() {
+			try{
+				Json result = ApiClient.feedBack(appContext, info);
+				if(result.isSuccess())
+				{
+					mHandler.sendEmptyMessage(1);
+				}else
+					mHandler.sendEmptyMessage(2);
+			}catch(Exception e)
+			{
+				mHandler.sendEmptyMessage(2);
+			}
+		}
 	}
 	@Override
 	protected void onPause() {
@@ -99,5 +157,21 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
+	}
+	
+	private FeedBackInfo getInfo(String content)
+	{
+		FeedBackInfo info = new FeedBackInfo();
+		StringBuffer buf = new StringBuffer();
+		buf.append("来自android客户端").append(appContext.getVersionName()).append("\n");
+		buf.append("产品ID:").append(AppConfig.PRODUCTID).append("\n");
+		buf.append("名称:").append(ProductDao.findProductName()).append("\n");
+		buf.append("用户:").append(appContext.getUsername()).append("\n");
+		buf.append("content:").append(content);
+		info.setContent(buf.toString());
+		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setUsername(appContext.getUsername());
+		buf = null;
+		return info;
 	}
 }

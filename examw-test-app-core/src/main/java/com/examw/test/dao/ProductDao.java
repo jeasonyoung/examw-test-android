@@ -65,6 +65,20 @@ public class ProductDao {
 		db.close();
 		return name;
 	}
+	public static String findProductName()
+	{
+		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		Cursor cursor = db.rawQuery("select name from ProductTab where productid = ?",
+				new String[] { AppConfig.PRODUCTID });
+		String name = "";
+		if(cursor.moveToNext())
+		{
+			name = cursor.getString(0);
+		}
+		cursor.close();
+		db.close();
+		return name;
+	}
 	/**
 	 * 查询科目信息
 	 * @return
