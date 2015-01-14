@@ -31,6 +31,7 @@ com.examw.test.app.AppConfig:
     public static final java.lang.String TERMINALID
     private static final java.lang.String APP_CONFIG
     public static final java.lang.String SHAREDPREFERENCES_NAME
+    public static final java.lang.String CONF_REGISTRATION
     public static final java.lang.String CONF_APP_UNIQUEID
     public static final java.lang.String CONF_COOKIE
     public static final java.lang.String CONF_ACCESSTOKEN
@@ -48,17 +49,17 @@ com.examw.test.app.AppConfig:
     public static final java.lang.String CONF_LAST_SYNC_TIME
     public static final java.lang.String SAVE_IMAGE_PATH
     public static final java.lang.String DATABASE_NAME
-    84:84:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
-    91:91:public static boolean isLoadImage(android.content.Context)
-    95:95:public java.lang.String getCookie()
-    99:100:public void setAccessToken(java.lang.String)
-    103:103:public java.lang.String getAccessToken()
-    107:108:public void setAccessSecret(java.lang.String)
-    111:111:public java.lang.String getAccessSecret()
-    115:116:public void setExpiresIn(long)
-    119:119:public long getExpiresIn()
-    127:127:public java.lang.String getFormatExamTime()
-    185:188:public void set(java.util.Properties)
+    86:86:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
+    93:93:public static boolean isLoadImage(android.content.Context)
+    97:97:public java.lang.String getCookie()
+    101:102:public void setAccessToken(java.lang.String)
+    105:105:public java.lang.String getAccessToken()
+    109:110:public void setAccessSecret(java.lang.String)
+    113:113:public java.lang.String getAccessSecret()
+    117:118:public void setExpiresIn(long)
+    121:121:public long getExpiresIn()
+    129:129:public java.lang.String getFormatExamTime()
+    187:190:public void set(java.util.Properties)
 com.examw.test.app.AppConstant:
     public static final int SUCCESS
     public static final int FAILURE
@@ -160,8 +161,8 @@ com.examw.test.dao.SyllabusDao:
     327:345:private static void insertItem(android.database.sqlite.SQLiteDatabase,com.examw.test.model.ItemInfo,java.lang.String)
 com.examw.test.dao.SyllabusDao$1
 com.examw.test.dao.UserDao:
-    16:16:public UserDao()
-    26:42:public static long addUser(com.examw.test.domain.User)
+    17:17:public UserDao()
+    27:43:public static long addUser(com.examw.test.domain.User)
 com.examw.test.db.ImportDBManager:
     53:54:public synchronized void closeDatabase()
 com.examw.test.db.LibraryDBHelper:
@@ -283,7 +284,7 @@ com.examw.test.service.DownloadService$1
 com.examw.test.service.DownloadService$DownloadBinder
 com.examw.test.service.DownloadService$DownloadBinder$1
 com.examw.test.support.ApiClient:
-    46:46:public ApiClient()
+    47:47:public ApiClient()
 com.examw.test.support.AppUpdateManager:
     private static final int DOWN_NOSDCARD
     private static final int DOWN_UPDATE
@@ -300,7 +301,6 @@ com.examw.test.support.DataConverter:
     31:31:public DataConverter()
 com.examw.test.support.LoginTips:
     8:8:public LoginTips()
-    70:107:public static java.lang.String getRegisterTip(int)
 com.examw.test.support.SyllabusHelper:
     14:14:public SyllabusHelper()
     58:69:private static void filterChildren(java.util.ArrayList,com.examw.test.domain.Chapter)
@@ -345,6 +345,8 @@ com.examw.test.ui.ChapterDetailActivity$2
 com.examw.test.ui.ChapterDetailActivity$MyHandler
 com.examw.test.ui.ChooseSubjectActivity:
     private static final java.lang.String TAG
+com.examw.test.ui.FeedBackActivity:
+    private static final int maxLength
 com.examw.test.ui.ImageZoomActivity:
     private static final java.lang.String TAG
 com.examw.test.ui.ImageZoomActivity$TounchListener:
@@ -369,8 +371,10 @@ com.examw.test.ui.MainActivity:
     public static final int MAIN_INDEX
     public static final int MAIN_ACCOUNT
     public static final int MAIN_ABOUT
-    309:309:public com.examw.test.app.AppContext getAppContext()
-    360:361:public void showFooter(int)
+    312:312:public com.examw.test.app.AppContext getAppContext()
+    363:364:public void showFooter(int)
+com.examw.test.ui.MainFragment:
+    281:293:private void showDisplayInfo()
 com.examw.test.ui.PaperDoPaperActivity:
     private android.widget.PopupWindow tipWindow
     1103:1105:private void vibrate()

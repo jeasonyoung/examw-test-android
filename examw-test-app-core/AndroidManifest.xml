@@ -187,5 +187,7 @@
         <!-- 校验用户 -->
         <meta-data android:value="digest" android:name="username"></meta-data>
         <meta-data android:value="7F522E56248B559B2F443C8EC310F0E7" android:name="password"></meta-data>
+        <!-- 产品ID -->
+        <meta-data android:value="356ca1e5-e12b-4c16-9456-8e6618b9a28b" android:name="productId"/>
     </application>
 </manifest>

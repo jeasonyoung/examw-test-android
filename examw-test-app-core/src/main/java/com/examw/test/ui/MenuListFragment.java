@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
+import com.examw.test.util.LogUtil;
 
 /**
  * 菜单列表
@@ -44,7 +45,8 @@ public class MenuListFragment extends ListFragment {
 		adapter.add(new SampleItem("设置", R.drawable.slide_menu_set));
 		adapter.add(new SampleItem("注销", R.drawable.slide_menu_logout));
 		adapter.add(new SampleItem("退出", R.drawable.slide_menu_exit));
-//		adapter.add(new SampleItem("导入数据",R.drawable.slide_menu_qiehuan));
+		if(LogUtil.showLog)
+			adapter.add(new SampleItem("导入数据",R.drawable.slide_menu_qiehuan));
 		setListAdapter(adapter);
 	}
 

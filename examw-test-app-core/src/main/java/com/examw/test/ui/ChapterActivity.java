@@ -22,6 +22,7 @@ import com.examw.test.exception.AppException;
 import com.examw.test.support.ApiClient;
 import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
+import com.examw.test.util.ToastUtils;
 
 /**
  * 章节练习
@@ -126,7 +127,13 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 				break;
 			case 1:
 				//初始化ExpendableView
-				k.expandView.setAdapter(new ChapterExpendableListAdatper(k,k.chapters));
+				if(k.chapters != null)
+					k.expandView.setAdapter(new ChapterExpendableListAdatper(k,k.chapters));
+				else{
+					ToastUtils.show(k, "暂无数据");
+					k.reloadLayout.setVisibility(View.GONE);
+					k.nodataLayout.setVisibility(View.VISIBLE);
+				}
 				break;
 			case -1:
 				((AppException)msg.obj).makeToast(k);

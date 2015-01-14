@@ -29,6 +29,8 @@ public class AppConfig {
 //	public static final String PRODUCTID = "d5518100-3229-4f7a-993d-940330a3f7d5";
 	//湖南会计
 //	public static final String PRODUCTID = "f91e46c8-f85f-4ea6-aafe-5fcc445ecff0";
+	//二级人力
+//	public static final String PRODUCTID = "356ca1e5-e12b-4c16-9456-8e6618b9a28b";
 	//一建,建筑工程
 	public static final String PRODUCTID = "60a4eb98-8c95-42d7-9178-d053a17f9e87";
 	//终端ID

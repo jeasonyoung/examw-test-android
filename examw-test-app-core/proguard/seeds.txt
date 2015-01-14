@@ -2931,6 +2931,7 @@ com.examw.test.R$drawable: int exercise_option_f
 com.examw.test.R$drawable: int exercise_option_n
 com.examw.test.R$drawable: int exercise_option_s
 com.examw.test.R$drawable: int exercise_option_t
+com.examw.test.R$drawable: int feedback_edit_bg
 com.examw.test.R$drawable: int font_bg
 com.examw.test.R$drawable: int font_bg_no
 com.examw.test.R$drawable: int font_bg_on
@@ -3153,6 +3154,7 @@ com.examw.test.R$id: int doExamMenuLayout
 com.examw.test.R$id: int doExamTopLayout
 com.examw.test.R$id: int doexam_mode2layout
 com.examw.test.R$id: int doexam_mode3layout
+com.examw.test.R$id: int editNoteEditText
 com.examw.test.R$id: int eee
 com.examw.test.R$id: int empty
 com.examw.test.R$id: int errorSize
@@ -3167,6 +3169,7 @@ com.examw.test.R$id: int exam_Content3
 com.examw.test.R$id: int exam_analysisTextView
 com.examw.test.R$id: int exam_answerEditText
 com.examw.test.R$id: int exam_answer_layout
+com.examw.test.R$id: int exam_notebook_btn
 com.examw.test.R$id: int exam_scoreImg
 com.examw.test.R$id: int exam_scoreLayout
 com.examw.test.R$id: int exercise
@@ -3252,6 +3255,7 @@ com.examw.test.R$id: int new_data_toast_message
 com.examw.test.R$id: int nextBtn
 com.examw.test.R$id: int nodataLayout
 com.examw.test.R$id: int noneText
+com.examw.test.R$id: int notebook_editSizeText
 com.examw.test.R$id: int option
 com.examw.test.R$id: int optionTextView
 com.examw.test.R$id: int page0
@@ -3441,6 +3445,7 @@ com.examw.test.R$layout: int ui_chapter_practice_info
 com.examw.test.R$layout: int ui_choose_subject
 com.examw.test.R$layout: int ui_daily
 com.examw.test.R$layout: int ui_do_real_paper
+com.examw.test.R$layout: int ui_feedback
 com.examw.test.R$layout: int ui_guide
 com.examw.test.R$layout: int ui_image_zoom
 com.examw.test.R$layout: int ui_import_data
@@ -3510,6 +3515,7 @@ com.examw.test.R$string: int exam_sysAnswerStr
 com.examw.test.R$string: int exam_teacher
 com.examw.test.R$string: int exit
 com.examw.test.R$string: int fastExer
+com.examw.test.R$string: int feedback_write_hint
 com.examw.test.R$string: int hello_world
 com.examw.test.R$string: int homepage
 com.examw.test.R$string: int http_exception_error
@@ -3945,6 +3951,27 @@ com.examw.test.model.DateInfo: java.util.Date getDate()
 com.examw.test.model.DateInfo: void setDate(java.util.Date)
 com.examw.test.model.DateInfo: void setMmdd(java.lang.String)
 com.examw.test.model.DateInfo: DateInfo(int,java.lang.String,java.lang.String,java.util.Date)
+com.examw.test.model.FeedBackInfo
+com.examw.test.model.FeedBackInfo: long serialVersionUID
+com.examw.test.model.FeedBackInfo: java.lang.String id
+com.examw.test.model.FeedBackInfo: java.lang.String content
+com.examw.test.model.FeedBackInfo: java.lang.String username
+com.examw.test.model.FeedBackInfo: java.lang.String terminalName
+com.examw.test.model.FeedBackInfo: java.util.Date createTime
+com.examw.test.model.FeedBackInfo: java.lang.Integer terminalCode
+com.examw.test.model.FeedBackInfo: FeedBackInfo()
+com.examw.test.model.FeedBackInfo: java.lang.String getId()
+com.examw.test.model.FeedBackInfo: void setId(java.lang.String)
+com.examw.test.model.FeedBackInfo: java.lang.String getContent()
+com.examw.test.model.FeedBackInfo: void setContent(java.lang.String)
+com.examw.test.model.FeedBackInfo: java.lang.String getUsername()
+com.examw.test.model.FeedBackInfo: void setUsername(java.lang.String)
+com.examw.test.model.FeedBackInfo: java.util.Date getCreateTime()
+com.examw.test.model.FeedBackInfo: void setCreateTime(java.util.Date)
+com.examw.test.model.FeedBackInfo: java.lang.Integer getTerminalCode()
+com.examw.test.model.FeedBackInfo: void setTerminalCode(java.lang.Integer)
+com.examw.test.model.FeedBackInfo: java.lang.String getTerminalName()
+com.examw.test.model.FeedBackInfo: void setTerminalName(java.lang.String)
 com.examw.test.model.FrontPaperInfo
 com.examw.test.model.FrontPaperInfo: long serialVersionUID
 com.examw.test.model.FrontPaperInfo: java.lang.Integer total
@@ -4485,6 +4512,9 @@ com.examw.test.ui.DailyActivity: DailyActivity()
 com.examw.test.ui.DailyActivity: void onClick(android.view.View)
 com.examw.test.ui.ExamInfoActivity
 com.examw.test.ui.ExamInfoActivity: ExamInfoActivity()
+com.examw.test.ui.FeedBackActivity
+com.examw.test.ui.FeedBackActivity: FeedBackActivity()
+com.examw.test.ui.FeedBackActivity: void onClick(android.view.View)
 com.examw.test.ui.ForumActivity
 com.examw.test.ui.ForumActivity: ForumActivity()
 com.examw.test.ui.GuideActivity

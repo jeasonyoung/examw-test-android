@@ -63,6 +63,7 @@ public class UserDao {
 				user.setUsername(cursor.getString(1));
 				user.setPassword(cursor.getString(2));
 				user.setProductUserId(cursor.getString(3));
+				user.setPassword(CyptoUtils.decode("changheng", user.getPassword()));
 			}
 		}catch(Exception e)
 		{
@@ -72,7 +73,6 @@ public class UserDao {
 				cursor.close();
 			UserDBUtil.close();
 		}
-		user.setPassword(CyptoUtils.decode("changheng", user.getPassword()));
 		return user;
 	}
 	

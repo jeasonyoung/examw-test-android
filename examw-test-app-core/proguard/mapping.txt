@@ -2702,6 +2702,7 @@ com.examw.test.R$drawable -> com.examw.test.R$drawable:
     int exercise_option_n -> exercise_option_n
     int exercise_option_s -> exercise_option_s
     int exercise_option_t -> exercise_option_t
+    int feedback_edit_bg -> feedback_edit_bg
     int font_bg -> font_bg
     int font_bg_no -> font_bg_no
     int font_bg_on -> font_bg_on
@@ -2924,6 +2925,7 @@ com.examw.test.R$id -> com.examw.test.R$id:
     int doExamTopLayout -> doExamTopLayout
     int doexam_mode2layout -> doexam_mode2layout
     int doexam_mode3layout -> doexam_mode3layout
+    int editNoteEditText -> editNoteEditText
     int eee -> eee
     int empty -> empty
     int errorSize -> errorSize
@@ -2938,6 +2940,7 @@ com.examw.test.R$id -> com.examw.test.R$id:
     int exam_analysisTextView -> exam_analysisTextView
     int exam_answerEditText -> exam_answerEditText
     int exam_answer_layout -> exam_answer_layout
+    int exam_notebook_btn -> exam_notebook_btn
     int exam_scoreImg -> exam_scoreImg
     int exam_scoreLayout -> exam_scoreLayout
     int exercise -> exercise
@@ -3023,6 +3026,7 @@ com.examw.test.R$id -> com.examw.test.R$id:
     int nextBtn -> nextBtn
     int nodataLayout -> nodataLayout
     int noneText -> noneText
+    int notebook_editSizeText -> notebook_editSizeText
     int option -> option
     int optionTextView -> optionTextView
     int page0 -> page0
@@ -3212,6 +3216,7 @@ com.examw.test.R$layout -> com.examw.test.R$layout:
     int ui_choose_subject -> ui_choose_subject
     int ui_daily -> ui_daily
     int ui_do_real_paper -> ui_do_real_paper
+    int ui_feedback -> ui_feedback
     int ui_guide -> ui_guide
     int ui_image_zoom -> ui_image_zoom
     int ui_import_data -> ui_import_data
@@ -3281,6 +3286,7 @@ com.examw.test.R$string -> com.examw.test.R$string:
     int exam_teacher -> exam_teacher
     int exit -> exit
     int fastExer -> fastExer
+    int feedback_write_hint -> feedback_write_hint
     int hello_world -> hello_world
     int homepage -> homepage
     int http_exception_error -> http_exception_error
@@ -3967,7 +3973,8 @@ com.examw.test.dao.ProductDao -> com.examw.test.b.h:
     boolean hasInsert() -> a
     void insert(com.examw.test.model.FrontProductInfo) -> a
     java.lang.String findExamName() -> b
-    java.util.ArrayList findSubjects() -> c
+    java.lang.String findProductName() -> c
+    java.util.ArrayList findSubjects() -> d
     void saveSubjects(java.util.ArrayList) -> a
 com.examw.test.dao.SyllabusDao -> com.examw.test.b.i:
     void insert(android.database.sqlite.SQLiteDatabase,com.examw.test.model.SyllabusInfo) -> a
@@ -4459,6 +4466,26 @@ com.examw.test.model.DateInfo -> com.examw.test.model.DateInfo:
     java.util.Date getDate() -> getDate
     void setDate(java.util.Date) -> setDate
     void setMmdd(java.lang.String) -> setMmdd
+com.examw.test.model.FeedBackInfo -> com.examw.test.model.FeedBackInfo:
+    long serialVersionUID -> serialVersionUID
+    java.lang.String id -> id
+    java.lang.String content -> content
+    java.lang.String username -> username
+    java.lang.String terminalName -> terminalName
+    java.util.Date createTime -> createTime
+    java.lang.Integer terminalCode -> terminalCode
+    java.lang.String getId() -> getId
+    void setId(java.lang.String) -> setId
+    java.lang.String getContent() -> getContent
+    void setContent(java.lang.String) -> setContent
+    java.lang.String getUsername() -> getUsername
+    void setUsername(java.lang.String) -> setUsername
+    java.util.Date getCreateTime() -> getCreateTime
+    void setCreateTime(java.util.Date) -> setCreateTime
+    java.lang.Integer getTerminalCode() -> getTerminalCode
+    void setTerminalCode(java.lang.Integer) -> setTerminalCode
+    java.lang.String getTerminalName() -> getTerminalName
+    void setTerminalName(java.lang.String) -> setTerminalName
 com.examw.test.model.FrontPaperInfo -> com.examw.test.model.FrontPaperInfo:
     long serialVersionUID -> serialVersionUID
     java.lang.Integer total -> total
@@ -4966,6 +4993,7 @@ com.examw.test.support.ApiClient -> com.examw.test.f.a:
     com.examw.test.model.Json login(com.examw.test.app.AppContext,java.lang.String,java.lang.String) -> a
     com.examw.test.model.Json register(com.examw.test.app.AppContext,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String) -> a
     com.examw.test.model.Json getProductUser(com.examw.test.app.AppContext,com.examw.test.model.FrontUserInfo) -> a
+    com.examw.test.model.Json feedBack(com.examw.test.app.AppContext,com.examw.test.model.FeedBackInfo) -> a
     com.examw.test.model.Json updateRecords(com.examw.test.app.AppContext,java.util.ArrayList) -> a
     com.examw.test.model.Json updateFavors(com.examw.test.app.AppContext,java.util.ArrayList) -> b
     com.examw.test.model.FrontProductInfo getProductInfo(com.examw.test.app.AppContext) -> a
@@ -5097,6 +5125,7 @@ com.examw.test.support.DataConverter -> com.examw.test.f.p:
     com.examw.test.model.UserItemFavoriteInfo favorConvert(com.examw.test.domain.FavoriteItem) -> a
 com.examw.test.support.LoginTips -> com.examw.test.f.q:
     java.lang.String getLoginTip(int,java.lang.String) -> a
+    java.lang.String getRegisterTip(int) -> a
 com.examw.test.support.ReturnBtnClickListener -> com.examw.test.f.r:
     android.app.Activity context -> a
     void onClick(android.view.View) -> onClick
@@ -5343,6 +5372,37 @@ com.examw.test.ui.DailyActivity$MyHandler -> com.examw.test.ui.v:
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.ExamInfoActivity -> com.examw.test.ui.ExamInfoActivity:
     void onCreate(android.os.Bundle) -> onCreate
+com.examw.test.ui.FeedBackActivity -> com.examw.test.ui.FeedBackActivity:
+    android.widget.EditText editNoteEditText -> a
+    android.widget.TextView editSizeText -> b
+    com.examw.test.app.AppContext appContext -> c
+    android.app.ProgressDialog mDialog -> d
+    com.examw.test.model.FeedBackInfo info -> e
+    com.examw.test.ui.FeedBackActivity$FeedBackHandler mHandler -> f
+    void onCreate(android.os.Bundle) -> onCreate
+    void onClick(android.view.View) -> onClick
+    void submit() -> b
+    void onPause() -> onPause
+    void onResume() -> onResume
+    com.examw.test.model.FeedBackInfo getInfo(java.lang.String) -> c
+    android.app.ProgressDialog access$0(com.examw.test.ui.FeedBackActivity) -> a
+    void access$1(com.examw.test.ui.FeedBackActivity,com.examw.test.model.FeedBackInfo) -> a
+    android.widget.EditText access$2(com.examw.test.ui.FeedBackActivity) -> b
+    com.examw.test.app.AppContext access$3(com.examw.test.ui.FeedBackActivity) -> c
+    com.examw.test.model.FeedBackInfo access$4(com.examw.test.ui.FeedBackActivity) -> d
+    com.examw.test.ui.FeedBackActivity$FeedBackHandler access$5(com.examw.test.ui.FeedBackActivity) -> e
+    android.widget.TextView access$6(com.examw.test.ui.FeedBackActivity) -> f
+com.examw.test.ui.FeedBackActivity$1 -> com.examw.test.ui.w:
+    com.examw.test.ui.FeedBackActivity this$0 -> a
+    void afterTextChanged(android.text.Editable) -> afterTextChanged
+    void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
+    void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
+com.examw.test.ui.FeedBackActivity$FeedBackHandler -> com.examw.test.ui.x:
+    java.lang.ref.WeakReference weak -> a
+    void handleMessage(android.os.Message) -> handleMessage
+com.examw.test.ui.FeedBackActivity$FeedBackThread -> com.examw.test.ui.y:
+    com.examw.test.ui.FeedBackActivity this$0 -> a
+    void run() -> run
 com.examw.test.ui.ForumActivity -> com.examw.test.ui.ForumActivity:
     void onCreate(android.os.Bundle) -> onCreate
 com.examw.test.ui.GuideActivity -> com.examw.test.ui.GuideActivity:
@@ -5368,7 +5428,7 @@ com.examw.test.ui.ImageZoomActivity -> com.examw.test.ui.ImageZoomActivity:
     android.graphics.PointF mid(android.view.MotionEvent) -> d
     float access$0(android.view.MotionEvent) -> a
     android.graphics.PointF access$1(android.view.MotionEvent) -> b
-com.examw.test.ui.ImageZoomActivity$TounchListener -> com.examw.test.ui.w:
+com.examw.test.ui.ImageZoomActivity$TounchListener -> com.examw.test.ui.z:
     android.graphics.PointF startPoint -> b
     android.graphics.Matrix matrix -> c
     android.graphics.Matrix currentMaritx -> d
@@ -5402,22 +5462,22 @@ com.examw.test.ui.ImportDataActivity -> com.examw.test.ui.ImportDataActivity:
     java.util.ArrayList access$6(com.examw.test.ui.ImportDataActivity) -> e
     java.lang.String access$7() -> b
     void access$8(com.examw.test.ui.ImportDataActivity,java.lang.String,java.lang.String) -> a
-com.examw.test.ui.ImportDataActivity$1 -> com.examw.test.ui.x:
+com.examw.test.ui.ImportDataActivity$1 -> com.examw.test.ui.aa:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.ImportDataActivity$2 -> com.examw.test.ui.y:
+com.examw.test.ui.ImportDataActivity$2 -> com.examw.test.ui.ab:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ImportDataActivity$3 -> com.examw.test.ui.z:
+com.examw.test.ui.ImportDataActivity$3 -> com.examw.test.ui.ac:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ImportDataActivity$4 -> com.examw.test.ui.aa:
+com.examw.test.ui.ImportDataActivity$4 -> com.examw.test.ui.ad:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ImportDataActivity$5 -> com.examw.test.ui.ab:
+com.examw.test.ui.ImportDataActivity$5 -> com.examw.test.ui.ae:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ImportDataActivity$6 -> com.examw.test.ui.ac:
+com.examw.test.ui.ImportDataActivity$6 -> com.examw.test.ui.af:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
 com.examw.test.ui.KnowledgeActivity -> com.examw.test.ui.KnowledgeActivity:
@@ -5454,33 +5514,33 @@ com.examw.test.ui.KnowledgeActivity -> com.examw.test.ui.KnowledgeActivity:
     void access$12(com.examw.test.ui.KnowledgeActivity,com.examw.test.domain.Subject) -> a
     android.widget.PopupWindow access$13(com.examw.test.ui.KnowledgeActivity) -> j
     android.widget.ImageView access$14(com.examw.test.ui.KnowledgeActivity) -> k
-com.examw.test.ui.KnowledgeActivity$1 -> com.examw.test.ui.ad:
+com.examw.test.ui.KnowledgeActivity$1 -> com.examw.test.ui.ag:
     com.examw.test.ui.KnowledgeActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.KnowledgeActivity$2 -> com.examw.test.ui.ae:
+com.examw.test.ui.KnowledgeActivity$2 -> com.examw.test.ui.ah:
     com.examw.test.ui.KnowledgeActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.KnowledgeActivity$3 -> com.examw.test.ui.af:
+com.examw.test.ui.KnowledgeActivity$3 -> com.examw.test.ui.ai:
     com.examw.test.ui.KnowledgeActivity this$0 -> a
     void onDismiss() -> onDismiss
-com.examw.test.ui.KnowledgeActivity$GetSubjectTask -> com.examw.test.ui.ag:
+com.examw.test.ui.KnowledgeActivity$GetSubjectTask -> com.examw.test.ui.aj:
     com.examw.test.ui.KnowledgeActivity this$0 -> a
     void onPreExecute() -> onPreExecute
     java.util.ArrayList doInBackground(java.lang.String[]) -> a
     void onPostExecute(java.util.ArrayList) -> a
     void onPostExecute(java.lang.Object) -> onPostExecute
     java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.examw.test.ui.KnowledgeActivity$GetSyllabusThread -> com.examw.test.ui.ah:
+com.examw.test.ui.KnowledgeActivity$GetSyllabusThread -> com.examw.test.ui.ak:
     com.examw.test.ui.KnowledgeActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.KnowledgeActivity$MyHandler -> com.examw.test.ui.ai:
+com.examw.test.ui.KnowledgeActivity$MyHandler -> com.examw.test.ui.al:
     java.lang.ref.WeakReference weak -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.KnowledgeActivity$MyHandler$1 -> com.examw.test.ui.aj:
+com.examw.test.ui.KnowledgeActivity$MyHandler$1 -> com.examw.test.ui.am:
     com.examw.test.ui.KnowledgeActivity$MyHandler this$1 -> a
     com.examw.test.ui.KnowledgeActivity val$k -> b
     void onClick(com.examw.test.domain.Chapter,int) -> a
-com.examw.test.ui.KnowledgeActivity$SampleAdapter -> com.examw.test.ui.ak:
+com.examw.test.ui.KnowledgeActivity$SampleAdapter -> com.examw.test.ui.an:
     com.examw.test.ui.KnowledgeActivity this$0 -> a
     int getCount() -> getCount
     java.lang.Object getItem(int) -> getItem
@@ -5523,24 +5583,24 @@ com.examw.test.ui.KnowledgeDetailActivity -> com.examw.test.ui.KnowledgeDetailAc
     void access$13(com.examw.test.ui.KnowledgeDetailActivity,java.lang.String) -> b
     java.lang.String access$14(com.examw.test.ui.KnowledgeDetailActivity) -> l
     void access$15(com.examw.test.ui.KnowledgeDetailActivity,java.util.List) -> a
-com.examw.test.ui.KnowledgeDetailActivity$1 -> com.examw.test.ui.al:
+com.examw.test.ui.KnowledgeDetailActivity$1 -> com.examw.test.ui.ao:
     com.examw.test.ui.KnowledgeDetailActivity this$0 -> a
     void onPullDownToRefresh(com.handmark.pulltorefresh.library.PullToRefreshBase) -> a
     void onPullUpToRefresh(com.handmark.pulltorefresh.library.PullToRefreshBase) -> b
-com.examw.test.ui.KnowledgeDetailActivity$2 -> com.examw.test.ui.am:
+com.examw.test.ui.KnowledgeDetailActivity$2 -> com.examw.test.ui.ap:
     com.examw.test.ui.KnowledgeDetailActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.KnowledgeDetailActivity$2$1 -> com.examw.test.ui.an:
+com.examw.test.ui.KnowledgeDetailActivity$2$1 -> com.examw.test.ui.aq:
     com.examw.test.ui.KnowledgeDetailActivity$2 this$1 -> a
-com.examw.test.ui.KnowledgeDetailActivity$GetKnowledgeContentThread -> com.examw.test.ui.ao:
+com.examw.test.ui.KnowledgeDetailActivity$GetKnowledgeContentThread -> com.examw.test.ui.ar:
     com.examw.test.ui.KnowledgeDetailActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.KnowledgeDetailActivity$GetKnowledgeContentThread$1 -> com.examw.test.ui.ap:
+com.examw.test.ui.KnowledgeDetailActivity$GetKnowledgeContentThread$1 -> com.examw.test.ui.as:
     com.examw.test.ui.KnowledgeDetailActivity$GetKnowledgeContentThread this$1 -> a
-com.examw.test.ui.KnowledgeDetailActivity$MyHandler -> com.examw.test.ui.aq:
+com.examw.test.ui.KnowledgeDetailActivity$MyHandler -> com.examw.test.ui.at:
     java.lang.ref.WeakReference weak -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.KnowledgeDetailActivity$SampleWebViewClient -> com.examw.test.ui.ar:
+com.examw.test.ui.KnowledgeDetailActivity$SampleWebViewClient -> com.examw.test.ui.au:
     com.examw.test.ui.KnowledgeDetailActivity this$0 -> a
     boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String) -> shouldOverrideUrlLoading
     void onPageFinished(android.webkit.WebView,java.lang.String) -> onPageFinished
@@ -5597,13 +5657,13 @@ com.examw.test.ui.LoginActivity -> com.examw.test.ui.LoginActivity:
     boolean access$11(com.examw.test.ui.LoginActivity) -> l
     void access$12(com.examw.test.ui.LoginActivity,boolean) -> a
     void access$13(com.examw.test.ui.LoginActivity) -> m
-com.examw.test.ui.LoginActivity$1 -> com.examw.test.ui.as:
+com.examw.test.ui.LoginActivity$1 -> com.examw.test.ui.av:
     com.examw.test.ui.LoginActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.LoginActivity$2 -> com.examw.test.ui.at:
+com.examw.test.ui.LoginActivity$2 -> com.examw.test.ui.aw:
     com.examw.test.ui.LoginActivity this$0 -> a
     boolean onEditorAction(android.widget.TextView,int,android.view.KeyEvent) -> onEditorAction
-com.examw.test.ui.LoginActivity$MyHandler -> com.examw.test.ui.au:
+com.examw.test.ui.LoginActivity$MyHandler -> com.examw.test.ui.ax:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.MainActivity -> com.examw.test.ui.MainActivity:
@@ -5618,16 +5678,17 @@ com.examw.test.ui.MainActivity -> com.examw.test.ui.MainActivity:
     android.widget.LinearLayout footer -> i
     com.examw.test.widget.BadgeView v -> j
     android.app.AlertDialog exitDialog -> k
+    com.examw.test.ui.MainFragment mainFragment -> l
     void onCreate(android.os.Bundle) -> onCreate
     void initFragment(int) -> b
     void onClick(android.view.View) -> onClick
     void onStart() -> onStart
     void showContent() -> a
     void hideNewTag() -> b
-    void initViews() -> f
+    void initViews() -> g
     boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
-    void createMainFragment() -> g
-    void initSlidingMenu() -> h
+    void createMainFragment() -> h
+    void initSlidingMenu() -> i
     void onResume() -> onResume
     void onPause() -> onPause
     int getFlag() -> c
@@ -5637,25 +5698,27 @@ com.examw.test.ui.MainActivity -> com.examw.test.ui.MainActivity:
     void changeMenu() -> d
     boolean dispatchKeyEvent(android.view.KeyEvent) -> dispatchKeyEvent
     void localLogin(android.os.Message,java.lang.String,java.lang.String) -> a
-    void showNew() -> i
+    void showNew() -> j
     void ShowExitDialog() -> e
+    void setMainFragment(com.examw.test.ui.MainFragment) -> a
+    void logout() -> f
     com.examw.test.app.AppContext access$0(com.examw.test.ui.MainActivity) -> a
     android.os.Handler access$1(com.examw.test.ui.MainActivity) -> b
     com.examw.test.app.AppConfig access$2(com.examw.test.ui.MainActivity) -> c
     void access$3(com.examw.test.ui.MainActivity,android.os.Message,java.lang.String,java.lang.String) -> a
-com.examw.test.ui.MainActivity$1 -> com.examw.test.ui.av:
+com.examw.test.ui.MainActivity$1 -> com.examw.test.ui.ay:
     com.examw.test.ui.MainActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.MainActivity$2 -> com.examw.test.ui.aw:
+com.examw.test.ui.MainActivity$2 -> com.examw.test.ui.az:
     com.examw.test.ui.MainActivity this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.MainActivity$3 -> com.examw.test.ui.ax:
+com.examw.test.ui.MainActivity$3 -> com.examw.test.ui.ba:
     com.examw.test.ui.MainActivity this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.MainActivity$MyHandler -> com.examw.test.ui.ay:
+com.examw.test.ui.MainActivity$MyHandler -> com.examw.test.ui.bb:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.MainFragment -> com.examw.test.ui.az:
+com.examw.test.ui.MainFragment -> com.examw.test.ui.bc:
     com.examw.test.widget.HomeGrid g -> a
     android.widget.RelativeLayout setDateLayout -> b
     android.widget.TextView restDay -> c
@@ -5671,12 +5734,13 @@ com.examw.test.ui.MainFragment -> com.examw.test.ui.az:
     android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> onCreateView
     void onActivityCreated(android.os.Bundle) -> onActivityCreated
     void onStart() -> onStart
-    void setUsername() -> b
+    void userLogout() -> a
+    void setUsername() -> c
     java.lang.String calculateRestDay(long) -> a
     void onPause() -> onPause
     void onDestroy() -> onDestroy
     void startActivity(int,boolean) -> a
-    boolean[] access$0() -> a
+    boolean[] access$0() -> b
     com.examw.test.app.AppContext access$1(com.examw.test.ui.MainFragment) -> a
     void access$2(com.examw.test.ui.MainFragment,int,boolean) -> a
     android.app.ProgressDialog access$3(com.examw.test.ui.MainFragment) -> b
@@ -5684,29 +5748,29 @@ com.examw.test.ui.MainFragment -> com.examw.test.ui.az:
     android.widget.TextView access$5(com.examw.test.ui.MainFragment) -> c
     boolean access$6(com.examw.test.ui.MainFragment) -> d
     void access$7(com.examw.test.ui.MainFragment,boolean) -> a
-com.examw.test.ui.MainFragment$1 -> com.examw.test.ui.ba:
+com.examw.test.ui.MainFragment$1 -> com.examw.test.ui.bd:
     com.examw.test.ui.MainFragment this$0 -> a
     void onClick(android.view.View) -> onClick
-com.examw.test.ui.MainFragment$2 -> com.examw.test.ui.bb:
+com.examw.test.ui.MainFragment$2 -> com.examw.test.ui.be:
     com.examw.test.ui.MainFragment this$0 -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.MainFragment$3 -> com.examw.test.ui.bc:
+com.examw.test.ui.MainFragment$3 -> com.examw.test.ui.bf:
     com.examw.test.ui.MainFragment this$0 -> a
     android.os.Handler val$handler -> b
     void run() -> run
-com.examw.test.ui.MainFragment$ItemClickListener -> com.examw.test.ui.bd:
+com.examw.test.ui.MainFragment$ItemClickListener -> com.examw.test.ui.bg:
     com.examw.test.ui.MainFragment this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
     com.examw.test.ui.MainFragment access$1(com.examw.test.ui.MainFragment$ItemClickListener) -> a
-com.examw.test.ui.MainFragment$ItemClickListener$1 -> com.examw.test.ui.be:
+com.examw.test.ui.MainFragment$ItemClickListener$1 -> com.examw.test.ui.bh:
     com.examw.test.ui.MainFragment$ItemClickListener this$1 -> a
     int val$arg2 -> b
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.MainFragment$ItemClickListener$2 -> com.examw.test.ui.bf:
+com.examw.test.ui.MainFragment$ItemClickListener$2 -> com.examw.test.ui.bi:
     com.examw.test.ui.MainFragment$ItemClickListener this$1 -> a
     android.os.Handler val$mHandler -> b
     void run() -> run
-com.examw.test.ui.MenuListFragment -> com.examw.test.ui.bg:
+com.examw.test.ui.MenuListFragment -> com.examw.test.ui.bj:
     com.examw.test.app.AppContext appContext -> a
     com.examw.test.ui.MenuListFragment$SampleItem accountItem -> b
     com.examw.test.ui.MenuListFragment$SampleAdapter adapter -> c
@@ -5721,13 +5785,13 @@ com.examw.test.ui.MenuListFragment -> com.examw.test.ui.bg:
     void onStop() -> onStop
     void onPause() -> onPause
     void onDestroy() -> onDestroy
-com.examw.test.ui.MenuListFragment$1 -> com.examw.test.ui.bh:
+com.examw.test.ui.MenuListFragment$1 -> com.examw.test.ui.bk:
     com.examw.test.ui.MenuListFragment this$0 -> a
     void run() -> run
-com.examw.test.ui.MenuListFragment$SampleAdapter -> com.examw.test.ui.bi:
+com.examw.test.ui.MenuListFragment$SampleAdapter -> com.examw.test.ui.bl:
     com.examw.test.ui.MenuListFragment this$0 -> a
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-com.examw.test.ui.MenuListFragment$SampleItem -> com.examw.test.ui.bj:
+com.examw.test.ui.MenuListFragment$SampleItem -> com.examw.test.ui.bm:
     java.lang.String tag -> a
     int iconRes -> b
     com.examw.test.ui.MenuListFragment this$0 -> c
@@ -5864,63 +5928,63 @@ com.examw.test.ui.PaperDoPaperActivity -> com.examw.test.ui.PaperDoPaperActivity
     void access$53(com.examw.test.ui.PaperDoPaperActivity) -> M
     android.content.SharedPreferences access$54(com.examw.test.ui.PaperDoPaperActivity) -> N
     void access$55(com.examw.test.ui.PaperDoPaperActivity) -> O
-com.examw.test.ui.PaperDoPaperActivity$1 -> com.examw.test.ui.bk:
+com.examw.test.ui.PaperDoPaperActivity$1 -> com.examw.test.ui.bn:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onSwitched(android.view.View,int) -> a
     com.examw.test.model.StructureInfo getCurrentRule(com.examw.test.model.StructureItemInfo) -> a
-com.examw.test.ui.PaperDoPaperActivity$10 -> com.examw.test.ui.bl:
+com.examw.test.ui.PaperDoPaperActivity$10 -> com.examw.test.ui.bo:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onLightChangeClick(int) -> a
-com.examw.test.ui.PaperDoPaperActivity$11 -> com.examw.test.ui.bm:
+com.examw.test.ui.PaperDoPaperActivity$11 -> com.examw.test.ui.bp:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void changeSize(float) -> a
-com.examw.test.ui.PaperDoPaperActivity$12 -> com.examw.test.ui.bn:
+com.examw.test.ui.PaperDoPaperActivity$12 -> com.examw.test.ui.bq:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onItemClick(int) -> a
-com.examw.test.ui.PaperDoPaperActivity$13 -> com.examw.test.ui.bo:
+com.examw.test.ui.PaperDoPaperActivity$13 -> com.examw.test.ui.br:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onDismiss() -> onDismiss
-com.examw.test.ui.PaperDoPaperActivity$14 -> com.examw.test.ui.bp:
+com.examw.test.ui.PaperDoPaperActivity$14 -> com.examw.test.ui.bs:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.PaperDoPaperActivity$15 -> com.examw.test.ui.bq:
+com.examw.test.ui.PaperDoPaperActivity$15 -> com.examw.test.ui.bt:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.PaperDoPaperActivity$2 -> com.examw.test.ui.br:
+com.examw.test.ui.PaperDoPaperActivity$2 -> com.examw.test.ui.bu:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void run() -> run
     int getInitCursor(int[]) -> a
-com.examw.test.ui.PaperDoPaperActivity$3 -> com.examw.test.ui.bs:
+com.examw.test.ui.PaperDoPaperActivity$3 -> com.examw.test.ui.bv:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.PaperDoPaperActivity$4 -> com.examw.test.ui.bt:
+com.examw.test.ui.PaperDoPaperActivity$4 -> com.examw.test.ui.bw:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.PaperDoPaperActivity$5 -> com.examw.test.ui.bu:
+com.examw.test.ui.PaperDoPaperActivity$5 -> com.examw.test.ui.bx:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.PaperDoPaperActivity$6 -> com.examw.test.ui.bv:
+com.examw.test.ui.PaperDoPaperActivity$6 -> com.examw.test.ui.by:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.PaperDoPaperActivity$7 -> com.examw.test.ui.bw:
+com.examw.test.ui.PaperDoPaperActivity$7 -> com.examw.test.ui.bz:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.PaperDoPaperActivity$8 -> com.examw.test.ui.bx:
+com.examw.test.ui.PaperDoPaperActivity$8 -> com.examw.test.ui.ca:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.PaperDoPaperActivity$9 -> com.examw.test.ui.by:
+com.examw.test.ui.PaperDoPaperActivity$9 -> com.examw.test.ui.cb:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void setting() -> a
     void restart() -> b
     void answerCard() -> c
-com.examw.test.ui.PaperDoPaperActivity$MyHandler -> com.examw.test.ui.bz:
+com.examw.test.ui.PaperDoPaperActivity$MyHandler -> com.examw.test.ui.cc:
     java.lang.ref.WeakReference weak -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.PaperDoPaperActivity$TimerHandler -> com.examw.test.ui.ca:
+com.examw.test.ui.PaperDoPaperActivity$TimerHandler -> com.examw.test.ui.cd:
     java.lang.ref.WeakReference weak -> a
     void handleMessage(android.os.Message) -> handleMessage
     java.lang.String getTimeText(int) -> a
-com.examw.test.ui.PaperDoPaperActivity$TimerThread -> com.examw.test.ui.cb:
+com.examw.test.ui.PaperDoPaperActivity$TimerThread -> com.examw.test.ui.ce:
     com.examw.test.ui.PaperDoPaperActivity this$0 -> a
     void run() -> run
 com.examw.test.ui.PaperDoPracticeActivity -> com.examw.test.ui.PaperDoPracticeActivity:
@@ -6003,33 +6067,33 @@ com.examw.test.ui.PaperDoPracticeActivity -> com.examw.test.ui.PaperDoPracticeAc
     void access$25(com.examw.test.ui.PaperDoPracticeActivity) -> s
     void access$26(com.examw.test.ui.PaperDoPracticeActivity) -> t
     android.content.SharedPreferences access$27(com.examw.test.ui.PaperDoPracticeActivity) -> u
-com.examw.test.ui.PaperDoPracticeActivity$1 -> com.examw.test.ui.cc:
+com.examw.test.ui.PaperDoPracticeActivity$1 -> com.examw.test.ui.cf:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void onSwitched(android.view.View,int) -> a
-com.examw.test.ui.PaperDoPracticeActivity$2 -> com.examw.test.ui.cd:
+com.examw.test.ui.PaperDoPracticeActivity$2 -> com.examw.test.ui.cg:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.PaperDoPracticeActivity$3 -> com.examw.test.ui.ce:
+com.examw.test.ui.PaperDoPracticeActivity$3 -> com.examw.test.ui.ch:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.PaperDoPracticeActivity$4 -> com.examw.test.ui.cf:
+com.examw.test.ui.PaperDoPracticeActivity$4 -> com.examw.test.ui.ci:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void setting() -> a
     void restart() -> b
     void answerCard() -> c
-com.examw.test.ui.PaperDoPracticeActivity$5 -> com.examw.test.ui.cg:
+com.examw.test.ui.PaperDoPracticeActivity$5 -> com.examw.test.ui.cj:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void onLightChangeClick(int) -> a
-com.examw.test.ui.PaperDoPracticeActivity$6 -> com.examw.test.ui.ch:
+com.examw.test.ui.PaperDoPracticeActivity$6 -> com.examw.test.ui.ck:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void changeSize(float) -> a
-com.examw.test.ui.PaperDoPracticeActivity$7 -> com.examw.test.ui.ci:
+com.examw.test.ui.PaperDoPracticeActivity$7 -> com.examw.test.ui.cl:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void onItemClick(int) -> a
-com.examw.test.ui.PaperDoPracticeActivity$8 -> com.examw.test.ui.cj:
+com.examw.test.ui.PaperDoPracticeActivity$8 -> com.examw.test.ui.cm:
     com.examw.test.ui.PaperDoPracticeActivity this$0 -> a
     void onDismiss() -> onDismiss
-com.examw.test.ui.PaperDoPracticeActivity$MyHandler -> com.examw.test.ui.ck:
+com.examw.test.ui.PaperDoPracticeActivity$MyHandler -> com.examw.test.ui.cn:
     java.lang.ref.WeakReference weak -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.PaperInfoActivity -> com.examw.test.ui.PaperInfoActivity:
@@ -6067,10 +6131,10 @@ com.examw.test.ui.PaperInfoActivity -> com.examw.test.ui.PaperInfoActivity:
     com.examw.test.app.AppContext access$8(com.examw.test.ui.PaperInfoActivity) -> f
     android.os.Handler access$9(com.examw.test.ui.PaperInfoActivity) -> g
     void access$10(com.examw.test.ui.PaperInfoActivity,com.examw.test.model.PaperPreview) -> a
-com.examw.test.ui.PaperInfoActivity$1 -> com.examw.test.ui.cl:
+com.examw.test.ui.PaperInfoActivity$1 -> com.examw.test.ui.co:
     com.examw.test.ui.PaperInfoActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.PaperInfoActivity$MyHandler -> com.examw.test.ui.cm:
+com.examw.test.ui.PaperInfoActivity$MyHandler -> com.examw.test.ui.cp:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.PaperRecordActivity -> com.examw.test.ui.PaperRecordActivity:
@@ -6121,23 +6185,23 @@ com.examw.test.ui.PaperRecordActivity -> com.examw.test.ui.PaperRecordActivity:
     void access$18(com.examw.test.ui.PaperRecordActivity,java.util.ArrayList) -> a
     int access$19(com.examw.test.ui.PaperRecordActivity) -> n
     android.os.Handler access$20(com.examw.test.ui.PaperRecordActivity) -> o
-com.examw.test.ui.PaperRecordActivity$1 -> com.examw.test.ui.cn:
+com.examw.test.ui.PaperRecordActivity$1 -> com.examw.test.ui.cq:
     com.examw.test.ui.PaperRecordActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.PaperRecordActivity$2 -> com.examw.test.ui.co:
+com.examw.test.ui.PaperRecordActivity$2 -> com.examw.test.ui.cr:
     com.examw.test.ui.PaperRecordActivity this$0 -> a
     void onClick(android.view.View) -> onClick
-com.examw.test.ui.PaperRecordActivity$3 -> com.examw.test.ui.cp:
+com.examw.test.ui.PaperRecordActivity$3 -> com.examw.test.ui.cs:
     com.examw.test.ui.PaperRecordActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.PaperRecordActivity$4 -> com.examw.test.ui.cq:
+com.examw.test.ui.PaperRecordActivity$4 -> com.examw.test.ui.ct:
     com.examw.test.ui.PaperRecordActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.PaperRecordActivity$5 -> com.examw.test.ui.cr:
+com.examw.test.ui.PaperRecordActivity$5 -> com.examw.test.ui.cu:
     com.examw.test.ui.PaperRecordActivity this$0 -> a
     java.lang.String val$paperId -> b
     void run() -> run
-com.examw.test.ui.PaperRecordActivity$MyHandler -> com.examw.test.ui.cs:
+com.examw.test.ui.PaperRecordActivity$MyHandler -> com.examw.test.ui.cv:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.PrivacyAgreementActivity -> com.examw.test.ui.PrivacyAgreementActivity:
@@ -6145,7 +6209,7 @@ com.examw.test.ui.PrivacyAgreementActivity -> com.examw.test.ui.PrivacyAgreement
     void onCreate(android.os.Bundle) -> onCreate
     void initView() -> b
     java.lang.String getFromAssets(java.lang.String) -> c
-com.examw.test.ui.RealPaperFragment -> com.examw.test.ui.ct:
+com.examw.test.ui.RealPaperFragment -> com.examw.test.ui.cw:
     com.handmark.pulltorefresh.library.PullToRefreshListView paperListView -> a
     java.util.ArrayList papers -> b
     android.os.Handler handler -> c
@@ -6180,25 +6244,25 @@ com.examw.test.ui.RealPaperFragment -> com.examw.test.ui.ct:
     android.widget.LinearLayout access$13(com.examw.test.ui.RealPaperFragment) -> l
     android.widget.LinearLayout access$14(com.examw.test.ui.RealPaperFragment) -> m
     void access$15(com.examw.test.ui.RealPaperFragment) -> n
-com.examw.test.ui.RealPaperFragment$1 -> com.examw.test.ui.cu:
+com.examw.test.ui.RealPaperFragment$1 -> com.examw.test.ui.cx:
     com.examw.test.ui.RealPaperFragment this$0 -> a
     void onRefresh(com.handmark.pulltorefresh.library.PullToRefreshBase) -> a
-com.examw.test.ui.RealPaperFragment$2 -> com.examw.test.ui.cv:
+com.examw.test.ui.RealPaperFragment$2 -> com.examw.test.ui.cy:
     com.examw.test.ui.RealPaperFragment this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.RealPaperFragment$3 -> com.examw.test.ui.cw:
+com.examw.test.ui.RealPaperFragment$3 -> com.examw.test.ui.cz:
     com.examw.test.ui.RealPaperFragment this$0 -> a
     void run() -> run
-com.examw.test.ui.RealPaperFragment$GetPaperListThread -> com.examw.test.ui.cx:
+com.examw.test.ui.RealPaperFragment$GetPaperListThread -> com.examw.test.ui.da:
     com.examw.test.ui.RealPaperFragment this$0 -> a
     void run() -> run
-com.examw.test.ui.RealPaperFragment$GetPaperTask -> com.examw.test.ui.cy:
+com.examw.test.ui.RealPaperFragment$GetPaperTask -> com.examw.test.ui.db:
     com.examw.test.ui.RealPaperFragment this$0 -> a
     java.util.ArrayList doInBackground(java.lang.String[]) -> a
     void onPostExecute(java.util.ArrayList) -> a
     void onPostExecute(java.lang.Object) -> onPostExecute
     java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.examw.test.ui.RealPaperFragment$MyHandler -> com.examw.test.ui.cz:
+com.examw.test.ui.RealPaperFragment$MyHandler -> com.examw.test.ui.dc:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.RegisterActivity -> com.examw.test.ui.RegisterActivity:
@@ -6255,41 +6319,41 @@ com.examw.test.ui.RegisterActivity -> com.examw.test.ui.RegisterActivity:
     java.lang.String access$20(com.examw.test.ui.RegisterActivity) -> t
     java.lang.String access$21(com.examw.test.ui.RegisterActivity) -> u
     java.lang.String access$22(com.examw.test.ui.RegisterActivity) -> v
-com.examw.test.ui.RegisterActivity$1 -> com.examw.test.ui.da:
+com.examw.test.ui.RegisterActivity$1 -> com.examw.test.ui.dd:
     com.examw.test.ui.RegisterActivity this$0 -> a
     void onFocusChange(android.view.View,boolean) -> onFocusChange
-com.examw.test.ui.RegisterActivity$2 -> com.examw.test.ui.db:
+com.examw.test.ui.RegisterActivity$2 -> com.examw.test.ui.de:
     com.examw.test.ui.RegisterActivity this$0 -> a
     void afterTextChanged(android.text.Editable) -> afterTextChanged
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
-com.examw.test.ui.RegisterActivity$3 -> com.examw.test.ui.dc:
+com.examw.test.ui.RegisterActivity$3 -> com.examw.test.ui.df:
     com.examw.test.ui.RegisterActivity this$0 -> a
     void afterTextChanged(android.text.Editable) -> afterTextChanged
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
-com.examw.test.ui.RegisterActivity$4 -> com.examw.test.ui.dd:
+com.examw.test.ui.RegisterActivity$4 -> com.examw.test.ui.dg:
     com.examw.test.ui.RegisterActivity this$0 -> a
     void afterTextChanged(android.text.Editable) -> afterTextChanged
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
-com.examw.test.ui.RegisterActivity$5 -> com.examw.test.ui.de:
+com.examw.test.ui.RegisterActivity$5 -> com.examw.test.ui.dh:
     com.examw.test.ui.RegisterActivity this$0 -> a
     void afterTextChanged(android.text.Editable) -> afterTextChanged
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
-com.examw.test.ui.RegisterActivity$6 -> com.examw.test.ui.df:
+com.examw.test.ui.RegisterActivity$6 -> com.examw.test.ui.di:
     com.examw.test.ui.RegisterActivity this$0 -> a
     void afterTextChanged(android.text.Editable) -> afterTextChanged
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
-com.examw.test.ui.RegisterActivity$7 -> com.examw.test.ui.dg:
+com.examw.test.ui.RegisterActivity$7 -> com.examw.test.ui.dj:
     com.examw.test.ui.RegisterActivity this$0 -> a
     boolean onEditorAction(android.widget.TextView,int,android.view.KeyEvent) -> onEditorAction
-com.examw.test.ui.RegisterActivity$8 -> com.examw.test.ui.dh:
+com.examw.test.ui.RegisterActivity$8 -> com.examw.test.ui.dk:
     com.examw.test.ui.RegisterActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.RegisterActivity$MyHandler -> com.examw.test.ui.di:
+com.examw.test.ui.RegisterActivity$MyHandler -> com.examw.test.ui.dl:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.SetTimeActivity -> com.examw.test.ui.SetTimeActivity:
@@ -6316,7 +6380,7 @@ com.examw.test.ui.SetTimeActivity -> com.examw.test.ui.SetTimeActivity:
     java.lang.String calculateRestDay(java.lang.String) -> c
     boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
     void onDestroy() -> onDestroy
-com.examw.test.ui.SettingFragment -> com.examw.test.ui.dj:
+com.examw.test.ui.SettingFragment -> com.examw.test.ui.dm:
     android.widget.TextView dateTxt -> a
     android.widget.TextView versionTxt -> b
     android.widget.TextView cacheSizeTxt -> c
@@ -6347,32 +6411,32 @@ com.examw.test.ui.SettingFragment -> com.examw.test.ui.dj:
     android.content.Context access$0(com.examw.test.ui.SettingFragment) -> a
     android.widget.PopupWindow access$1(com.examw.test.ui.SettingFragment) -> b
     android.widget.Button access$2(com.examw.test.ui.SettingFragment) -> c
-com.examw.test.ui.SettingFragment$1 -> com.examw.test.ui.dk:
+com.examw.test.ui.SettingFragment$1 -> com.examw.test.ui.dn:
     com.examw.test.ui.SettingFragment this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.SettingFragment$2 -> com.examw.test.ui.dl:
+com.examw.test.ui.SettingFragment$2 -> com.examw.test.ui.do:
     com.examw.test.ui.SettingFragment this$0 -> a
     void onProgressChanged(android.widget.SeekBar,int,boolean) -> onProgressChanged
     void onStartTrackingTouch(android.widget.SeekBar) -> onStartTrackingTouch
     void onStopTrackingTouch(android.widget.SeekBar) -> onStopTrackingTouch
-com.examw.test.ui.SettingFragment$3 -> com.examw.test.ui.dm:
+com.examw.test.ui.SettingFragment$3 -> com.examw.test.ui.dp:
     com.examw.test.ui.SettingFragment this$0 -> a
     android.widget.SeekBar val$seekBar -> b
     void onCheckedChanged(android.widget.CompoundButton,boolean) -> onCheckedChanged
-com.examw.test.ui.SettingFragment$4 -> com.examw.test.ui.dn:
+com.examw.test.ui.SettingFragment$4 -> com.examw.test.ui.dq:
     com.examw.test.ui.SettingFragment this$0 -> a
     android.widget.SeekBar val$seekBar -> b
     void onClick(android.view.View) -> onClick
-com.examw.test.ui.SettingFragment$5 -> com.examw.test.ui.do:
+com.examw.test.ui.SettingFragment$5 -> com.examw.test.ui.dr:
     com.examw.test.ui.SettingFragment this$0 -> a
     void onClick(android.view.View) -> onClick
-com.examw.test.ui.SettingFragment$6 -> com.examw.test.ui.dp:
+com.examw.test.ui.SettingFragment$6 -> com.examw.test.ui.ds:
     com.examw.test.ui.SettingFragment this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.ui.SettingFragment$6$1 -> com.examw.test.ui.dq:
+com.examw.test.ui.SettingFragment$6$1 -> com.examw.test.ui.dt:
     com.examw.test.ui.SettingFragment$6 this$1 -> a
     void run() -> run
-com.examw.test.ui.SettingFragment$7 -> com.examw.test.ui.dr:
+com.examw.test.ui.SettingFragment$7 -> com.examw.test.ui.du:
     com.examw.test.ui.SettingFragment this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
 com.examw.test.ui.SimulateActivity -> com.examw.test.ui.SimulateActivity:
@@ -6408,19 +6472,19 @@ com.examw.test.ui.SimulateActivity -> com.examw.test.ui.SimulateActivity:
     android.widget.ImageView access$9(com.examw.test.ui.SimulateActivity) -> i
     int access$10(com.examw.test.ui.SimulateActivity) -> j
     int access$11(com.examw.test.ui.SimulateActivity) -> k
-com.examw.test.ui.SimulateActivity$1 -> com.examw.test.ui.ds:
+com.examw.test.ui.SimulateActivity$1 -> com.examw.test.ui.dv:
     com.examw.test.ui.SimulateActivity this$0 -> a
     int getCount() -> getCount
     android.support.v4.app.Fragment getItem(int) -> getItem
-com.examw.test.ui.SimulateActivity$2 -> com.examw.test.ui.dt:
+com.examw.test.ui.SimulateActivity$2 -> com.examw.test.ui.dw:
     com.examw.test.ui.SimulateActivity this$0 -> a
     void onPageSelected(int) -> onPageSelected
     void onPageScrolled(int,float,int) -> onPageScrolled
     void onPageScrollStateChanged(int) -> onPageScrollStateChanged
-com.examw.test.ui.SimulateActivity$GetPaperListThread -> com.examw.test.ui.du:
+com.examw.test.ui.SimulateActivity$GetPaperListThread -> com.examw.test.ui.dx:
     com.examw.test.ui.SimulateActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.SimulateActivity$MyHandler -> com.examw.test.ui.dv:
+com.examw.test.ui.SimulateActivity$MyHandler -> com.examw.test.ui.dy:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.SyncActivity -> com.examw.test.ui.SyncActivity:
@@ -6453,31 +6517,31 @@ com.examw.test.ui.SyncActivity -> com.examw.test.ui.SyncActivity:
     void access$6(com.examw.test.ui.SyncActivity,java.lang.String,java.lang.String) -> a
     int access$7(com.examw.test.ui.SyncActivity) -> d
     int access$8(com.examw.test.ui.SyncActivity) -> e
-com.examw.test.ui.SyncActivity$1 -> com.examw.test.ui.dw:
+com.examw.test.ui.SyncActivity$1 -> com.examw.test.ui.dz:
     com.examw.test.ui.SyncActivity this$0 -> a
     java.lang.String val$username -> b
     void run() -> run
-com.examw.test.ui.SyncActivity$2 -> com.examw.test.ui.dx:
-    com.examw.test.ui.SyncActivity this$0 -> a
-    java.lang.String val$username -> b
-    java.lang.String val$userId -> c
-    void run() -> run
-com.examw.test.ui.SyncActivity$3 -> com.examw.test.ui.dy:
+com.examw.test.ui.SyncActivity$2 -> com.examw.test.ui.ea:
     com.examw.test.ui.SyncActivity this$0 -> a
     java.lang.String val$username -> b
     java.lang.String val$userId -> c
     void run() -> run
-com.examw.test.ui.SyncActivity$4 -> com.examw.test.ui.dz:
+com.examw.test.ui.SyncActivity$3 -> com.examw.test.ui.eb:
+    com.examw.test.ui.SyncActivity this$0 -> a
+    java.lang.String val$username -> b
+    java.lang.String val$userId -> c
+    void run() -> run
+com.examw.test.ui.SyncActivity$4 -> com.examw.test.ui.ec:
     com.examw.test.ui.SyncActivity this$0 -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.SyncActivity$5 -> com.examw.test.ui.ea:
+com.examw.test.ui.SyncActivity$5 -> com.examw.test.ui.ed:
     com.examw.test.ui.SyncActivity this$0 -> a
     android.os.Handler val$handler -> b
     void run() -> run
-com.examw.test.ui.SyncActivity$MyHandler -> com.examw.test.ui.eb:
+com.examw.test.ui.SyncActivity$MyHandler -> com.examw.test.ui.ee:
     java.lang.ref.WeakReference weak -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.UserInfoFragment -> com.examw.test.ui.ec:
+com.examw.test.ui.UserInfoFragment -> com.examw.test.ui.ef:
     com.examw.test.app.AppContext appContext -> a
     android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> onCreateView
     void initViews(android.view.View) -> a

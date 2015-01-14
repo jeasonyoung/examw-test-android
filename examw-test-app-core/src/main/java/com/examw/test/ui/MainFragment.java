@@ -89,22 +89,6 @@ public class MainFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(getActivity(), SetTimeActivity.class));
-				// Intent intent = new Intent(getActivity(),
-				// ImageZoomActivity.class);
-				// intent.putExtra("url",
-				// "/42c7f9f5-6088-4bc8-acc0-59162257a775");
-				// startActivity(intent);
-				// new Thread(){
-				// public void run() {
-				// try {
-				// ApiClient.register(appContext, "dddd1111", "123456",
-				// "13800000000", "中国", "abcd12121@163.com");
-				// } catch (Exception e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				// };
-				// }.start();
 			}
 		});
 	}
