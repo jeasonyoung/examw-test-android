@@ -160,7 +160,8 @@ public class HttpUtils {
 		httpGet.getParams().setSoTimeout(TIMEOUT_SOCKET);
 		httpGet.setRequestHeader("Host", URLs.HOST);
 		httpGet.setRequestHeader("Connection", "Keep-Alive");
-		httpGet.setRequestHeader("Cookie", cookie);
+		if(!StringUtils.isEmpty(cookie))
+			httpGet.setRequestHeader("Cookie", cookie);
 		httpGet.setRequestHeader("User-Agent", userAgent);
 		return httpGet;
 	}
@@ -172,7 +173,8 @@ public class HttpUtils {
 		httpPost.getParams().setSoTimeout(TIMEOUT_SOCKET);
 		httpPost.setRequestHeader("Host", URLs.HOST);
 		httpPost.setRequestHeader("Connection", "Keep-Alive");
-		httpPost.setRequestHeader("Cookie", cookie);
+		if(!StringUtils.isEmpty(cookie))
+			httpPost.setRequestHeader("Cookie", cookie);
 		httpPost.setRequestHeader("User-Agent", userAgent);
 		return httpPost;
 	}

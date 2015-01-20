@@ -182,7 +182,7 @@ public class PaperRecordDao {
 	}
 	private static ArrayList<ItemRecord> findItemRecords(SQLiteDatabase db,String recordId)
 	{
-		String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score from ItemRecordTab where recordId = ? order by createTime desc";
+		String sqlItemRecord = "select recordId,structureId,itemId,answer,status,score,itemContent from ItemRecordTab where recordId = ? order by createTime desc";
 		Cursor cursorItem = db.rawQuery(sqlItemRecord, new String[]{recordId});
 		ArrayList<ItemRecord> items = new ArrayList<ItemRecord>();
 		if (cursorItem.getCount() > 0) {
@@ -191,6 +191,7 @@ public class PaperRecordDao {
 				ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
 						cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
 						new BigDecimal(cursorItem.getDouble(5)));
+				itemRecord.setItemContent(cursorItem.getString(6));
 				items.add(itemRecord);
 			}
 		}
