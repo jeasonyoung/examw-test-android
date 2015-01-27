@@ -415,4 +415,7 @@ public class ApiClient {
 			}
 		}
 	}
+	public static void logout(AppContext appContext, String username) {
+		appContext.cleanLoginInfo();
+	}
 }

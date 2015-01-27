@@ -188,7 +188,7 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 //						.compile(
 //								"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")
 //						.matcher(str2).matches();
-				boolean bool1 = Pattern.compile("^([\\u4e00-\\u9fa5]+|([a-z]+\\s?)+)$").matcher(str2).matches();
+				boolean bool1 = Pattern.compile("^[\\u4e00-\\u9fa5]{2,6}$").matcher(str2).matches();
 				if (str2.equals("")) {
 					showInfo("姓名不能为空!",nameInfo,nameView,0);
 					return ;
@@ -444,8 +444,9 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 					Toast.makeText(r, "注册成功,请登录", Toast.LENGTH_SHORT).show();
 					r.abfile.edit().putString("n",u.getUsername()).commit();
 					r.abfile.edit().putString("p","").commit();
-					Intent intent = new Intent(r,LoginActivity.class);
-					r.startActivity(intent);
+//					Intent intent = new Intent(r,LoginActivity.class);
+//					r.startActivity(intent);
+					//本来就是从登陆过来的,直接finish
 					r.finish();
 				}else
 				{

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
+import com.examw.test.support.ApiClient;
 import com.examw.test.support.AppUpdateManager;
 import com.examw.test.util.BrightnessUtil;
 
@@ -106,7 +107,9 @@ public class SettingFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onStart() {
 		super.onStart();
-//		this.versionTxt.setText(appContext.getVersionName());
+		String dateStr = appConfig.getFormatExamTime();
+		this.dateTxt.setText(dateStr == null ? "设置" : dateStr);
+		this.versionTxt.setText(appContext.getVersionName());
 		if(appContext.isHasNewData()) newDataFlag.setVisibility(View.VISIBLE);
 		if(appContext.isHasNewVersion()) newVersionFlag.setVisibility(View.VISIBLE);
 //		this.usernameTxt.setText(appContext.getUsername());
@@ -330,7 +333,6 @@ public class SettingFragment extends Fragment implements OnClickListener {
 						dialog.dismiss();
 						// 退出
 						// 退出登录,清除登录信息
-//						loginTxt.setText("登录/注册");
 						logoutBtn.setText("登录/注册");
 //						usernameTxt.setText("未登录");
 						// to do something...
@@ -339,7 +341,7 @@ public class SettingFragment extends Fragment implements OnClickListener {
 							public void run() {
 								// TODO Auto-generated method stub
 								try {
-//									ApiClient.logout(appContext,appContext.getUsername());
+									ApiClient.logout(appContext,appContext.getUsername());
 								} catch (Exception e) {
 									e.printStackTrace();
 								}

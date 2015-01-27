@@ -49,17 +49,16 @@ com.examw.test.app.AppConfig:
     public static final java.lang.String CONF_LAST_SYNC_TIME
     public static final java.lang.String SAVE_IMAGE_PATH
     public static final java.lang.String DATABASE_NAME
-    86:86:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
-    93:93:public static boolean isLoadImage(android.content.Context)
-    97:97:public java.lang.String getCookie()
-    101:102:public void setAccessToken(java.lang.String)
-    105:105:public java.lang.String getAccessToken()
-    109:110:public void setAccessSecret(java.lang.String)
-    113:113:public java.lang.String getAccessSecret()
-    117:118:public void setExpiresIn(long)
-    121:121:public long getExpiresIn()
-    129:129:public java.lang.String getFormatExamTime()
-    187:190:public void set(java.util.Properties)
+    88:88:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
+    95:95:public static boolean isLoadImage(android.content.Context)
+    99:99:public java.lang.String getCookie()
+    103:104:public void setAccessToken(java.lang.String)
+    107:107:public java.lang.String getAccessToken()
+    111:112:public void setAccessSecret(java.lang.String)
+    115:115:public java.lang.String getAccessSecret()
+    119:120:public void setExpiresIn(long)
+    123:123:public long getExpiresIn()
+    189:192:public void set(java.util.Properties)
 com.examw.test.app.AppConstant:
     public static final int SUCCESS
     public static final int FAILURE
@@ -146,8 +145,8 @@ com.examw.test.dao.PaperRecordDao:
     public static final int PAGESIZE
     27:27:public PaperRecordDao()
     62:86:public static com.examw.test.domain.PaperRecord findLastRecord(java.lang.String)
-    263:276:private static void saveOrUpdateItem(android.database.sqlite.SQLiteDatabase,com.examw.test.domain.ItemRecord)
-    283:287:public static void saveOrUpdateItem(com.examw.test.domain.ItemRecord)
+    264:277:private static void saveOrUpdateItem(android.database.sqlite.SQLiteDatabase,com.examw.test.domain.ItemRecord)
+    284:288:public static void saveOrUpdateItem(com.examw.test.domain.ItemRecord)
 com.examw.test.dao.ProductDao:
     19:19:public ProductDao()
 com.examw.test.dao.SyllabusDao:
@@ -374,7 +373,7 @@ com.examw.test.ui.MainActivity:
     312:312:public com.examw.test.app.AppContext getAppContext()
     363:364:public void showFooter(int)
 com.examw.test.ui.MainFragment:
-    281:293:private void showDisplayInfo()
+    265:277:private void showDisplayInfo()
 com.examw.test.ui.PaperDoPaperActivity:
     private android.widget.PopupWindow tipWindow
     1103:1105:private void vibrate()
@@ -469,11 +468,11 @@ com.examw.test.util.HttpUtils:
     private static final int max_http_send_count
     48:48:public HttpUtils()
     72:73:public static void cleanCookie()
-    390:457:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
-    490:536:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
+    392:459:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
+    492:538:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
 com.examw.test.util.HttpUtils$DigestAuthcProvider:
-    576:576:public java.lang.String getUri()
-    585:585:public java.lang.String getMethod()
+    578:578:public java.lang.String getUri()
+    587:587:public java.lang.String getMethod()
 com.examw.test.util.ImageUtils:
     public static final java.lang.String SDCARD_MNT
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD
@@ -531,7 +530,6 @@ com.examw.test.util.ScreenUtils
 com.examw.test.util.StringUtils:
     22:22:public StringUtils()
     58:60:public static java.util.Date toDate(java.lang.String)
-    68:72:public static java.lang.String toDateStr(long)
     92:139:public static java.lang.String friendly_time(java.lang.String)
     149:159:public static boolean isToday(java.lang.String)
     214:217:public static int toInt(java.lang.String,int)

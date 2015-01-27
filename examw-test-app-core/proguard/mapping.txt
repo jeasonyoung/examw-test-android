@@ -3317,6 +3317,7 @@ com.examw.test.R$string -> com.examw.test.R$string:
     int myNotebook -> myNotebook
     int my_favoriteStr -> my_favoriteStr
     int my_notebookStr -> my_notebookStr
+    int nameHint -> nameHint
     int network_not_connected -> network_not_connected
     int new_str -> new_str
     int nonedata -> nonedata
@@ -3829,9 +3830,10 @@ com.examw.test.app.AppConfig -> com.examw.test.app.a:
     com.examw.test.app.AppConfig appConfig -> e
     com.examw.test.app.AppConfig getAppConfig(android.content.Context) -> a
     long getExamTime() -> a
+    java.lang.String getFormatExamTime() -> b
     void setExamTime(long) -> a
     java.lang.String get(java.lang.String) -> a
-    java.util.Properties get() -> b
+    java.util.Properties get() -> c
     void setProps(java.util.Properties) -> a
     void set(java.lang.String,java.lang.String) -> a
     void remove(java.lang.String[]) -> a
@@ -5009,6 +5011,7 @@ com.examw.test.support.ApiClient -> com.examw.test.f.a:
     android.graphics.Bitmap getNetBitmap(java.lang.String) -> a
     void getNetImage(java.lang.String,java.lang.String) -> a
     long getStandardTime() -> a
+    void logout(com.examw.test.app.AppContext,java.lang.String) -> f
 com.examw.test.support.ApiClient$1 -> com.examw.test.f.b:
 com.examw.test.support.ApiClient$2 -> com.examw.test.f.c:
 com.examw.test.support.ApiClient$3 -> com.examw.test.f.d:
@@ -5199,8 +5202,8 @@ com.examw.test.ui.ChapterActivity -> com.examw.test.ui.ChapterActivity:
     android.widget.LinearLayout access$0(com.examw.test.ui.ChapterActivity) -> a
     android.widget.LinearLayout access$1(com.examw.test.ui.ChapterActivity) -> b
     android.widget.LinearLayout access$2(com.examw.test.ui.ChapterActivity) -> c
-    android.widget.ExpandableListView access$3(com.examw.test.ui.ChapterActivity) -> d
-    java.util.ArrayList access$4(com.examw.test.ui.ChapterActivity) -> e
+    java.util.ArrayList access$3(com.examw.test.ui.ChapterActivity) -> d
+    android.widget.ExpandableListView access$4(com.examw.test.ui.ChapterActivity) -> e
     java.lang.String access$5(com.examw.test.ui.ChapterActivity) -> f
     void access$6(com.examw.test.ui.ChapterActivity,java.util.ArrayList) -> a
     java.lang.String access$7(com.examw.test.ui.ChapterActivity) -> g
@@ -6411,6 +6414,7 @@ com.examw.test.ui.SettingFragment -> com.examw.test.ui.dm:
     android.content.Context access$0(com.examw.test.ui.SettingFragment) -> a
     android.widget.PopupWindow access$1(com.examw.test.ui.SettingFragment) -> b
     android.widget.Button access$2(com.examw.test.ui.SettingFragment) -> c
+    com.examw.test.app.AppContext access$3(com.examw.test.ui.SettingFragment) -> d
 com.examw.test.ui.SettingFragment$1 -> com.examw.test.ui.dn:
     com.examw.test.ui.SettingFragment this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
@@ -6433,6 +6437,7 @@ com.examw.test.ui.SettingFragment$5 -> com.examw.test.ui.dr:
 com.examw.test.ui.SettingFragment$6 -> com.examw.test.ui.ds:
     com.examw.test.ui.SettingFragment this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
+    com.examw.test.ui.SettingFragment access$0(com.examw.test.ui.SettingFragment$6) -> a
 com.examw.test.ui.SettingFragment$6$1 -> com.examw.test.ui.dt:
     com.examw.test.ui.SettingFragment$6 this$1 -> a
     void run() -> run
@@ -6671,6 +6676,7 @@ com.examw.test.util.StringUtils -> com.examw.test.g.q:
     java.lang.ThreadLocal dateFormater -> b
     java.lang.ThreadLocal dateFormater2 -> c
     java.lang.ThreadLocal dateFormater3 -> d
+    java.lang.String toDateStr(long) -> a
     java.lang.String toStandardDateStr(java.util.Date) -> a
     java.lang.String toStandardDateShort(java.util.Date) -> b
     long getToday() -> a

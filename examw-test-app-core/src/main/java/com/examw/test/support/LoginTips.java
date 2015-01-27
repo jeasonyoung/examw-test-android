@@ -104,7 +104,7 @@ public class LoginTips {
 		case -7:
 			return "注册信息不全";
 		default:
-			return "登陆成功";
+			return "注册成功";
 		}
 	}
 }

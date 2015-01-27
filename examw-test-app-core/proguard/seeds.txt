@@ -3546,6 +3546,7 @@ com.examw.test.R$string: int myFavor
 com.examw.test.R$string: int myNotebook
 com.examw.test.R$string: int my_favoriteStr
 com.examw.test.R$string: int my_notebookStr
+com.examw.test.R$string: int nameHint
 com.examw.test.R$string: int network_not_connected
 com.examw.test.R$string: int new_str
 com.examw.test.R$string: int nonedata

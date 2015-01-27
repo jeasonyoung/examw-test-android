@@ -123,7 +123,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:hint="@string/emailHint"
+                        android:hint="@string/nameHint"
                         android:singleLine="true" 
                         android:imeOptions="actionNext"
                         />
