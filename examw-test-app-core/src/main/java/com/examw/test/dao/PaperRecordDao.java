@@ -15,6 +15,7 @@ import com.examw.test.domain.Subject;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
+import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
@@ -26,6 +27,7 @@ import com.examw.test.util.StringUtils;
  */
 public class PaperRecordDao {
 	public static final int PAGESIZE = 20;
+	private static final String DIGEST_CODE = "I9T20E5M13C3O15D4E5";
 	/**
 	 * 保存考试记录
 	 * @param record
@@ -191,7 +193,7 @@ public class PaperRecordDao {
 				ItemRecord itemRecord = new ItemRecord(cursorItem.getString(0), cursorItem.getString(1),
 						cursorItem.getString(2), cursorItem.getString(3), cursorItem.getInt(4),
 						new BigDecimal(cursorItem.getDouble(5)));
-				itemRecord.setItemContent(cursorItem.getString(6));
+				itemRecord.setItemContent(CyptoUtils.decodeContent(DIGEST_CODE, cursorItem.getString(6)));
 				items.add(itemRecord);
 			}
 		}
@@ -252,7 +254,7 @@ public class PaperRecordDao {
 			for(ItemRecord item:list)
 			{
 				//插入试题的考试记录recordId ,structureId ,itemId ,itemContent ,answer ,termialId ,status ,score ,useTime ,createTime lastTime
-				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
+				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
 				db.execSQL(insertSql, attrs);
 			}
 		}
@@ -273,7 +275,7 @@ public class PaperRecordDao {
 		cursor.close();
 		//插入
 		db.execSQL("insert into ItemRecordTab(recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))", 
-				new Object[]{item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),item.getItemContent(),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
+				new Object[]{item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
 	}
 	/**
 	 * 插入或更新item
@@ -397,6 +399,7 @@ public class PaperRecordDao {
 		while(cursor.moveToNext())
 		{
 			String content = cursor.getString(0);
+			content = CyptoUtils.decodeContent(DIGEST_CODE, content);
 			StructureItemInfo item = GsonUtil.jsonToBean(content, StructureItemInfo.class);
 			item.setUserAnswer(null);
 			item.setAnswerStatus(null);

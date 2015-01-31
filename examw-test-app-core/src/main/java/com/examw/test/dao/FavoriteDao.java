@@ -13,6 +13,7 @@ import com.examw.test.domain.Subject;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
+import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.LogUtil;
 
@@ -22,6 +23,7 @@ import com.examw.test.util.LogUtil;
  * @since 2014年12月11日 下午2:37:25.
  */
 public class FavoriteDao {
+	private static final String DIGEST_CODE = "F6A1V22O15R18I9T20E5";
 	/**
 	 * 收藏或取消收藏
 	 * @param favor
@@ -37,7 +39,7 @@ public class FavoriteDao {
 		{
 			cursor.close();
 			db.execSQL("insert into FavoriteTab(itemId,subjectId,itemType,itemContent,username,userId,userAnswer,remarks,terminalId,status)values(?,?,?,?,?,?,?,?,?,?)",
-					new Object[]{favor.getItemId(),favor.getSubjectId(),favor.getItemType(),favor.getItemContent(),favor.getUsername()
+					new Object[]{favor.getItemId(),favor.getSubjectId(),favor.getItemType(),CyptoUtils.encodeContent(DIGEST_CODE, favor.getItemContent()),favor.getUsername()
 					,favor.getUserId(),favor.getUserAnswer(),favor.getRemarks(),AppConfig.TERMINALID,AppConstant.STATUS_DONE});
 			db.close();
 			return;
@@ -150,6 +152,7 @@ public class FavoriteDao {
 		while(cursor.moveToNext())
 		{
 			String content = cursor.getString(0);
+			content = CyptoUtils.decodeContent(DIGEST_CODE, content);
 			StructureItemInfo item = GsonUtil.jsonToBean(content, StructureItemInfo.class);
 			item.setUserAnswer(null);
 			item.setAnswerStatus(null);
@@ -183,6 +186,7 @@ public class FavoriteDao {
 			FavoriteItem item = new FavoriteItem(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
 					cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(7));
 			item.setUserId(userId);
+			item.setItemContent(CyptoUtils.decodeContent(DIGEST_CODE, item.getItemContent()));
 			list.add(item);
 		}
 		cursor.close();
