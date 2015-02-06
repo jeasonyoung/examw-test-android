@@ -56,7 +56,7 @@ public class ApiClient {
 			PassWord  密码
 			CheckType = "RegUser" 注册
 			CheckType = "Login"  登录
-			Md5Str = MD5(UserName&"#"&PassWord&ClientKey&"#"&SubSource&"#"&ClientNo)
+			Md5Str = MD5(UserName&"#"&PassWord&"#"&ClientKey&"#"&SubSource&"#"&ClientNo)
 		 */
 		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+AppConfig.CLIENTKEY+"#Mobile#"+appContext.getDeviceId(), "", "GBK");
 		Map<String, Object> params = new HashMap<String,Object>();
