@@ -28,6 +28,8 @@ import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
+import com.examw.test.model.LoginUser;
+import com.examw.test.model.RegisterUser;
 import com.examw.test.model.RemoteUserInfo;
 import com.examw.test.model.SubjectInfo;
 import com.examw.test.model.UserItemFavoriteInfo;
@@ -159,6 +161,38 @@ public class ApiClient {
 		}
 		return json;
 	}
+	/*****************************************************************
+	 *	登录注册的代理实现  start
+	 ************************************************************/
+	public static Json login_proxy(AppContext appContext,String username,String password) throws AppException{
+		LoginUser user = new LoginUser();
+		user.setAccount(username);
+		user.setPassword(password);
+		user.setClientId(appContext.getDeviceId());
+		String result = HttpUtils.http_post(appContext, URLs.LOGIN_PROXY,user);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.jsonToBean(result, Json.class);
+	}
+	public static Json register_proxy(AppContext appContext,String username,String password,String phone,String name,String email)throws AppException, UnsupportedEncodingException
+	{
+		RegisterUser user = new RegisterUser();
+		user.setAccount(username);
+		user.setPassword(password);
+		user.setClientId(appContext.getDeviceId());
+		user.setClientName(appContext.getOsVersionName());
+		user.setClientVersion(appContext.getVersionName());
+		user.setEmail(email);
+		user.setPhone(phone);
+		user.setUsername(name);
+		String result = HttpUtils.http_post(appContext, URLs.LOGIN_PROXY,user);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.jsonToBean(result, Json.class);
+	}
+	/*****************************************************************
+	 *	登录注册的代理实现  end
+	 ************************************************************/
+	
+	
 	/**
 	 * 获取产品用户的信息
 	 * @param appContext

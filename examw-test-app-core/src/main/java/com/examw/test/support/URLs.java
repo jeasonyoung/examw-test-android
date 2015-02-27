@@ -21,6 +21,9 @@ public class URLs implements Serializable{
 	//登录地址
 	public static final String LOGIN =  "http://test.examw.com/user/Login/CheckUser.asp";
 	public static final String REGIST = LOGIN;
+	//注册登录代理地址
+	public static final String LOGIN_PROXY = HOST + "/examw-test/api/m/user/login";
+	public static final String REGIST_PROXY = HOST + "/examw-test/api/m/user/register";
 	//产品信息 
 	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppConfig.PRODUCTID;
 	//科目列表
