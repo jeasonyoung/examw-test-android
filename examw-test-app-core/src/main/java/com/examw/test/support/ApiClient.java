@@ -184,13 +184,14 @@ public class ApiClient {
 		user.setEmail(email);
 		user.setPhone(phone);
 		user.setUsername(name);
-		String result = HttpUtils.http_post(appContext, URLs.LOGIN_PROXY,user);
+		user.setChannel("jzs1");
+		String result = HttpUtils.http_post(appContext, "http://192.168.1.246:8080/examw-test/api/m/user/register" ,user);
 		if(StringUtils.isEmpty(result)) return null;
 		return GsonUtil.jsonToBean(result, Json.class);
 	}
 	/*****************************************************************
 	 *	登录注册的代理实现  end
-	 ************************************************************/
+	 *****************************************************************/
 	
 	
 	/**

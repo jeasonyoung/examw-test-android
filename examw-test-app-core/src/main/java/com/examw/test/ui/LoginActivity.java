@@ -156,7 +156,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 							//设置登录状态为正在登陆
 							appContext.setLoginState(AppContext.LOGINING);// 正在登录
 							//解析登陆返回结果
-							Json result = ApiClient.login(appContext, username, password);
+							Json result = ApiClient.login_proxy(appContext, username, password);
 							Message message = handler.obtainMessage();
 							if(result == null)
 							{
@@ -167,32 +167,38 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 							}
 							if (result.isSuccess()) { // 登陆成功
 								//远程去获取productUser的信息并且保存
-								User user = (User) result.getData();
-								FrontUserInfo userInfo = new FrontUserInfo();
-								userInfo.setCode(user.getUid());
-								userInfo.setName(username);
-								Json json = ApiClient.getProductUser(appContext, userInfo);
-								if(json.isSuccess())
-								{
-									// 是否记住我
-									if (isRememberMe()) {
-										saveSharePreferences();
-									}
-									// 保存是否自动登录的信息
-									saveAutoLoginPreferences(isAutoLogin());
-									// 保存信息至数据库[创建属于用户的数据库]
-									user.setProductUserId(json.getData().toString());
-									saveToLocaleDB(user);
-									message.what = 1;
-									message.obj = user;
-								}else
-								{
-									message.what = 0;
-									message.obj = "获取用户ID失败";
+								//User user = (User) result.getData();
+								//FrontUserInfo userInfo = new FrontUserInfo();
+								//userInfo.setCode(user.getUid());
+								//userInfo.setName(username);
+								//Json json = ApiClient.getProductUser(appContext, userInfo);
+								//if(json.isSuccess())
+								//{
+								// 是否记住我
+								if (isRememberMe()) {
+									saveSharePreferences();
 								}
+								// 保存是否自动登录的信息
+								saveAutoLoginPreferences(isAutoLogin());
+								// 保存信息至数据库[创建属于用户的数据库]
+								//修改为代理登陆start
+								User user = new User();
+								user.setUsername(username);
+								user.setPassword(password);
+								user.setProductUserId(result.getData().toString());
+								//修改为代理登陆end
+								saveToLocaleDB(user);
+								message.what = 1;
+								message.obj = user;
+								//}else
+								//{
+								//	message.what = 0;
+								//	message.obj = "获取用户ID失败";
+								//}
 							}else{
 								message.what = 0;
-								message.obj = LoginTips.getLoginTip((Integer) result.getData(), null);
+								//message.obj = LoginTips.getLoginTip((Integer) result.getData(), null);
+								message.obj = result.getMsg();
 							}
 							handler.sendMessage(message); //登录失败
 						} catch (Exception e) {

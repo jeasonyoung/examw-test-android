@@ -223,7 +223,7 @@ public class AppContext extends Application {
 	@Override
 	public void onCreate() {
 		//应用初始化
-//		LogUtil.showLog = true;	//是否答应日志,默认为不打印,发布时注释
+		LogUtil.showLog = true;	//是否打印日志,默认为不打印,发布时注释
 		LogUtil.d("应用Application onCreate执行....");
 		super.onCreate();
         //注册App异常崩溃处理器

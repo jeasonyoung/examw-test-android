@@ -297,6 +297,8 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 					Message msg = handler.obtainMessage();
 					try
 					{
+						//改为代理模式
+						ApiClient.register_proxy(appContext, username, pwd, phone,name,email);
 						result = ApiClient.register(appContext, username, pwd, phone,name,email);
 						msg.what = 1;
 						msg.obj = result;
@@ -453,7 +455,9 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 					String wrongMsg = "";
 					try{
 						wrongMsg = ","+LoginTips.getRegisterTip((Integer) result.getData());
-					}catch(Exception e){}
+					}catch(Exception e){
+						wrongMsg = ","+result.getMsg();
+					}
 					Toast.makeText(r, "注册失败"+wrongMsg, Toast.LENGTH_SHORT).show();
 				}
 				break;
