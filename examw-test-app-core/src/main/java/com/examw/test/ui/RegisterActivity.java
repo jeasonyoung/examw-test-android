@@ -298,8 +298,7 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 					try
 					{
 						//改为代理模式
-						ApiClient.register_proxy(appContext, username, pwd, phone,name,email);
-						result = ApiClient.register(appContext, username, pwd, phone,name,email);
+						result = ApiClient.register_proxy(appContext, username, pwd, phone,name,email);
 						msg.what = 1;
 						msg.obj = result;
 						handler.sendMessage(msg);
