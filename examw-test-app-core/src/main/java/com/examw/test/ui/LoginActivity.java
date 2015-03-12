@@ -30,10 +30,8 @@ import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.UserDao;
 import com.examw.test.domain.User;
-import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
-import com.examw.test.support.LoginTips;
 import com.examw.test.util.LogUtil;
 import com.examw.test.util.ToastUtils;
 

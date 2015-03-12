@@ -4170,6 +4170,18 @@ com.examw.test.model.KnowledgeInfo: long getLastTime()
 com.examw.test.model.KnowledgeInfo: void setLastTime(long)
 com.examw.test.model.KnowledgeInfo: int compareTo(com.examw.test.model.KnowledgeInfo)
 com.examw.test.model.KnowledgeInfo: int compareTo(java.lang.Object)
+com.examw.test.model.LoginUser
+com.examw.test.model.LoginUser: long serialVersionUID
+com.examw.test.model.LoginUser: java.lang.String account
+com.examw.test.model.LoginUser: java.lang.String password
+com.examw.test.model.LoginUser: java.lang.String clientId
+com.examw.test.model.LoginUser: LoginUser()
+com.examw.test.model.LoginUser: java.lang.String getClientId()
+com.examw.test.model.LoginUser: void setClientId(java.lang.String)
+com.examw.test.model.LoginUser: java.lang.String getAccount()
+com.examw.test.model.LoginUser: void setAccount(java.lang.String)
+com.examw.test.model.LoginUser: java.lang.String getPassword()
+com.examw.test.model.LoginUser: void setPassword(java.lang.String)
 com.examw.test.model.PaperPreview
 com.examw.test.model.PaperPreview: long serialVersionUID
 com.examw.test.model.PaperPreview: java.lang.Integer total
@@ -4188,6 +4200,36 @@ com.examw.test.model.PaperPreview: java.math.BigDecimal getUserScore()
 com.examw.test.model.PaperPreview: void setUserScore(java.math.BigDecimal)
 com.examw.test.model.PaperPreview: void setLeftTime(java.lang.Long)
 com.examw.test.model.PaperPreview: java.lang.Long getLeftTime()
+com.examw.test.model.RegisterUser
+com.examw.test.model.RegisterUser: long serialVersionUID
+com.examw.test.model.RegisterUser: java.lang.String account
+com.examw.test.model.RegisterUser: java.lang.String password
+com.examw.test.model.RegisterUser: java.lang.String username
+com.examw.test.model.RegisterUser: java.lang.String email
+com.examw.test.model.RegisterUser: java.lang.String phone
+com.examw.test.model.RegisterUser: java.lang.String channel
+com.examw.test.model.RegisterUser: java.lang.String clientId
+com.examw.test.model.RegisterUser: java.lang.String clientName
+com.examw.test.model.RegisterUser: java.lang.String clientVersion
+com.examw.test.model.RegisterUser: RegisterUser()
+com.examw.test.model.RegisterUser: java.lang.String getClientId()
+com.examw.test.model.RegisterUser: void setClientId(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getClientName()
+com.examw.test.model.RegisterUser: void setClientName(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getClientVersion()
+com.examw.test.model.RegisterUser: void setClientVersion(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getAccount()
+com.examw.test.model.RegisterUser: void setAccount(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getPassword()
+com.examw.test.model.RegisterUser: void setPassword(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getUsername()
+com.examw.test.model.RegisterUser: void setUsername(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getEmail()
+com.examw.test.model.RegisterUser: void setEmail(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getPhone()
+com.examw.test.model.RegisterUser: void setPhone(java.lang.String)
+com.examw.test.model.RegisterUser: java.lang.String getChannel()
+com.examw.test.model.RegisterUser: void setChannel(java.lang.String)
 com.examw.test.model.RemoteUserInfo
 com.examw.test.model.RemoteUserInfo: long serialVersionUID
 com.examw.test.model.RemoteUserInfo: java.lang.String UserName

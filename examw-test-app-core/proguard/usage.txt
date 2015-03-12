@@ -134,7 +134,8 @@ com.examw.test.app.AppManager:
     46:48:public void finishActivity()
     63:68:public void finishActivity(java.lang.Class)
 com.examw.test.dao.FavoriteDao:
-    24:24:public FavoriteDao()
+    private static final java.lang.String DIGEST_CODE
+    25:25:public FavoriteDao()
 com.examw.test.dao.PaperDao:
     27:27:public PaperDao()
     55:77:public static void insertPaper(com.examw.test.domain.Paper)
@@ -143,10 +144,11 @@ com.examw.test.dao.PaperDao:
     325:335:public static java.lang.String findLastedPaperAddTime()
 com.examw.test.dao.PaperRecordDao:
     public static final int PAGESIZE
-    27:27:public PaperRecordDao()
-    62:86:public static com.examw.test.domain.PaperRecord findLastRecord(java.lang.String)
-    264:277:private static void saveOrUpdateItem(android.database.sqlite.SQLiteDatabase,com.examw.test.domain.ItemRecord)
-    284:288:public static void saveOrUpdateItem(com.examw.test.domain.ItemRecord)
+    private static final java.lang.String DIGEST_CODE
+    28:28:public PaperRecordDao()
+    64:88:public static com.examw.test.domain.PaperRecord findLastRecord(java.lang.String)
+    266:279:private static void saveOrUpdateItem(android.database.sqlite.SQLiteDatabase,com.examw.test.domain.ItemRecord)
+    286:290:public static void saveOrUpdateItem(com.examw.test.domain.ItemRecord)
 com.examw.test.dao.ProductDao:
     19:19:public ProductDao()
 com.examw.test.dao.SyllabusDao:
@@ -283,7 +285,8 @@ com.examw.test.service.DownloadService$1
 com.examw.test.service.DownloadService$DownloadBinder
 com.examw.test.service.DownloadService$DownloadBinder$1
 com.examw.test.support.ApiClient:
-    47:47:public ApiClient()
+    49:49:public ApiClient()
+    119:162:public static com.examw.test.model.Json register(com.examw.test.app.AppContext,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
 com.examw.test.support.AppUpdateManager:
     private static final int DOWN_NOSDCARD
     private static final int DOWN_UPDATE
@@ -300,6 +303,7 @@ com.examw.test.support.DataConverter:
     31:31:public DataConverter()
 com.examw.test.support.LoginTips:
     8:8:public LoginTips()
+    24:45:public static java.lang.String getLoginTip(int,java.lang.String)
 com.examw.test.support.SyllabusHelper:
     14:14:public SyllabusHelper()
     58:69:private static void filterChildren(java.util.ArrayList,com.examw.test.domain.Chapter)
@@ -470,6 +474,8 @@ com.examw.test.util.HttpUtils:
     72:73:public static void cleanCookie()
     392:459:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
     492:538:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
+    780:856:public static java.lang.String register(com.examw.test.app.AppContext,java.lang.String,java.util.Map)
+    859:869:public static java.lang.String toUnicodeString(java.lang.String)
 com.examw.test.util.HttpUtils$DigestAuthcProvider:
     578:578:public java.lang.String getUri()
     587:587:public java.lang.String getMethod()

@@ -9,9 +9,10 @@ import java.io.Serializable;
  */
 public class Subject implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String subjectId, name;
+	private String subjectId, name,abbr;
 	private Integer orderNo;
 	private Integer total;
+	private Integer status;
 
 	/**
 	 * 获取
@@ -105,5 +106,41 @@ public class Subject implements Serializable {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	/**
+	 * 获取 
+	 * @return abbr
+	 * 
+	 */
+	public String getAbbr() {
+		return abbr;
+	}
+
+	/**
+	 * 设置 
+	 * @param abbr
+	 * 
+	 */
+	public void setAbbr(String abbr) {
+		this.abbr = abbr;
+	}
+
+	/**
+	 * 获取 
+	 * @return status
+	 * 
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+
+	/**
+	 * 设置 
+	 * @param status
+	 * 
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 }

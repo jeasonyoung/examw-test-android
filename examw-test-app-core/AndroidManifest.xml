@@ -51,137 +51,137 @@
         </activity>
         <!-- 引导界面  -->
         <activity
-            android:name=".ui.GuideActivity"
+            android:name="com.examw.test.ui.GuideActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 主界面   -->
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.examw.test.ui.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 登录界面 -->
         <activity
-            android:name=".ui.LoginActivity"
+            android:name="com.examw.test.ui.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 注册界面 -->
         <activity 
-            android:name=".ui.RegisterActivity"
+            android:name="com.examw.test.ui.RegisterActivity"
             android:screenOrientation="portrait"
             ></activity>
         <!-- 选择科目界面 -->
         <activity
-            android:name=".ui.ChooseSubjectActivity"
+            android:name="com.examw.test.ui.ChooseSubjectActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 模拟考试界面  -->
         <activity
-            android:name=".ui.SimulateActivity"
+            android:name="com.examw.test.ui.SimulateActivity"
             android:screenOrientation="portrait" >
         </activity>
          <!-- 试卷介绍页面  -->
         <activity
-            android:name=".ui.PaperInfoActivity"
+            android:name="com.examw.test.ui.PaperInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 试卷考试界面 -->
          <activity
-            android:name=".ui.PaperDoPaperActivity"
+            android:name="com.examw.test.ui.PaperDoPaperActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 答题卡界面  -->
          <activity
-            android:name=".ui.AnswerCardActivity"
+            android:name="com.examw.test.ui.AnswerCardActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 章节练习界面  -->
         <activity
-            android:name=".ui.ChapterActivity"
+            android:name="com.examw.test.ui.ChapterActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 章节练习界面  -->
         <activity
-            android:name=".ui.ChapterDetailActivity"
+            android:name="com.examw.test.ui.ChapterDetailActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 每日一练界面  -->
         <activity
-            android:name=".ui.DailyActivity"
+            android:name="com.examw.test.ui.DailyActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!--错题,收藏的练习界面 -->
         <activity
-            android:name=".ui.PaperDoPracticeActivity"
+            android:name="com.examw.test.ui.PaperDoPracticeActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 知识点界面 -->
         <activity
-            android:name=".ui.KnowledgeActivity"
+            android:name="com.examw.test.ui.KnowledgeActivity"
             android:screenOrientation="portrait" >
         </activity>
          <!-- 知识点详细界面 -->
         <activity
-            android:name=".ui.KnowledgeDetailActivity"
+            android:name="com.examw.test.ui.KnowledgeDetailActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 论坛界面 -->
         <activity
-            android:name=".ui.ForumActivity"
+            android:name="com.examw.test.ui.ForumActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 考试指南界面 -->
         <activity
-            android:name=".ui.ExamInfoActivity"
+            android:name="com.examw.test.ui.ExamInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 考试记录界面  -->
         <activity
-            android:name=".ui.PaperRecordActivity"
+            android:name="com.examw.test.ui.PaperRecordActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 关于应用界面  -->
         <activity
-            android:name=".ui.AboutActivity"
+            android:name="com.examw.test.ui.AboutActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 隐私协议界面 -->
         <activity
-            android:name=".ui.PrivacyAgreementActivity"
+            android:name="com.examw.test.ui.PrivacyAgreementActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 时间设置界面 -->
         <activity
-            android:name=".ui.SetTimeActivity"
+            android:name="com.examw.test.ui.SetTimeActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 同步界面 -->
         <activity
-            android:name=".ui.SyncActivity"
+            android:name="com.examw.test.ui.SyncActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 意见界面 -->
         <activity
-            android:name=".ui.FeedBackActivity"
+            android:name="com.examw.test.ui.FeedBackActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 数据导入界面 -->
         <activity
-            android:name=".ui.ImportDataActivity"
+            android:name="com.examw.test.ui.ImportDataActivity"
             android:screenOrientation="portrait" >
         </activity>
         <!-- 图片缩放界面 -->
         <activity 
-            android:name=".ui.ImageZoomActivity"
+            android:name="com.examw.test.ui.ImageZoomActivity"
             android:theme="@style/DialogTheme"
             android:screenOrientation="portrait"
             ></activity>
         <activity 
-            android:name=".ui.ImageTextViewActivity"
+            android:name="com.examw.test.ui.ImageTextViewActivity"
             android:screenOrientation="portrait"
             ></activity>
         <activity 
-            android:name=".ui.WebViewActivity"
+            android:name="com.examw.test.ui.WebViewActivity"
             android:screenOrientation="portrait"
             ></activity>
         <!-- 校验用户 -->

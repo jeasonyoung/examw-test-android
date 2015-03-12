@@ -4679,6 +4679,17 @@ com.examw.test.model.KnowledgeInfo -> com.examw.test.model.KnowledgeInfo:
     void setLastTime(long) -> setLastTime
     int compareTo(com.examw.test.model.KnowledgeInfo) -> compareTo
     int compareTo(java.lang.Object) -> compareTo
+com.examw.test.model.LoginUser -> com.examw.test.model.LoginUser:
+    long serialVersionUID -> serialVersionUID
+    java.lang.String account -> account
+    java.lang.String password -> password
+    java.lang.String clientId -> clientId
+    java.lang.String getClientId() -> getClientId
+    void setClientId(java.lang.String) -> setClientId
+    java.lang.String getAccount() -> getAccount
+    void setAccount(java.lang.String) -> setAccount
+    java.lang.String getPassword() -> getPassword
+    void setPassword(java.lang.String) -> setPassword
 com.examw.test.model.PaperPreview -> com.examw.test.model.PaperPreview:
     long serialVersionUID -> serialVersionUID
     java.lang.Integer total -> total
@@ -4696,6 +4707,35 @@ com.examw.test.model.PaperPreview -> com.examw.test.model.PaperPreview:
     void setUserScore(java.math.BigDecimal) -> setUserScore
     void setLeftTime(java.lang.Long) -> setLeftTime
     java.lang.Long getLeftTime() -> getLeftTime
+com.examw.test.model.RegisterUser -> com.examw.test.model.RegisterUser:
+    long serialVersionUID -> serialVersionUID
+    java.lang.String account -> account
+    java.lang.String password -> password
+    java.lang.String username -> username
+    java.lang.String email -> email
+    java.lang.String phone -> phone
+    java.lang.String channel -> channel
+    java.lang.String clientId -> clientId
+    java.lang.String clientName -> clientName
+    java.lang.String clientVersion -> clientVersion
+    java.lang.String getClientId() -> getClientId
+    void setClientId(java.lang.String) -> setClientId
+    java.lang.String getClientName() -> getClientName
+    void setClientName(java.lang.String) -> setClientName
+    java.lang.String getClientVersion() -> getClientVersion
+    void setClientVersion(java.lang.String) -> setClientVersion
+    java.lang.String getAccount() -> getAccount
+    void setAccount(java.lang.String) -> setAccount
+    java.lang.String getPassword() -> getPassword
+    void setPassword(java.lang.String) -> setPassword
+    java.lang.String getUsername() -> getUsername
+    void setUsername(java.lang.String) -> setUsername
+    java.lang.String getEmail() -> getEmail
+    void setEmail(java.lang.String) -> setEmail
+    java.lang.String getPhone() -> getPhone
+    void setPhone(java.lang.String) -> setPhone
+    java.lang.String getChannel() -> getChannel
+    void setChannel(java.lang.String) -> setChannel
 com.examw.test.model.RemoteUserInfo -> com.examw.test.model.RemoteUserInfo:
     long serialVersionUID -> serialVersionUID
     java.lang.String UserName -> UserName
@@ -4993,7 +5033,8 @@ com.examw.test.model.UserPaperRecordInfo -> com.examw.test.model.UserPaperRecord
     void setUserName(java.lang.String) -> setUserName
 com.examw.test.support.ApiClient -> com.examw.test.f.a:
     com.examw.test.model.Json login(com.examw.test.app.AppContext,java.lang.String,java.lang.String) -> a
-    com.examw.test.model.Json register(com.examw.test.app.AppContext,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String) -> a
+    com.examw.test.model.Json login_proxy(com.examw.test.app.AppContext,java.lang.String,java.lang.String) -> b
+    com.examw.test.model.Json register_proxy(com.examw.test.app.AppContext,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String) -> a
     com.examw.test.model.Json getProductUser(com.examw.test.app.AppContext,com.examw.test.model.FrontUserInfo) -> a
     com.examw.test.model.Json feedBack(com.examw.test.app.AppContext,com.examw.test.model.FeedBackInfo) -> a
     com.examw.test.model.Json updateRecords(com.examw.test.app.AppContext,java.util.ArrayList) -> a
@@ -5127,7 +5168,6 @@ com.examw.test.support.DataConverter -> com.examw.test.f.p:
     java.util.ArrayList convertFavors(java.util.ArrayList) -> b
     com.examw.test.model.UserItemFavoriteInfo favorConvert(com.examw.test.domain.FavoriteItem) -> a
 com.examw.test.support.LoginTips -> com.examw.test.f.q:
-    java.lang.String getLoginTip(int,java.lang.String) -> a
     java.lang.String getRegisterTip(int) -> a
 com.examw.test.support.ReturnBtnClickListener -> com.examw.test.f.r:
     android.app.Activity context -> a
@@ -6642,8 +6682,6 @@ com.examw.test.util.HttpUtils -> com.examw.test.g.l:
     java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.lang.Object,com.examw.test.util.HttpUtils$DigestAuthcProvider) -> a
     java.lang.String changeInputStream2String(java.io.InputStream) -> a
     java.lang.String login(com.examw.test.app.AppContext,java.lang.String,java.util.Map) -> a
-    java.lang.String register(com.examw.test.app.AppContext,java.lang.String,java.util.Map) -> b
-    java.lang.String toUnicodeString(java.lang.String) -> a
 com.examw.test.util.HttpUtils$DigestAuthcProvider -> com.examw.test.g.m:
     java.lang.String username -> a
     java.lang.String password -> b
