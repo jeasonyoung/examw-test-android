@@ -27,7 +27,7 @@ import com.examw.test.R;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
-import com.examw.test.dao.PaperDao;
+import com.examw.test.daonew.PaperDao;
 import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.ReturnBtnClickListener;
