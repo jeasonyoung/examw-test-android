@@ -10,7 +10,6 @@ import java.util.zip.ZipInputStream;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
 
 import com.examw.test.util.FileUtils;
 import com.examw.test.util.LogUtil;

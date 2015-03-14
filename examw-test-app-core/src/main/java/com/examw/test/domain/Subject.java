@@ -103,6 +103,11 @@ public class Subject implements Serializable {
 		this.orderNo = orderNo;
 	}
 	
+	public Subject(String subjectId, String name) {
+		this.subjectId = subjectId;
+		this.name = name;
+	}
+	
 	@Override
 	public String toString() {
 		return this.name;

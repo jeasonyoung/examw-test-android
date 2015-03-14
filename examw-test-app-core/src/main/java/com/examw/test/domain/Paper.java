@@ -287,7 +287,9 @@ public class Paper implements Serializable {
 	public void setUserTotal(Integer userTotal) {
 		this.userTotal = userTotal;
 	}
+	
 	public Paper() {}
+	
 	public Paper(String paperId,String name,Double score,Integer type,Integer time,Integer year,Integer price,Integer total,Integer userTotal,String publishTime){
 		//paperid,name,score,time,year,price,total
 		this.paperId = paperId;
@@ -301,6 +303,5 @@ public class Paper implements Serializable {
 		this.userTotal = userTotal;
 		this.publishTime = publishTime;
 	}
-	
 	
 }

@@ -188,6 +188,6 @@
         <meta-data android:value="digest" android:name="username"></meta-data>
         <meta-data android:value="7F522E56248B559B2F443C8EC310F0E7" android:name="password"></meta-data>
         <!-- 产品ID -->
-        <meta-data android:value="356ca1e5-e12b-4c16-9456-8e6618b9a28b" android:name="productId"/>
+        <meta-data android:value="60a4eb98-8c95-42d7-9178-d053a17f9e87" android:name="productId"/>
     </application>
 </manifest>
