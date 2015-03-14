@@ -10,8 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.examw.test.app.AppConstant;
 import com.examw.test.db.LibraryDBUtil;
-import com.examw.test.domain.Paper;
-import com.examw.test.model.FrontPaperInfo;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.sync.PaperSync;
