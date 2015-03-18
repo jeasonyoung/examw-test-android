@@ -3,24 +3,26 @@ package com.examw.test.dao;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.db.ImportDBManager;
+import com.examw.test.db.NewImportDBManager;
 import com.examw.test.domain.Subject;
-import com.examw.test.model.FrontPaperInfo;
-import com.examw.test.model.FrontProductInfo;
 import com.examw.test.model.ItemInfo;
 import com.examw.test.model.KnowledgeInfo;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.SyllabusInfo;
+import com.examw.test.model.sync.ExamSync;
+import com.examw.test.model.sync.PaperSync;
+import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.DataConverter;
+import com.examw.test.util.CryptoUtils;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.LogUtil;
@@ -34,66 +36,84 @@ import com.google.gson.reflect.TypeToken;
  * @since 2014年12月28日 下午2:37:27.
  */
 public class ImportDao {
-	ImportDBManager dbManager = new ImportDBManager();
+	NewImportDBManager dbManager = new NewImportDBManager();
 	AppContext appContext;
 	public ImportDao(AppContext appContext) {
 		this.appContext = appContext;
 	}
-	public boolean hasInsert() {
-		LogUtil.d( "查询产品信息是否存在");
-		SQLiteDatabase db = dbManager.openDatabase();
-		Cursor cursor = db.rawQuery(
-				"select * from ProductTab where productid = ?",
-				new String[] { AppConfig.PRODUCTID });
-		boolean flag = cursor.getCount() > 0;
-		cursor.close();
-		db.close();
-		return flag;
-	}
-
-	public void insert(FrontProductInfo product) {
-		if (product == null)
-			return;
-		LogUtil.d( "插入产品信息");
-		SQLiteDatabase db = dbManager.openDatabase();
+	/**
+	 * 插入考试和科目
+	 */
+	public void insertExamSubjects(ExamSync result)
+	{
+		if(result == null) return;
+		Set<SubjectSync> subjects = result.getSubjects();
+		if(subjects == null || subjects.size()==0) return;
+		LogUtil.d("插入考试");
+		SQLiteDatabase db =  dbManager.openDatabase();
 		db.beginTransaction();
-		// 插产品
-		db.execSQL(
-				"insert into ProductTab(productid,name,examName,info)values(?,?,?,?)",
-				new Object[] { product.getId(), product.getName(), product.getExamName(),
-						product.getInfo() });
-		// 插科目
-		db.execSQL("delete from SubjectTab");
-		String[] subjectIds = product.getSubjectId();
-		if (subjectIds != null && subjectIds.length > 0) {
-			LogUtil.d( "插入科目信息");
-			String[] subjectNames = product.getSubjectName();
-			for (int i = 0; i < subjectIds.length; i++) {
-				db.execSQL(
-						"insert into SubjectTab(subjectId,name,orderno)values(?,?,?)",
-						new Object[] { subjectIds[i], subjectNames[i], i });
+		db.execSQL("update tbl_exams set status = 0");
+		db.execSQL("update tbl_subjects set status = 0");
+		//查询考试
+		Cursor cursor = db.rawQuery("select name from tbl_exams where code = ?",new String[]{result.getCode()});
+		String name = "";
+		if(cursor.moveToNext())
+		{
+			name = cursor.getString(0);
+		}
+		cursor.close();
+		//没有考试插入
+		if(StringUtils.isEmpty(name))
+		{
+			db.execSQL("insert into tbl_exams(code,name,abbr,status)values(?,?,?,1)", 
+					new Object[]{result.getCode(),result.getName(),result.getAbbr()});
+			//插入考试
+			for(SubjectSync s:subjects)
+			{
+				db.execSQL("insert into tbl_subjects(code,name,status,examCode)values(?,?,1,?)", new Object[]{s.getCode(),s.getName(),result.getCode()});
+			}
+		}else
+		{
+			//修改状态
+			db.execSQL("update tbl_exams set name = ?,abbr = ?,status = 1 where code = ?",
+					new Object[]{result.getCode()});
+			//修改科目
+			for(SubjectSync s:subjects)
+			{
+				Cursor cursor1 = db.rawQuery("select name from tbl_subjects where code = ?",new String[]{s.getCode()});
+				String name1 = "";
+				if(cursor.moveToNext())
+				{
+					name1 = cursor.getString(0);
+				}
+				cursor1.close();
+				if(StringUtils.isEmpty(name1))
+				{
+					db.execSQL("insert into tbl_subjects(code,name,status,examCode)values(?,?,1,?)", 
+							new Object[]{s.getCode(),s.getName(),result.getCode()});
+				}else
+					db.execSQL("update tbl_subjects set name = ?,examCode = ?,status = 1 where code = ?", 
+							new Object[]{s.getName(),result.getCode(),s.getCode()});
 			}
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
 		db.close();
 	}
-
 	/**
 	 * 插入试卷的集合
-	 * 
 	 * @param list
 	 * @return 返回更新的数量
 	 */
-	public int insertPaperList(ArrayList<FrontPaperInfo> list) {
+	public int insertPaperList(ArrayList<PaperSync> list) {
 		int count = 0;
 		if (list != null && list.size() > 0) {
 			SQLiteDatabase db = dbManager.openDatabase();
-			String sql1 = "select * from PaperTab where paperid = ?";
-			String sql2 = "insert into PaperTab(paperid,name,description,content,examid,subjectid,sourcename,areaname,type,price,time,year,total,userTotal,score,publishtime)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql1 = "select * from tbl_papers where id = ?";
+			String sql2 = "insert into tbl_papers(id,title,type,total,content,subjectCode,createTime)values(?,?,?,?,?,?,?)";
 			db.beginTransaction();
 			try {
-				for (FrontPaperInfo paper : list) {
+				for (PaperSync paper : list) {
 					Cursor cursor = db.rawQuery(sql1,
 							new String[] { paper.getId() });
 					if (cursor.getCount() > 0) {
@@ -102,13 +122,12 @@ public class ImportDao {
 					}
 					cursor.close();
 					Object[] params = new Object[] { paper.getId(),
-							paper.getName(), paper.getDescription(), null,
-							paper.getExamId(), paper.getSubjectId(),
-							paper.getSourceName(), paper.getAreaName(),
-							paper.getType(), paper.getPrice(), paper.getTime(),
-							paper.getYear(), paper.getTotal(),
-							paper.getUserTotal(), paper.getScore(),
-							paper.getPublishTime() };
+							paper.getTitle(), paper.getType(),
+							paper.getTotal(),
+							//加密试卷数据
+							CryptoUtils.encrypto(paper.getId(), paper.getContent()),
+							paper.getSubjectCode(), paper.getCreateTime()
+							};
 					db.execSQL(sql2, params);
 					count++;
 				}
@@ -123,7 +142,6 @@ public class ImportDao {
 
 	/**
 	 * 插入试卷的内容
-	 * 
 	 * @return
 	 */
 	public void updatePaperContent(String paperId, String content) {
@@ -131,12 +149,12 @@ public class ImportDao {
 		if (StringUtils.isEmpty(content) || StringUtils.isEmpty(paperId))
 			return;
 		SQLiteDatabase db = dbManager.openDatabase();
-		PaperPreview paper = GsonUtil.jsonToBean(content, PaperPreview.class);
-		String ruleContent = getRuleList(paper);
+//		PaperPreview paper = GsonUtil.jsonToBean(content, PaperPreview.class);
+		//String ruleContent = getRuleList(paper);
 		content = CyptoUtils.encodeContent(paperId, content);
 		db.execSQL(
-				"update PaperTab set content = ?,structures = ? where paperid = ?",
-				new Object[] { content, ruleContent, paperId });
+				"update tbl_papers set content = ? where paperid = ?",
+				new Object[] { content, paperId });
 		db.close();
 	}
 

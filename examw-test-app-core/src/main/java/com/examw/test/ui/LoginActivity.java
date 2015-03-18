@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.UserDao;
+import com.examw.test.daonew.UserDao;
 import com.examw.test.domain.User;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
@@ -164,14 +164,6 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 								return;
 							}
 							if (result.isSuccess()) { // 登陆成功
-								//远程去获取productUser的信息并且保存
-								//User user = (User) result.getData();
-								//FrontUserInfo userInfo = new FrontUserInfo();
-								//userInfo.setCode(user.getUid());
-								//userInfo.setName(username);
-								//Json json = ApiClient.getProductUser(appContext, userInfo);
-								//if(json.isSuccess())
-								//{
 								// 是否记住我
 								if (isRememberMe()) {
 									saveSharePreferences();
@@ -188,14 +180,8 @@ public class LoginActivity extends BaseActivity implements TextWatcher,
 								saveToLocaleDB(user);
 								message.what = 1;
 								message.obj = user;
-								//}else
-								//{
-								//	message.what = 0;
-								//	message.obj = "获取用户ID失败";
-								//}
 							}else{
 								message.what = 0;
-								//message.obj = LoginTips.getLoginTip((Integer) result.getData(), null);
 								message.obj = result.getMsg();
 							}
 							handler.sendMessage(message); //登录失败

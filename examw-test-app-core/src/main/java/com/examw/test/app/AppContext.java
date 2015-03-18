@@ -23,11 +23,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 
-import com.examw.test.dao.ProductDao;
+import com.examw.test.daonew.ExamDao;
 import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.User;
-import com.examw.test.exception.AppException;
 import com.examw.test.model.FrontProductInfo;
+import com.examw.test.model.PaperPreview;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.AssetFileManager;
 import com.examw.test.util.CyptoUtils;
@@ -68,6 +68,9 @@ public class AppContext extends Application {
 	 * Global application context.
 	 */
 	private static Context mContext;
+	
+	//当前正在考试的试卷
+	private PaperPreview currentPaper;
 
 	/**
 	 * Construct of LitePalApplication. Initialize application context.
@@ -854,6 +857,8 @@ public class AppContext extends Application {
 			//初始化数据库
 			LogUtil.d("初始化数据线程启动");
 			Long start = System.currentTimeMillis();
+			SQLiteDatabase db = UserDBUtil.getDatabase();
+			db.close();
 			//复制Assets中的数据
 			String dbPath =AppConfig.DEFAULT_DATA_PATH + AppContext.this.getPackageName() + File.separator +"databases" + File.separator + AppConfig.DATABASE_NAME;
 			//复制数据
@@ -862,7 +867,9 @@ public class AppContext extends Application {
 			//AssetFileManager.copyImages(AppContext.this, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
 			//解压缩包
 			AssetFileManager.upZipFile(AppContext.this, "data/examw.zip",AppConfig.DATABASE_NAME,dbPath, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
-			
+			db = null;
+			String examName = ExamDao.findExamName(null);
+			AppContext.this.setProperty("exam_name", examName);
 			//!!!!!!!!!!!!!!在线获取信息!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			LogUtil.d("初始化数据线程结束,耗时:"+(System.currentTimeMillis() - start));
 		}
@@ -874,5 +881,23 @@ public class AppContext extends Application {
 		this.loginState = UNLOGIN;
 		this.loginUid = null;
 		this.username = null;
+	}
+
+	/**
+	 * 获取 当前正在考试的试卷对象
+	 * @return currentPaper
+	 * 
+	 */
+	public PaperPreview getCurrentPaper() {
+		return currentPaper;
+	}
+
+	/**
+	 * 设置 当前正在考试的试卷对象
+	 * @param currentPaper
+	 * 
+	 */
+	public void setCurrentPaper(PaperPreview currentPaper) {
+		this.currentPaper = currentPaper;
 	}
 }

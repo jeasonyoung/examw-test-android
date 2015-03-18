@@ -22,7 +22,8 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.adapter.PaperListAdapter;
-import com.examw.test.dao.PaperDao;
+import com.examw.test.app.AppContext;
+import com.examw.test.daonew.PaperDao;
 import com.examw.test.domain.Paper;
 import com.examw.test.util.LogUtil;
 import com.examw.test.widget.NewDataToast;
@@ -47,6 +48,7 @@ public class RealPaperFragment extends Fragment{
 	private PaperListAdapter mAdapter;
 	private String subjectId;
 	private String paperType;
+	private String username;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class RealPaperFragment extends Fragment{
 		Bundle data = this.getArguments();
 		subjectId = data.getString("subjectId");
 		paperType = data.getString("paperType");
+		// appContext.recoverLoginStatus();
+		username = ((AppContext) this.getActivity().getApplication()).getUsername();
 		initViews(v);
 		initData();
 		return v;
@@ -85,7 +89,7 @@ public class RealPaperFragment extends Fragment{
 					return;
 				}
 				Intent intent = new Intent(RealPaperFragment.this.getActivity(),PaperInfoActivity.class);
-				intent.putExtra("paperId",papers.get(arg2-1).getPaperId());
+				intent.putExtra("paperId",papers.get(arg2-1).getId());
 				RealPaperFragment.this.startActivity(intent);
 			}
 		});
@@ -151,7 +155,7 @@ public class RealPaperFragment extends Fragment{
 	{
 		@Override
 		public void run() {
-			papers = PaperDao.findPapers(subjectId,paperType);
+			papers = PaperDao.findPapers(subjectId,paperType,username);
 			handler.sendEmptyMessage(1);
 		}
 	}

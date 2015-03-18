@@ -22,12 +22,13 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.ImportDao;
 import com.examw.test.domain.Subject;
-import com.examw.test.exception.AppException;
-import com.examw.test.model.FrontPaperInfo;
-import com.examw.test.model.FrontProductInfo;
+import com.examw.test.model.sync.AppClientSync;
+import com.examw.test.model.sync.ExamSync;
+import com.examw.test.model.sync.PaperSync;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.URLs;
 import com.examw.test.util.StringUtils;
@@ -166,47 +167,47 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 
 	//导入产品数据存于内部存储中
 	private void importProduct() {
-		if (proDialog == null) {
-			proDialog = ProgressDialog.show(this, null, "导入数据中请稍候...", true,
-					true);
-			proDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		} else {
-			proDialog.show();
-		}
-		new Thread() {
-			public void run() {
-				try {
-					//导入产品数据
-					if(!dao.hasInsert())
-					{
-						try {
-							FrontProductInfo info = ApiClient.getProductInfo(appContext);
-							if(info !=null)
-							{
-								dao.insert(info);
-								//构造科目
-								String[] subjectIds = info.getSubjectId();
-								if(subjectIds != null && subjectIds.length > 0)
-								{
-									subjects = new ArrayList<Subject>();
-									String[] subjectNames = info.getSubjectName();
-									for(int i=0;i<subjectIds.length;i++)
-									{
-										subjects.add(new Subject(subjectIds[i],subjectNames[i],i));
-									}
-								}
-							}
-						} catch (AppException e) {
-							e.printStackTrace();
-						}
-					}
-					handler.sendEmptyMessage(2);
-				} catch (Exception e) {
-					handler.sendEmptyMessage(-2);
-					e.printStackTrace();
-				}
-			};
-		}.start();
+//		if (proDialog == null) {
+//			proDialog = ProgressDialog.show(this, null, "导入数据中请稍候...", true,
+//					true);
+//			proDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//		} else {
+//			proDialog.show();
+//		}
+//		new Thread() {
+//			public void run() {
+//				try {
+//					//导入产品数据
+//					if(!dao.hasInsert())
+//					{
+//						try {
+//							FrontProductInfo info = ApiClient.getProductInfo(appContext);
+//							if(info !=null)
+//							{
+//								dao.insert(info);
+//								//构造科目
+//								String[] subjectIds = info.getSubjectId();
+//								if(subjectIds != null && subjectIds.length > 0)
+//								{
+//									subjects = new ArrayList<Subject>();
+//									String[] subjectNames = info.getSubjectName();
+//									for(int i=0;i<subjectIds.length;i++)
+//									{
+//										subjects.add(new Subject(subjectIds[i],subjectNames[i],i));
+//									}
+//								}
+//							}
+//						} catch (AppException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//					handler.sendEmptyMessage(2);
+//				} catch (Exception e) {
+//					handler.sendEmptyMessage(-2);
+//					e.printStackTrace();
+//				}
+//			};
+//		}.start();
 	}
 	/**
 	 * 导入试卷,同时要导入图片
@@ -222,7 +223,11 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		new Thread() {
 			public void run() {
 				try {
-					ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
+					com.examw.test.model.sync.AppClientSync req = new AppClientSync();
+					req.setCode(AppConfig.CODE);
+					req.setProductId(AppConfig.PRODUCTID);
+					req.setStartTime("1970-01-01 00:00:00");
+					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
 					dao.insertPaperList(list);
 					if(list == null || list.size()==0)
 						handler.sendEmptyMessage(3);
@@ -234,7 +239,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 							file.mkdirs();
 						}
 						//导入试卷的数据
-						for(FrontPaperInfo paper:list)
+						for(PaperSync paper:list)
 						{
 							String content = ApiClient.loadPaperContent(appContext,paper.getId());
 							dao.updatePaperContent(paper.getId(), content);
@@ -371,61 +376,28 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		new Thread() {
 			public void run() {
 				try {
-					if(!dao.hasInsert())
+					//导入考试,导入科目
+					AppClientSync req = new AppClientSync();
+					req.setCode(AppConfig.CODE);
+					req.setProductId(AppConfig.PRODUCTID);
+					req.setStartTime("1970-01-01 00:00:00");
+					ExamSync result = ApiClient.getExams(appContext, req);
+					dao.insertExamSubjects(result);
+					
+					//导入试卷
+					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
+					if(list != null && list.size()>0)
 					{
-						try {
-							FrontProductInfo info = ApiClient.getProductInfo(appContext);
-							if(info !=null)
-							{
-								//导入产品信息
-								dao.insert(info);
-								//构造科目
-								String[] subjectIds = info.getSubjectId();
-								if(subjectIds != null && subjectIds.length > 0)
-								{
-									subjects = new ArrayList<Subject>();
-									String[] subjectNames = info.getSubjectName();
-									for(int i=0;i<subjectIds.length;i++)
-									{
-										subjects.add(new Subject(subjectIds[i],subjectNames[i],i));
-									}
-								}
-								//导入试卷
-								ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
-								dao.insertPaperList(list);
-								if(list == null || list.size()==0)
-									handler.sendEmptyMessage(2);
-								else
-								{
-									File file = new File(dataDir);
-									if(!file.exists())
-									{
-										file.mkdirs();
-									}
-									//导入试卷的数据
-									for(FrontPaperInfo paper:list)
-									{
-										String content = ApiClient.loadPaperContent(appContext,paper.getId());
-										dao.updatePaperContent(paper.getId(), content);
-										loadImage(content, dataDir);
-									}
-								}
-								//导入大纲
-								if(subjects!=null && subjects.size()>0)
-								{
-									for(Subject s:subjects)
-									{
-										String content = ApiClient.loadSyllabusContent(
-												(AppContext) getApplication(), s.getSubjectId());
-										if (!StringUtils.isEmpty(content)) {
-											dao.insertSyllabusAndLoadChapters(
-													s, content);
-										}
-									}
-								}
-							}
-						} catch (AppException e) {
-							e.printStackTrace();
+						dao.insertPaperList(list);
+						File file = new File(dataDir);
+						if(!file.exists())
+						{
+							file.mkdirs();
+						}
+						for(PaperSync paper:list)
+						{
+							//加载试卷的图片
+							loadImage(paper.getContent(), dataDir);
 						}
 					}
 					// 所有地区数据都搞定后

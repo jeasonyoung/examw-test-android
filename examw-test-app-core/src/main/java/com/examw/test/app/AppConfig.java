@@ -32,8 +32,9 @@ public class AppConfig {
 	//二级人力
 //	public static final String PRODUCTID = "356ca1e5-e12b-4c16-9456-8e6618b9a28b";
 	//一建,建筑工程
-	public static final String PRODUCTID = "60a4eb98-8c95-42d7-9178-d053a17f9e87";
-	//终端ID
+	public static final String PRODUCTID = "c36f8985-544b-4524-909f-fef638f710b6";//"60a4eb98-8c95-42d7-9178-d053a17f9e87";
+	public static final String CODE = "1505 0761 2076 1012";
+	//终端ID	
 	public static final String TERMINALID = "4";
 	
 	public static String CLIENTKEY = "U8z2D0O5s7Li1Q3y4k6g";

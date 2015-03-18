@@ -2,6 +2,7 @@ package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,11 +22,12 @@ import com.examw.test.R;
 import com.examw.test.adapter.PaperRecordAdapter;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.PaperDao;
-import com.examw.test.dao.PaperRecordDao;
+import com.examw.test.daonew.PaperDao;
+import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.PaperPreview;
+import com.examw.test.model.StructureInfo;
 import com.examw.test.support.ReturnBtnClickListener;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.LogUtil;
@@ -184,8 +186,7 @@ public class PaperRecordActivity extends BaseActivity {
 		new Thread() {
 			public void run() {
 				try {
-					String content = PaperDao
-							.findPaperStructureContent(paperId);
+					String content = PaperDao.findPaperContent(paperId,username);
 					PaperPreview paper = GsonUtil.jsonToBean(content,
 							PaperPreview.class);
 					Message msg = handler.obtainMessage();
@@ -210,7 +211,7 @@ public class PaperRecordActivity extends BaseActivity {
 		// findPaper
 		mIntent.putExtra("paperTime", paper.getTime());
 		mIntent.putExtra("ruleListJson",
-				GsonUtil.objectToJson(paper.getStructures()));
+				GsonUtil.objectToJson(this.getRuleList(paper)));
 		mIntent.putExtra("username", username);
 		mIntent.putExtra(
 				"useTime",
@@ -220,7 +221,19 @@ public class PaperRecordActivity extends BaseActivity {
 		mIntent.putExtra("userScore", currentRecord.getScore()); // 本次得分
 		this.startActivity(mIntent); // 仍然是要启动这个Activity不带结果返回
 	}
-
+	
+	private List<StructureInfo> getRuleList(PaperPreview paper)
+	{
+		List<StructureInfo> ruleList = paper.getStructures();
+		if(ruleList!=null && ruleList.size()>0)
+		{
+			for(StructureInfo info:ruleList)
+			{
+				info.setItems(null);
+			}
+		}
+		return ruleList;
+	}
 	static class MyHandler extends Handler {
 		WeakReference<PaperRecordActivity> mActivity;
 

@@ -15,9 +15,7 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.adapter.ChapterExpendableListAdatper;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.SyllabusDao;
 import com.examw.test.domain.Chapter;
-import com.examw.test.domain.Subject;
 import com.examw.test.exception.AppException;
 import com.examw.test.support.ApiClient;
 import com.examw.test.util.LogUtil;
@@ -69,20 +67,20 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 				//去数据库查询章节列表
 				try{
 					LogUtil.d("查询章节信息...");
-					chapters = SyllabusDao.loadAllChapters(subjectId);
+//					chapters = SyllabusDao.loadAllChapters(subjectId);
 					if(chapters == null || chapters.isEmpty())
 					{
 						try
 						{
 							String content = ApiClient.loadSyllabusContent((AppContext) getApplication(),subjectId);
 							if (!StringUtils.isEmpty(content)) {
-								chapters = SyllabusDao
-										.insertSyllabusAndLoadChapters(
-												new Subject(){
-													private static final long serialVersionUID = 1L;
-													public String getName() {return subjectName;};
-													public String getSubjectId() {return subjectId;};}, 
-													content);
+//								chapters = SyllabusDao
+//										.insertSyllabusAndLoadChapters(
+//												new Subject(){
+//													private static final long serialVersionUID = 1L;
+//													public String getName() {return subjectName;};
+//													public String getSubjectId() {return subjectId;};}, 
+//													content);
 								mHandler.sendEmptyMessage(1);
 							}else
 							{
@@ -147,18 +145,18 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 		@Override
 		public void run() {
 			try {
-				chapters = SyllabusDao.loadAllChapters(subjectId);
-				if (chapters == null || chapters.isEmpty()) {
-					String content = ApiClient.loadSyllabusContent(
-							(AppContext) getApplication(), subjectId);
-					if (!StringUtils.isEmpty(content)) {
-						chapters = SyllabusDao.insertSyllabusAndLoadChapters(
-								new Subject(){
-									private static final long serialVersionUID = 1L;
-									public String getName() {return subjectName;};
-									public String getSubjectId() {return subjectId;};}, content);
-					}
-				}
+//				chapters = SyllabusDao.loadAllChapters(subjectId);
+//				if (chapters == null || chapters.isEmpty()) {
+//					String content = ApiClient.loadSyllabusContent(
+//							(AppContext) getApplication(), subjectId);
+//					if (!StringUtils.isEmpty(content)) {
+//						chapters = SyllabusDao.insertSyllabusAndLoadChapters(
+//								new Subject(){
+//									private static final long serialVersionUID = 1L;
+//									public String getName() {return subjectName;};
+//									public String getSubjectId() {return subjectId;};}, content);
+//					}
+//				}
 				mHandler.sendEmptyMessage(1);
 			} catch (Exception e) {
 				e.printStackTrace();

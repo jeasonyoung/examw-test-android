@@ -28,9 +28,9 @@ import com.examw.test.R;
 import com.examw.test.adapter.SubjectListAdapter;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.FavoriteDao;
-import com.examw.test.dao.PaperRecordDao;
-import com.examw.test.dao.ProductDao;
+import com.examw.test.daonew.ExamDao;
+import com.examw.test.daonew.FavoriteDao;
+import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.domain.Subject;
 import com.examw.test.support.ApiClient;
@@ -91,7 +91,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 		new Thread(){
 			public void run() {
 				try{
-					subjects = ProductDao.findSubjects();
+					subjects = ExamDao.findSubjects(username);
 					if(subjects!=null&&subjects.size()>0)
 					{
 						if(action == AppConstant.ACTION_ERROR)
@@ -199,7 +199,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 			try
 			{
 				ArrayList<Subject> result = ApiClient.getSubjectList((AppContext)(ChooseSubjectActivity.this.getApplication()));
-				ProductDao.saveSubjects(result);
+//				ProductDao.saveSubjects(result);
 				return result;
 			}catch(Exception e)
 			{

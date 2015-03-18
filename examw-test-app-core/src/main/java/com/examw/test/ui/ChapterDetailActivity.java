@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.SyllabusDao;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Paper;
 import com.examw.test.domain.PaperRecord;
@@ -107,7 +106,7 @@ public class ChapterDetailActivity extends BaseActivity implements
 		loading.setVisibility(View.VISIBLE);
 		new Thread() {
 			public void run() {	
-				chapters = SyllabusDao.loadChapters(chapterId);
+//				chapters = SyllabusDao.loadChapters(chapterId);
 			};
 		}.start();
 	}
@@ -237,7 +236,7 @@ public class ChapterDetailActivity extends BaseActivity implements
 				break;
 			case 8:
 				NewDataToast.makeText(qpi, "更新成功", false).show();
-				qpi.questionSumTv.setText(qpi.paper.getScore() + "");
+//				qpi.questionSumTv.setText(qpi.paper.getScore() + "");
 				break;
 			}
 		}

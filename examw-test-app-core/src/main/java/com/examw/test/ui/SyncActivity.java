@@ -25,23 +25,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.FavoriteDao;
-import com.examw.test.dao.PaperDao;
-import com.examw.test.dao.PaperRecordDao;
-import com.examw.test.dao.ProductDao;
-import com.examw.test.dao.SyllabusDao;
-import com.examw.test.dao.UserDao;
-import com.examw.test.domain.FavoriteItem;
-import com.examw.test.domain.PaperRecord;
-import com.examw.test.domain.Subject;
+import com.examw.test.daonew.ExamDao;
+import com.examw.test.daonew.PaperDao;
+import com.examw.test.daonew.UserDao;
 import com.examw.test.exception.AppException;
-import com.examw.test.model.FrontPaperInfo;
-import com.examw.test.model.Json;
-import com.examw.test.model.UserItemFavoriteInfo;
-import com.examw.test.model.UserPaperRecordInfo;
+import com.examw.test.model.sync.AppClientSync;
+import com.examw.test.model.sync.ExamSync;
+import com.examw.test.model.sync.PaperSync;
 import com.examw.test.support.ApiClient;
-import com.examw.test.support.DataConverter;
 import com.examw.test.support.URLs;
 import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
@@ -163,44 +156,48 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					//查询上次试卷的更新时间
 					String lastTime = UserDao.getLastTime(username, "lastUpdateTime");
 					//获取最新的试卷信息
-					ArrayList<FrontPaperInfo> list = ApiClient.getUpdatePaperInfo(appContext,lastTime);
+					AppClientSync req = new AppClientSync();
+					req.setCode(AppConfig.CODE);
+					req.setProductId(AppConfig.PRODUCTID);
+					req.setStartTime(lastTime);
+					ExamSync result = ApiClient.getExams(appContext, req);
+					ExamDao.saveSubjects(result,username);
+					//导入试卷
+					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
 					//更新试卷
 					if(list == null || list.size()==0)
 						mHandler.sendEmptyMessage(10);
 					else
 					{
-						PaperDao.insertPaperList(list);
+						PaperDao.insertPapers(list,username);
 						File file = new File(dataDir);
 						if(!file.exists())
 						{
 							file.mkdirs();
 						}
 						//导入试卷的数据
-						for(FrontPaperInfo paper:list)
+						for(PaperSync paper:list)
 						{
-							String content = ApiClient.loadPaperContent(appContext,paper.getId());
-							PaperDao.updatePaperContent(paper.getId(), content);
 							//加载试卷的图片
-							loadImage(content, dataDir);
+							loadImage(paper.getContent(), dataDir);
 						}
 						mHandler.sendEmptyMessage(10);
 					}
-					
-					//更新大纲以及大纲下面的试题
-					//查询科目
-					ArrayList<Subject> subjects = ProductDao.findSubjects();
-					if(subjects!=null && subjects.size()>0)
-					{
-						for(Subject s:subjects)
-						{
-							String content = ApiClient.loadSyllabusContent(
-									(AppContext) getApplication(), s.getSubjectId());
-							if (!StringUtils.isEmpty(content)) {
-								SyllabusDao.updateSyllabusInfo(appContext,s, content);
-							}
-						}
-					}
-					//保存上次的更新时间
+//					//更新大纲以及大纲下面的试题
+//					//查询科目
+//					ArrayList<Subject> subjects = ProductDao.findSubjects();
+//					if(subjects!=null && subjects.size()>0)
+//					{
+//						for(Subject s:subjects)
+//						{
+//							String content = ApiClient.loadSyllabusContent(
+//									(AppContext) getApplication(), s.getSubjectId());
+//							if (!StringUtils.isEmpty(content)) {
+//								SyllabusDao.updateSyllabusInfo(appContext,s, content);
+//							}
+//						}
+//					}
+//					//保存上次的更新时间
 					UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastUpdateTime");
 					mHandler.sendEmptyMessage(20);
 				}catch(AppException e)
@@ -217,8 +214,8 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 				}
 			};
 		}.start();
-		
 	}
+
 	private void loadImage(String content,String imagePath)throws Exception 
 	{
 		Log.e("导入图片","ddddddddddd");
@@ -250,24 +247,24 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 							if(paperFlag!=0) return;
 							LogUtil.d("开始同步考试记录");
 							//查询用户的考试记录并且转换为上传数据对象
-							String lastTime = UserDao.getLastTime(username, "lastSyncPaperTime");
-							ArrayList<PaperRecord> list = PaperRecordDao.findAll(username,userId,lastTime);
-							LogUtil.d("需要同步的考试记录个数:"+list.size());
-							ArrayList<UserPaperRecordInfo> records = DataConverter.convertPaperRecords(list);
-							if(records == null || records.size() == 0)
-							{
-								mHandler.sendEmptyMessage(4);
-								return;
-							}
-							Json json = ApiClient.updateRecords(appContext, records);
-							if(json !=null && json.isSuccess())
-							{
-								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastSyncPaperTime");
-								mHandler.sendEmptyMessage(4);
-							}else
-							{
-								mHandler.sendEmptyMessage(-4);
-							}
+//							String lastTime = UserDao.getLastTime(username, "lastSyncPaperTime");
+//							ArrayList<PaperRecord> list = PaperRecordDao.findAll(username,userId,lastTime);
+//							LogUtil.d("需要同步的考试记录个数:"+list.size());
+//							ArrayList<UserPaperRecordInfo> records = DataConverter.convertPaperRecords(list);
+//							if(records == null || records.size() == 0)
+//							{
+//								mHandler.sendEmptyMessage(4);
+//								return;
+//							}
+//							Json json = ApiClient.updateRecords(appContext, records);
+//							if(json !=null && json.isSuccess())
+//							{
+//								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastSyncPaperTime");
+//								mHandler.sendEmptyMessage(4);
+//							}else
+//							{
+//								mHandler.sendEmptyMessage(-4);
+//							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -284,22 +281,22 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 							if(favorFlag!=0) return;
 							LogUtil.d("开始收藏记录上传");
 							//查询需要上传的收藏记录
-							ArrayList<FavoriteItem> list = FavoriteDao.findAll(username,userId);
-							ArrayList<UserItemFavoriteInfo> records = DataConverter.convertFavors(list);
-							if(records == null || records.size() == 0)
-							{
-								mHandler.sendEmptyMessage(2);
-								return;
-							}
-							Json json = ApiClient.updateFavors(appContext, records);
-							if(json !=null && json.isSuccess())
-							{
-								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastSyncFavorTime");
-								mHandler.sendEmptyMessage(2);
-							}else
-							{
-								mHandler.sendEmptyMessage(-2);
-							}
+//							ArrayList<FavoriteItem> list = FavoriteDao.findAll(username,userId);
+//							ArrayList<UserItemFavoriteInfo> records = DataConverter.convertFavors(list);
+//							if(records == null || records.size() == 0)
+//							{
+//								mHandler.sendEmptyMessage(2);
+//								return;
+//							}
+//							Json json = ApiClient.updateFavors(appContext, records);
+//							if(json !=null && json.isSuccess())
+//							{
+//								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastSyncFavorTime");
+//								mHandler.sendEmptyMessage(2);
+//							}else
+//							{
+//								mHandler.sendEmptyMessage(-2);
+//							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

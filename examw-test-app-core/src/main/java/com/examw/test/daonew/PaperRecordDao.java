@@ -15,6 +15,9 @@ import com.examw.test.domain.Subject;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
+import com.examw.test.model.sync.AppClientPush;
+import com.examw.test.model.sync.PaperItemRecordSync;
+import com.examw.test.model.sync.PaperRecordSync;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.LogUtil;
@@ -408,5 +411,17 @@ public class PaperRecordDao {
 		}
 		cursor.close();
 		return items;
+	}
+	
+	/**
+	 * 查询需要查询的数据
+	 */
+	private static AppClientPush<PaperRecordSync> findPaperRecords(String username)
+	{
+		
+	}
+	private static AppClientPush<PaperItemRecordSync> findPaperRecords(String username)
+	{
+		
 	}
 }

@@ -60,7 +60,7 @@ public class PaperListAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag(); 
 		}
 		final Paper p = papers.get(position);
-		holder.title.setText(p.getName());
+		holder.title.setText(p.getTitle());
 		//每日一练显示情况不同
 		if(p.getType().equals(AppConstant.PAPER_TYPE_DAILY))
 		{
@@ -68,10 +68,10 @@ public class PaperListAdapter extends BaseAdapter{
 			holder.scoreTimeLayout.setVisibility(View.GONE);
 		}else
 		{
-			holder.info.setText("考试时间: "+p.getTime()+" 分钟,"+"总分: "+p.getScore()+" 分");
-			holder.userTotal.setText(p.getUserTotal()==null?"0":p.getUserTotal()+"");
+//			holder.info.setText("考试时间: "+p.getTime()+" 分钟,"+"总分: "+p.getScore()+" 分");
+//			holder.userTotal.setText(p.getUserTotal()==null?"0":p.getUserTotal()+"");
 		}
-		holder.publishTime.setText(p.getPublishTime().substring(0, 11));
+		holder.publishTime.setText(p.getCreateTime().substring(0, 11));
 		return convertView;
 	}
 	static class ViewHolder

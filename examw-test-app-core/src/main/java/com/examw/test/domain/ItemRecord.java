@@ -13,7 +13,7 @@ import com.examw.test.app.AppConstant;
 public class ItemRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String recordId,userId,structureId,subjectId,userName,answer,itemId,itemContent,terminalId;
-	private Integer itemType,status;
+	private Integer itemType,status,sync;
 	private BigDecimal score;
 	private String createTime;
 	private String lastTime;
@@ -264,4 +264,22 @@ public class ItemRecord implements Serializable{
 		if(itemType == null) return "";
 		return AppConstant.getPaperTypeName(itemType);
 	}
+	/**
+	 * 获取 
+	 * @return sync
+	 * 
+	 */
+	public Integer getSync() {
+		return sync;
+	}
+	/**
+	 * 设置 
+	 * @param sync
+	 * 
+	 */
+	public void setSync(Integer sync) {
+		this.sync = sync;
+	}
+	
+	
 }

@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +39,8 @@ import com.examw.test.adapter.PracticeQuestionAdapter.AnswerViewHolder;
 import com.examw.test.adapter.PracticeQuestionAdapter.ContentViewHolder;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.FavoriteDao;
-import com.examw.test.dao.PaperRecordDao;
+import com.examw.test.daonew.FavoriteDao;
+import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
@@ -348,7 +347,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 				favor.setItemContent(GsonUtil.objectToJson(currentQuestion));
 				favor.setSubjectId(currentQuestion.getSubjectId());
 				favor.setItemType(currentQuestion.getType());
-				favor.setUserAnswer(currentQuestion.getUserAnswer());
+//				favor.setUserAnswer(currentQuestion.getUserAnswer());
 				favor.setUsername(((AppContext) getApplication()).getUsername());
 			} else {
 				favor = new FavoriteItem();

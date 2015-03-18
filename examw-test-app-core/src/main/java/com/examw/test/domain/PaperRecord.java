@@ -12,9 +12,20 @@ import com.examw.test.app.AppConstant;
  */
 public class PaperRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
+	/**
+	 *  "id" text NOT NULL,
+	 "paperId" text NOT NULL,
+	 "status" integer NOT NULL,
+	 "score" real NOT NULL,
+	 "rights" integer NOT NULL,
+	 "useTimes" integer NOT NULL,
+	 "createTime" datetime NOT NULL,
+	 "lastTime" datetime NOT NULL,
+	 "sync" integer NOT NULL,
+	 */
 	private String recordId,paperId,paperName,userId,userName,productId,terminalId;
 	private Double score;
-	private Integer paperType,usedTime,rightNum,status;
+	private Integer paperType,usedTime,rightNum,status,sync;
 	private String createTime,lastTime;
 	private ArrayList<ItemRecord> items;
 	private String torf;
@@ -337,4 +348,23 @@ public class PaperRecord implements Serializable{
 		if(paperType == null) return "";
 		return AppConstant.getPaperTypeName(paperType);
 	}
+
+	/**
+	 * 获取 
+	 * @return sync
+	 * 
+	 */
+	public Integer getSync() {
+		return sync;
+	}
+
+	/**
+	 * 设置 
+	 * @param sync
+	 * 
+	 */
+	public void setSync(Integer sync) {
+		this.sync = sync;
+	}
+	
 }

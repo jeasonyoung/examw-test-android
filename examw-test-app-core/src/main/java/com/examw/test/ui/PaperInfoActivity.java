@@ -18,8 +18,8 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.PaperDao;
-import com.examw.test.dao.PaperRecordDao;
+import com.examw.test.daonew.PaperDao;
+import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.PaperPreview;
@@ -83,13 +83,13 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 				/**
 				 * 先去数据库中查询
 				 */
-				String content = PaperDao.findPaperContent(paperId);
+				String content = PaperDao.findPaperContent(paperId,username);
 				record = PaperRecordDao.findLastPaperRecord(paperId, username,false);
 				if(StringUtils.isEmpty(content))
 				{
 					try{
 						content = ApiClient.loadPaperContent(appContext,paperId);
-						PaperDao.updatePaperContent(paperId, content);
+						PaperDao.updatePaperContent(paperId, content,username);
 					}catch(AppException e)
 					{
 						e.printStackTrace();

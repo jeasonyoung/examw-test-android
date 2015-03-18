@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.SyllabusDao;
 import com.examw.test.domain.Chapter;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.KnowledgeInfo;
@@ -131,7 +130,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 			// 获取同一级别的章节
 			public void run() {
 				try {
-					brothers = SyllabusDao.loadChapters(chapterPid); // 加载包含自身的兄弟章节
+//					brothers = SyllabusDao.loadChapters(chapterPid); // 加载包含自身的兄弟章节
 					if (brothers == null || brothers.isEmpty()) {
 						handler.sendEmptyMessage(0); // 没有数据
 					} else {
@@ -142,8 +141,8 @@ public class KnowledgeDetailActivity extends BaseActivity {
 							}
 						}
 						// 查询知识点的内容
-						currentContent = SyllabusDao
-								.loadKnowledgeContent(chapterId);// 查询知识点的内容
+//						currentContent = SyllabusDao
+//								.loadKnowledgeContent(chapterId);// 查询知识点的内容
 						if (currentContent == null) {
 							String content = ApiClient.loadKnowledgeContent(
 									(AppContext) getApplication(), chapterId);
@@ -156,7 +155,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 									handler.sendEmptyMessage(10); // 没有内容
 								}else
 								{
-									currentContent = SyllabusDao.insertChapters(list.get(0));
+//									currentContent = SyllabusDao.insertChapters(list.get(0));
 									handler.sendEmptyMessage(1);
 								}
 							}
@@ -251,7 +250,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 		public void run() {
 			// 查询知识点的内容
 			try {
-				currentContent = SyllabusDao.loadKnowledgeContent(chapterId);// 查询知识点的内容
+//				currentContent = SyllabusDao.loadKnowledgeContent(chapterId);// 查询知识点的内容
 				if (currentContent == null) {
 					String content = ApiClient.loadKnowledgeContent(
 							(AppContext) getApplication(), chapterId);
@@ -264,7 +263,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 							handler.sendEmptyMessage(10); // 没有内容
 						}else
 						{
-							currentContent = SyllabusDao.insertChapters(list.get(0));
+//							currentContent = SyllabusDao.insertChapters(list.get(0));
 							handler.sendEmptyMessage(1);
 						}
 					}

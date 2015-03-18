@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.ProductDao;
 import com.examw.test.model.FeedBackInfo;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
@@ -165,7 +164,7 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 		StringBuffer buf = new StringBuffer();
 		buf.append("来自android客户端").append(appContext.getVersionName()).append("\n");
 		buf.append("产品ID:").append(AppConfig.PRODUCTID).append("\n");
-		buf.append("名称:").append(ProductDao.findProductName()).append("\n");
+//		buf.append("名称:").append(ProductDao.findProductName()).append("\n");
 		buf.append("用户:").append(appContext.getUsername()).append("\n");
 		buf.append("content:").append(content);
 		info.setContent(buf.toString());

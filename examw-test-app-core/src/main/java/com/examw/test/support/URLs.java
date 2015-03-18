@@ -16,7 +16,7 @@ public class URLs implements Serializable{
 	public static final String HOST = "http://tiku.examw.com";
 //	public static final String HOST = "http://192.168.1.246:8080";
 	
-	public static final String BASE_URL = HOST + "/examw-test/api/data";
+	public static final String BASE_URL = HOST + "/examw-test/api/m";
 	
 	//登录地址
 	public static final String LOGIN =  "http://test.examw.com/user/Login/CheckUser.asp";
@@ -28,8 +28,10 @@ public class URLs implements Serializable{
 	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppConfig.PRODUCTID;
 	//科目列表
 	public static final String SUBJECT_LIST = BASE_URL + "/products/"+AppConfig.PRODUCTID+"/subjects";
+	public static final String EXAM_SUBJECT_SYNC = BASE_URL + "/sync/exams";
 	//试卷列表
 	public static final String PAPER_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papers";
+	public static final String PAPER_SYNC = BASE_URL + "/sync/papers";
 	//试卷的更新列表
 	public static final String PAPER_UPDATE_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papersupdate?lastTime=";
 	//每日一练试卷列表

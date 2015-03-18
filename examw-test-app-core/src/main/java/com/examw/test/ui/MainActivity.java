@@ -22,7 +22,7 @@ import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
-import com.examw.test.dao.UserDao;
+import com.examw.test.daonew.UserDao;
 import com.examw.test.domain.User;
 import com.examw.test.model.FrontUserInfo;
 import com.examw.test.model.Json;
@@ -91,38 +91,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				public void run() {
 					Message msg = mHandler.obtainMessage();
 					String username = appConfig.get("user.account");
+					if(username == null) return;
 					String pwd = CyptoUtils.decode("changheng", appConfig.get("user.pwd")).trim();
 					try {
 						appContext.setLoginState(AppContext.LOGINING); // 登录中
-						Json result = ApiClient.login(appContext, username, pwd);
+						Json result = ApiClient.login_proxy(appContext, username, pwd);
 						msg.what = 1;
 						if (result != null){
 							//查询本地数据库用户信息
 							User user = UserDao.findByUsername(username);
 							if(result.isSuccess())	//远程登录成功
 							{
-								if(user == null)
-								{
-									user = (User) result.getData();
-								}
-								if(user.getProductUserId()==null)
-								{
-									FrontUserInfo userInfo = new FrontUserInfo();
-									userInfo.setCode(((User) result.getData()).getUid());
-									userInfo.setName(username);
-									Json json = ApiClient.getProductUser(appContext, userInfo);
-									//失败则登录失败
-									if(json.isSuccess())
-									{
-										//保存至数据库
-										user.setProductUserId(json.getData().toString());
-										UserDao.saveOrUpdate(user);
-										msg.what = 1;
-									}else
-									{
-										msg.what = -2;	//登录失败
-									}
-								}
+								msg.what = 1;
 							}else	//远程登录不成功
 							{
 								msg.what = 0;	//登录失败

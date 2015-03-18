@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteException;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
+import com.examw.test.util.FileUtils;
 
 /**
  * 每个用户一个数据库
@@ -24,6 +25,7 @@ public class UserDBManager {
         {
         	new File(dirPath).mkdirs();
         } 
+        
     } 
   
     public synchronized static SQLiteDatabase openDatabase(String username) {
@@ -34,13 +36,14 @@ public class UserDBManager {
     private static SQLiteDatabase mOpenDatabase(String dbPath) { 
     	if(!new File(dbPath).exists())
     	{
+    		//复制数据库文件
+    		String library = AppConfig.DEFAULT_DATA_PATH + AppContext.getContext().getPackageName() + File.separator +"databases" + File.separator + AppConfig.DATABASE_NAME;
+    		FileUtils.copyFile(library, dbPath);
     		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, 
                     null); 
     		//插表
-    		db.setVersion(mNewVersion);
-    		db.execSQL("CREATE TABLE UserTab(_id integer primary key autoincrement,uid text,userId text,username text,password text,info text,lastSyncTime datetime)");
-    		db.execSQL("CREATE TABLE PaperRecordTab(_id integer primary key autoincrement,recordId text,paperId text,paperName text,paperType integer,userId text,username text,score double,torf text,lastTime datetime default(datetime('now','localtime')),createTime datetime default(datetime('now','localtime')),useTime integer,status integer,terminalId text,productId text,rightNum integer)");
-    		db.execSQL("CREATE TABLE ItemRecordTab(_id integer primary key autoincrement,recordId text,structureId text,subjectId text,username text,itemId text,itemType integer,itemContent text,answer text,termialId text,status integer,score double,useTime integer,createTime date default(datetime('now','localtime')),lastTime date default(datetime('now','localtime')))");
+    		db.execSQL("CREATE TABLE PaperRecordTab(_id integer primary key autoincrement,recordId text,paperId text,paperName text,paperType integer,userId text,username text,score double,torf text,lastTime datetime default(datetime('now','localtime')),createTime datetime default(datetime('now','localtime')),useTime integer,status integer,terminalId text,productId text,rightNum integer,sync integer)");
+    		db.execSQL("CREATE TABLE ItemRecordTab(_id integer primary key autoincrement,recordId text,structureId text,subjectId text,username text,itemId text,itemType integer,itemContent text,answer text,termialId text,status integer,score double,useTime integer,createTime date default(datetime('now','localtime')),lastTime date default(datetime('now','localtime')),sync integer)");
     		db.execSQL("CREATE TABLE FavoriteTab(_id integer primary key autoincrement,userId text,username text,userAnswer text,itemId text,itemType integer,status integer,itemContent text,subjectId text,terminalId text,remarks text,createTime date default(datetime('now','localtime')))");
     		db.setVersion(mNewVersion);
             return db; 

@@ -34,6 +34,9 @@ import com.examw.test.model.RemoteUserInfo;
 import com.examw.test.model.SubjectInfo;
 import com.examw.test.model.UserItemFavoriteInfo;
 import com.examw.test.model.UserPaperRecordInfo;
+import com.examw.test.model.sync.AppClientSync;
+import com.examw.test.model.sync.ExamSync;
+import com.examw.test.model.sync.PaperSync;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.HttpUtils;
@@ -262,6 +265,7 @@ public class ApiClient {
 		if(StringUtils.isEmpty(result)) return null;
 		return GsonUtil.getGson().fromJson(result, new TypeToken<ArrayList<FrontPaperInfo>>(){}.getType());
 	}
+	
 	/**
 	 * 获取试卷的更新
 	 * @param lastTime
@@ -452,5 +456,42 @@ public class ApiClient {
 	}
 	public static void logout(AppContext appContext, String username) {
 		appContext.cleanLoginInfo();
+	}
+	
+	/**
+	 * 获取试卷
+	 * @param appContext
+	 * @param req
+	 * @return
+	 * @throws AppException
+	 */
+	public static ArrayList<PaperSync> getPapers(AppContext appContext,AppClientSync req) throws AppException{
+		String result = HttpUtils.http_post(appContext, URLs.PAPER_SYNC,req);
+		if(StringUtils.isEmpty(result)) return null;
+		Json json = GsonUtil.getGson().fromJson(result,Json.class);
+		if(json.isSuccess()){
+			result = GsonUtil.getGson().toJson(json.getData());
+			return GsonUtil.getGson().fromJson(result, new TypeToken<ArrayList<PaperSync>>(){}.getType());
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取考试
+	 * @param appContext
+	 * @param req
+	 * @return
+	 * @throws AppException
+	 */
+	public static ExamSync getExams(AppContext appContext,AppClientSync req) throws AppException{
+		String result = HttpUtils.http_post(appContext, URLs.EXAM_SUBJECT_SYNC,req);
+		if(StringUtils.isEmpty(result)) return null;
+		Json json = GsonUtil.getGson().fromJson(result,Json.class);
+		if(json.isSuccess()) 
+		{
+			result = GsonUtil.getGson().toJson(json.getData());
+			return GsonUtil.getGson().fromJson(result, ExamSync.class);
+		}
+		return null;
 	}
 }

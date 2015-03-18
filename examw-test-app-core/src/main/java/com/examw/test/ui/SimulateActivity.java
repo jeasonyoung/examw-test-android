@@ -59,6 +59,7 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 	private Handler handler;
 	
 	private String subjectId;
+	private String username;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		// 添加Activity到堆栈
 		AppManager.getAppManager().addActivity(this);
 		this.handler = new MyHandler(this);
+		username = ((AppContext) this.getApplication()).getUsername();
 		initView();
 		initTabLine();
 	}
@@ -208,7 +210,7 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		@Override
 		public void run() {
 			
-			if(PaperDao.hasPaper(AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE))
+			if(PaperDao.hasPaper(AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE,username))
 			{
 				//本地数据库中有试卷
 				handler.sendEmptyMessage(1);
@@ -217,7 +219,7 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 				//本地数据库中没有试卷,访问网络
 				try{
 					ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
-					PaperDao.insertPaperList(list);
+//					PaperDao.insertPaperList(list);
 					if(list == null || list.size()==0)
 						handler.sendEmptyMessage(2);
 					else

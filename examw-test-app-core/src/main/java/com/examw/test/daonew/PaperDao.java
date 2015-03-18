@@ -10,9 +10,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.examw.test.app.AppConstant;
 import com.examw.test.db.LibraryDBUtil;
+import com.examw.test.db.UserDBManager;
+import com.examw.test.domain.Paper;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.sync.PaperSync;
+import com.examw.test.util.CryptoUtils;
 import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.LogUtil;
@@ -28,9 +31,9 @@ public class PaperDao {
 	 * 判断是否含有试卷
 	 * @return
 	 */
-	public static boolean hasPaper(String types)
+	public static boolean hasPaper(String types,String username)
 	{
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SQLiteDatabase db = getDatabase(username);
 		StringBuilder sql = new StringBuilder("select * from tbl_papers where 1 = 1 ");
 		if(!StringUtils.isEmpty(types))
 		{
@@ -47,12 +50,12 @@ public class PaperDao {
 	 * @param paper 试卷
 	 * 
 	 */
-	public static void insertPaper(PaperSync paper) {
+	public static void insertPaper(Paper paper,String username) {
 		/*
 		 * 先看存不存在,不存在就加入
 		 */
 		if (paper == null) return;
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SQLiteDatabase db = getDatabase(username);
 		Cursor cursor = db.rawQuery("select * from tbl_papers where id = ?",
 				new String[] { paper.getId() });
 		if (cursor.getCount() > 0) {
@@ -78,15 +81,15 @@ public class PaperDao {
 	 * @param list
 	 * @return 返回更新的数量
 	 */
-	public static int insertPaperList(ArrayList<PaperSync> list) {
+	public static int insertPaperList(ArrayList<Paper> list,String username) {
 		int count = 0;
 		if (list != null && list.size() > 0) {
-			SQLiteDatabase db = LibraryDBUtil.getDatabase();
+			SQLiteDatabase db = getDatabase(username);
 			String sql1 = "select * from tbl_papers where id = ?";
 			String sql2 = "insert into tbl_papers(id,title,type,total,content,subjectCode,createTime)values(?,?,?,?,?,?,?)";
 			db.beginTransaction();
 			try {
-				for (PaperSync paper : list) {
+				for (Paper paper : list) {
 					Cursor cursor = db.rawQuery(sql1,new String[] { paper.getId() });
 					if (cursor.getCount() > 0) {
 						cursor.close();
@@ -108,13 +111,52 @@ public class PaperDao {
 		return count;
 	}
 	/**
+	 * 插入试卷的集合
+	 * @param list
+	 * @return 返回更新的数量
+	 */
+	public static int insertPapers(ArrayList<PaperSync> list,String username) {
+		int count = 0;
+		if (list != null && list.size() > 0) {
+			SQLiteDatabase db = getDatabase(username);
+			String sql1 = "select * from tbl_papers where id = ?";
+			String sql2 = "insert into tbl_papers(id,title,type,total,content,subjectCode,createTime)values(?,?,?,?,?,?,?)";
+			db.beginTransaction();
+			try {
+				for (PaperSync paper : list) {
+					Cursor cursor = db.rawQuery(sql1,
+							new String[] { paper.getId() });
+					if (cursor.getCount() > 0) {
+						cursor.close();
+						continue;
+					}
+					cursor.close();
+					Object[] params = new Object[] { paper.getId(),
+							paper.getTitle(), paper.getType(),
+							paper.getTotal(),
+							//加密试卷数据
+							CryptoUtils.encrypto(paper.getId(), paper.getContent()),
+							paper.getSubjectCode(), paper.getCreateTime()
+							};
+					db.execSQL(sql2, params);
+					count++;
+				}
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+				db.close();
+			}
+		}
+		return count;
+	}
+	/**
 	 * 按科目,类型查询试卷 不带试卷的内容
 	 * @param subjectCode
 	 * @param types
 	 * @return
 	 */
-	public static ArrayList<PaperSync> findPapers(String subjectCode,String types) {
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+	public static ArrayList<Paper> findPapers(String subjectCode,String types,String username) {
+		SQLiteDatabase db = getDatabase(username);
 		//String id, String title, Integer type, Integer total, String content, String subjectCode, String createTime
 		StringBuilder sql = new StringBuilder("select id,title,type,total,subjectCode,createTime from tbl_papers where 1 = 1 ");
 		ArrayList<String> params = new ArrayList<String>();
@@ -134,9 +176,9 @@ public class PaperDao {
 			LibraryDBUtil.close();
 			return null;
 		}
-		ArrayList<PaperSync> list = new ArrayList<PaperSync>();
+		ArrayList<Paper> list = new ArrayList<Paper>();
 		while (cursor.moveToNext()) {
-			PaperSync p = new PaperSync(cursor.getString(0), cursor.getString(1),
+			Paper p = new Paper(cursor.getString(0), cursor.getString(1),
 					cursor.getInt(2), cursor.getInt(3),null, cursor.getString(4),
 					cursor.getString(5));
 			list.add(p);
@@ -151,11 +193,11 @@ public class PaperDao {
 	 * @param paperId
 	 * @return
 	 */
-	public static PaperPreview findPaperContent(String paperId)
+	public static String findPaperContent(String paperId,String username)
 	{
 		LogUtil.d( String.format("查询试卷[PaperId= %s]的内容",paperId));
 		if(StringUtils.isEmpty(paperId)) return null;
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SQLiteDatabase db = getDatabase(username);
 		Cursor cursor = db.rawQuery("select content from tbl_papers where id = ?", new String[]{paperId});
 		if (cursor.getCount() == 0) {
 			cursor.close();
@@ -169,22 +211,22 @@ public class PaperDao {
 		LibraryDBUtil.close();
 		LogUtil.d( String.format("试卷[PaperId= %s]已有内容",paperId));
 		//解密数据的内容
-		content = CyptoUtils.decodeContent(paperId, content);
+		content = CryptoUtils.decrypto(paperId, content);
 		//转换数据
-		return GsonUtil.jsonToBean(content, PaperPreview.class);
+		return content;
 	}
 	
 	/**
 	 * 插入试卷的内容
 	 * @return
 	 */
-	public static void updatePaperContent(String paperId,String content)
+	public static void updatePaperContent(String paperId,String content,String username)
 	{
 		LogUtil.d( String.format("插入试卷[PaperId= %s]的内容",paperId));
 		if (StringUtils.isEmpty(content) || StringUtils.isEmpty(paperId)) return;
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SQLiteDatabase db = getDatabase(username);
 		//加密试卷的数据内容
-		content = CyptoUtils.encodeContent(paperId, content);
+		content = CryptoUtils.encrypto(paperId, content);
 		db.execSQL("update tbl_papers set content = ? where id = ?", new Object[]{content,paperId});
 		db.close();
 	}
@@ -211,23 +253,10 @@ public class PaperDao {
 		}
 	}
 
-	public String findAddTime() {
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
-		String addtime = null;
-		Cursor cursor = db.rawQuery(
-				"select addtime from DataAddTimeTab order by _id desc",
-				new String[] {});
-		if (cursor.moveToNext()) {
-			addtime = cursor.getString(0);
-		}
-		cursor.close();
-		LibraryDBUtil.close();
-		return addtime;
-	}
 	//查找每日一练
-	public static ArrayList<PaperSync> findDailyPapers(long today,int dayOffset) {
+	public static ArrayList<Paper> findDailyPapers(long today,int dayOffset,String username) {
 		LogUtil.d("查询每日一练的数据");
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SQLiteDatabase db = getDatabase(username);
 		StringBuilder sql = new StringBuilder("select id,title,type,total,subjectCode,createTime from tbl_papers where 1 = 1 and type = ? and createTime > ? and createTime < ? ");
 		ArrayList<String> params = new ArrayList<String>();
 		Calendar cal = Calendar.getInstance();
@@ -246,9 +275,9 @@ public class PaperDao {
 			LibraryDBUtil.close();
 			return null;
 		}
-		ArrayList<PaperSync> list = new ArrayList<PaperSync>();
+		ArrayList<Paper> list = new ArrayList<Paper>();
 		while (cursor.moveToNext()) {
-			PaperSync p = new PaperSync(cursor.getString(0), cursor.getString(1),
+			Paper p = new Paper(cursor.getString(0), cursor.getString(1),
 					cursor.getInt(2), cursor.getInt(3),null, cursor.getString(4),
 					cursor.getString(5));
 			list.add(p);
@@ -263,10 +292,10 @@ public class PaperDao {
 	 * 查询最新的试卷时间,不包括每日一练
 	 * @return
 	 */
-	public static String findLastedPaperAddTime()
+	public static String findLastedPaperAddTime(String username)
 	{
 		LogUtil.d("查询最新的试卷时间");
-		SQLiteDatabase db = LibraryDBUtil.getDatabase();
+		SQLiteDatabase db = getDatabase(username);
 		Cursor cursor = db.rawQuery("select createTime from tbl_papers order by createTime desc limit 1 where paperType != "+AppConstant.PAPER_TYPE_DAILY,new String[0]);
 		String time = null;
 		if(cursor.moveToNext())
@@ -276,5 +305,11 @@ public class PaperDao {
 		cursor.close();
 		db.close();
 		return time;
+	}
+	
+	private static SQLiteDatabase getDatabase(String username)
+	{
+		if(username == null) return LibraryDBUtil.getDatabase();
+		return UserDBManager.openDatabase(username);
 	}
 }

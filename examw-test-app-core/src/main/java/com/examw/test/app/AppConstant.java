@@ -44,7 +44,8 @@ public class AppConstant {
 	public static final int ACTION_CHOOSE_ITEM_WITH_ANSWER = 8;	//带答案
 	public static final int ACTION_CHAPTER = 9;	//章节练习
 	
-	
+	public static final int SYNC_NONE = 0;
+	public static final int SYNC_DONE = 1;
 	
 	public static String getPaperTypeName(Integer type)
 	{

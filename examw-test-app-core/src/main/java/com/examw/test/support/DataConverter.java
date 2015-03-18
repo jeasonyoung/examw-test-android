@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
-import com.examw.test.dao.FavoriteDao;
+import com.examw.test.daonew.FavoriteDao;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.domain.ItemRecord;
 import com.examw.test.domain.PaperRecord;
@@ -318,9 +318,9 @@ public class DataConverter {
 		if(r == null)
 		return null;
 		UserItemFavoriteInfo info = new UserItemFavoriteInfo();
-		info.setUserId(r.getUserId());
+//		info.setUserId(r.getUserId());
 		try{
-			info.setCreateTime(formatter_upload.format(formatter.parse(r.getCreateTime())));
+//			info.setCreateTime(formatter_upload.format(formatter.parse(r.getCreateTime())));
 		}catch(Exception e)
 		{
 			e.printStackTrace();

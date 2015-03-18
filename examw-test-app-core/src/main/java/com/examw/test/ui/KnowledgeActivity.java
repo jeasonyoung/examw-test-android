@@ -27,8 +27,7 @@ import com.examw.test.R;
 import com.examw.test.adapter.SyllabusListAdapter;
 import com.examw.test.adapter.SyllabusListAdapter.OnSyllabusNodeClickListener;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.ProductDao;
-import com.examw.test.dao.SyllabusDao;
+import com.examw.test.daonew.ExamDao;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
 import com.examw.test.support.ApiClient;
@@ -79,23 +78,23 @@ public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 		new Thread() {
 			public void run() {
 				try {
-					subjects = ProductDao.findSubjects();
+					subjects = ExamDao.findSubjects(null);
 					if (subjects != null && subjects.size() > 0) {
 						currentCourse = subjects.get(0);
 						try {
-							chapters = SyllabusDao
-									.loadAllChapters(currentCourse
-											.getSubjectId());
-							if (chapters == null || chapters.isEmpty()) {
-								String content = ApiClient.loadSyllabusContent(
-										(AppContext) getApplication(),
-										currentCourse.getSubjectId());
-								if (!StringUtils.isEmpty(content)) {
-									chapters = SyllabusDao
-											.insertSyllabusAndLoadChapters(
-													currentCourse, content);
-								}
-							}
+//							chapters = SyllabusDao
+//									.loadAllChapters(currentCourse
+//											.getSubjectId());
+//							if (chapters == null || chapters.isEmpty()) {
+//								String content = ApiClient.loadSyllabusContent(
+//										(AppContext) getApplication(),
+//										currentCourse.getSubjectId());
+//								if (!StringUtils.isEmpty(content)) {
+//									chapters = SyllabusDao
+//											.insertSyllabusAndLoadChapters(
+//													currentCourse, content);
+//								}
+//							}
 							mHandler.sendEmptyMessage(11);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -221,16 +220,16 @@ public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 		@Override
 		public void run() {
 			try {
-				String subjectId = currentCourse.getSubjectId();
-				chapters = SyllabusDao.loadAllChapters(subjectId);
-				if (chapters == null || chapters.isEmpty()) {
-					String content = ApiClient.loadSyllabusContent(
-							(AppContext) getApplication(), subjectId);
-					if (!StringUtils.isEmpty(content)) {
-						chapters = SyllabusDao.insertSyllabusAndLoadChapters(
-								currentCourse, content);
-					}
-				}
+//				String subjectId = currentCourse.getSubjectId();
+//				chapters = SyllabusDao.loadAllChapters(subjectId);
+//				if (chapters == null || chapters.isEmpty()) {
+//					String content = ApiClient.loadSyllabusContent(
+//							(AppContext) getApplication(), subjectId);
+//					if (!StringUtils.isEmpty(content)) {
+//						chapters = SyllabusDao.insertSyllabusAndLoadChapters(
+//								currentCourse, content);
+//					}
+//				}
 				mHandler.sendEmptyMessage(11);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -317,11 +316,12 @@ public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 		@Override
 		protected ArrayList<Subject> doInBackground(String... params) {
 			try {
-				ArrayList<Subject> result = ApiClient
-						.getSubjectList((AppContext) (KnowledgeActivity.this
-								.getApplication()));
-				ProductDao.saveSubjects(result);
-				return result;
+//				ArrayList<Subject> result = ApiClient
+//						.getSubjectList((AppContext) (KnowledgeActivity.this
+//								.getApplication()));
+//				ProductDao.saveSubjects(result);
+//				return result;
+				return null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;

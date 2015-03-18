@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -47,9 +46,9 @@ import com.examw.test.adapter.QuestionAdapter.ContentViewHolder;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.FavoriteDao;
-import com.examw.test.dao.PaperDao;
-import com.examw.test.dao.PaperRecordDao;
+import com.examw.test.daonew.FavoriteDao;
+import com.examw.test.daonew.PaperDao;
+import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.domain.ItemRecord;
 import com.examw.test.domain.PaperRecord;
@@ -267,7 +266,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		new Thread() {
 			public void run() {
 				try {
-					String content = PaperDao.findPaperContent(paperId);
+					String content = PaperDao.findPaperContent(paperId,username);
 					if(!StringUtils.isEmpty(recordId))
 					{
 						record = PaperRecordDao.findById(username,recordId,true);
@@ -1085,6 +1084,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			public void onClick(DialogInterface dialog, int which) {
 				clearUserAnswer();
 				questionCursor = 0;
+				action = AppConstant.ACTION_DO_EXAM;
+				answerBtn.setImageResource(R.drawable.exam_submit_img);
 				// questionAdapter.notifyDataSetChanged();
 				viewFlow.setSelection(questionCursor);
 			}

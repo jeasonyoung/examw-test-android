@@ -27,7 +27,7 @@ import com.examw.test.R;
 import com.examw.test.adapter.DailyDateAdapter;
 import com.examw.test.adapter.PaperListAdapter;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.PaperDao;
+import com.examw.test.daonew.PaperDao;
 import com.examw.test.domain.Paper;
 import com.examw.test.model.DateInfo;
 import com.examw.test.model.FrontPaperInfo;
@@ -48,6 +48,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 	private Handler handler;
 	private long today;
 	private int currentDayOrder;
+	private String username;
 	
 	private DateHorizontalScrollView mHorizontalScrollView;
 	private ArrayList<DateInfo> weekdays;
@@ -57,6 +58,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui_daily);
+		username =  ((AppContext) this.getApplication()).getUsername();
 		initViews();
 		//
 		mGestureDetector = new GestureDetector(this,this); 
@@ -77,7 +79,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 					long arg3) {
 				Intent intent = new Intent(DailyActivity.this,
 						PaperInfoActivity.class);
-				intent.putExtra("paperId", paperList.get(arg2).getPaperId());
+				intent.putExtra("paperId", paperList.get(arg2).getId());
 				DailyActivity.this.startActivity(intent);
 			}
 		});
@@ -114,7 +116,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 				today = ApiClient.getStandardTime();
 				handler.sendEmptyMessage(2);
 			}
-			paperList = PaperDao.findDailyPapers(today, currentDayOrder);
+			paperList = com.examw.test.daonew.PaperDao.findDailyPapers(today, currentDayOrder,username);
 			if (paperList != null && paperList.size() > 0) {
 				// 本地数据库中有试卷
 				handler.sendEmptyMessage(1);
@@ -123,12 +125,12 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 				try {
 					ArrayList<FrontPaperInfo> list = ApiClient
 							.getDailyPaperList((AppContext) getApplication());
-					PaperDao.insertPaperList(list);
+//					PaperDao.insertPaperList(list);
 					if (list == null || list.size() == 0)
 						handler.sendEmptyMessage(-3);
 					else {
 						paperList = PaperDao.findDailyPapers(today,
-								currentDayOrder);
+								currentDayOrder,username);
 						handler.sendEmptyMessage(1);
 					}
 				} catch (Exception e) {
@@ -227,7 +229,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 				{
 					Thread.sleep(1000);
 					paperList = PaperDao.findDailyPapers(today,
-							currentDayOrder);
+							currentDayOrder,username);
 					handler.sendEmptyMessage(1);
 				}catch(Exception e)
 				{
