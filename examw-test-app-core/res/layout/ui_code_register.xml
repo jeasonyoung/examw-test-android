@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <include layout="@layout/top_head" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:id="@+id/synLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="15.0dp"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/codeText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="10.0dip"
+                android:hint="@string/codelab"
+                android:imeOptions="actionGo"
+                android:padding="10.0dip"
+                android:layout_margin="10.0dip"
+                android:singleLine="true" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="20.0dp" />
+
+            <Button
+                android:id="@+id/btn_coderegister"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="30.0dp"
+                android:layout_marginRight="30.0dp"
+                android:background="@drawable/btn_blue"
+                android:gravity="center"
+                android:text="注册码激活"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_medium_size" />
+        </LinearLayout>
+
+        <include layout="@layout/loading"/>
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -184,6 +184,11 @@
             android:name="com.examw.test.ui.WebViewActivity"
             android:screenOrientation="portrait"
             ></activity>
+        <!-- 注册码激活  -->
+         <activity 
+            android:name="com.examw.test.ui.RegisterCodeActivity"
+            android:screenOrientation="portrait"
+            ></activity>
         <!-- 校验用户 -->
         <meta-data android:value="digest" android:name="username"></meta-data>
         <meta-data android:value="7F522E56248B559B2F443C8EC310F0E7" android:name="password"></meta-data>

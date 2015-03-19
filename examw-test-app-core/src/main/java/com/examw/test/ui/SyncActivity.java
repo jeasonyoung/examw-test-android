@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,11 +27,18 @@ import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.daonew.ExamDao;
+import com.examw.test.daonew.FavoriteDao;
 import com.examw.test.daonew.PaperDao;
+import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.daonew.UserDao;
 import com.examw.test.exception.AppException;
+import com.examw.test.model.Json;
+import com.examw.test.model.sync.AppClientPush;
 import com.examw.test.model.sync.AppClientSync;
 import com.examw.test.model.sync.ExamSync;
+import com.examw.test.model.sync.FavoriteSync;
+import com.examw.test.model.sync.PaperItemRecordSync;
+import com.examw.test.model.sync.PaperRecordSync;
 import com.examw.test.model.sync.PaperSync;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.URLs;
@@ -42,15 +48,15 @@ import com.examw.test.util.ToastUtils;
 
 public class SyncActivity extends BaseActivity implements OnClickListener,
 		OnCheckedChangeListener {
-	private static final String TAG = "SyncActivity";
 	private CheckBox favorCB, paperCB;
 	private Button sysncBtn,updateBtn;
 	private AppContext appContext;
+	private AppConfig appConfig;
 	private LinearLayout loadingLayout;
 	private MyHandler mHandler;
 	private int favorFlag, paperFlag;
-	private ProgressDialog proDialog;
 	private TextView syncText;
+	private String code;
 	private static final String dataDir = Environment
 			.getExternalStorageDirectory().getPath()
 			+ File.separator
@@ -63,6 +69,7 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 		this.setContentView(R.layout.ui_sysnc);
 		mHandler = new MyHandler(this);
 		appContext = (AppContext) this.getApplication();
+		appConfig = AppConfig.getAppConfig(this);
 		initViews();
 
 	}
@@ -127,11 +134,8 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 	}
 
 	private void sync() {
-		if (appContext.getLoginState() != AppContext.LOGINED) {
-			//当前不是在线登陆状态
-			ToastUtils.show(this, "当前不是在线登录状态,请先在线登录");
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivity(intent);
+		if(!check())
+		{
 			return;
 		}
 		if (!(favorCB.isChecked()|| paperCB.isChecked())) {
@@ -144,8 +148,34 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 		syncTruely();
 	}
 	
+	private boolean check()
+	{
+		if (appContext.getLoginState() != AppContext.LOGINED) {
+			//当前不是在线登陆状态
+			ToastUtils.show(this, "当前不是在线登录状态,请先在线登录");
+			Intent intent = new Intent(this, LoginActivity.class);
+			startActivity(intent);
+			return false;
+		}
+		if(appConfig.get(appContext.getUsername() + "_code") == null)
+		{
+			ToastUtils.show(this, "请先激活注册码!");
+			this.startActivity(new Intent(this,RegisterCodeActivity.class));
+			return false;
+		}
+		code = appConfig.get(appContext.getUsername() + "_code");
+		return true;
+	}
+	
 	private void update()
 	{
+		if(!check())
+		{
+			return;
+		}
+		if (loadingLayout.getVisibility() == View.VISIBLE) {
+			return;
+		}
 		syncText.setText("数据更新中...");
 		final String username = appContext.getUsername();
 		loadingLayout.setVisibility(View.VISIBLE);
@@ -157,7 +187,7 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					String lastTime = UserDao.getLastTime(username, "lastUpdateTime");
 					//获取最新的试卷信息
 					AppClientSync req = new AppClientSync();
-					req.setCode(AppConfig.CODE);
+					req.setCode(code);
 					req.setProductId(AppConfig.PRODUCTID);
 					req.setStartTime(lastTime);
 					ExamSync result = ApiClient.getExams(appContext, req);
@@ -183,8 +213,8 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 						}
 						mHandler.sendEmptyMessage(10);
 					}
-//					//更新大纲以及大纲下面的试题
-//					//查询科目
+					//更新大纲以及大纲下面的试题
+					//查询科目
 //					ArrayList<Subject> subjects = ProductDao.findSubjects();
 //					if(subjects!=null && subjects.size()>0)
 //					{
@@ -247,24 +277,39 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 							if(paperFlag!=0) return;
 							LogUtil.d("开始同步考试记录");
 							//查询用户的考试记录并且转换为上传数据对象
-//							String lastTime = UserDao.getLastTime(username, "lastSyncPaperTime");
-//							ArrayList<PaperRecord> list = PaperRecordDao.findAll(username,userId,lastTime);
-//							LogUtil.d("需要同步的考试记录个数:"+list.size());
-//							ArrayList<UserPaperRecordInfo> records = DataConverter.convertPaperRecords(list);
-//							if(records == null || records.size() == 0)
-//							{
-//								mHandler.sendEmptyMessage(4);
-//								return;
-//							}
-//							Json json = ApiClient.updateRecords(appContext, records);
-//							if(json !=null && json.isSuccess())
-//							{
-//								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastSyncPaperTime");
-//								mHandler.sendEmptyMessage(4);
-//							}else
-//							{
-//								mHandler.sendEmptyMessage(-4);
-//							}
+							ArrayList<PaperRecordSync> list = PaperRecordDao.findSyncPaperRecords(username);
+							if(list == null || list.size() == 0)
+							{
+								mHandler.sendEmptyMessage(4);
+								return;
+							}
+							LogUtil.d("需要同步的考试记录个数:"+list.size());
+							AppClientPush<PaperRecordSync> syncPapers= new AppClientPush<PaperRecordSync>();
+							syncPapers.setClientTypeCode(AppConfig.TERMINALID);
+							syncPapers.setCode(code);
+							syncPapers.setProductId(AppConfig.PRODUCTID);
+							syncPapers.setUserId(userId);
+							syncPapers.setRecords(list);
+							Json json1 = ApiClient.syncRecords(appContext, URLs.PAPER_RECORD_SYNC, syncPapers);
+							
+							//试题记录
+							ArrayList<PaperItemRecordSync> itemRecords = PaperRecordDao.findSyncItemRecords(username);
+							AppClientPush<PaperItemRecordSync> syncItems= new AppClientPush<PaperItemRecordSync>();
+							syncItems.setClientTypeCode(AppConfig.TERMINALID);
+							syncItems.setCode(code);
+							syncItems.setProductId(AppConfig.PRODUCTID);
+							syncItems.setUserId(userId);
+							syncItems.setRecords(itemRecords);
+							Json json2 = ApiClient.syncRecords(appContext, URLs.ITEM_RECORD_SYNC, syncItems);
+							if((json1 !=null && json1.isSuccess())&&(json2 !=null && json2.isSuccess()))
+							{
+								//更新表
+								PaperRecordDao.updateRecords(username);
+								mHandler.sendEmptyMessage(4);
+							}else
+							{
+								mHandler.sendEmptyMessage(-4);
+							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -281,35 +326,38 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 							if(favorFlag!=0) return;
 							LogUtil.d("开始收藏记录上传");
 							//查询需要上传的收藏记录
-//							ArrayList<FavoriteItem> list = FavoriteDao.findAll(username,userId);
-//							ArrayList<UserItemFavoriteInfo> records = DataConverter.convertFavors(list);
-//							if(records == null || records.size() == 0)
-//							{
-//								mHandler.sendEmptyMessage(2);
-//								return;
-//							}
-//							Json json = ApiClient.updateFavors(appContext, records);
-//							if(json !=null && json.isSuccess())
-//							{
-//								UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastSyncFavorTime");
-//								mHandler.sendEmptyMessage(2);
-//							}else
-//							{
-//								mHandler.sendEmptyMessage(-2);
-//							}
+							ArrayList<FavoriteSync> list = FavoriteDao.findFavorites(username);
+							if(list == null || list.size() == 0)
+							{
+								mHandler.sendEmptyMessage(2);
+								return;
+							}
+							AppClientPush<FavoriteSync> syncPapers= new AppClientPush<FavoriteSync>();
+							syncPapers.setClientTypeCode(AppConfig.TERMINALID);
+							syncPapers.setCode(code);
+							syncPapers.setProductId(AppConfig.PRODUCTID);
+							syncPapers.setUserId(userId);
+							syncPapers.setRecords(list);
+							Json json = ApiClient.syncRecords(appContext, URLs.PAPER_RECORD_SYNC, syncPapers);
+							if(json !=null && json.isSuccess())
+							{
+								FavoriteDao.deleteTruely(username);
+								mHandler.sendEmptyMessage(2);
+							}else
+							{
+								mHandler.sendEmptyMessage(-2);
+							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						mHandler.sendEmptyMessage(-2);
 					}
-
 				};
 			}.start();
 		}
 		final Handler handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub
 				loadingLayout.setVisibility(View.GONE);
 				switch (msg.what) {
 				case 1:
@@ -379,6 +427,7 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 				sync.startActivity(intent);
 				break;
 			case 10:
+				sync.loadingLayout.setVisibility(View.GONE);
 				Toast.makeText(sync, "试卷没有更新", Toast.LENGTH_SHORT).show();
 				break;
 			case 20:

@@ -71,7 +71,7 @@ public class AppContext extends Application {
 	
 	//当前正在考试的试卷
 	private PaperPreview currentPaper;
-
+	private String currentSubjectCode;
 	/**
 	 * Construct of LitePalApplication. Initialize application context.
 	 */
@@ -129,6 +129,24 @@ public class AppContext extends Application {
 	 */
 	public String getUsername() {
 		return username;
+	}
+	
+	/**
+	 * 获取 
+	 * @return currentSubjectCode
+	 * 
+	 */
+	public String getCurrentSubjectCode() {
+		return currentSubjectCode;
+	}
+
+	/**
+	 * 设置 
+	 * @param currentSubjectCode
+	 * 
+	 */
+	public void setCurrentSubjectCode(String currentSubjectCode) {
+		this.currentSubjectCode = currentSubjectCode;
 	}
 
 	/**

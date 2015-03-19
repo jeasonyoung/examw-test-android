@@ -320,20 +320,15 @@ public class PaperRecord implements Serializable{
 	public PaperRecord() {
 	}
 	
-
+	//recordId,paperId,paperName,paperType,status,score,useTime,rightNum,createTime,lastTime,torf
 	public PaperRecord(String recordId, String paperId, String paperName,Integer paperType,
-			String userId, String userName, String productId,
-			String terminalId, Integer status, Double score,
+			Integer status, Double score,
 			Integer usedTime, Integer rightNum, String createTime, String lastTime,String torf) {
 		super();
 		this.recordId = recordId;
 		this.paperId = paperId;
 		this.paperName = paperName;
 		this.paperType = paperType;
-		this.userId = userId;
-		this.userName = userName;
-		this.productId = productId;
-		this.terminalId = terminalId;
 		this.status = status;
 		this.score = score;
 		this.usedTime = usedTime;

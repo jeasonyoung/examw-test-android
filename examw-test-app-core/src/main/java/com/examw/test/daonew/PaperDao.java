@@ -16,7 +16,6 @@ import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.sync.PaperSync;
 import com.examw.test.util.CryptoUtils;
-import com.examw.test.util.CyptoUtils;
 import com.examw.test.util.GsonUtil;
 import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
@@ -61,7 +60,7 @@ public class PaperDao {
 		if (cursor.getCount() > 0) {
 			LogUtil.d( "该试卷已经加过了");
 			cursor.close();
-			LibraryDBUtil.close();
+			db.close();
 			return;
 		}
 		cursor.close();
@@ -72,7 +71,7 @@ public class PaperDao {
 				paper.getSubjectCode(),paper.getCreateTime()
 				};
 		db.execSQL(sql, params);
-		LibraryDBUtil.close();
+		db.close();
 	}
 
 	
@@ -105,7 +104,7 @@ public class PaperDao {
 				db.setTransactionSuccessful();
 			} finally {
 				db.endTransaction();
-				LibraryDBUtil.close();
+				db.close();
 			}
 		}
 		return count;
@@ -124,10 +123,13 @@ public class PaperDao {
 			db.beginTransaction();
 			try {
 				for (PaperSync paper : list) {
-					Cursor cursor = db.rawQuery(sql1,
-							new String[] { paper.getId() });
+					Cursor cursor = db.rawQuery(sql1,new String[] { paper.getId() });
 					if (cursor.getCount() > 0) {
 						cursor.close();
+						//更新
+						db.execSQL("update tbl_papers set title=?,type=?,total=?,content=?,subjectCode=?,createTime=datetime(?) where id = ?",
+								new Object[]{paper.getTitle(),paper.getType(),paper.getTotal(),paper.getContent(),paper.getSubjectCode(),paper.getCreateTime(),paper.getId()});
+						db.execSQL("update PaperRecordTab set paperName = ? where paperId = ?", new Object[]{paper.getTitle(),paper.getId()});
 						continue;
 					}
 					cursor.close();
@@ -173,7 +175,7 @@ public class PaperDao {
 		Cursor cursor = db.rawQuery(sql.toString(), params.toArray(new String[0]));
 		if (cursor.getCount() == 0) {
 			cursor.close();
-			LibraryDBUtil.close();
+			db.close();
 			return null;
 		}
 		ArrayList<Paper> list = new ArrayList<Paper>();
@@ -185,7 +187,7 @@ public class PaperDao {
 		}
 		sql = null;params.clear();params = null;
 		cursor.close();
-		LibraryDBUtil.close();
+		db.close();
 		return list;
 	}
 	/**
@@ -201,14 +203,14 @@ public class PaperDao {
 		Cursor cursor = db.rawQuery("select content from tbl_papers where id = ?", new String[]{paperId});
 		if (cursor.getCount() == 0) {
 			cursor.close();
-			LibraryDBUtil.close();
+			db.close();
 			LogUtil.d( String.format("试卷[PaperId= %s]没有内容",paperId));
 			return null;
 		}
 		cursor.moveToNext();
 		String content = cursor.getString(0);
 		cursor.close();
-		LibraryDBUtil.close();
+		db.close();
 		LogUtil.d( String.format("试卷[PaperId= %s]已有内容",paperId));
 		//解密数据的内容
 		content = CryptoUtils.decrypto(paperId, content);
@@ -272,7 +274,7 @@ public class PaperDao {
 		Cursor cursor = db.rawQuery(sql.toString(), params.toArray(new String[0]));
 		if (cursor.getCount() == 0) {
 			cursor.close();
-			LibraryDBUtil.close();
+			db.close();
 			return null;
 		}
 		ArrayList<Paper> list = new ArrayList<Paper>();
@@ -284,7 +286,7 @@ public class PaperDao {
 		}
 		sql = null;params.clear();params = null;
 		cursor.close();
-		LibraryDBUtil.close();
+		db.close();
 		return list;
 	}
 	

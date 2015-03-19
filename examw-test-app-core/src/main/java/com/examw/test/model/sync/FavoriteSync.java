@@ -13,7 +13,7 @@ public class FavoriteSync implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,subjectId,itemId,content,remarks;
 	private Integer itemType,status;
-	private Date createTime;
+	private String createTime;
 	/**
 	 * 获取收藏ID。
 	 * @return 收藏ID。
@@ -123,7 +123,7 @@ public class FavoriteSync implements Serializable {
 	 * 获取收藏时间。
 	 * @return 收藏时间。
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -131,7 +131,7 @@ public class FavoriteSync implements Serializable {
 	 * @param createTime 
 	 *	  收藏时间。
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 	@Override
@@ -144,7 +144,7 @@ public class FavoriteSync implements Serializable {
 		           .append("remarks").append(":").append(this.getRemarks()).append(",")
 		           .append("itemType").append(":").append(this.getItemType()).append(",")
 		           .append("status").append(":").append(this.getStatus()).append(",")
-				   .append("createTime").append(":").append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(this.getCreateTime()));
+				   .append("createTime").append(":").append(this.getCreateTime());
 		return builder.toString();
 	}
 }

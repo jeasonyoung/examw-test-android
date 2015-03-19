@@ -1,7 +1,9 @@
 package com.examw.test.daonew;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,7 +17,6 @@ import com.examw.test.domain.Subject;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
-import com.examw.test.model.sync.AppClientPush;
 import com.examw.test.model.sync.PaperItemRecordSync;
 import com.examw.test.model.sync.PaperRecordSync;
 import com.examw.test.util.CyptoUtils;
@@ -48,10 +49,10 @@ public class PaperRecordDao {
 		if (record.getUserName() == null)	return false;
 		SQLiteDatabase db = UserDBManager.openDatabase(record.getUserName());
 		LogUtil.d("插入考试记录");
-		String sql = "insert into PaperRecordTab(recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,torf) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "insert into PaperRecordTab(recordId,paperId,paperName,paperType,status,score,useTime,rightNum,torf,sync) values(?,?,?,?,?,?,?,?,?,0)";
 		Object[] params = new Object[] {
 			record.getRecordId(),record.getPaperId(),record.getPaperName(),record.getPaperType(),
-			record.getUserId(),record.getUserName(),AppConfig.PRODUCTID,AppConfig.TERMINALID,record.getStatus(),0,0,0,record.getTorf()
+			record.getStatus(),0,0,0,record.getTorf()
 		};
 		db.execSQL(sql, params);
 		db.close();
@@ -72,9 +73,8 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where userName = ? order by lastTime desc ";
-		String[] params = new String[] {userName};
-		Cursor cursor = db.rawQuery(sql, params);
+		String sql = "select recordId,paperId,paperName,paperType,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab order by lastTime desc ";
+		Cursor cursor = db.rawQuery(sql, new String[] {});
 		if (cursor.getCount() == 0) {
 			cursor.close();
 			db.close();
@@ -82,10 +82,10 @@ public class PaperRecordDao {
 		}
 		cursor.moveToNext();
 		PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
-					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
-					cursor.getString(5), cursor.getString(6),cursor.getString(7),
-					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+					cursor.getString(2), cursor.getInt(3),
+					cursor.getInt(4),cursor.getDouble(5),cursor.getInt(6),cursor.getInt(7),
+					cursor.getString(8),cursor.getString(9),cursor.getString(10));
+		record.setUserName(userName);
 		cursor.close();
 		db.close();
 		return record;
@@ -100,7 +100,7 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where userName = ? and paperType in("+types+") order by lastTime desc ";
+		String sql = "select recordId,paperId,paperName,paperType,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where paperType in("+types+") order by lastTime desc ";
 		String[] params = new String[] {};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
@@ -109,11 +109,11 @@ public class PaperRecordDao {
 			return null;
 		}
 		cursor.moveToNext();
-		PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
-					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
-					cursor.getString(5), cursor.getString(6),cursor.getString(7),
-					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+		PaperRecord record =  new PaperRecord(cursor.getString(0), cursor.getString(1),
+				cursor.getString(2), cursor.getInt(3),
+				cursor.getInt(4),cursor.getDouble(5),cursor.getInt(6),cursor.getInt(7),
+				cursor.getString(8),cursor.getString(9),cursor.getString(10));
+		record.setUserName(userName);
 		cursor.close();
 		db.close();
 		return record;
@@ -130,16 +130,16 @@ public class PaperRecordDao {
 		LogUtil.d(String.format("上次的同步时间为[%s]", lastTime));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
 		ArrayList<PaperRecord> list = new ArrayList<PaperRecord>();
-		Cursor cursor = db.rawQuery("select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where status = 1 and createTime > ? ", 
+		Cursor cursor = db.rawQuery("select recordId,paperId,paperName,paperType,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where status = 1 and createTime > ? ", 
 				new String[]{lastTime});
 		while(cursor.moveToNext())
 		{
-			PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
-					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
-					cursor.getString(5), cursor.getString(6),cursor.getString(7),
-					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+			PaperRecord record =  new PaperRecord(cursor.getString(0), cursor.getString(1),
+					cursor.getString(2), cursor.getInt(3),
+					cursor.getInt(4),cursor.getDouble(5),cursor.getInt(6),cursor.getInt(7),
+					cursor.getString(8),cursor.getString(9),cursor.getString(10));;
 			record.setUserId(userId);
+			record.setUserName(userName);
 			record.setItems(findItemRecords(db,record.getRecordId()));
 			list.add(record);
 		}
@@ -162,7 +162,7 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where recordId = ? ";
+		String sql = "select recordId,paperId,paperName,paperType,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where recordId = ? ";
 		String[] params = new String[] {recordId};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
@@ -171,11 +171,11 @@ public class PaperRecordDao {
 			return null;
 		}
 		cursor.moveToNext();
-		PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
-					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
-					cursor.getString(5), cursor.getString(6),cursor.getString(7),
-					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+		PaperRecord record =  new PaperRecord(cursor.getString(0), cursor.getString(1),
+				cursor.getString(2), cursor.getInt(3),
+				cursor.getInt(4),cursor.getDouble(5),cursor.getInt(6),cursor.getInt(7),
+				cursor.getString(8),cursor.getString(9),cursor.getString(10));
+		record.setUserName(userName);
 		cursor.close();
 		if(withItems)
 		{
@@ -214,8 +214,8 @@ public class PaperRecordDao {
 	{
 		LogUtil.d(String.format("查询[paperId = %1$s,userName = %2$s]的最新考试记录", paperId,userName));
 		SQLiteDatabase db = UserDBManager.openDatabase(userName);
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where paperId = ? and userName = ?";
-		String[] params = new String[] {paperId,userName};
+		String sql = "select recordId,paperId,paperName,paperType,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where paperId = ?";
+		String[] params = new String[] {paperId};
 		Cursor cursor = db.rawQuery(sql, params);
 		if (cursor.getCount() == 0) {
 			cursor.close();
@@ -223,11 +223,10 @@ public class PaperRecordDao {
 			return null;
 		}
 		cursor.moveToNext();
-		PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
-					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
-					cursor.getString(5), cursor.getString(6),cursor.getString(7),
-					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+		PaperRecord record =  new PaperRecord(cursor.getString(0), cursor.getString(1),
+				cursor.getString(2), cursor.getInt(3),
+				cursor.getInt(4),cursor.getDouble(5),cursor.getInt(6),cursor.getInt(7),
+				cursor.getString(8),cursor.getString(9),cursor.getString(10));;
 		cursor.close();
 		//是否带上试题 
 		if(withItems)
@@ -245,7 +244,7 @@ public class PaperRecordDao {
 	public static void updatePaperRecord(PaperRecord record){
 		LogUtil.d("更新考试记录"); 
 		SQLiteDatabase db = UserDBManager.openDatabase(record.getUserName());
-		String sql = "update PaperRecordTab set score = ?,useTime=?,lasttime = datetime(?),status = ?,rightNum = ?,torf = ? where recordId = ? ";
+		String sql = "update PaperRecordTab set score = ?,useTime=?,lasttime = datetime(?),status = ?,rightNum = ?,torf = ?,sync = 0 where recordId = ? ";
 		Object[] params = new Object[] { record.getScore(), record.getUsedTime(),
 									record.getLastTime(),record.getStatus(),record.getRightNum(),record.getTorf(),record.getRecordId()};
 		db.execSQL(sql, params);
@@ -253,11 +252,11 @@ public class PaperRecordDao {
 		{
 			db.execSQL("delete from ItemRecordTab where recordId = ? "); //先删除原来的考试记录
 			ArrayList<ItemRecord> list = record.getItems();
-			String insertSql = "insert into ItemRecordTab(recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))";
+			String insertSql = "insert into ItemRecordTab(id,recordId,structureId,subjectId,itemId,itemContent,itemType,answer,status,score,createTime,lastTime,sync)values(?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?),0)";
 			for(ItemRecord item:list)
 			{
 				//插入试题的考试记录recordId ,structureId ,itemId ,itemContent ,answer ,termialId ,status ,score ,useTime ,createTime lastTime
-				Object[] attrs = {item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
+				Object[] attrs = {UUID.randomUUID().toString(),item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()};
 				db.execSQL(insertSql, attrs);
 			}
 		}
@@ -271,14 +270,14 @@ public class PaperRecordDao {
 		{
 			cursor.close();
 			//更新
-			db.execSQL("update ItemRecordTab set answer = ?,status = ?,score=?,lasttime = datetime(?) where itemId = ? and recordId = ?",
+			db.execSQL("update ItemRecordTab set sync = 0,answer = ?,status = ?,score=?,lasttime = datetime(?) where itemId = ? and recordId = ?",
 					new Object[]{item.getAnswer(),item.getStatus(),item.getScore().doubleValue(),item.getLastTime(),item.getItemId(),item.getRecordId()});
 			return;
 		}
 		cursor.close();
 		//插入
-		db.execSQL("insert into ItemRecordTab(recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime)values(?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?))", 
-				new Object[]{item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
+		db.execSQL("insert into ItemRecordTab(id, recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime,sync)values(?,?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?),0)", 
+				new Object[]{UUID.randomUUID().toString(),item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
 	}
 	/**
 	 * 插入或更新item
@@ -296,7 +295,7 @@ public class PaperRecordDao {
 	{
 		if(StringUtils.isEmpty(username))	return 0;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
-		Cursor cursor = db.rawQuery("select count(*) from PaperRecordTab where userName = ? ",  new String[] {username});
+		Cursor cursor = db.rawQuery("select count(*) from PaperRecordTab",  new String[] {});
 		int total = 0;
 		while(cursor.moveToNext())
 		{
@@ -318,17 +317,17 @@ public class PaperRecordDao {
 			private Integer usedTime,rightNum;
 			private Date createTime,lastTime;
 		 */
-		String sql = "select recordId,paperId,paperName,paperType,userId,userName,productId,terminalId,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab where userName = ? order by lastTime desc limit ? offset ?";
-		String[] params = new String[] {username,PAGESIZE+"",page*PAGESIZE+""};
+		String sql = "select recordId,paperId,paperName,paperType,status,score,useTime,rightNum,createTime,lastTime,torf from PaperRecordTab order by lastTime desc limit ? offset ?";
+		String[] params = new String[] {PAGESIZE+"",page*PAGESIZE+""};
 		Cursor cursor = db.rawQuery(sql, params);
 		ArrayList<PaperRecord> list = new ArrayList<PaperRecord>();
 		while(cursor.moveToNext())
 		{
-			PaperRecord record = new PaperRecord(cursor.getString(0), cursor.getString(1),
-					cursor.getString(2), cursor.getInt(3), cursor.getString(4),
-					cursor.getString(5), cursor.getString(6),cursor.getString(7),
-					cursor.getInt(8),cursor.getDouble(9),cursor.getInt(10),cursor.getInt(11),
-					cursor.getString(12),cursor.getString(13),cursor.getString(14));
+			PaperRecord record =  new PaperRecord(cursor.getString(0), cursor.getString(1),
+					cursor.getString(2), cursor.getInt(3),
+					cursor.getInt(4),cursor.getDouble(5),cursor.getInt(6),cursor.getInt(7),
+					cursor.getString(8),cursor.getString(9),cursor.getString(10));
+			record.setUserName(username);
 			LogUtil.d(record.getUsedTime()+"");
 			list.add(record);
 		}
@@ -344,19 +343,19 @@ public class PaperRecordDao {
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		for(Subject subject:subjects)
 		{
-			subject.setTotal(getCount(db,subject.getSubjectId(),username,null));
+			subject.setTotal(getCount(db,subject.getSubjectId(),null));
 		}
 		db.close();
 		return subjects;
 	}
 	
-	private static int getCount(SQLiteDatabase db,String subjectId,String username,Integer type)
+	private static int getCount(SQLiteDatabase db,String subjectId,Integer type)
 	{
 		Cursor cursor = null;
 		if(type == null)
-			cursor = db.rawQuery("select count(distinct itemId) from ItemRecordTab where subjectId = ? and username = ? and status = ?", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
+			cursor = db.rawQuery("select count(distinct itemId) from ItemRecordTab where subjectId = ? and status = ?", new String[]{subjectId,String.valueOf(AppConstant.ANSWER_WRONG)});
 		else
-			cursor = db.rawQuery("select count(distinct itemId) from ItemRecordTab where subjectId = ? and username = ? and status = ? and itemType = "+type, new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
+			cursor = db.rawQuery("select count(distinct itemId) from ItemRecordTab where subjectId = ? and status = ? and itemType = "+type, new String[]{subjectId,String.valueOf(AppConstant.ANSWER_WRONG)});
 		cursor.moveToNext();
 		int sum = cursor.getInt(0);
 		cursor.close();
@@ -373,10 +372,10 @@ public class PaperRecordDao {
 		LogUtil.d("加载错题试卷");
 		if(username == null || subjectId==null) return null;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
-		int total = getCount(db,subjectId,username,null);
+		int total = getCount(db,subjectId,null);
 		if(total == 0) return null;
 		SimplePaper paper = new SimplePaper();
-		Cursor cursor = db.rawQuery("select itemType from ItemRecordTab where subjectId = ? and username = ? and status = ? group by itemType order by itemType asc", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
+		Cursor cursor = db.rawQuery("select itemType from ItemRecordTab where subjectId = ? and status = ? group by itemType order by itemType asc", new String[]{subjectId,String.valueOf(AppConstant.ANSWER_WRONG)});
 		ArrayList<StructureInfo> structures = new ArrayList<StructureInfo>();
 		LogUtil.d("加载错题试卷的大题");
 		while(cursor.moveToNext())
@@ -385,19 +384,20 @@ public class PaperRecordDao {
 			StructureInfo info = new StructureInfo();
 			info.setType(type);
 			info.setTitle(AppConstant.getItemTypeName(type));
-			info.setTotal(getCount(db, subjectId, username, type));
+			info.setTotal(getCount(db, subjectId, type));
 			structures.add(info);
 		}
 		paper.setRuleList(structures);
 		cursor.close();
-		paper.setItems(loadErrorPaperItems(db, subjectId, username));
+		paper.setItems(loadErrorPaperItems(db, subjectId));
 		db.close();
 		return paper;
 	}
-	private static ArrayList<StructureItemInfo> loadErrorPaperItems(SQLiteDatabase db,String subjectId,String username)
+	private static ArrayList<StructureItemInfo> loadErrorPaperItems(SQLiteDatabase db,String subjectId)
 	{
 		LogUtil.d("加载错题试卷的题目的集合");
-		Cursor cursor = db.rawQuery("select itemContent from ItemRecordTab where subjectId = ? and username = ? and status = ? group by itemId order by itemType asc", new String[]{subjectId,username,String.valueOf(AppConstant.ANSWER_WRONG)});
+		Cursor cursor = db.rawQuery("select itemContent from ItemRecordTab where subjectId = ? and status = ? group by itemId order by itemType asc", 
+				new String[]{subjectId,String.valueOf(AppConstant.ANSWER_WRONG)});
 		ArrayList<StructureItemInfo> items = new ArrayList<StructureItemInfo>();
 		while(cursor.moveToNext())
 		{
@@ -406,7 +406,7 @@ public class PaperRecordDao {
 			StructureItemInfo item = GsonUtil.jsonToBean(content, StructureItemInfo.class);
 			item.setUserAnswer(null);
 			item.setAnswerStatus(null);
-			item.setIsCollected(FavoriteDao.isCollected(db, item.getId(), username));
+			item.setIsCollected(FavoriteDao.isCollected(db, item.getId()));
 			items.add(item);
 		}
 		cursor.close();
@@ -414,14 +414,82 @@ public class PaperRecordDao {
 	}
 	
 	/**
-	 * 查询需要查询的数据
+	 * 查询需要同步的数据
+	 * @throws ParseException 
 	 */
-	private static AppClientPush<PaperRecordSync> findPaperRecords(String username)
+	public static ArrayList<PaperRecordSync> findSyncPaperRecords(String username) throws ParseException
 	{
-		
+		LogUtil.d("查询需要同步的试卷数据");
+		if(username == null) return null;
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
+		ArrayList<PaperRecordSync> list = new ArrayList<PaperRecordSync>();
+		String sql = "select recordId,paperId,status,score,useTime,rightNum,createTime,lastTime from PaperRecordTab where sync = 0 order by lastTime desc ";
+		Cursor cursor = db.rawQuery(sql, new String[] {});
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			db.close();
+			return null;
+		}
+		while(cursor.moveToNext())
+		{
+			PaperRecordSync record = new PaperRecordSync();
+			record.setId(cursor.getString(0));
+			record.setPaperId(cursor.getString(1));
+			record.setStatus(cursor.getInt(2));
+			record.setScore(new BigDecimal(cursor.getDouble(3)));
+			record.setUseTimes(cursor.getInt(4));
+			record.setRights(cursor.getInt(5));
+			record.setCreateTime(cursor.getString(6));
+			record.setLastTime(cursor.getString(7));
+			list.add(record);
+		}
+		cursor.close();
+		db.close();
+		return list;
 	}
-	private static AppClientPush<PaperItemRecordSync> findPaperRecords(String username)
+	public static void updateRecords(String username)
 	{
-		
+		if(username == null) return;
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
+		db.beginTransaction();
+		db.execSQL("update PaperRecordTab set sync = 1 ");
+		db.execSQL("update ItemRecordTab set sync = 1 ");
+		db.setTransactionSuccessful();
+		db.endTransaction();
+		db.close();
+	}
+	public static ArrayList<PaperItemRecordSync> findSyncItemRecords(String username) throws ParseException
+	{
+		LogUtil.d("查询需要同步的试题数据");
+		if(username == null) return null;
+		SQLiteDatabase db = UserDBManager.openDatabase(username);
+		ArrayList<PaperItemRecordSync> list = new ArrayList<PaperItemRecordSync>();
+		String sql = "select id,recordId,structureId,itemId,itemContent,answer,status,score,useTime,createTime,lastTime from ItemRecordTab where sync = 0 order by lastTime desc ";
+		Cursor cursor = db.rawQuery(sql, new String[] {});
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			db.close();
+			return null;
+		}
+		while(cursor.moveToNext())
+		{
+			PaperItemRecordSync record = new PaperItemRecordSync();
+			record.setId(cursor.getString(0));
+			record.setPaperRecordId(cursor.getString(1));
+			record.setStructureId(cursor.getString(2));
+			record.setItemId(cursor.getString(3));
+			//解密数据
+			record.setContent(CyptoUtils.decodeContent(DIGEST_CODE, cursor.getString(4)));
+			record.setAnswer(cursor.getString(5));
+			record.setStatus(cursor.getInt(6));
+			record.setScore(new BigDecimal(cursor.getDouble(7)));
+			record.setUseTimes(cursor.getInt(8));
+			record.setCreateTime(cursor.getString(9));
+			record.setLastTime(cursor.getString(10));
+			list.add(record);
+		}
+		cursor.close();
+		db.close();
+		return list;
 	}
 }

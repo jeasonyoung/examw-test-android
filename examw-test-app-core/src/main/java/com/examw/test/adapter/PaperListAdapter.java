@@ -68,8 +68,8 @@ public class PaperListAdapter extends BaseAdapter{
 			holder.scoreTimeLayout.setVisibility(View.GONE);
 		}else
 		{
-//			holder.info.setText("考试时间: "+p.getTime()+" 分钟,"+"总分: "+p.getScore()+" 分");
-//			holder.userTotal.setText(p.getUserTotal()==null?"0":p.getUserTotal()+"");
+			holder.info.setText("总题数: "+p.getTotal());
+			holder.scoreTimeLayout.setVisibility(View.GONE);
 		}
 		holder.publishTime.setText(p.getCreateTime().substring(0, 11));
 		return convertView;

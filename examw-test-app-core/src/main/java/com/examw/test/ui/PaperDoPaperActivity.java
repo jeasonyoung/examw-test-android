@@ -98,7 +98,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	private PaperRecord record;
 	private FavoriteItem favor;
 	private ArrayList<ItemRecord> itemRecords;
-
+	private AppContext appContext;
 	// 计时器
 	private Handler timeHandler;
 	private boolean timerFlag = true;
@@ -132,6 +132,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		LogUtil.d( "考试界面启动onCreate");
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_do_real_paper);
+		appContext = (AppContext) this.getApplication();
 		preferences = this.getSharedPreferences("wdkaoshi", 0);
 		if (preferences.getInt("isFullScreen", 0) == 1) {
 			setFullScreen();
@@ -533,7 +534,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 				favor = new FavoriteItem();
 				favor.setItemId(currentQuestion.getId());
 				favor.setItemContent(GsonUtil.objectToJson(currentQuestion));
-				favor.setSubjectId(currentQuestion.getSubjectId());
+				//favor.setSubjectId(currentQuestion.getSubjectId());
+				favor.setSubjectId(appContext.getCurrentSubjectCode());
 				favor.setItemType(currentQuestion.getType());
 				favor.setUserAnswer(currentQuestion.getUserAnswer());
 				favor.setUsername(((AppContext) getApplication()).getUsername());
@@ -616,7 +618,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		if (currentRecord == null) {
 			currentRecord = new ItemRecord();
 			currentRecord.setItemId(currentQuestion.getId());
-			currentRecord.setSubjectId(currentQuestion.getSubjectId());
+			currentRecord.setSubjectId(appContext.getCurrentSubjectCode());
+//			currentRecord.setSubjectId(currentQuestion.getSubjectId());
 			currentRecord.setItemType(currentQuestion.getType());
 			currentRecord.setUserName(username);
 			currentRecord.setItemContent(GsonUtil.objectToJson(currentQuestion));

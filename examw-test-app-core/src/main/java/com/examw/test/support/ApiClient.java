@@ -35,6 +35,7 @@ import com.examw.test.model.SubjectInfo;
 import com.examw.test.model.UserItemFavoriteInfo;
 import com.examw.test.model.UserPaperRecordInfo;
 import com.examw.test.model.sync.AppClientSync;
+import com.examw.test.model.sync.AppRegister;
 import com.examw.test.model.sync.ExamSync;
 import com.examw.test.model.sync.PaperSync;
 import com.examw.test.util.GsonUtil;
@@ -493,5 +494,33 @@ public class ApiClient {
 			return GsonUtil.getGson().fromJson(result, ExamSync.class);
 		}
 		return null;
+	}
+	
+	/**
+	 * 同步本地记录 [收藏,做题记录]
+	 * @param appContext
+	 * @param req
+	 * @return
+	 * @throws AppException
+	 */
+	public static Json syncRecords(AppContext appContext,String url,Object req)throws AppException
+	{
+		String result = HttpUtils.http_post(appContext, url,req);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.getGson().fromJson(result,Json.class);
+	}
+	
+	/**
+	 * 注册码激活
+	 * @param appContext
+	 * @param req
+	 * @return
+	 * @throws AppException
+	 */
+	public static Json registerCode(AppContext appContext,AppRegister req) throws AppException
+	{
+		String result = HttpUtils.http_post(appContext, URLs.CODE_REGISTER,req);
+		if(StringUtils.isEmpty(result)) return null;
+		return GsonUtil.getGson().fromJson(result,Json.class);
 	}
 }

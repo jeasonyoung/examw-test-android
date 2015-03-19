@@ -223,7 +223,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 		case AppConstant.ACTION_SUBMIT:
 			data = new Intent();
 			data.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);  
-        	data.putExtra("cursor", 0);  
+        	data.putExtra("cursor", cursor);  
          	//设置请求代码 
         	this.setResult(20, data);
         	this.finish();

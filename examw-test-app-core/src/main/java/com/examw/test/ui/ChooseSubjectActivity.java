@@ -129,6 +129,8 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	private void itemClick(Subject subject)
 	{
 		Intent intent = null;
+		//设置当前所在的科目
+		((AppContext)this.getApplication()).setCurrentSubjectCode(subject.getSubjectId());
 		switch(action)
 		{
 		case AppConstant.ACTION_ERROR:

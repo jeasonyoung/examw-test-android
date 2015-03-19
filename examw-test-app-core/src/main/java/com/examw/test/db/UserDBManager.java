@@ -39,12 +39,11 @@ public class UserDBManager {
     		//复制数据库文件
     		String library = AppConfig.DEFAULT_DATA_PATH + AppContext.getContext().getPackageName() + File.separator +"databases" + File.separator + AppConfig.DATABASE_NAME;
     		FileUtils.copyFile(library, dbPath);
-    		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, 
-                    null); 
+    		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, null); 
     		//插表
-    		db.execSQL("CREATE TABLE PaperRecordTab(_id integer primary key autoincrement,recordId text,paperId text,paperName text,paperType integer,userId text,username text,score double,torf text,lastTime datetime default(datetime('now','localtime')),createTime datetime default(datetime('now','localtime')),useTime integer,status integer,terminalId text,productId text,rightNum integer,sync integer)");
-    		db.execSQL("CREATE TABLE ItemRecordTab(_id integer primary key autoincrement,recordId text,structureId text,subjectId text,username text,itemId text,itemType integer,itemContent text,answer text,termialId text,status integer,score double,useTime integer,createTime date default(datetime('now','localtime')),lastTime date default(datetime('now','localtime')),sync integer)");
-    		db.execSQL("CREATE TABLE FavoriteTab(_id integer primary key autoincrement,userId text,username text,userAnswer text,itemId text,itemType integer,status integer,itemContent text,subjectId text,terminalId text,remarks text,createTime date default(datetime('now','localtime')))");
+    		db.execSQL("CREATE TABLE PaperRecordTab(id integer primary key autoincrement,recordId text,paperId text,paperName text,paperType integer,score double,torf text,lastTime datetime default(datetime('now','localtime')),createTime datetime default(datetime('now','localtime')),useTime integer,status integer,rightNum integer,sync integer)");
+    		db.execSQL("CREATE TABLE ItemRecordTab(id text primary key,recordId text,structureId text,subjectId text,itemId text,itemType integer,itemContent text,answer text,status integer,score double,useTime integer,createTime date default(datetime('now','localtime')),lastTime date default(datetime('now','localtime')),sync integer)");
+    		db.execSQL("CREATE TABLE FavoriteTab(id text primary key,userAnswer text,itemId text,itemType integer,status integer,itemContent text,subjectId text,remarks text,createTime date default(datetime('now','localtime')),sync integer)");
     		db.setVersion(mNewVersion);
             return db; 
     	}
