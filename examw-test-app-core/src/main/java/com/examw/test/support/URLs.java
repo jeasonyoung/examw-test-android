@@ -13,8 +13,8 @@ public class URLs implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-//	public static final String HOST = "http://tiku.examw.com";
-	public static final String HOST = "http://192.168.1.246:8080";
+	public static final String HOST = "http://tiku.examw.com";
+//	public static final String HOST = AppContext.getMetaInfo("host");//"http://192.168.1.246:8080";
 	
 	public static final String BASE_URL = HOST + "/examw-test/api/m";
 	
