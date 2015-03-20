@@ -64,7 +64,7 @@ public class ApiClient {
 			CheckType = "Login"  登录
 			Md5Str = MD5(UserName&"#"&PassWord&"#"&ClientKey&"#"&SubSource&"#"&ClientNo)
 		 */
-		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+AppConfig.CLIENTKEY+"#Mobile#"+appContext.getDeviceId(), "", "GBK");
+		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+AppContext.getMetaInfo("clientKey")+"#Mobile#"+appContext.getDeviceId(), "", "GBK");
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("SubSource", "Mobile");
 		params.put("ClientNo", appContext.getDeviceId());
@@ -120,7 +120,7 @@ public class ApiClient {
 			ClientKey = "U8z2D0O5s7Li1Q3y4k6g"
 			Md5Str = MD5(UserName&"#"&PassWord&"#"&repsw&"#"&e_mail&"#"&ClientKey&r_name&"#"&Mobile&"#"&DoMain&"#"&SubSource&"#"&ClientNo)
 		 */
-		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+password+"#"+email+"#"+AppConfig.CLIENTKEY + "#" +name +
+		String md5Str = TaoBaoMD5.sign(username+"#"+password+"#"+password+"#"+email+"#"+AppContext.getMetaInfo("clientKey") + "#" +name +
 					"#"+phone+"#jzs1#Mobile#"+appContext.getDeviceId(), "", "GBK");
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("SubSource", "Mobile");

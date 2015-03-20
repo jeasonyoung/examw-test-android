@@ -293,7 +293,6 @@ public class PaperDoPaperActivity extends BaseActivity implements
 						record.setPaperType(paper.getType());
 						record.setCreateTime(StringUtils
 								.toStandardDateStr(new Date()));
-						record.setTerminalId(AppConfig.TERMINALID);
 						record.setLastTime(record.getCreateTime());
 						record.setItems(new ArrayList<ItemRecord>());
 						//保存考试记录
@@ -625,7 +624,6 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			currentRecord.setItemContent(GsonUtil.objectToJson(currentQuestion));
 			currentRecord.setCreateTime(StringUtils.toStandardDateStr(new Date()));
 			currentRecord.setRecordId(record.getRecordId());
-			currentRecord.setTerminalId(AppConfig.TERMINALID);
 			currentRecord.setStructureId(currentQuestion.getStructureId());
 			itemRecords.add(currentRecord);
 		}

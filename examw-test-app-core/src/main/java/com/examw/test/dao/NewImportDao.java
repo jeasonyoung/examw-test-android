@@ -44,7 +44,7 @@ public class NewImportDao {
 		SQLiteDatabase db = dbManager.openDatabase();
 		Cursor cursor = db.rawQuery(
 				"select * from ProductTab where productid = ?",
-				new String[] { AppConfig.PRODUCTID });
+				new String[] { AppContext.getMetaInfo("productId") });
 		boolean flag = cursor.getCount() > 0;
 		cursor.close();
 		db.close();

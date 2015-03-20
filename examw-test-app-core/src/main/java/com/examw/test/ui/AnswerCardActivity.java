@@ -212,6 +212,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
 			mIntent.putExtra("paperId", paperId);
 			this.startActivity(mIntent);
+			this.finish();
 		}
 	}
 	//查看题目

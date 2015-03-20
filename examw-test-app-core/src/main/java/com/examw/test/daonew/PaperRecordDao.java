@@ -276,8 +276,8 @@ public class PaperRecordDao {
 		}
 		cursor.close();
 		//插入
-		db.execSQL("insert into ItemRecordTab(id, recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,termialId,status,score,createTime,lastTime,sync)values(?,?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?),0)", 
-				new Object[]{UUID.randomUUID().toString(),item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),AppConfig.TERMINALID,item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
+		db.execSQL("insert into ItemRecordTab(id, recordId,structureId,subjectId,username,itemId,itemContent,itemType,answer,status,score,createTime,lastTime,sync)values(?,?,?,?,?,?,?,?,?,?,?,datetime(?),datetime(?),0)", 
+				new Object[]{UUID.randomUUID().toString(),item.getRecordId(),item.getStructureId(),item.getSubjectId(),item.getUserName(),item.getItemId(),CyptoUtils.encodeContent(DIGEST_CODE, item.getItemContent()),item.getItemType(),item.getAnswer(),item.getStatus(),item.getScore().doubleValue(),item.getCreateTime(),item.getLastTime()});
 	}
 	/**
 	 * 插入或更新item

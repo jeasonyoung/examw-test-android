@@ -33,6 +33,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/title_medium_size"
                 android:drawableRight="@drawable/ic_down"
+                android:layout_gravity="center_horizontal"
                 android:text="@string/knowledge_everyday" />
 
             <RelativeLayout

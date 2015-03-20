@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
+import com.examw.test.app.AppContext;
 import com.examw.test.daonew.FavoriteDao;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.domain.ItemRecord;
@@ -30,8 +32,8 @@ import com.examw.test.model.UserPaperRecordInfo;
  */
 public class DataConverter {
 	private static String userName;
-	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static final SimpleDateFormat formatter_upload = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA);
+	private static final SimpleDateFormat formatter_upload = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ",Locale.CHINA);
 	// 查询一个接一个的试题
 	public static ArrayList<StructureItemInfo> findItems(
 			List<StructureInfo> structures, ArrayList<ItemRecord> itemRecords,
@@ -218,13 +220,13 @@ public class DataConverter {
 		 * createTime,lastTime; private Set<UserItemRecordInfo> items; </set>
 		 */
 		UserPaperRecordInfo info = new UserPaperRecordInfo();
-		info.setProductId(AppConfig.PRODUCTID);
+		info.setProductId(AppContext.getMetaInfo("productId"));
 		info.setUserId(data.getUserId());
 		info.setId(data.getRecordId());
 		info.setPaperType(data.getPaperType());
 		info.setPaperId(data.getPaperId()); // 试卷Id
 		info.setUsedTime(data.getUsedTime().longValue());
-		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
 		info.setStatus(data.getStatus()); // 刚加入未完成
 		info.setScore(new BigDecimal(data.getScore()));
 		info.setRightNum(data.getRightNum());
@@ -264,7 +266,7 @@ public class DataConverter {
 		info.setItemContent(data.getItemContent());
 		info.setAnswer(data.getAnswer());
 		info.setStatus(data.getStatus());
-		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
 		info.setScore(data.getScore());
 		try{
 			info.setCreateTime(formatter_upload.format(formatter.parse(data.getCreateTime())));
@@ -329,7 +331,7 @@ public class DataConverter {
 		info.setItemContent(r.getItemContent());
 		info.setItemId(r.getItemId());
 		info.setItemType(r.getItemType());
-		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
 		info.setSubjectId(r.getSubjectId());
 		return info;
 	}

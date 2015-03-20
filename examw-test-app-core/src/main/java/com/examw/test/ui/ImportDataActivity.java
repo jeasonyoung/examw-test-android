@@ -224,8 +224,9 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 			public void run() {
 				try {
 					com.examw.test.model.sync.AppClientSync req = new AppClientSync();
-					req.setCode(AppConfig.CODE);
-					req.setProductId(AppConfig.PRODUCTID);
+					//TODO 设置注册码 
+					req.setCode("150");
+					req.setProductId(AppContext.getMetaInfo("productId"));
 					req.setStartTime("1970-01-01 00:00:00");
 					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
 					dao.insertPaperList(list);
@@ -378,8 +379,9 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 				try {
 					//导入考试,导入科目
 					AppClientSync req = new AppClientSync();
-					req.setCode(AppConfig.CODE);
-					req.setProductId(AppConfig.PRODUCTID);
+					//TODO 设置注册码 
+					req.setCode("150");
+					req.setProductId(AppContext.getMetaInfo("productId"));
 					req.setStartTime("1970-01-01 00:00:00");
 					ExamSync result = ApiClient.getExams(appContext, req);
 					dao.insertExamSubjects(result);

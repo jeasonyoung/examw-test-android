@@ -18,6 +18,7 @@ import com.examw.test.exception.AppException;
 import com.examw.test.model.Json;
 import com.examw.test.model.sync.AppRegister;
 import com.examw.test.support.ApiClient;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.examw.test.util.ToastUtils;
 
@@ -80,9 +81,10 @@ public class RegisterCodeActivity extends BaseActivity implements OnClickListene
 		new Thread(){
 			public void run() {
 				AppRegister req = new AppRegister();
-				req.setProductId(AppConfig.PRODUCTID);
+				req.setProductId(AppContext.getMetaInfo("productId"));
 				req.setClientMachine(appContext.getDeviceId());
-				req.setClientTypeCode(AppConfig.TERMINALID);
+				req.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
+				req.setUserId(appContext.getProductUserId());
 				req.setCode(code);
 				try{
 					Json json = ApiClient.registerCode(appContext, req);
@@ -93,7 +95,7 @@ public class RegisterCodeActivity extends BaseActivity implements OnClickListene
 					{
 						Message msg = mHandler.obtainMessage();
 						msg.what = 0;
-						msg.obj = json.getData();
+						msg.obj = json.getMsg();
 						mHandler.sendMessage(msg);
 					}
 				}catch(AppException e)

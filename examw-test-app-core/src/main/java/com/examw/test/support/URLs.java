@@ -2,7 +2,7 @@ package com.examw.test.support;
 
 import java.io.Serializable;
 
-import com.examw.test.app.AppConfig;
+import com.examw.test.app.AppContext;
 
 /**
  * 访问数据接口地址
@@ -25,17 +25,17 @@ public class URLs implements Serializable{
 	public static final String LOGIN_PROXY = HOST + "/examw-test/api/m/user/login";
 	public static final String REGIST_PROXY = HOST + "/examw-test/api/m/user/register";
 	//产品信息 
-	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppConfig.PRODUCTID;
+	public static final String PRODUCT_INFO = BASE_URL + "/product/"+AppContext.getMetaInfo("productId");
 	//科目列表
-	public static final String SUBJECT_LIST = BASE_URL + "/products/"+AppConfig.PRODUCTID+"/subjects";
+	public static final String SUBJECT_LIST = BASE_URL + "/products/"+AppContext.getMetaInfo("productId")+"/subjects";
 	public static final String EXAM_SUBJECT_SYNC = BASE_URL + "/sync/exams";
 	//试卷列表
-	public static final String PAPER_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papers";
+	public static final String PAPER_LIST = BASE_URL + "/products/" + AppContext.getMetaInfo("productId") + "/papers";
 	public static final String PAPER_SYNC = BASE_URL + "/sync/papers";
 	//试卷的更新列表
-	public static final String PAPER_UPDATE_LIST = BASE_URL + "/products/" + AppConfig.PRODUCTID + "/papersupdate?lastTime=";
+	public static final String PAPER_UPDATE_LIST = BASE_URL + "/products/" + AppContext.getMetaInfo("productId") + "/papersupdate?lastTime=";
 	//每日一练试卷列表
-	public static final String DAILY_PAPER_LIST = BASE_URL + "/daily/papers/" + AppConfig.PRODUCTID ;
+	public static final String DAILY_PAPER_LIST = BASE_URL + "/daily/papers/" + AppContext.getMetaInfo("productId") ;
 	//单个试卷内容
 	public static final String SINGLE_PAPER = BASE_URL + "/papers/%1$s";
 	//大纲内容

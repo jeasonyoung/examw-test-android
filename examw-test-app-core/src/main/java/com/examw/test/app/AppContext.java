@@ -15,7 +15,9 @@ import java.util.UUID;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
@@ -846,28 +848,28 @@ public class AppContext extends Application {
 //		return update;
 //	}
 	
-	public FrontProductInfo getProductInfo(){
-		FrontProductInfo info = null;
-		String key = "productInfo";
-		if (!isNetworkConnected()) {
-			return null;
-		}
-		if (isReadDataCache(key)) // 可读
-		{
-			info = (FrontProductInfo) readObject(key);
-		} else {
-			try{
-				info = ApiClient.getProductInfo(this);
-				if (info != null) {
-					saveObject(info, key);
-				}
-			}catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-		return info;
-	}
+//	public FrontProductInfo getProductInfo(){
+//		FrontProductInfo info = null;
+//		String key = "productInfo";
+//		if (!isNetworkConnected()) {
+//			return null;
+//		}
+//		if (isReadDataCache(key)) // 可读
+//		{
+//			info = (FrontProductInfo) readObject(key);
+//		} else {
+//			try{
+//				info = ApiClient.getProductInfo(this);
+//				if (info != null) {
+//					saveObject(info, key);
+//				}
+//			}catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//		}
+//		return info;
+//	}
 	//初始化数据线程
 	class InitDataThread extends Thread{
 		@Override
@@ -917,5 +919,22 @@ public class AppContext extends Application {
 	 */
 	public void setCurrentPaper(PaperPreview currentPaper) {
 		this.currentPaper = currentPaper;
+	}
+	
+	/**
+	 * 获取配置文件信息
+	 */
+	public static String getMetaInfo(String infoName)
+	{
+		ApplicationInfo appInfo;
+		try {
+			appInfo = mContext.getPackageManager()
+					.getApplicationInfo(mContext.getPackageName(),
+							PackageManager.GET_META_DATA);
+			return appInfo.metaData.getString(infoName);
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

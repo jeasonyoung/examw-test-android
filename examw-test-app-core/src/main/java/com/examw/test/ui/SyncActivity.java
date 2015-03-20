@@ -188,7 +188,7 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					//获取最新的试卷信息
 					AppClientSync req = new AppClientSync();
 					req.setCode(code);
-					req.setProductId(AppConfig.PRODUCTID);
+					req.setProductId(AppContext.getMetaInfo("productId"));
 					req.setStartTime(lastTime);
 					ExamSync result = ApiClient.getExams(appContext, req);
 					ExamDao.saveSubjects(result,username);
@@ -285,9 +285,9 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 							}
 							LogUtil.d("需要同步的考试记录个数:"+list.size());
 							AppClientPush<PaperRecordSync> syncPapers= new AppClientPush<PaperRecordSync>();
-							syncPapers.setClientTypeCode(AppConfig.TERMINALID);
+							syncPapers.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
 							syncPapers.setCode(code);
-							syncPapers.setProductId(AppConfig.PRODUCTID);
+							syncPapers.setProductId(AppContext.getMetaInfo("productId"));
 							syncPapers.setUserId(userId);
 							syncPapers.setRecords(list);
 							Json json1 = ApiClient.syncRecords(appContext, URLs.PAPER_RECORD_SYNC, syncPapers);
@@ -295,9 +295,9 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 							//试题记录
 							ArrayList<PaperItemRecordSync> itemRecords = PaperRecordDao.findSyncItemRecords(username);
 							AppClientPush<PaperItemRecordSync> syncItems= new AppClientPush<PaperItemRecordSync>();
-							syncItems.setClientTypeCode(AppConfig.TERMINALID);
+							syncItems.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
 							syncItems.setCode(code);
-							syncItems.setProductId(AppConfig.PRODUCTID);
+							syncItems.setProductId(AppContext.getMetaInfo("productId"));
 							syncItems.setUserId(userId);
 							syncItems.setRecords(itemRecords);
 							Json json2 = ApiClient.syncRecords(appContext, URLs.ITEM_RECORD_SYNC, syncItems);
@@ -332,13 +332,14 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 								mHandler.sendEmptyMessage(2);
 								return;
 							}
+							LogUtil.d("需要同步的收藏个数:"+list.size());
 							AppClientPush<FavoriteSync> syncPapers= new AppClientPush<FavoriteSync>();
-							syncPapers.setClientTypeCode(AppConfig.TERMINALID);
+							syncPapers.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
 							syncPapers.setCode(code);
-							syncPapers.setProductId(AppConfig.PRODUCTID);
+							syncPapers.setProductId(AppContext.getMetaInfo("productId"));
 							syncPapers.setUserId(userId);
 							syncPapers.setRecords(list);
-							Json json = ApiClient.syncRecords(appContext, URLs.PAPER_RECORD_SYNC, syncPapers);
+							Json json = ApiClient.syncRecords(appContext, URLs.FAVORITE_SYNC, syncPapers);
 							if(json !=null && json.isSuccess())
 							{
 								FavoriteDao.deleteTruely(username);

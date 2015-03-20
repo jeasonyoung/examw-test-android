@@ -163,12 +163,12 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 		FeedBackInfo info = new FeedBackInfo();
 		StringBuffer buf = new StringBuffer();
 		buf.append("来自android客户端").append(appContext.getVersionName()).append("\n");
-		buf.append("产品ID:").append(AppConfig.PRODUCTID).append("\n");
+		buf.append("产品ID:").append(AppContext.getMetaInfo("productId")).append("\n");
 //		buf.append("名称:").append(ProductDao.findProductName()).append("\n");
 		buf.append("用户:").append(appContext.getUsername()).append("\n");
 		buf.append("content:").append(content);
 		info.setContent(buf.toString());
-		info.setTerminalCode(Integer.valueOf(AppConfig.TERMINALID));
+		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
 		info.setUsername(appContext.getUsername());
 		buf = null;
 		return info;
