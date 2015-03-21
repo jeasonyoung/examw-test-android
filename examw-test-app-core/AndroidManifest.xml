@@ -198,6 +198,6 @@
         <!-- CLIENTKEY -->
         <meta-data android:value="U8z2D0O5s7Li1Q3y4k6g" android:name="clientKey"></meta-data>
         <!-- 产品ID -->
-        <meta-data android:value="60a4eb98-8c95-42d7-9178-d053a17f9e87" android:name="productId"></meta-data>
+        <meta-data android:value="c36f8985-544b-4524-909f-fef638f710b6" android:name="productId"></meta-data>
     </application>
 </manifest>

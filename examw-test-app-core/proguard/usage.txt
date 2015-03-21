@@ -1,4 +1,5 @@
 com.examw.test.BuildConfig
+com.examw.test.Empty
 com.examw.test.R:
     10:10:public R()
 com.examw.test.adapter.ChapterChildExpendableListAdatper:
@@ -27,8 +28,6 @@ com.examw.test.adapter.QuestionAdapter$ContentViewHolder:
     android.widget.Button noteBtn
     android.view.View$OnClickListener showAnswerListener
 com.examw.test.app.AppConfig:
-    public static final java.lang.String PRODUCTID
-    public static final java.lang.String TERMINALID
     private static final java.lang.String APP_CONFIG
     public static final java.lang.String SHAREDPREFERENCES_NAME
     public static final java.lang.String CONF_REGISTRATION
@@ -49,16 +48,16 @@ com.examw.test.app.AppConfig:
     public static final java.lang.String CONF_LAST_SYNC_TIME
     public static final java.lang.String SAVE_IMAGE_PATH
     public static final java.lang.String DATABASE_NAME
-    88:88:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
-    95:95:public static boolean isLoadImage(android.content.Context)
-    99:99:public java.lang.String getCookie()
-    103:104:public void setAccessToken(java.lang.String)
-    107:107:public java.lang.String getAccessToken()
-    111:112:public void setAccessSecret(java.lang.String)
-    115:115:public java.lang.String getAccessSecret()
-    119:120:public void setExpiresIn(long)
-    123:123:public long getExpiresIn()
-    189:192:public void set(java.util.Properties)
+    89:89:public static android.content.SharedPreferences getSharedPreferences(android.content.Context)
+    96:96:public static boolean isLoadImage(android.content.Context)
+    100:100:public java.lang.String getCookie()
+    104:105:public void setAccessToken(java.lang.String)
+    108:108:public java.lang.String getAccessToken()
+    112:113:public void setAccessSecret(java.lang.String)
+    116:116:public java.lang.String getAccessSecret()
+    120:121:public void setExpiresIn(long)
+    124:124:public long getExpiresIn()
+    190:193:public void set(java.util.Properties)
 com.examw.test.app.AppConstant:
     public static final int SUCCESS
     public static final int FAILURE
@@ -89,6 +88,8 @@ com.examw.test.app.AppConstant:
     public static final int ACTION_SUBMIT
     public static final int ACTION_CHOOSE_ITEM_WITH_ANSWER
     public static final int ACTION_CHAPTER
+    public static final int SYNC_NONE
+    public static final int SYNC_DONE
     7:7:public AppConstant()
 com.examw.test.app.AppContext:
     public static final int NETTYPE_WIFI
@@ -101,71 +102,74 @@ com.examw.test.app.AppContext:
     public static final int LOGINED
     public static final int UNLOGIN
     public static final int LOCAL_LOGINED
-    120:121:public void setUsername(java.lang.String)
-    220:221:public void setHasNewData(boolean)
-    251:252:public boolean isAudioNormal()
-    260:260:public boolean isAppSound()
-    278:297:public int getNetworkType()
-    383:383:public boolean isLogin()
-    391:391:public java.lang.String getLoginUid()
-    399:404:public boolean isLoadImage()
-    413:414:public void setConfigLoadimage(boolean)
-    422:427:public boolean isVoice()
-    436:437:public void setConfigVoice(boolean)
-    459:460:public void setConfigCheckUp(boolean)
-    468:473:public boolean isScroll()
-    482:483:public void setConfigScroll(boolean)
-    491:496:public boolean isHttpsLogin()
-    505:506:public void setConfigHttpsLogin(boolean)
-    523:523:private boolean isReadDataCache(java.lang.String)
-    533:537:private boolean isExistDataCache(java.lang.String)
-    547:553:public boolean isCacheDataFailure(java.lang.String)
-    624:625:public void setMemCache(java.lang.String,java.lang.Object)
-    633:633:public java.lang.Object getMemCache(java.lang.String)
-    643:653:public void setDiskCache(java.lang.String,java.lang.String)
-    662:672:public java.lang.String getDiskCache(java.lang.String)
-    710:734:public java.io.Serializable readObject(java.lang.String)
-    738:739:public boolean containsProperty(java.lang.String)
-    743:744:public void setProperties(java.util.Properties)
-    774:774:public java.lang.String getSaveImagePath()
-    781:782:public void setSaveImagePath(java.lang.String)
-    829:848:public com.examw.test.model.FrontProductInfo getProductInfo()
+    private com.examw.test.model.PaperPreview currentPaper
+    125:126:public void setUsername(java.lang.String)
+    243:244:public void setHasNewData(boolean)
+    274:275:public boolean isAudioNormal()
+    283:283:public boolean isAppSound()
+    301:320:public int getNetworkType()
+    406:406:public boolean isLogin()
+    414:414:public java.lang.String getLoginUid()
+    422:427:public boolean isLoadImage()
+    436:437:public void setConfigLoadimage(boolean)
+    445:450:public boolean isVoice()
+    459:460:public void setConfigVoice(boolean)
+    482:483:public void setConfigCheckUp(boolean)
+    491:496:public boolean isScroll()
+    505:506:public void setConfigScroll(boolean)
+    514:519:public boolean isHttpsLogin()
+    528:529:public void setConfigHttpsLogin(boolean)
+    546:546:private boolean isReadDataCache(java.lang.String)
+    556:560:private boolean isExistDataCache(java.lang.String)
+    570:576:public boolean isCacheDataFailure(java.lang.String)
+    647:648:public void setMemCache(java.lang.String,java.lang.Object)
+    656:656:public java.lang.Object getMemCache(java.lang.String)
+    666:676:public void setDiskCache(java.lang.String,java.lang.String)
+    685:695:public java.lang.String getDiskCache(java.lang.String)
+    705:723:public boolean saveObject(java.io.Serializable,java.lang.String)
+    733:757:public java.io.Serializable readObject(java.lang.String)
+    761:762:public boolean containsProperty(java.lang.String)
+    766:767:public void setProperties(java.util.Properties)
+    797:797:public java.lang.String getSaveImagePath()
+    804:805:public void setSaveImagePath(java.lang.String)
+    912:912:public com.examw.test.model.PaperPreview getCurrentPaper()
+    921:922:public void setCurrentPaper(com.examw.test.model.PaperPreview)
 com.examw.test.app.AppManager:
     46:48:public void finishActivity()
     63:68:public void finishActivity(java.lang.Class)
-com.examw.test.dao.FavoriteDao:
+com.examw.test.dao.ImportDao:
+    163:167:private java.lang.String getRuleList(com.examw.test.model.PaperPreview)
+    171:179:private void clearItems(java.util.List)
+com.examw.test.dao.NewImportDao
+com.examw.test.dao.NewImportDao$1
+com.examw.test.dao.NewImportDao$2
+com.examw.test.dao.NewImportDao$3
+com.examw.test.daonew.ExamDao:
+    22:22:public ExamDao()
+com.examw.test.daonew.FavoriteDao:
     private static final java.lang.String DIGEST_CODE
-    25:25:public FavoriteDao()
-com.examw.test.dao.PaperDao:
-    27:27:public PaperDao()
-    55:77:public static void insertPaper(com.examw.test.domain.Paper)
-    265:275:public java.lang.String findAddTime()
-    314:318:public static void updatePaperUserTotal(java.lang.String,int)
-    325:335:public static java.lang.String findLastedPaperAddTime()
-com.examw.test.dao.PaperRecordDao:
+    29:29:public FavoriteDao()
+    173:195:public static java.util.ArrayList findAll(java.lang.String,java.lang.String)
+com.examw.test.daonew.NewFavoriteDao
+com.examw.test.daonew.PaperDao:
+    28:28:public PaperDao()
+    56:75:public static void insertPaper(com.examw.test.domain.Paper,java.lang.String)
+    84:110:public static int insertPaperList(java.util.ArrayList,java.lang.String)
+    239:242:public static java.lang.String getRuleList(com.examw.test.model.PaperPreview)
+    247:256:private static void clearItems(java.util.List)
+    299:309:public static java.lang.String findLastedPaperAddTime(java.lang.String)
+com.examw.test.daonew.PaperRecordDao:
     public static final int PAGESIZE
     private static final java.lang.String DIGEST_CODE
-    28:28:public PaperRecordDao()
-    64:88:public static com.examw.test.domain.PaperRecord findLastRecord(java.lang.String)
-    266:279:private static void saveOrUpdateItem(android.database.sqlite.SQLiteDatabase,com.examw.test.domain.ItemRecord)
-    286:290:public static void saveOrUpdateItem(com.examw.test.domain.ItemRecord)
-com.examw.test.dao.ProductDao:
-    19:19:public ProductDao()
-com.examw.test.dao.SyllabusDao:
-    32:32:public SyllabusDao()
-    36:49:public static java.util.ArrayList insertSyllabus(java.util.List)
-    68:74:private static com.examw.test.domain.Syllabus convert(com.examw.test.model.SyllabusInfo)
-    83:99:public static java.util.ArrayList loadSyllabus(java.lang.String)
-    108:121:public static void updateContent(java.lang.String,java.lang.String)
-    243:255:public static java.lang.String loadContent(java.lang.String)
-    313:324:public static void insertSyllabusItems(java.lang.String,java.util.List)
-    327:345:private static void insertItem(android.database.sqlite.SQLiteDatabase,com.examw.test.model.ItemInfo,java.lang.String)
-com.examw.test.dao.SyllabusDao$1
-com.examw.test.dao.UserDao:
+    32:32:public PaperRecordDao()
+    68:91:public static com.examw.test.domain.PaperRecord findLastRecord(java.lang.String)
+    127:148:public static java.util.ArrayList findAll(java.lang.String,java.lang.String,java.lang.String)
+    268:281:private static void saveOrUpdateItem(android.database.sqlite.SQLiteDatabase,com.examw.test.domain.ItemRecord)
+    288:292:public static void saveOrUpdateItem(com.examw.test.domain.ItemRecord)
+com.examw.test.daonew.UserDao:
     17:17:public UserDao()
     27:43:public static long addUser(com.examw.test.domain.User)
-com.examw.test.db.ImportDBManager:
-    53:54:public synchronized void closeDatabase()
+com.examw.test.db.ImportDBManager
 com.examw.test.db.LibraryDBHelper:
     public static final java.lang.String DATABASENAME
     public static final int VERSION
@@ -173,13 +177,17 @@ com.examw.test.db.LibraryDBManager
 com.examw.test.db.LibraryDBUtil:
     10:10:public LibraryDBUtil()
     26:27:public static synchronized android.database.sqlite.SQLiteDatabase getReadableDatabase()
+    46:48:public static void close()
+com.examw.test.db.NewImportDBManager:
+    51:52:public synchronized void closeDatabase()
+com.examw.test.db.NewLibraryDBHelper
 com.examw.test.db.UserDBHelper:
     public static final java.lang.String DATABASENAME
     public static final int VERSION
 com.examw.test.db.UserDBManager:
     private static final int mNewVersion
-    22:27:public UserDBManager()
-    93:95:public synchronized void closeDatabase()
+    23:29:public UserDBManager()
+    95:97:public synchronized void closeDatabase()
 com.examw.test.db.UserDBUtil:
     10:10:public UserDBUtil()
     26:27:public static synchronized android.database.sqlite.SQLiteDatabase getReadableDatabase()
@@ -188,69 +196,70 @@ com.examw.test.domain.Chapter:
     49:50:public void setChapterId(java.lang.String)
     67:68:public void setPid(java.lang.String)
     85:86:public void setTitle(java.lang.String)
+    90:91:public void setLevel(int)
     105:106:public void setChildren(java.util.ArrayList)
     110:110:public com.examw.test.domain.Chapter getParent()
+    115:116:public void setParent(com.examw.test.domain.Chapter)
     191:192:public void setOrderNo(java.lang.Integer)
+    196:201:public Chapter(java.lang.String,java.lang.String,java.lang.String,java.lang.Integer)
 com.examw.test.domain.FavoriteItem:
     private static final long serialVersionUID
+    private java.lang.String userId
     private java.lang.String terminalId
+    private java.lang.String createTime
     private java.lang.Integer status
-    130:130:public java.lang.String getTerminalId()
-    139:140:public void setTerminalId(java.lang.String)
-    157:158:public void setRemarks(java.lang.String)
-    175:176:public void setCreateTime(java.lang.String)
-    202:202:public java.lang.Integer getStatus()
-    211:212:public void setStatus(java.lang.Integer)
+    private java.lang.Integer sync
+    21:21:public java.lang.Integer getSync()
+    29:30:public void setSync(java.lang.Integer)
+    86:86:public java.lang.String getUserId()
+    94:95:public void setUserId(java.lang.String)
+    134:134:public java.lang.String getTerminalId()
+    142:143:public void setTerminalId(java.lang.String)
+    158:159:public void setRemarks(java.lang.String)
+    166:166:public java.lang.String getCreateTime()
+    174:175:public void setCreateTime(java.lang.String)
+    198:198:public java.lang.Integer getStatus()
+    206:207:public void setStatus(java.lang.Integer)
+    226:237:public FavoriteItem(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Integer)
 com.examw.test.domain.ItemRecord:
     private static final long serialVersionUID
     private java.lang.String userId
+    private java.lang.String terminalId
+    private java.lang.Integer sync
     59:59:public java.lang.String getUserId()
     67:68:public void setUserId(java.lang.String)
+    75:75:public java.lang.String getUserName()
     123:123:public java.lang.String getTerminalId()
+    131:132:public void setTerminalId(java.lang.String)
     264:265:public java.lang.String getItemTypeName()
+    273:273:public java.lang.Integer getSync()
+    281:282:public void setSync(java.lang.Integer)
 com.examw.test.domain.Paper:
     private static final long serialVersionUID
-    private java.lang.String description
-    private java.lang.String content
-    private java.lang.String examId
-    private java.lang.String subjectId
-    private java.lang.String sourceName
-    private java.lang.String areaName
-    private java.lang.String structures
-    31:32:public void setPaperId(java.lang.String)
-    47:48:public void setName(java.lang.String)
-    55:55:public java.lang.String getContent()
-    63:64:public void setContent(java.lang.String)
-    79:80:public void setTotal(java.lang.Integer)
-    87:87:public java.lang.String getDescription()
-    95:96:public void setDescription(java.lang.String)
-    103:103:public java.lang.String getExamId()
-    111:112:public void setExamId(java.lang.String)
-    119:119:public java.lang.String getSubjectId()
-    127:128:public void setSubjectId(java.lang.String)
-    135:135:public java.lang.String getSourceName()
-    143:144:public void setSourceName(java.lang.String)
-    151:151:public java.lang.String getAreaName()
-    159:160:public void setAreaName(java.lang.String)
-    175:176:public void setType(java.lang.Integer)
-    183:183:public java.lang.Integer getPrice()
-    191:192:public void setPrice(java.lang.Integer)
-    207:208:public void setTime(java.lang.Integer)
-    215:215:public java.lang.Integer getYear()
-    223:224:public void setYear(java.lang.Integer)
-    239:240:public void setScore(java.lang.Double)
-    255:256:public void setPublishTime(java.lang.String)
-    272:272:public java.lang.String getStructures()
-    280:281:public void setStructures(java.lang.String)
-    288:289:public void setUserTotal(java.lang.Integer)
 com.examw.test.domain.PaperRecord:
     private static final long serialVersionUID
-    117:117:public java.lang.String getProductId()
-    126:127:public void setProductId(java.lang.String)
-    135:135:public java.lang.String getTerminalId()
+    private java.lang.String userId
+    private java.lang.String productId
+    private java.lang.String terminalId
+    private java.lang.Integer sync
+    110:110:public java.lang.String getUserId()
+    119:120:public void setUserId(java.lang.String)
+    128:128:public java.lang.String getProductId()
+    137:138:public void setProductId(java.lang.String)
+    146:146:public java.lang.String getTerminalId()
+    155:156:public void setTerminalId(java.lang.String)
+    353:353:public java.lang.Integer getSync()
+    362:363:public void setSync(java.lang.Integer)
 com.examw.test.domain.Subject:
     private static final long serialVersionUID
-    63:63:public java.lang.Integer getOrderNo()
+    private java.lang.String abbr
+    private java.lang.Integer status
+    64:64:public java.lang.Integer getOrderNo()
+    100:104:public Subject(java.lang.String,java.lang.String,java.lang.Integer)
+    122:122:public java.lang.String getAbbr()
+    131:132:public void setAbbr(java.lang.String)
+    140:140:public java.lang.Integer getStatus()
+    149:150:public void setStatus(java.lang.Integer)
 com.examw.test.domain.Syllabus
 com.examw.test.domain.User:
     private static final long serialVersionUID
@@ -259,6 +268,7 @@ com.examw.test.domain.User:
     private java.lang.String token
     24:24:public java.lang.Integer getId()
     32:33:public void setId(java.lang.Integer)
+    96:97:public void setInfo(java.lang.String)
     104:104:public java.lang.String getRegisterCode()
     112:113:public void setRegisterCode(java.lang.String)
     120:120:public java.lang.String getToken()
@@ -285,8 +295,14 @@ com.examw.test.service.DownloadService$1
 com.examw.test.service.DownloadService$DownloadBinder
 com.examw.test.service.DownloadService$DownloadBinder$1
 com.examw.test.support.ApiClient:
-    49:49:public ApiClient()
-    119:162:public static com.examw.test.model.Json register(com.examw.test.app.AppContext,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+    53:53:public ApiClient()
+    67:102:public static com.examw.test.model.Json login(com.examw.test.app.AppContext,java.lang.String,java.lang.String)
+    123:166:public static com.examw.test.model.Json register(com.examw.test.app.AppContext,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+    222:224:public static com.examw.test.model.Json updateRecords(com.examw.test.app.AppContext,java.util.ArrayList)
+    229:231:public static com.examw.test.model.Json updateFavors(com.examw.test.app.AppContext,java.util.ArrayList)
+    235:239:public static com.examw.test.model.FrontProductInfo getProductInfo(com.examw.test.app.AppContext)
+    277:280:public static java.util.ArrayList getUpdatePaperInfo(com.examw.test.app.AppContext,java.lang.String)
+com.examw.test.support.ApiClient$3
 com.examw.test.support.AppUpdateManager:
     private static final int DOWN_NOSDCARD
     private static final int DOWN_UPDATE
@@ -295,12 +311,17 @@ com.examw.test.support.AppUpdateManager:
     private static final int DIALOG_TYPE_LATEST
     private static final int DIALOG_TYPE_FAIL
 com.examw.test.support.AssetFileManager:
-    23:23:public AssetFileManager()
-    30:66:public static void Unzip(java.io.InputStream,java.lang.String)
-    73:82:public static void copyDataBase(android.content.Context,java.lang.String,java.lang.String)
-    88:105:public static void copyImages(android.content.Context,java.lang.String)
+    22:22:public AssetFileManager()
+    29:65:public static void Unzip(java.io.InputStream,java.lang.String)
+    72:81:public static void copyDataBase(android.content.Context,java.lang.String,java.lang.String)
+    87:104:public static void copyImages(android.content.Context,java.lang.String)
 com.examw.test.support.DataConverter:
-    31:31:public DataConverter()
+    33:33:public DataConverter()
+    198:208:public static java.util.ArrayList convertPaperRecords(java.util.ArrayList)
+    213:251:private static com.examw.test.model.UserPaperRecordInfo paperRecordConvert(com.examw.test.domain.PaperRecord)
+    255:278:private static com.examw.test.model.UserItemRecordInfo itemRecordConvert(com.examw.test.domain.ItemRecord)
+    306:316:public static java.util.ArrayList convertFavors(java.util.ArrayList)
+    320:336:private static com.examw.test.model.UserItemFavoriteInfo favorConvert(com.examw.test.domain.FavoriteItem)
 com.examw.test.support.LoginTips:
     8:8:public LoginTips()
     24:45:public static java.lang.String getLoginTip(int,java.lang.String)
@@ -308,10 +329,31 @@ com.examw.test.support.SyllabusHelper:
     14:14:public SyllabusHelper()
     58:69:private static void filterChildren(java.util.ArrayList,com.examw.test.domain.Chapter)
     83:108:private static java.util.ArrayList convertChapter(java.util.ArrayList)
-com.examw.test.support.TaoBaoMD5:
-    14:14:public TaoBaoMD5()
-    36:42:public static boolean verify(java.lang.String,java.lang.String,java.lang.String,java.lang.String)
-com.examw.test.support.URLs
+com.examw.test.support.TaoBaoMD5
+com.examw.test.support.URLs:
+    private static final long serialVersionUID
+    public static final java.lang.String HOST
+    public static final java.lang.String BASE_URL
+    public static final java.lang.String LOGIN
+    public static final java.lang.String REGIST
+    public static final java.lang.String LOGIN_PROXY
+    public static final java.lang.String REGIST_PROXY
+    public static final java.lang.String EXAM_SUBJECT_SYNC
+    public static final java.lang.String PAPER_SYNC
+    public static final java.lang.String SINGLE_PAPER
+    public static final java.lang.String SYLLABUS
+    public static final java.lang.String KNOWLEDGE
+    public static final java.lang.String SYLLABUS_ITEMS
+    public static final java.lang.String VERIFYUSER
+    public static final java.lang.String FEEDBACK
+    public static final java.lang.String UPLOAD_RECORDS
+    public static final java.lang.String PAPER_RECORD_SYNC
+    public static final java.lang.String ITEM_RECORD_SYNC
+    public static final java.lang.String UPLOAD_FAVORS
+    public static final java.lang.String FAVORITE_SYNC
+    public static final java.lang.String CODE_REGISTER
+    public static final java.lang.String BUY
+    12:12:public URLs()
 com.examw.test.ui.AboutusFragment
 com.examw.test.ui.AboutusFragment$SampleWebViewClient
 com.examw.test.ui.AnswerCardActivity:
@@ -323,10 +365,6 @@ com.examw.test.ui.BaseActivity:
     59:61:public void setAllowDestroy(boolean,android.view.View)
 com.examw.test.ui.ChapterActivity:
     private static final java.lang.String TAG
-com.examw.test.ui.ChapterActivity$1$1:
-    private static final long serialVersionUID
-com.examw.test.ui.ChapterActivity$GetSyllabusThread$1:
-    private static final long serialVersionUID
 com.examw.test.ui.ChapterDetailActivity:
     private java.lang.String chapterId
     private java.lang.String chapterPid
@@ -335,15 +373,11 @@ com.examw.test.ui.ChapterDetailActivity:
     private int errorNum
     private int questionCursor
     private com.examw.test.app.AppContext appContext
-    94:100:private void initData1()
-    103:113:private void initData2()
-    53:53:static synthetic android.widget.LinearLayout access$0(com.examw.test.ui.ChapterDetailActivity)
-    42:42:static synthetic android.widget.ListView access$2(com.examw.test.ui.ChapterDetailActivity)
-    49:49:static synthetic int access$3(com.examw.test.ui.ChapterDetailActivity)
-    40:40:static synthetic android.widget.TextView access$4(com.examw.test.ui.ChapterDetailActivity)
-    46:46:static synthetic com.examw.test.domain.Paper access$5(com.examw.test.ui.ChapterDetailActivity)
-    45:45:static synthetic java.lang.String access$6(com.examw.test.ui.ChapterDetailActivity)
-    48:48:static synthetic void access$7(com.examw.test.ui.ChapterDetailActivity,java.util.ArrayList)
+    93:99:private void initData1()
+    102:112:private void initData2()
+    52:52:static synthetic android.widget.LinearLayout access$0(com.examw.test.ui.ChapterDetailActivity)
+    41:41:static synthetic android.widget.ListView access$2(com.examw.test.ui.ChapterDetailActivity)
+    48:48:static synthetic int access$3(com.examw.test.ui.ChapterDetailActivity)
 com.examw.test.ui.ChapterDetailActivity$2
 com.examw.test.ui.ChapterDetailActivity$MyHandler
 com.examw.test.ui.ChooseSubjectActivity:
@@ -356,8 +390,8 @@ com.examw.test.ui.ImageZoomActivity$TounchListener:
     private static final int DRAG
     private static final int ZOOM
 com.examw.test.ui.ImportDataActivity:
-    308:332:private void inputObject(java.io.Serializable,java.lang.String,java.lang.String)
-    335:360:private java.lang.Object outputObject(java.lang.String)
+    314:338:private void inputObject(java.io.Serializable,java.lang.String,java.lang.String)
+    341:366:private java.lang.Object outputObject(java.lang.String)
 com.examw.test.ui.KnowledgeActivity:
     private static final java.lang.String TAG
 com.examw.test.ui.KnowledgeDetailActivity:
@@ -374,13 +408,13 @@ com.examw.test.ui.MainActivity:
     public static final int MAIN_INDEX
     public static final int MAIN_ACCOUNT
     public static final int MAIN_ABOUT
-    312:312:public com.examw.test.app.AppContext getAppContext()
-    363:364:public void showFooter(int)
+    292:292:public com.examw.test.app.AppContext getAppContext()
+    343:344:public void showFooter(int)
 com.examw.test.ui.MainFragment:
     265:277:private void showDisplayInfo()
 com.examw.test.ui.PaperDoPaperActivity:
     private android.widget.PopupWindow tipWindow
-    1103:1105:private void vibrate()
+    1105:1107:private void vibrate()
 com.examw.test.ui.PaperDoPracticeActivity:
     private static final java.lang.String TAG
 com.examw.test.ui.SimulatePaperFragment
@@ -392,9 +426,6 @@ com.examw.test.ui.SimulatePaperFragment$5
 com.examw.test.ui.SimulatePaperFragment$6
 com.examw.test.ui.SimulatePaperFragment$6$1
 com.examw.test.ui.SimulatePaperFragment$7
-com.examw.test.ui.SyncActivity:
-    private static final java.lang.String TAG
-    private android.app.ProgressDialog proDialog
 com.examw.test.ui.WebViewActivity:
     private static final java.lang.String TAG
     private static final java.lang.String content
@@ -408,6 +439,11 @@ com.examw.test.util.BitmapManager:
 com.examw.test.util.BrightnessUtil:
     public static final int MAX_BRIGHTNESS
     11:11:public BrightnessUtil()
+com.examw.test.util.CryptoUtils:
+    public static final java.lang.String ALGORITHM_AES
+    static final java.lang.String CharsetUTF8
+    private static final java.lang.String PREFIX
+    20:20:public CryptoUtils()
 com.examw.test.util.CyptoUtils:
     public static final java.lang.String ALGORITHM_DES
     19:19:public CyptoUtils()
@@ -448,7 +484,6 @@ com.examw.test.util.FileUtils:
     545:547:public static java.lang.String getExternalSDRoot()
     603:610:public static com.examw.test.util.FileUtils$PathStatus createPath(java.lang.String)
     620:622:public static java.lang.String getPathName(java.lang.String)
-    654:670:public static void copyFile(java.lang.String,java.lang.String)
     678:692:public static void copyFile(java.io.InputStream,java.lang.String)
     704:734:public static void copyFolder(java.lang.String,java.lang.String)
 com.examw.test.util.FileUtils$PathStatus
@@ -472,8 +507,10 @@ com.examw.test.util.HttpUtils:
     private static final int max_http_send_count
     48:48:public HttpUtils()
     72:73:public static void cleanCookie()
+    183:197:public static java.lang.String _MakeURL(java.lang.String,java.util.Map)
     392:459:public static java.lang.String _post(com.examw.test.app.AppContext,java.lang.String,java.util.Map,java.util.Map,com.examw.test.util.HttpUtils$DigestAuthcProvider)
     492:538:public static android.graphics.Bitmap getNetBitmap(java.lang.String)
+    704:775:public static java.lang.String login(com.examw.test.app.AppContext,java.lang.String,java.util.Map)
     780:856:public static java.lang.String register(com.examw.test.app.AppContext,java.lang.String,java.util.Map)
     859:869:public static java.lang.String toUnicodeString(java.lang.String)
 com.examw.test.util.HttpUtils$DigestAuthcProvider:
@@ -542,6 +579,7 @@ com.examw.test.util.StringUtils:
     227:229:public static int toInt(java.lang.Object)
     267:296:public static java.lang.String toConvertString(java.io.InputStream)
     323:329:public static boolean compareDate(java.lang.String)
+    352:355:public static long toDateLong(java.lang.String)
 com.examw.test.util.TimeZoneUtil
 com.examw.test.util.ToastUtils:
     11:11:public ToastUtils()

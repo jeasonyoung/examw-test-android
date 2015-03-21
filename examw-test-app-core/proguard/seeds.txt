@@ -3108,6 +3108,7 @@ com.examw.test.R$id: int btnLocalLogin
 com.examw.test.R$id: int btnLogin
 com.examw.test.R$id: int btn_big
 com.examw.test.R$id: int btn_cancel
+com.examw.test.R$id: int btn_coderegister
 com.examw.test.R$id: int btn_goback
 com.examw.test.R$id: int btn_home
 com.examw.test.R$id: int btn_left
@@ -3137,6 +3138,7 @@ com.examw.test.R$id: int choosecourse_listView
 com.examw.test.R$id: int ck_bookmark
 com.examw.test.R$id: int ck_exam
 com.examw.test.R$id: int cleanData
+com.examw.test.R$id: int codeText
 com.examw.test.R$id: int colorTipsIV
 com.examw.test.R$id: int content2
 com.examw.test.R$id: int contentLayout
@@ -3443,6 +3445,7 @@ com.examw.test.R$layout: int ui_about_app
 com.examw.test.R$layout: int ui_answer_card
 com.examw.test.R$layout: int ui_chapter_practice_info
 com.examw.test.R$layout: int ui_choose_subject
+com.examw.test.R$layout: int ui_code_register
 com.examw.test.R$layout: int ui_daily
 com.examw.test.R$layout: int ui_do_real_paper
 com.examw.test.R$layout: int ui_feedback
@@ -3488,6 +3491,7 @@ com.examw.test.R$string: int buy_url
 com.examw.test.R$string: int cancle
 com.examw.test.R$string: int chapter
 com.examw.test.R$string: int chapter_exercise
+com.examw.test.R$string: int codelab
 com.examw.test.R$string: int communication
 com.examw.test.R$string: int company_name
 com.examw.test.R$string: int connect_error
@@ -4534,6 +4538,234 @@ com.examw.test.model.UserPaperRecordInfo: java.lang.Integer getRightNum()
 com.examw.test.model.UserPaperRecordInfo: void setRightNum(java.lang.Integer)
 com.examw.test.model.UserPaperRecordInfo: java.lang.String getUserName()
 com.examw.test.model.UserPaperRecordInfo: void setUserName(java.lang.String)
+com.examw.test.model.sync.AppClient
+com.examw.test.model.sync.AppClient: long serialVersionUID
+com.examw.test.model.sync.AppClient: java.lang.String clientId
+com.examw.test.model.sync.AppClient: java.lang.String clientName
+com.examw.test.model.sync.AppClient: java.lang.String clientVersion
+com.examw.test.model.sync.AppClient: java.lang.String clientTypeCode
+com.examw.test.model.sync.AppClient: java.lang.String clientMachine
+com.examw.test.model.sync.AppClient: java.lang.String productId
+com.examw.test.model.sync.AppClient: AppClient()
+com.examw.test.model.sync.AppClient: java.lang.String getClientId()
+com.examw.test.model.sync.AppClient: void setClientId(java.lang.String)
+com.examw.test.model.sync.AppClient: java.lang.String getClientName()
+com.examw.test.model.sync.AppClient: void setClientName(java.lang.String)
+com.examw.test.model.sync.AppClient: java.lang.String getClientVersion()
+com.examw.test.model.sync.AppClient: void setClientVersion(java.lang.String)
+com.examw.test.model.sync.AppClient: java.lang.String getClientTypeCode()
+com.examw.test.model.sync.AppClient: void setClientTypeCode(java.lang.String)
+com.examw.test.model.sync.AppClient: java.lang.String getClientMachine()
+com.examw.test.model.sync.AppClient: void setClientMachine(java.lang.String)
+com.examw.test.model.sync.AppClient: java.lang.String getProductId()
+com.examw.test.model.sync.AppClient: void setProductId(java.lang.String)
+com.examw.test.model.sync.AppClient: java.lang.String toString()
+com.examw.test.model.sync.AppClientPush
+com.examw.test.model.sync.AppClientPush: long serialVersionUID
+com.examw.test.model.sync.AppClientPush: java.lang.String code
+com.examw.test.model.sync.AppClientPush: java.lang.String userId
+com.examw.test.model.sync.AppClientPush: java.util.List records
+com.examw.test.model.sync.AppClientPush: AppClientPush()
+com.examw.test.model.sync.AppClientPush: java.lang.String getCode()
+com.examw.test.model.sync.AppClientPush: void setCode(java.lang.String)
+com.examw.test.model.sync.AppClientPush: java.lang.String getUserId()
+com.examw.test.model.sync.AppClientPush: void setUserId(java.lang.String)
+com.examw.test.model.sync.AppClientPush: java.util.List getRecords()
+com.examw.test.model.sync.AppClientPush: void setRecords(java.util.List)
+com.examw.test.model.sync.AppClientPush: com.examw.test.model.sync.AppClientSync toAppClientSync()
+com.examw.test.model.sync.AppClientPush: java.lang.String toString()
+com.examw.test.model.sync.AppClientSync
+com.examw.test.model.sync.AppClientSync: long serialVersionUID
+com.examw.test.model.sync.AppClientSync: java.lang.String code
+com.examw.test.model.sync.AppClientSync: java.lang.String startTime
+com.examw.test.model.sync.AppClientSync: AppClientSync()
+com.examw.test.model.sync.AppClientSync: AppClientSync(com.examw.test.model.sync.AppClient)
+com.examw.test.model.sync.AppClientSync: java.lang.String getCode()
+com.examw.test.model.sync.AppClientSync: void setCode(java.lang.String)
+com.examw.test.model.sync.AppClientSync: java.lang.String getStartTime()
+com.examw.test.model.sync.AppClientSync: void setStartTime(java.lang.String)
+com.examw.test.model.sync.AppRegister
+com.examw.test.model.sync.AppRegister: long serialVersionUID
+com.examw.test.model.sync.AppRegister: java.lang.String userId
+com.examw.test.model.sync.AppRegister: java.lang.String code
+com.examw.test.model.sync.AppRegister: AppRegister()
+com.examw.test.model.sync.AppRegister: java.lang.String getUserId()
+com.examw.test.model.sync.AppRegister: void setUserId(java.lang.String)
+com.examw.test.model.sync.AppRegister: java.lang.String getCode()
+com.examw.test.model.sync.AppRegister: void setCode(java.lang.String)
+com.examw.test.model.sync.AppRegister: java.lang.String toString()
+com.examw.test.model.sync.ExamSync
+com.examw.test.model.sync.ExamSync: long serialVersionUID
+com.examw.test.model.sync.ExamSync: java.lang.String code
+com.examw.test.model.sync.ExamSync: java.lang.String name
+com.examw.test.model.sync.ExamSync: java.lang.String abbr
+com.examw.test.model.sync.ExamSync: java.util.Set subjects
+com.examw.test.model.sync.ExamSync: ExamSync()
+com.examw.test.model.sync.ExamSync: java.lang.String getCode()
+com.examw.test.model.sync.ExamSync: void setCode(java.lang.String)
+com.examw.test.model.sync.ExamSync: java.lang.String getName()
+com.examw.test.model.sync.ExamSync: void setName(java.lang.String)
+com.examw.test.model.sync.ExamSync: java.lang.String getAbbr()
+com.examw.test.model.sync.ExamSync: void setAbbr(java.lang.String)
+com.examw.test.model.sync.ExamSync: java.util.Set getSubjects()
+com.examw.test.model.sync.ExamSync: void setSubjects(java.util.Set)
+com.examw.test.model.sync.FavoriteSync
+com.examw.test.model.sync.FavoriteSync: long serialVersionUID
+com.examw.test.model.sync.FavoriteSync: java.lang.String id
+com.examw.test.model.sync.FavoriteSync: java.lang.String subjectId
+com.examw.test.model.sync.FavoriteSync: java.lang.String itemId
+com.examw.test.model.sync.FavoriteSync: java.lang.String content
+com.examw.test.model.sync.FavoriteSync: java.lang.String remarks
+com.examw.test.model.sync.FavoriteSync: java.lang.Integer itemType
+com.examw.test.model.sync.FavoriteSync: java.lang.Integer status
+com.examw.test.model.sync.FavoriteSync: java.lang.String createTime
+com.examw.test.model.sync.FavoriteSync: FavoriteSync()
+com.examw.test.model.sync.FavoriteSync: java.lang.String getId()
+com.examw.test.model.sync.FavoriteSync: void setId(java.lang.String)
+com.examw.test.model.sync.FavoriteSync: java.lang.String getSubjectId()
+com.examw.test.model.sync.FavoriteSync: void setSubjectId(java.lang.String)
+com.examw.test.model.sync.FavoriteSync: java.lang.String getItemId()
+com.examw.test.model.sync.FavoriteSync: void setItemId(java.lang.String)
+com.examw.test.model.sync.FavoriteSync: java.lang.Integer getItemType()
+com.examw.test.model.sync.FavoriteSync: void setItemType(java.lang.Integer)
+com.examw.test.model.sync.FavoriteSync: java.lang.String getContent()
+com.examw.test.model.sync.FavoriteSync: void setContent(java.lang.String)
+com.examw.test.model.sync.FavoriteSync: java.lang.String getRemarks()
+com.examw.test.model.sync.FavoriteSync: void setRemarks(java.lang.String)
+com.examw.test.model.sync.FavoriteSync: java.lang.Integer getStatus()
+com.examw.test.model.sync.FavoriteSync: void setStatus(java.lang.Integer)
+com.examw.test.model.sync.FavoriteSync: java.lang.String getCreateTime()
+com.examw.test.model.sync.FavoriteSync: void setCreateTime(java.lang.String)
+com.examw.test.model.sync.FavoriteSync: java.lang.String toString()
+com.examw.test.model.sync.LoginUser
+com.examw.test.model.sync.LoginUser: long serialVersionUID
+com.examw.test.model.sync.LoginUser: java.lang.String account
+com.examw.test.model.sync.LoginUser: java.lang.String password
+com.examw.test.model.sync.LoginUser: LoginUser()
+com.examw.test.model.sync.LoginUser: java.lang.String getAccount()
+com.examw.test.model.sync.LoginUser: void setAccount(java.lang.String)
+com.examw.test.model.sync.LoginUser: java.lang.String getPassword()
+com.examw.test.model.sync.LoginUser: void setPassword(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync
+com.examw.test.model.sync.PaperItemRecordSync: long serialVersionUID
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String id
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String paperRecordId
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String structureId
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String itemId
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String content
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String answer
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.Integer status
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.Integer useTimes
+com.examw.test.model.sync.PaperItemRecordSync: java.math.BigDecimal score
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String createTime
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String lastTime
+com.examw.test.model.sync.PaperItemRecordSync: PaperItemRecordSync()
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getId()
+com.examw.test.model.sync.PaperItemRecordSync: void setId(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getPaperRecordId()
+com.examw.test.model.sync.PaperItemRecordSync: void setPaperRecordId(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getStructureId()
+com.examw.test.model.sync.PaperItemRecordSync: void setStructureId(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getItemId()
+com.examw.test.model.sync.PaperItemRecordSync: void setItemId(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getContent()
+com.examw.test.model.sync.PaperItemRecordSync: void setContent(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getAnswer()
+com.examw.test.model.sync.PaperItemRecordSync: void setAnswer(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.Integer getStatus()
+com.examw.test.model.sync.PaperItemRecordSync: void setStatus(java.lang.Integer)
+com.examw.test.model.sync.PaperItemRecordSync: java.math.BigDecimal getScore()
+com.examw.test.model.sync.PaperItemRecordSync: void setScore(java.math.BigDecimal)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.Integer getUseTimes()
+com.examw.test.model.sync.PaperItemRecordSync: void setUseTimes(java.lang.Integer)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getCreateTime()
+com.examw.test.model.sync.PaperItemRecordSync: void setCreateTime(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String getLastTime()
+com.examw.test.model.sync.PaperItemRecordSync: void setLastTime(java.lang.String)
+com.examw.test.model.sync.PaperItemRecordSync: java.lang.String toString()
+com.examw.test.model.sync.PaperRecordSync
+com.examw.test.model.sync.PaperRecordSync: long serialVersionUID
+com.examw.test.model.sync.PaperRecordSync: java.lang.String id
+com.examw.test.model.sync.PaperRecordSync: java.lang.String paperId
+com.examw.test.model.sync.PaperRecordSync: java.lang.Integer status
+com.examw.test.model.sync.PaperRecordSync: java.lang.Integer rights
+com.examw.test.model.sync.PaperRecordSync: java.lang.Integer useTimes
+com.examw.test.model.sync.PaperRecordSync: java.math.BigDecimal score
+com.examw.test.model.sync.PaperRecordSync: java.lang.String createTime
+com.examw.test.model.sync.PaperRecordSync: java.lang.String lastTime
+com.examw.test.model.sync.PaperRecordSync: PaperRecordSync()
+com.examw.test.model.sync.PaperRecordSync: java.lang.String getId()
+com.examw.test.model.sync.PaperRecordSync: void setId(java.lang.String)
+com.examw.test.model.sync.PaperRecordSync: java.lang.String getPaperId()
+com.examw.test.model.sync.PaperRecordSync: void setPaperId(java.lang.String)
+com.examw.test.model.sync.PaperRecordSync: java.lang.Integer getStatus()
+com.examw.test.model.sync.PaperRecordSync: void setStatus(java.lang.Integer)
+com.examw.test.model.sync.PaperRecordSync: java.math.BigDecimal getScore()
+com.examw.test.model.sync.PaperRecordSync: void setScore(java.math.BigDecimal)
+com.examw.test.model.sync.PaperRecordSync: java.lang.Integer getRights()
+com.examw.test.model.sync.PaperRecordSync: void setRights(java.lang.Integer)
+com.examw.test.model.sync.PaperRecordSync: java.lang.Integer getUseTimes()
+com.examw.test.model.sync.PaperRecordSync: void setUseTimes(java.lang.Integer)
+com.examw.test.model.sync.PaperRecordSync: java.lang.String getCreateTime()
+com.examw.test.model.sync.PaperRecordSync: void setCreateTime(java.lang.String)
+com.examw.test.model.sync.PaperRecordSync: java.lang.String getLastTime()
+com.examw.test.model.sync.PaperRecordSync: void setLastTime(java.lang.String)
+com.examw.test.model.sync.PaperRecordSync: java.lang.String toString()
+com.examw.test.model.sync.PaperSync
+com.examw.test.model.sync.PaperSync: long serialVersionUID
+com.examw.test.model.sync.PaperSync: java.lang.String id
+com.examw.test.model.sync.PaperSync: java.lang.String title
+com.examw.test.model.sync.PaperSync: java.lang.String content
+com.examw.test.model.sync.PaperSync: java.lang.String subjectCode
+com.examw.test.model.sync.PaperSync: java.lang.Integer type
+com.examw.test.model.sync.PaperSync: java.lang.Integer total
+com.examw.test.model.sync.PaperSync: java.lang.String createTime
+com.examw.test.model.sync.PaperSync: java.lang.String getId()
+com.examw.test.model.sync.PaperSync: void setId(java.lang.String)
+com.examw.test.model.sync.PaperSync: java.lang.String getTitle()
+com.examw.test.model.sync.PaperSync: void setTitle(java.lang.String)
+com.examw.test.model.sync.PaperSync: java.lang.Integer getType()
+com.examw.test.model.sync.PaperSync: void setType(java.lang.Integer)
+com.examw.test.model.sync.PaperSync: java.lang.String getContent()
+com.examw.test.model.sync.PaperSync: void setContent(java.lang.String)
+com.examw.test.model.sync.PaperSync: java.lang.String getSubjectCode()
+com.examw.test.model.sync.PaperSync: void setSubjectCode(java.lang.String)
+com.examw.test.model.sync.PaperSync: java.lang.String getCreateTime()
+com.examw.test.model.sync.PaperSync: void setCreateTime(java.lang.String)
+com.examw.test.model.sync.PaperSync: java.lang.Integer getTotal()
+com.examw.test.model.sync.PaperSync: void setTotal(java.lang.Integer)
+com.examw.test.model.sync.PaperSync: PaperSync()
+com.examw.test.model.sync.PaperSync: PaperSync(java.lang.String,java.lang.String,java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.String,java.lang.String)
+com.examw.test.model.sync.RegisterUser
+com.examw.test.model.sync.RegisterUser: long serialVersionUID
+com.examw.test.model.sync.RegisterUser: java.lang.String account
+com.examw.test.model.sync.RegisterUser: java.lang.String password
+com.examw.test.model.sync.RegisterUser: java.lang.String username
+com.examw.test.model.sync.RegisterUser: java.lang.String email
+com.examw.test.model.sync.RegisterUser: java.lang.String phone
+com.examw.test.model.sync.RegisterUser: java.lang.String channel
+com.examw.test.model.sync.RegisterUser: RegisterUser()
+com.examw.test.model.sync.RegisterUser: java.lang.String getAccount()
+com.examw.test.model.sync.RegisterUser: void setAccount(java.lang.String)
+com.examw.test.model.sync.RegisterUser: java.lang.String getPassword()
+com.examw.test.model.sync.RegisterUser: void setPassword(java.lang.String)
+com.examw.test.model.sync.RegisterUser: java.lang.String getUsername()
+com.examw.test.model.sync.RegisterUser: void setUsername(java.lang.String)
+com.examw.test.model.sync.RegisterUser: java.lang.String getEmail()
+com.examw.test.model.sync.RegisterUser: void setEmail(java.lang.String)
+com.examw.test.model.sync.RegisterUser: java.lang.String getPhone()
+com.examw.test.model.sync.RegisterUser: void setPhone(java.lang.String)
+com.examw.test.model.sync.RegisterUser: java.lang.String getChannel()
+com.examw.test.model.sync.RegisterUser: void setChannel(java.lang.String)
+com.examw.test.model.sync.SubjectSync
+com.examw.test.model.sync.SubjectSync: long serialVersionUID
+com.examw.test.model.sync.SubjectSync: java.lang.String code
+com.examw.test.model.sync.SubjectSync: java.lang.String name
+com.examw.test.model.sync.SubjectSync: SubjectSync()
+com.examw.test.model.sync.SubjectSync: java.lang.String getCode()
+com.examw.test.model.sync.SubjectSync: void setCode(java.lang.String)
+com.examw.test.model.sync.SubjectSync: java.lang.String getName()
+com.examw.test.model.sync.SubjectSync: void setName(java.lang.String)
 com.examw.test.ui.AboutActivity
 com.examw.test.ui.AboutActivity: AboutActivity()
 com.examw.test.ui.AboutActivity: void onClick(android.view.View)
@@ -4596,6 +4828,9 @@ com.examw.test.ui.PrivacyAgreementActivity: PrivacyAgreementActivity()
 com.examw.test.ui.RegisterActivity
 com.examw.test.ui.RegisterActivity: RegisterActivity()
 com.examw.test.ui.RegisterActivity: void onClick(android.view.View)
+com.examw.test.ui.RegisterCodeActivity
+com.examw.test.ui.RegisterCodeActivity: RegisterCodeActivity()
+com.examw.test.ui.RegisterCodeActivity: void onClick(android.view.View)
 com.examw.test.ui.SetTimeActivity
 com.examw.test.ui.SetTimeActivity: SetTimeActivity()
 com.examw.test.ui.SetTimeActivity: void onClick(android.view.View)
