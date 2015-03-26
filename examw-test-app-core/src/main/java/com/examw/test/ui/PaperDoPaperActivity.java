@@ -43,7 +43,6 @@ import com.examw.test.adapter.PopRuleListAdapter;
 import com.examw.test.adapter.QuestionAdapter;
 import com.examw.test.adapter.QuestionAdapter.AnswerViewHolder;
 import com.examw.test.adapter.QuestionAdapter.ContentViewHolder;
-import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.daonew.FavoriteDao;
@@ -295,6 +294,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 								.toStandardDateStr(new Date()));
 						record.setLastTime(record.getCreateTime());
 						record.setItems(new ArrayList<ItemRecord>());
+						record.setUserName(username);
 						//保存考试记录
 						PaperRecordDao.save(record);
 					}
@@ -717,6 +717,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		itemRecord.setAnswer(txtAnswer);
 		itemRecord.setScore(BigDecimal.ZERO);
 		itemRecord.setStatus(AppConstant.ANSWER_WRONG); // 少选
+		itemRecords.add(itemRecord);
+		tOrF[questionCursor] = AppConstant.ANSWER_LESS;
 		Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
 	}
 	private void  submitDailyPractice()
@@ -862,6 +864,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		record.setUsedTime(time == 0?paperTime:(time - paperTime));	//每日一练只记录时间
 		record.setItems(itemRecords);
 		record.setTorf(GsonUtil.objectToJson(tOrF));
+		record.setUserName(username);
 		hasRecordSaved = true;
 		//TODO 需不需要另加线程
 		PaperRecordDao.updatePaperRecord(record);
@@ -898,6 +901,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 				record.setLastTime(StringUtils.toStandardDateStr(new Date()));
 				record.setUsedTime(time == 0?paperTime:(time - paperTime));
 				record.setItems(itemRecords);
+				record.setUserName(username);
 				// 保存考试记录
 				PaperRecordDao.updatePaperRecord(record);
 				timeHandler.sendEmptyMessage(10);
@@ -1142,11 +1146,13 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			record.setItems(itemRecords);
 			record.setUsedTime(time == 0?paperTime:(time - paperTime));
 			record.setTorf(GsonUtil.objectToJson(tOrF));
+			record.setUserName(username);
 			PaperRecordDao.updatePaperRecord(record);
 			// 保存考试记录
 		}
 		//收藏试题
 		if (favor != null && favor.isNeedDelete() != null) {
+			favor.setUsername(username);
 			FavoriteDao.favorOrCancel(favor);
 			if(currentQuestion!=null) currentQuestion.setIsCollected(!favor.isNeedDelete());
 			favor = null;

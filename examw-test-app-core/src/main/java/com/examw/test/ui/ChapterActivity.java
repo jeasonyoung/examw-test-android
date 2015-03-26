@@ -40,10 +40,11 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.ui_subject_chapter);
-		
-		initViews();
-		initData();
+		setContentView(R.layout.empty);
+//		this.setContentView(R.layout.ui_subject_chapter);
+//		
+//		initViews();
+//		initData();
 	}
 	private void initViews()
 	{
@@ -134,9 +135,10 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 				}
 				break;
 			case -1:
-				((AppException)msg.obj).makeToast(k);
-				k.reloadLayout.setVisibility(View.VISIBLE);
-				k.nodataLayout.setVisibility(View.GONE);
+				//TODO 这里是加载错误 到时候再修改
+				//((AppException)msg.obj).makeToast(k);
+				k.reloadLayout.setVisibility(View.GONE);
+				k.nodataLayout.setVisibility(View.VISIBLE);
 				break;
 			}
 		}

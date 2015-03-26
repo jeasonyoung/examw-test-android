@@ -24,6 +24,7 @@ public class AboutusFragment extends Fragment{
 		webView = (WebView) v.findViewById(R.id.web_view);
 		loading = (RelativeLayout) v.findViewById(R.id.loading);
 		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setHorizontalScrollBarEnabled(false);   
 		webView.setWebViewClient(new SampleWebViewClient());
 		webView.loadUrl("file:///android_asset/other/about.html");
 		return v;

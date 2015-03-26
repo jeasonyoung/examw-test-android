@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 public class HtmlUtils {
 	//过滤P标签
 	private final static Pattern PTag = Pattern.compile("</?p[^>]*>", Pattern.CASE_INSENSITIVE);
+	//过滤BR标签
+	private final static Pattern BRTag = Pattern.compile("<br[^>]*/?>", Pattern.CASE_INSENSITIVE);
 	//过滤img标签
 	private final static Pattern ImgTag = Pattern.compile("<\\s*img\\s+([^>]*)\\s*>", Pattern.CASE_INSENSITIVE);
 	/**
@@ -23,6 +25,8 @@ public class HtmlUtils {
 		if(input == null) return null;
 		Matcher m_html = PTag.matcher(input);
 		input = m_html.replaceAll("");
+		m_html = BRTag.matcher(input);
+		input = m_html.replaceAll("\n");
 		return replaceSpecialChars(input);
 	}
 	/**

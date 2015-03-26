@@ -10,8 +10,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
@@ -22,6 +24,7 @@ import com.examw.test.app.AppConfig;
 import com.examw.test.support.URLs;
 import com.examw.test.ui.ImageZoomActivity;
 import com.examw.test.util.BitmapManager;
+import com.examw.test.util.HtmlUtils;
 import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 
@@ -66,13 +69,23 @@ public class ImageTextView extends LinearLayout {
 		if (StringUtils.isEmpty(text)) {
 			return;
 		}
+		// Text 过滤掉 P BR 标签
+		text = HtmlUtils.filterPTag(text);
 		if(!text.matches("[\\S\\s]*<img[^>]+[/?]>[\\S\\s]*")){	//不包含图片
-			TextView tv = new TextView(context, null, R.style.question_text);
-			tv.setText(text);
-			tv.setLayoutParams(lp);
-			tv.setTextColor(tv.getResources().getColor(R.color.black));
-			this.addView(tv);
-			this.textViews.add(tv);
+			if(text.contains("<table>"))
+			{
+				text.replaceAll("\n", "<br/>");
+				WebView wv = new WebView(context,null);
+				wv.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
+				this.addView(wv);
+			}else{
+				TextView tv = new TextView(context, null, R.style.question_text);
+				tv.setText(text);
+				tv.setLayoutParams(lp);
+				tv.setTextColor(tv.getResources().getColor(R.color.black));
+				this.addView(tv);
+				this.textViews.add(tv);
+			}
 		} else {
 			Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
 			Matcher m = ps.matcher(text);

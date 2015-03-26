@@ -111,7 +111,9 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	}
 	private void initViews()
 	{
-		String title = action == AppConstant.ACTION_ERROR?"错题记录":action == AppConstant.ACTION_FAVORITE?"我的收藏":"模拟考试";
+		String title = action == AppConstant.ACTION_ERROR?"错题记录":
+				action == AppConstant.ACTION_FAVORITE?"我的收藏":
+			action == AppConstant.ACTION_CHAPTER?"章节练习":"模拟考试";
 		((TextView) this.findViewById(R.id.title)).setText(title);
 		this.courseList = (ListView) this.findViewById(R.id.course_list);
 		this.reloadLayout = (LinearLayout) this.findViewById(R.id.reload);//重载视图

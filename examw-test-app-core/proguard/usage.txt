@@ -23,7 +23,7 @@ com.examw.test.adapter.PracticeQuestionAdapter$ContentViewHolder:
 com.examw.test.adapter.PracticeQuestionAdapter$GetImageTask
 com.examw.test.adapter.QuestionAdapter:
     private static final java.lang.String TAG
-    483:487:public void setRadioEnable(android.widget.RadioGroup,boolean)
+    475:479:public void setRadioEnable(android.widget.RadioGroup,boolean)
 com.examw.test.adapter.QuestionAdapter$ContentViewHolder:
     android.widget.Button noteBtn
     android.view.View$OnClickListener showAnswerListener
@@ -187,7 +187,7 @@ com.examw.test.db.UserDBHelper:
 com.examw.test.db.UserDBManager:
     private static final int mNewVersion
     23:29:public UserDBManager()
-    95:97:public synchronized void closeDatabase()
+    99:101:public synchronized void closeDatabase()
 com.examw.test.db.UserDBUtil:
     10:10:public UserDBUtil()
     26:27:public static synchronized android.database.sqlite.SQLiteDatabase getReadableDatabase()
@@ -302,7 +302,9 @@ com.examw.test.support.ApiClient:
     229:231:public static com.examw.test.model.Json updateFavors(com.examw.test.app.AppContext,java.util.ArrayList)
     235:239:public static com.examw.test.model.FrontProductInfo getProductInfo(com.examw.test.app.AppContext)
     277:280:public static java.util.ArrayList getUpdatePaperInfo(com.examw.test.app.AppContext,java.lang.String)
+    284:286:public static java.util.ArrayList getDailyPaperList(com.examw.test.app.AppContext)
 com.examw.test.support.ApiClient$3
+com.examw.test.support.ApiClient$4
 com.examw.test.support.AppUpdateManager:
     private static final int DOWN_NOSDCARD
     private static final int DOWN_UPDATE
@@ -365,6 +367,14 @@ com.examw.test.ui.BaseActivity:
     59:61:public void setAllowDestroy(boolean,android.view.View)
 com.examw.test.ui.ChapterActivity:
     private static final java.lang.String TAG
+    private java.lang.String subjectId
+    private java.lang.String subjectName
+    51:59:private void initViews()
+    62:109:private void initData()
+    34:34:static synthetic java.lang.String access$6(com.examw.test.ui.ChapterActivity)
+com.examw.test.ui.ChapterActivity$1
+com.examw.test.ui.ChapterActivity$MyHandler:
+    114:116:public ChapterActivity$MyHandler(com.examw.test.ui.ChapterActivity)
 com.examw.test.ui.ChapterDetailActivity:
     private java.lang.String chapterId
     private java.lang.String chapterPid
@@ -394,6 +404,11 @@ com.examw.test.ui.ImportDataActivity:
     341:366:private java.lang.Object outputObject(java.lang.String)
 com.examw.test.ui.KnowledgeActivity:
     private static final java.lang.String TAG
+    65:75:private void initView()
+    78:111:private void initData()
+com.examw.test.ui.KnowledgeActivity$1
+com.examw.test.ui.KnowledgeActivity$MyHandler:
+    245:247:public KnowledgeActivity$MyHandler(com.examw.test.ui.KnowledgeActivity)
 com.examw.test.ui.KnowledgeDetailActivity:
     private static final java.lang.String TIPS
 com.examw.test.ui.LoginActivity:
@@ -414,7 +429,7 @@ com.examw.test.ui.MainFragment:
     265:277:private void showDisplayInfo()
 com.examw.test.ui.PaperDoPaperActivity:
     private android.widget.PopupWindow tipWindow
-    1105:1107:private void vibrate()
+    1109:1111:private void vibrate()
 com.examw.test.ui.PaperDoPracticeActivity:
     private static final java.lang.String TAG
 com.examw.test.ui.SimulatePaperFragment
@@ -493,7 +508,7 @@ com.examw.test.util.HexUtil:
     9:9:public HexUtil()
 com.examw.test.util.HtmlUtils:
     11:11:public HtmlUtils()
-    44:46:public static java.lang.String filterImgTag(java.lang.String)
+    48:50:public static java.lang.String filterImgTag(java.lang.String)
 com.examw.test.util.HttpUtils:
     public static final java.lang.String UTF_8
     public static final java.lang.String DESC

@@ -2837,6 +2837,7 @@ com.examw.test.R$drawable: int answer_layout_bg
 com.examw.test.R$drawable: int answer_progress_hov
 com.examw.test.R$drawable: int answer_progress_no
 com.examw.test.R$drawable: int answer_wrong_pto
+com.examw.test.R$drawable: int app_logo
 com.examw.test.R$drawable: int app_start
 com.examw.test.R$drawable: int backgroud
 com.examw.test.R$drawable: int background2
@@ -3275,6 +3276,7 @@ com.examw.test.R$id: int paperscore
 com.examw.test.R$id: int papertime
 com.examw.test.R$id: int papertitle
 com.examw.test.R$id: int parent
+com.examw.test.R$id: int pbar
 com.examw.test.R$id: int practiceListView
 com.examw.test.R$id: int previousBtn
 com.examw.test.R$id: int progress
@@ -3448,6 +3450,7 @@ com.examw.test.R$layout: int ui_choose_subject
 com.examw.test.R$layout: int ui_code_register
 com.examw.test.R$layout: int ui_daily
 com.examw.test.R$layout: int ui_do_real_paper
+com.examw.test.R$layout: int ui_exam_info
 com.examw.test.R$layout: int ui_feedback
 com.examw.test.R$layout: int ui_guide
 com.examw.test.R$layout: int ui_image_zoom

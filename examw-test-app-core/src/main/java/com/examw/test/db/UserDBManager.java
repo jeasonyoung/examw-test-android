@@ -29,6 +29,10 @@ public class UserDBManager {
     } 
   
     public synchronized static SQLiteDatabase openDatabase(String username) {
+    	if(username == null || "".equals(username) || "null".equalsIgnoreCase(username))
+    	{
+    		throw new RuntimeException("用户名为空");
+    	}
     	dbName = "examw_"+username+".db";
         database = mOpenDatabase(dirPath+dbName); 
         return database;

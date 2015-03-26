@@ -35,7 +35,7 @@
     <application
         android:name=".app.AppContext"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/app_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <!-- 启动入口 -->
@@ -173,7 +173,7 @@
         <!-- 图片缩放界面 -->
         <activity 
             android:name=".ui.ImageZoomActivity"
-            android:theme="@style/DialogTheme"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             ></activity>
         <activity 
@@ -199,5 +199,9 @@
         <meta-data android:value="U8z2D0O5s7Li1Q3y4k6g" android:name="clientKey"></meta-data>
         <!-- 产品ID -->
         <meta-data android:value="c36f8985-544b-4524-909f-fef638f710b6" android:name="productId"></meta-data>
+        <!-- 论坛地址  -->
+        <meta-data android:value="http://bbs.examw.com/forum-47-1.html" android:name="bbsUrl"></meta-data>
+        <!-- 报考指南地址 -->
+        <meta-data android:value="http://m.examw.com/jzs1/zhinan/" android:name="infoUrl"></meta-data>
     </application>
 </manifest>

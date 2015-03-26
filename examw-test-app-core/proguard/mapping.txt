@@ -2608,6 +2608,7 @@ com.examw.test.R$drawable -> com.examw.test.R$drawable:
     int answer_progress_hov -> answer_progress_hov
     int answer_progress_no -> answer_progress_no
     int answer_wrong_pto -> answer_wrong_pto
+    int app_logo -> app_logo
     int app_start -> app_start
     int backgroud -> backgroud
     int background2 -> background2
@@ -3046,6 +3047,7 @@ com.examw.test.R$id -> com.examw.test.R$id:
     int papertime -> papertime
     int papertitle -> papertitle
     int parent -> parent
+    int pbar -> pbar
     int practiceListView -> practiceListView
     int previousBtn -> previousBtn
     int progress -> progress
@@ -3219,6 +3221,7 @@ com.examw.test.R$layout -> com.examw.test.R$layout:
     int ui_code_register -> ui_code_register
     int ui_daily -> ui_daily
     int ui_do_real_paper -> ui_do_real_paper
+    int ui_exam_info -> ui_exam_info
     int ui_feedback -> ui_feedback
     int ui_guide -> ui_guide
     int ui_image_zoom -> ui_image_zoom
@@ -3727,8 +3730,7 @@ com.examw.test.adapter.QuestionAdapter -> com.examw.test.a.ag:
     void setClipBoard(java.lang.String) -> a
     com.examw.test.adapter.QuestionAdapter$TextViewLongClickListener access$0() -> b
     android.content.Context access$1(com.examw.test.adapter.QuestionAdapter) -> a
-    com.examw.test.adapter.QuestionAdapter$ContentViewHolder access$2(com.examw.test.adapter.QuestionAdapter) -> b
-    com.examw.test.ui.PaperDoPaperActivity access$3(com.examw.test.adapter.QuestionAdapter) -> c
+    com.examw.test.ui.PaperDoPaperActivity access$2(com.examw.test.adapter.QuestionAdapter) -> b
 com.examw.test.adapter.QuestionAdapter$1 -> com.examw.test.a.ah:
     com.examw.test.adapter.QuestionAdapter this$0 -> a
     void onClick(android.view.View) -> onClick
@@ -5199,7 +5201,6 @@ com.examw.test.support.ApiClient -> com.examw.test.g.a:
     java.util.ArrayList getSubjectList(com.examw.test.app.AppContext) -> a
     java.util.ArrayList covertSubject(java.util.ArrayList) -> a
     java.util.ArrayList getPaperList(com.examw.test.app.AppContext) -> b
-    java.util.ArrayList getDailyPaperList(com.examw.test.app.AppContext) -> c
     java.lang.String loadPaperContent(com.examw.test.app.AppContext,java.lang.String) -> a
     java.lang.String loadSyllabusContent(com.examw.test.app.AppContext,java.lang.String) -> b
     java.lang.String loadKnowledgeContent(com.examw.test.app.AppContext,java.lang.String) -> c
@@ -5214,9 +5215,8 @@ com.examw.test.support.ApiClient -> com.examw.test.g.a:
     com.examw.test.model.Json registerCode(com.examw.test.app.AppContext,com.examw.test.model.sync.AppRegister) -> a
 com.examw.test.support.ApiClient$1 -> com.examw.test.g.b:
 com.examw.test.support.ApiClient$2 -> com.examw.test.g.c:
-com.examw.test.support.ApiClient$4 -> com.examw.test.g.d:
-com.examw.test.support.ApiClient$5 -> com.examw.test.g.e:
-com.examw.test.support.AppUpdateManager -> com.examw.test.g.f:
+com.examw.test.support.ApiClient$5 -> com.examw.test.g.d:
+com.examw.test.support.AppUpdateManager -> com.examw.test.g.e:
     com.examw.test.support.AppUpdateManager updateManager -> a
     android.content.Context mContext -> b
     com.examw.test.app.AppContext appContext -> c
@@ -5279,35 +5279,35 @@ com.examw.test.support.AppUpdateManager -> com.examw.test.g.f:
     void access$29(com.examw.test.support.AppUpdateManager) -> s
     com.examw.test.app.AppContext access$30(com.examw.test.support.AppUpdateManager) -> t
     void access$31(com.examw.test.support.AppUpdateManager,boolean) -> a
-com.examw.test.support.AppUpdateManager$1 -> com.examw.test.g.g:
+com.examw.test.support.AppUpdateManager$1 -> com.examw.test.g.f:
     com.examw.test.support.AppUpdateManager this$0 -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.support.AppUpdateManager$2 -> com.examw.test.g.h:
+com.examw.test.support.AppUpdateManager$2 -> com.examw.test.g.g:
     com.examw.test.support.AppUpdateManager this$0 -> a
     void run() -> run
-com.examw.test.support.AppUpdateManager$3 -> com.examw.test.g.i:
+com.examw.test.support.AppUpdateManager$3 -> com.examw.test.g.h:
     com.examw.test.support.AppUpdateManager this$0 -> a
     boolean val$isShowMsg -> b
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.support.AppUpdateManager$4 -> com.examw.test.g.j:
+com.examw.test.support.AppUpdateManager$4 -> com.examw.test.g.i:
     com.examw.test.support.AppUpdateManager this$0 -> a
     android.os.Handler val$handler -> b
     void run() -> run
-com.examw.test.support.AppUpdateManager$5 -> com.examw.test.g.k:
+com.examw.test.support.AppUpdateManager$5 -> com.examw.test.g.j:
     com.examw.test.support.AppUpdateManager this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.support.AppUpdateManager$6 -> com.examw.test.g.l:
+com.examw.test.support.AppUpdateManager$6 -> com.examw.test.g.k:
     com.examw.test.support.AppUpdateManager this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.support.AppUpdateManager$7 -> com.examw.test.g.m:
+com.examw.test.support.AppUpdateManager$7 -> com.examw.test.g.l:
     com.examw.test.support.AppUpdateManager this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-com.examw.test.support.AppUpdateManager$8 -> com.examw.test.g.n:
+com.examw.test.support.AppUpdateManager$8 -> com.examw.test.g.m:
     com.examw.test.support.AppUpdateManager this$0 -> a
     void onCancel(android.content.DialogInterface) -> onCancel
-com.examw.test.support.AssetFileManager -> com.examw.test.g.o:
+com.examw.test.support.AssetFileManager -> com.examw.test.g.n:
     void upZipFile(android.content.Context,java.lang.String,java.lang.String,java.lang.String,java.lang.String) -> a
-com.examw.test.support.DataConverter -> com.examw.test.g.p:
+com.examw.test.support.DataConverter -> com.examw.test.g.o:
     java.lang.String userName -> a
     java.text.SimpleDateFormat formatter -> b
     java.text.SimpleDateFormat formatter_upload -> c
@@ -5321,17 +5321,17 @@ com.examw.test.support.DataConverter -> com.examw.test.g.p:
     int getHasDone(int[]) -> a
     int getRightNum(int[]) -> b
     java.lang.String getItemMaterial(com.examw.test.model.ItemInfo) -> a
-com.examw.test.support.LoginTips -> com.examw.test.g.q:
+com.examw.test.support.LoginTips -> com.examw.test.g.p:
     java.lang.String getRegisterTip(int) -> a
-com.examw.test.support.ReturnBtnClickListener -> com.examw.test.g.r:
+com.examw.test.support.ReturnBtnClickListener -> com.examw.test.g.q:
     android.app.Activity context -> a
     void onClick(android.view.View) -> onClick
-com.examw.test.support.SyllabusHelper -> com.examw.test.g.s:
+com.examw.test.support.SyllabusHelper -> com.examw.test.g.r:
     java.util.ArrayList getSortedNodes(java.util.ArrayList,int) -> a
     java.util.ArrayList filterVisibleNode(java.util.ArrayList) -> a
     void addNode(java.util.ArrayList,com.examw.test.domain.Chapter,int,int) -> a
     void setNodeIcon(com.examw.test.domain.Chapter) -> a
-com.examw.test.support.URLs -> com.examw.test.g.t:
+com.examw.test.support.URLs -> com.examw.test.g.s:
     java.lang.String PRODUCT_INFO -> a
     java.lang.String SUBJECT_LIST -> b
     java.lang.String PAPER_LIST -> c
@@ -5388,13 +5388,9 @@ com.examw.test.ui.ChapterActivity -> com.examw.test.ui.ChapterActivity:
     android.widget.LinearLayout reloadLayout -> b
     android.widget.LinearLayout loading -> c
     android.widget.LinearLayout nodataLayout -> d
-    java.lang.String subjectId -> e
-    java.lang.String subjectName -> f
-    java.util.ArrayList chapters -> g
-    com.examw.test.ui.ChapterActivity$MyHandler mHandler -> h
+    java.util.ArrayList chapters -> e
+    com.examw.test.ui.ChapterActivity$MyHandler mHandler -> f
     void onCreate(android.os.Bundle) -> onCreate
-    void initViews() -> b
-    void initData() -> c
     void onClick(android.view.View) -> onClick
     android.widget.LinearLayout access$0(com.examw.test.ui.ChapterActivity) -> a
     android.widget.LinearLayout access$1(com.examw.test.ui.ChapterActivity) -> b
@@ -5402,14 +5398,10 @@ com.examw.test.ui.ChapterActivity -> com.examw.test.ui.ChapterActivity:
     java.util.ArrayList access$3(com.examw.test.ui.ChapterActivity) -> d
     android.widget.ExpandableListView access$4(com.examw.test.ui.ChapterActivity) -> e
     com.examw.test.ui.ChapterActivity$MyHandler access$5(com.examw.test.ui.ChapterActivity) -> f
-    java.lang.String access$6(com.examw.test.ui.ChapterActivity) -> g
-com.examw.test.ui.ChapterActivity$1 -> com.examw.test.ui.c:
+com.examw.test.ui.ChapterActivity$GetSyllabusThread -> com.examw.test.ui.c:
     com.examw.test.ui.ChapterActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ChapterActivity$GetSyllabusThread -> com.examw.test.ui.d:
-    com.examw.test.ui.ChapterActivity this$0 -> a
-    void run() -> run
-com.examw.test.ui.ChapterActivity$MyHandler -> com.examw.test.ui.e:
+com.examw.test.ui.ChapterActivity$MyHandler -> com.examw.test.ui.d:
     java.lang.ref.WeakReference weak -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.ChapterDetailActivity -> com.examw.test.ui.ChapterDetailActivity:
@@ -5436,13 +5428,13 @@ com.examw.test.ui.ChapterDetailActivity -> com.examw.test.ui.ChapterDetailActivi
     void onDestroy() -> onDestroy
     java.util.ArrayList access$1(com.examw.test.ui.ChapterDetailActivity) -> a
     android.os.Handler access$4(com.examw.test.ui.ChapterDetailActivity) -> b
-com.examw.test.ui.ChapterDetailActivity$1 -> com.examw.test.ui.f:
+com.examw.test.ui.ChapterDetailActivity$1 -> com.examw.test.ui.e:
     com.examw.test.ui.ChapterDetailActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.ChapterDetailActivity$3 -> com.examw.test.ui.g:
+com.examw.test.ui.ChapterDetailActivity$3 -> com.examw.test.ui.f:
     com.examw.test.ui.ChapterDetailActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ChapterDetailActivity$4 -> com.examw.test.ui.h:
+com.examw.test.ui.ChapterDetailActivity$4 -> com.examw.test.ui.g:
     com.examw.test.ui.ChapterDetailActivity this$0 -> a
     void run() -> run
 com.examw.test.ui.ChooseSubjectActivity -> com.examw.test.ui.ChooseSubjectActivity:
@@ -5474,25 +5466,25 @@ com.examw.test.ui.ChooseSubjectActivity -> com.examw.test.ui.ChooseSubjectActivi
     void access$6(com.examw.test.ui.ChooseSubjectActivity,com.examw.test.domain.Subject) -> a
     android.widget.Button access$7(com.examw.test.ui.ChooseSubjectActivity) -> f
     android.widget.PopupWindow access$8(com.examw.test.ui.ChooseSubjectActivity) -> g
-com.examw.test.ui.ChooseSubjectActivity$1 -> com.examw.test.ui.i:
+com.examw.test.ui.ChooseSubjectActivity$1 -> com.examw.test.ui.h:
     com.examw.test.ui.ChooseSubjectActivity this$0 -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.ChooseSubjectActivity$2 -> com.examw.test.ui.j:
+com.examw.test.ui.ChooseSubjectActivity$2 -> com.examw.test.ui.i:
     com.examw.test.ui.ChooseSubjectActivity this$0 -> a
     java.lang.String val$username -> b
     android.os.Handler val$handler -> c
     void run() -> run
-com.examw.test.ui.ChooseSubjectActivity$3 -> com.examw.test.ui.k:
+com.examw.test.ui.ChooseSubjectActivity$3 -> com.examw.test.ui.j:
     com.examw.test.ui.ChooseSubjectActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.ChooseSubjectActivity$4 -> com.examw.test.ui.l:
+com.examw.test.ui.ChooseSubjectActivity$4 -> com.examw.test.ui.k:
     com.examw.test.ui.ChooseSubjectActivity this$0 -> a
     void onDismiss() -> onDismiss
-com.examw.test.ui.ChooseSubjectActivity$5 -> com.examw.test.ui.m:
+com.examw.test.ui.ChooseSubjectActivity$5 -> com.examw.test.ui.l:
     com.examw.test.ui.ChooseSubjectActivity this$0 -> a
     android.os.Handler val$mHandler -> b
     void run() -> run
-com.examw.test.ui.ChooseSubjectActivity$GetDataTask -> com.examw.test.ui.n:
+com.examw.test.ui.ChooseSubjectActivity$GetDataTask -> com.examw.test.ui.m:
     com.examw.test.ui.ChooseSubjectActivity this$0 -> a
     void onPreExecute() -> onPreExecute
     java.util.ArrayList doInBackground(java.lang.String[]) -> a
@@ -5542,26 +5534,34 @@ com.examw.test.ui.DailyActivity -> com.examw.test.ui.DailyActivity:
     android.widget.LinearLayout access$13(com.examw.test.ui.DailyActivity) -> k
     void access$14(com.examw.test.ui.DailyActivity) -> l
     com.examw.test.widget.DateHorizontalScrollView access$15(com.examw.test.ui.DailyActivity) -> m
-com.examw.test.ui.DailyActivity$1 -> com.examw.test.ui.o:
+com.examw.test.ui.DailyActivity$1 -> com.examw.test.ui.n:
     com.examw.test.ui.DailyActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-com.examw.test.ui.DailyActivity$2 -> com.examw.test.ui.p:
+com.examw.test.ui.DailyActivity$2 -> com.examw.test.ui.o:
     com.examw.test.ui.DailyActivity this$0 -> a
     void click(int) -> a
-com.examw.test.ui.DailyActivity$3 -> com.examw.test.ui.q:
+com.examw.test.ui.DailyActivity$3 -> com.examw.test.ui.p:
     com.examw.test.ui.DailyActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.DailyActivity$4 -> com.examw.test.ui.r:
+com.examw.test.ui.DailyActivity$4 -> com.examw.test.ui.q:
     com.examw.test.ui.DailyActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.DailyActivity$GetPaperListThread -> com.examw.test.ui.s:
+com.examw.test.ui.DailyActivity$GetPaperListThread -> com.examw.test.ui.r:
     com.examw.test.ui.DailyActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.DailyActivity$MyHandler -> com.examw.test.ui.t:
+com.examw.test.ui.DailyActivity$MyHandler -> com.examw.test.ui.s:
     java.lang.ref.WeakReference mActivity -> a
     void handleMessage(android.os.Message) -> handleMessage
 com.examw.test.ui.ExamInfoActivity -> com.examw.test.ui.ExamInfoActivity:
+    android.webkit.WebView webView -> a
+    android.widget.RelativeLayout loading -> b
     void onCreate(android.os.Bundle) -> onCreate
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    android.widget.RelativeLayout access$0(com.examw.test.ui.ExamInfoActivity) -> a
+com.examw.test.ui.ExamInfoActivity$SampleWebViewClient -> com.examw.test.ui.t:
+    com.examw.test.ui.ExamInfoActivity this$0 -> a
+    boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String) -> shouldOverrideUrlLoading
+    void onPageFinished(android.webkit.WebView,java.lang.String) -> onPageFinished
 com.examw.test.ui.FeedBackActivity -> com.examw.test.ui.FeedBackActivity:
     android.widget.EditText editNoteEditText -> a
     android.widget.TextView editSizeText -> b
@@ -5594,7 +5594,15 @@ com.examw.test.ui.FeedBackActivity$FeedBackThread -> com.examw.test.ui.w:
     com.examw.test.ui.FeedBackActivity this$0 -> a
     void run() -> run
 com.examw.test.ui.ForumActivity -> com.examw.test.ui.ForumActivity:
+    android.webkit.WebView webView -> a
+    android.widget.RelativeLayout loading -> b
     void onCreate(android.os.Bundle) -> onCreate
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    android.widget.RelativeLayout access$0(com.examw.test.ui.ForumActivity) -> a
+com.examw.test.ui.ForumActivity$SampleWebViewClient -> com.examw.test.ui.x:
+    com.examw.test.ui.ForumActivity this$0 -> a
+    boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String) -> shouldOverrideUrlLoading
+    void onPageFinished(android.webkit.WebView,java.lang.String) -> onPageFinished
 com.examw.test.ui.GuideActivity -> com.examw.test.ui.GuideActivity:
     android.support.v4.view.ViewPager vp -> a
     java.util.List views -> b
@@ -5618,7 +5626,7 @@ com.examw.test.ui.ImageZoomActivity -> com.examw.test.ui.ImageZoomActivity:
     android.graphics.PointF mid(android.view.MotionEvent) -> d
     float access$0(android.view.MotionEvent) -> a
     android.graphics.PointF access$1(android.view.MotionEvent) -> b
-com.examw.test.ui.ImageZoomActivity$TounchListener -> com.examw.test.ui.x:
+com.examw.test.ui.ImageZoomActivity$TounchListener -> com.examw.test.ui.y:
     android.graphics.PointF startPoint -> b
     android.graphics.Matrix matrix -> c
     android.graphics.Matrix currentMaritx -> d
@@ -5651,19 +5659,19 @@ com.examw.test.ui.ImportDataActivity -> com.examw.test.ui.ImportDataActivity:
     com.examw.test.app.AppContext access$5(com.examw.test.ui.ImportDataActivity) -> d
     void access$6(com.examw.test.ui.ImportDataActivity,java.lang.String,java.lang.String) -> a
     java.util.ArrayList access$7(com.examw.test.ui.ImportDataActivity) -> e
-com.examw.test.ui.ImportDataActivity$1 -> com.examw.test.ui.y:
+com.examw.test.ui.ImportDataActivity$1 -> com.examw.test.ui.z:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void handleMessage(android.os.Message) -> handleMessage
-com.examw.test.ui.ImportDataActivity$2 -> com.examw.test.ui.z:
+com.examw.test.ui.ImportDataActivity$2 -> com.examw.test.ui.aa:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ImportDataActivity$3 -> com.examw.test.ui.aa:
+com.examw.test.ui.ImportDataActivity$3 -> com.examw.test.ui.ab:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ImportDataActivity$4 -> com.examw.test.ui.ab:
+com.examw.test.ui.ImportDataActivity$4 -> com.examw.test.ui.ac:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
-com.examw.test.ui.ImportDataActivity$5 -> com.examw.test.ui.ac:
+com.examw.test.ui.ImportDataActivity$5 -> com.examw.test.ui.ad:
     com.examw.test.ui.ImportDataActivity this$0 -> a
     void run() -> run
 com.examw.test.ui.KnowledgeActivity -> com.examw.test.ui.KnowledgeActivity:
@@ -5680,8 +5688,6 @@ com.examw.test.ui.KnowledgeActivity -> com.examw.test.ui.KnowledgeActivity:
     java.util.ArrayList chapters -> k
     com.examw.test.adapter.SyllabusListAdapter syllabusListAdapter -> l
     void onCreate(android.os.Bundle) -> onCreate
-    void initView() -> b
-    void initData() -> c
     void onStart() -> onStart
     void onClick(android.view.View) -> onClick
     void showPop(android.view.View) -> a
@@ -5699,9 +5705,6 @@ com.examw.test.ui.KnowledgeActivity -> com.examw.test.ui.KnowledgeActivity:
     void access$11(com.examw.test.ui.KnowledgeActivity,com.examw.test.domain.Subject) -> a
     android.widget.PopupWindow access$12(com.examw.test.ui.KnowledgeActivity) -> j
     android.widget.ImageView access$13(com.examw.test.ui.KnowledgeActivity) -> k
-com.examw.test.ui.KnowledgeActivity$1 -> com.examw.test.ui.ad:
-    com.examw.test.ui.KnowledgeActivity this$0 -> a
-    void run() -> run
 com.examw.test.ui.KnowledgeActivity$2 -> com.examw.test.ui.ae:
     com.examw.test.ui.KnowledgeActivity this$0 -> a
     void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
@@ -6843,7 +6846,8 @@ com.examw.test.util.HexUtil -> com.examw.test.h.l:
     byte[] parseHexBytes(java.lang.String) -> a
 com.examw.test.util.HtmlUtils -> com.examw.test.h.m:
     java.util.regex.Pattern PTag -> a
-    java.util.regex.Pattern ImgTag -> b
+    java.util.regex.Pattern BRTag -> b
+    java.util.regex.Pattern ImgTag -> c
     java.lang.String filterPTag(java.lang.String) -> a
     java.lang.String replaceSpecialChars(java.lang.String) -> b
 com.examw.test.util.HttpUtils -> com.examw.test.h.n:

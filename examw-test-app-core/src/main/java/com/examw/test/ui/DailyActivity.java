@@ -123,16 +123,17 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 			} else {
 				// 本地数据库中没有试卷,访问网络
 				try {
-					ArrayList<FrontPaperInfo> list = ApiClient
-							.getDailyPaperList((AppContext) getApplication());
-//					PaperDao.insertPaperList(list);
-					if (list == null || list.size() == 0)
-						handler.sendEmptyMessage(-3);
-					else {
-						paperList = PaperDao.findDailyPapers(today,
-								currentDayOrder,username);
-						handler.sendEmptyMessage(1);
-					}
+//					ArrayList<FrontPaperInfo> list = ApiClient
+//							.getDailyPaperList((AppContext) getApplication());
+////					PaperDao.insertPaperList(list);
+//					if (list == null || list.size() == 0)
+//						handler.sendEmptyMessage(-3);
+//					else {
+//						paperList = PaperDao.findDailyPapers(today,
+//								currentDayOrder,username);
+//						handler.sendEmptyMessage(1);
+//					}
+					handler.sendEmptyMessage(1);
 				} catch (Exception e) {
 					e.printStackTrace();
 					Message msg = handler.obtainMessage();

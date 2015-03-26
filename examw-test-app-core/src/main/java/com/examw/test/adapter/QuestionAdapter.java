@@ -1,13 +1,6 @@
 package com.examw.test.adapter;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -17,11 +10,9 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +33,7 @@ import com.examw.test.app.AppConstant;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.ui.BaseActivity;
 import com.examw.test.ui.PaperDoPaperActivity;
+import com.examw.test.util.LogUtil;
 import com.examw.test.util.StringUtils;
 import com.examw.test.widget.CheckBoxGroup;
 import com.examw.test.widget.ImageTextView;
@@ -126,10 +118,10 @@ public class QuestionAdapter extends BaseAdapter {
 					.findViewById(R.id.doexam_mode3layout);
 			contentHolder.textContent = (ImageTextView) v
 					.findViewById(R.id.exam_Content3);
-			contentHolder.answerEditText = (EditText) v
-					.findViewById(R.id.exam_answerEditText);
 			contentHolder.submitExamBtn = (Button) v
 					.findViewById(R.id.submitExamBtn);
+			contentHolder.answerEditText = (EditText) v
+					.findViewById(R.id.exam_answerEditText);
 			contentHolder.showAnswerBtn = (Button) v
 					.findViewById(R.id.showAnswerBtn);
 			contentHolder.scrollView = (ScrollView) v
@@ -138,8 +130,8 @@ public class QuestionAdapter extends BaseAdapter {
 					activity2, contentHolder.examOption);
 			contentHolder.showAnswerBtn.setOnClickListener(showAnswerLinsener);
 			contentHolder.showAnswerBtn.setVisibility(View.GONE);
+			contentHolder.submitExamBtn.setTag(contentHolder.answerEditText);
 			// contentHolder.examAnswerLayout.setVisibility(View.GONE);
-
 		} else {
 			contentHolder = (ContentViewHolder) v.getTag(R.id.tag_first);
 			contentHolder.examOption.clearCheck();
@@ -282,13 +274,13 @@ public class QuestionAdapter extends BaseAdapter {
 			{
 				contentHolder.answerEditText.setText("");
 			}
-			contentHolder.submitExamBtn.setVisibility(0);
+			contentHolder.submitExamBtn.setVisibility(View.VISIBLE);
 			contentHolder.submitExamBtn
 					.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							String txtAnswer = contentHolder.answerEditText
-									.getText().toString();
+							EditText editText = (EditText) v.getTag();
+							String txtAnswer = editText.getText().toString();
 							activity2.saveTextAnswer(txtAnswer);
 						}
 					});

@@ -189,7 +189,7 @@ public class ApiClient {
 		user.setPhone(phone);
 		user.setUsername(name);
 		user.setChannel("jzs1");
-		String result = HttpUtils.http_post(appContext, "http://192.168.1.246:8080/examw-test/api/m/user/register" ,user);
+		String result = HttpUtils.http_post(appContext, URLs.REGIST_PROXY ,user);
 		if(StringUtils.isEmpty(result)) return null;
 		return GsonUtil.jsonToBean(result, Json.class);
 	}
