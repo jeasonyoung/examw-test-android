@@ -43,6 +43,7 @@ public class IndicatorLayout extends FrameLayout implements AnimationListener {
 
 	private final Animation mRotateAnimation, mResetRotateAnimation;
 
+	@SuppressWarnings("deprecation")
 	public IndicatorLayout(Context context, PullToRefreshBase.Mode mode) {
 		super(context);
 		mArrowImageView = new ImageView(context);
