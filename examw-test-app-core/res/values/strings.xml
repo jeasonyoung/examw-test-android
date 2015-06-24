@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">考试一点通</string>
+    <string name="app_name">中华考试网题库</string>
     <string name="app_name_suffix">(全国版)</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
