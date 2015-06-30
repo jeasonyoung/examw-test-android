@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.examw.test.app.AppConstant;
-import com.examw.test.app.AppContext;
 import com.examw.test.daonew.FavoriteDao;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.domain.ItemRecord;
@@ -62,17 +61,17 @@ public class DataConverter {
 				return;
 			items.addAll(info.getItems());
 			for (StructureItemInfo item : items) {
-				if (item.getType().equals(AppConstant.ITEM_TYPE_SHARE_TITLE)) {
-					result.addAll(getShareTitleSortedChildrenList(item,
-							itemRecords));
-				} else if (item.getType().equals(
-						AppConstant.ITEM_TYPE_SHARE_ANSWER)) {
-					result.addAll(getShareAnswerSortedChildrenList(item,
-							itemRecords));
-				} else {
-					setUserAnswer(item, itemRecords);
-					result.add(item);
-				}
+//				if (item.getType().equals(AppConstant.ITEM_TYPE_SHARE_TITLE)) {
+//					result.addAll(getShareTitleSortedChildrenList(item,
+//							itemRecords));
+//				} else if (item.getType().equals(
+//						AppConstant.ITEM_TYPE_SHARE_ANSWER)) {
+//					result.addAll(getShareAnswerSortedChildrenList(item,
+//							itemRecords));
+//				} else {
+//					setUserAnswer(item, itemRecords);
+//					result.add(item);
+//				}
 			}
 		}
 	}
@@ -170,9 +169,9 @@ public class DataConverter {
 			return 0;
 		int sum = 0;
 		for (int i = 0; i < tOrF.length; i++) {
-			if (tOrF[i] != AppConstant.ANSWER_NONE) {
-				sum++;
-			}
+//			if (tOrF[i] != AppConstant.ANSWER_NONE) {
+//				sum++;
+//			}
 		}
 		return sum;
 	}
@@ -186,9 +185,9 @@ public class DataConverter {
 	public static int getRightNum(int[] tOrF) {
 		int sum = 0;
 		for (int i = 0; i < tOrF.length; i++) {
-			if (tOrF[i] == AppConstant.ANSWER_RIGHT) {
-				sum++;
-			}
+//			if (tOrF[i] == AppConstant.ANSWER_RIGHT) {
+//				sum++;
+//			}
 		}
 		return sum;
 	}
@@ -219,13 +218,13 @@ public class DataConverter {
 		 * createTime,lastTime; private Set<UserItemRecordInfo> items; </set>
 		 */
 		UserPaperRecordInfo info = new UserPaperRecordInfo();
-		info.setProductId(AppContext.getMetaInfo("productId"));
+		//info.setProductId(AppContext.getMetaInfo("productId"));
 		info.setUserId(data.getUserId());
 		info.setId(data.getRecordId());
 		info.setPaperType(data.getPaperType());
 		info.setPaperId(data.getPaperId()); // 试卷Id
 		info.setUsedTime(data.getUsedTime().longValue());
-		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
+		//info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
 		info.setStatus(data.getStatus()); // 刚加入未完成
 		info.setScore(new BigDecimal(data.getScore()));
 		info.setRightNum(data.getRightNum());
@@ -265,7 +264,7 @@ public class DataConverter {
 		info.setItemContent(data.getItemContent());
 		info.setAnswer(data.getAnswer());
 		info.setStatus(data.getStatus());
-		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
+		//info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
 		info.setScore(data.getScore());
 		try{
 			info.setCreateTime(formatter_upload.format(formatter.parse(data.getCreateTime())));
@@ -278,26 +277,27 @@ public class DataConverter {
 	}
 
 	public static String getItemMaterial(ItemInfo info) {
-		switch (info.getType()) {
-		case AppConstant.ITEM_TYPE_SHARE_ANSWER:
-			TreeSet<ItemInfo> set = new TreeSet<ItemInfo>();
-			set.addAll(info.getChildren());
-			StringBuffer builder = new StringBuffer();
-			builder.append(info.getContent());
-			set.remove(set.last());
-			int i = 65;
-			for (ItemInfo s : set) {
-				builder.append((char) (i++)).append(s.getContent())
-						.append(" <br/>");
-			}
-			set.clear();
-			set = null;
-			return builder.toString();
-		case AppConstant.ITEM_TYPE_SHARE_TITLE:
-			return info.getContent(); 
-		default:
-			return null;
-		}
+//		switch (info.getType()) {
+//		case AppConstant.ITEM_TYPE_SHARE_ANSWER:
+//			TreeSet<ItemInfo> set = new TreeSet<ItemInfo>();
+//			set.addAll(info.getChildren());
+//			StringBuffer builder = new StringBuffer();
+//			builder.append(info.getContent());
+//			set.remove(set.last());
+//			int i = 65;
+//			for (ItemInfo s : set) {
+//				builder.append((char) (i++)).append(s.getContent())
+//						.append(" <br/>");
+//			}
+//			set.clear();
+//			set = null;
+//			return builder.toString();
+//		case AppConstant.ITEM_TYPE_SHARE_TITLE:
+//			return info.getContent(); 
+//		default:
+//			return null;
+//		}
+		return null;
 	}
 	
 	public static ArrayList<UserItemFavoriteInfo> convertFavors(ArrayList<FavoriteItem> list)
@@ -330,7 +330,7 @@ public class DataConverter {
 		info.setItemContent(r.getItemContent());
 		info.setItemId(r.getItemId());
 		info.setItemType(r.getItemType());
-		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
+		//info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
 		info.setSubjectId(r.getSubjectId());
 		return info;
 	}

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.domain.Chapter;
 import com.examw.test.support.SyllabusHelper;
-import com.examw.test.util.LogUtil;
 
 /**
  * 大纲适配器
@@ -62,7 +61,7 @@ public class SyllabusListAdapter extends BaseAdapter {
 	 */
 	public SyllabusListAdapter(ListView mTree, Context context, ArrayList<Chapter> datas) 
 	{
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		mContext = context;
 		/**
 		 * 对所有的Node进行排序
@@ -94,7 +93,7 @@ public class SyllabusListAdapter extends BaseAdapter {
 			}
 
 		});
-		LogUtil.d("章节适配器初始化耗时:"+(System.currentTimeMillis()-start));
+		//LogUtil.d("章节适配器初始化耗时:"+(System.currentTimeMillis()-start));
 	}
 
 	/**

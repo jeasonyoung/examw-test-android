@@ -30,7 +30,7 @@ import com.examw.test.exception.AppException;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.LoginTips;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 import com.examw.test.widget.ImgRightEditText;
 
 /**

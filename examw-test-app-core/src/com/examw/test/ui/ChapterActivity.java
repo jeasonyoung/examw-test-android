@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import com.examw.test.R;
 import com.examw.test.adapter.ChapterExpendableListAdatper;
 import com.examw.test.domain.Chapter;
-import com.examw.test.util.ToastUtils;
+import com.examw.test.utils.ToastUtils;
 
 /**
  * 章节练习

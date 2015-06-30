@@ -2,7 +2,7 @@ package com.examw.test.model;
 
 import java.io.Serializable;
 
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 
 /**
  * 应用更新

@@ -25,13 +25,9 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
-import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
 import com.examw.test.daonew.PaperDao;
-import com.examw.test.model.FrontPaperInfo;
-import com.examw.test.support.ApiClient;
 import com.examw.test.support.ReturnBtnClickListener;
-import com.examw.test.util.LogUtil;
 
 
 
@@ -68,7 +64,7 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		// 添加Activity到堆栈
 		AppManager.getAppManager().addActivity(this);
 		this.handler = new MyHandler(this);
-		username = ((AppContext) this.getApplication()).getUsername();
+		//username = ((AppContext) this.getApplication()).getUsername();
 		initView();
 		initTabLine();
 	}
@@ -116,11 +112,11 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		//传参数
 		Bundle data1 = new Bundle();
 		data1.putString("subjectId", subjectId);
-		data1.putString("paperType",String.valueOf(AppConstant.PAPER_TYPE_REAL));
+		//data1.putString("paperType",String.valueOf(AppConstant.PAPER_TYPE_REAL));
 		tab01.setArguments(data1);
 		Bundle data2 = new Bundle();
 		data2.putString("subjectId", subjectId);
-		data2.putString("paperType", AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE);
+		//data2.putString("paperType", AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE);
 		tab02.setArguments(data2);
 		mDatas.add(tab01);
 		mDatas.add(tab02);
@@ -137,7 +133,7 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 				return mDatas.get(arg0);
 			}
 		};
-		LogUtil.d("ViewPager设置适配器");
+		//LogUtil.d("ViewPager设置适配器");
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
@@ -210,28 +206,28 @@ public class SimulateActivity extends FragmentActivity implements OnClickListene
 		@Override
 		public void run() {
 			
-			if(PaperDao.hasPaper(AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE,username))
-			{
-				//本地数据库中有试卷
-				handler.sendEmptyMessage(1);
-			}else
-			{
-				//本地数据库中没有试卷,访问网络
-				try{
-					ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
-//					PaperDao.insertPaperList(list);
-					if(list == null || list.size()==0)
-						handler.sendEmptyMessage(2);
-					else
-						handler.sendEmptyMessage(1);
-				}catch(Exception e)
-				{
-					e.printStackTrace();
-					Message msg = handler.obtainMessage();
-					msg.what = -1;
-					handler.sendMessage(msg);
-				}
-			}
+//			if(PaperDao.hasPaper(AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE,username))
+//			{
+//				//本地数据库中有试卷
+//				handler.sendEmptyMessage(1);
+//			}else
+//			{
+//				//本地数据库中没有试卷,访问网络
+//				try{
+//					//ArrayList<FrontPaperInfo> list = ApiClient.getPaperList((AppContext)getApplication());
+////					PaperDao.insertPaperList(list);
+////					if(list == null || list.size()==0)
+////						handler.sendEmptyMessage(2);
+////					else
+////						handler.sendEmptyMessage(1);
+//				}catch(Exception e)
+//				{
+//					e.printStackTrace();
+//					Message msg = handler.obtainMessage();
+//					msg.what = -1;
+//					handler.sendMessage(msg);
+//				}
+//			}
 		}
 	}
 	static class MyHandler extends Handler {

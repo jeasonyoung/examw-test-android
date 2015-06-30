@@ -1,5 +1,7 @@
 package com.examw.test.model.sync;
 
+import android.content.Context;
+
 
 /**
  * 应用注册。
@@ -8,8 +10,13 @@ package com.examw.test.model.sync;
  * @since 2015年2月14日
  */
 public class AppRegister extends AppClient {
+	
 	private static final long serialVersionUID = 1L;
 	private String userId,code;
+	public AppRegister(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * 获取用户ID。
 	 * @return 用户ID。

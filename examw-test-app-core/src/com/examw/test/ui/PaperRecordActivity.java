@@ -29,8 +29,6 @@ import com.examw.test.exception.AppException;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.support.ReturnBtnClickListener;
-import com.examw.test.util.GsonUtil;
-import com.examw.test.util.LogUtil;
 
 /**
  * 考试记录
@@ -61,7 +59,7 @@ public class PaperRecordActivity extends BaseActivity {
 		findViews();
 		appContext = (AppContext) getApplication();
 		// appContext.recoverLoginStatus();
-		username = appContext.getUsername();
+		//username = appContext.getUsername();
 		handler = new MyHandler(this);
 		this.paperListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -113,14 +111,14 @@ public class PaperRecordActivity extends BaseActivity {
 
 	@Override
 	protected void onStart() {
-		LogUtil.d("Record onStart");
+		//LogUtil.d("Record onStart");
 		this.loadingLayout.setVisibility(View.GONE);
 		super.onStart();
 		initData();
 	}
 
 	private void initData() {
-		LogUtil.d("初始化数据");
+		//LogUtil.d("初始化数据");
 		loadingLayout.setVisibility(View.VISIBLE);
 		new Thread() {
 			public void run() {
@@ -172,26 +170,26 @@ public class PaperRecordActivity extends BaseActivity {
 
 	private void itemClickMethod() {
 		Intent mIntent = null;
-		if (AppConstant.STATUS_NONE.equals(currentRecord.getStatus())) {
-			mIntent = new Intent(this, PaperDoPaperActivity.class);
-			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
-			mIntent.putExtra("paperId", currentRecord.getPaperId());
-			mIntent.putExtra("recordId", currentRecord.getRecordId());
-			this.startActivity(mIntent);
-			return;
-		}
+//		if (AppConstant.STATUS_NONE.equals(currentRecord.getStatus())) {
+//			mIntent = new Intent(this, PaperDoPaperActivity.class);
+//			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
+//			mIntent.putExtra("paperId", currentRecord.getPaperId());
+//			mIntent.putExtra("recordId", currentRecord.getRecordId());
+//			this.startActivity(mIntent);
+//			return;
+//		}
 		loadingLayout.setVisibility(View.VISIBLE);
-		final String paperId = currentRecord.getPaperId();
+		//final String paperId = currentRecord.getPaperId();
 		// 没有交卷的
 		new Thread() {
 			public void run() {
 				try {
-					String content = PaperDao.findPaperContent(paperId,username);
-					PaperPreview paper = GsonUtil.jsonToBean(content,
-							PaperPreview.class);
+					//String content = PaperDao.findPaperContent(paperId,username);
+					//PaperPreview paper = GsonUtil.jsonToBean(content,
+						//	PaperPreview.class);
 					Message msg = handler.obtainMessage();
 					msg.what = 1;
-					msg.obj = paper;
+					//msg.obj = paper;
 					handler.sendMessage(msg);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -205,13 +203,13 @@ public class PaperRecordActivity extends BaseActivity {
 		Intent mIntent = new Intent(this, AnswerCardActivity.class);
 		mIntent.putExtra("paperId", currentRecord.getPaperId());
 		mIntent.putExtra("trueOfFalse", currentRecord.getTorf());
-		mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
+		//mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
 		mIntent.putExtra("paperScore", currentRecord.getScore().doubleValue());
 		mIntent.putExtra("paperType", paper.getType());
 		// findPaper
 		mIntent.putExtra("paperTime", paper.getTime());
-		mIntent.putExtra("ruleListJson",
-				GsonUtil.objectToJson(this.getRuleList(paper)));
+		//mIntent.putExtra("ruleListJson",
+			//	GsonUtil.objectToJson(this.getRuleList(paper)));
 		mIntent.putExtra("username", username);
 		mIntent.putExtra(
 				"useTime",
@@ -222,18 +220,18 @@ public class PaperRecordActivity extends BaseActivity {
 		this.startActivity(mIntent); // 仍然是要启动这个Activity不带结果返回
 	}
 	
-	private List<StructureInfo> getRuleList(PaperPreview paper)
-	{
-		List<StructureInfo> ruleList = paper.getStructures();
-		if(ruleList!=null && ruleList.size()>0)
-		{
-			for(StructureInfo info:ruleList)
-			{
-				info.setItems(null);
-			}
-		}
-		return ruleList;
-	}
+//	private List<StructureInfo> getRuleList(PaperPreview paper)
+//	{
+//		List<StructureInfo> ruleList = paper.getStructures();
+//		if(ruleList!=null && ruleList.size()>0)
+//		{
+//			for(StructureInfo info:ruleList)
+//			{
+//				info.setItems(null);
+//			}
+//		}
+//		return ruleList;
+//	}
 	static class MyHandler extends Handler {
 		WeakReference<PaperRecordActivity> mActivity;
 
@@ -259,7 +257,7 @@ public class PaperRecordActivity extends BaseActivity {
 				Toast.makeText(theActivity, "找不到试卷信息", Toast.LENGTH_SHORT).show();
 				break;
 			case 11:
-				LogUtil.d("初始化数据完成");
+				//LogUtil.d("初始化数据完成");
 				if (theActivity.recordList == null || theActivity.recordList.size() == 0) {
 					//没有数据
 					theActivity.contentLayout.setVisibility(View.GONE);

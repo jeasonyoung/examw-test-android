@@ -132,17 +132,4 @@ public class FavoriteSync implements Serializable {
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("id").append(":").append(this.getId()).append(",")
-		           .append("subjectId").append(":").append(this.getSubjectId()).append(",")
-		           .append("itemId").append(":").append(this.getItemId()).append(",")
-		           .append("content").append(":").append(this.getContent()).append(",")
-		           .append("remarks").append(":").append(this.getRemarks()).append(",")
-		           .append("itemType").append(":").append(this.getItemType()).append(",")
-		           .append("status").append(":").append(this.getStatus()).append(",")
-				   .append("createTime").append(":").append(this.getCreateTime());
-		return builder.toString();
-	}
 }

@@ -39,16 +39,13 @@ import com.examw.test.adapter.PracticeQuestionAdapter;
 import com.examw.test.adapter.PracticeQuestionAdapter.AnswerViewHolder;
 import com.examw.test.adapter.PracticeQuestionAdapter.ContentViewHolder;
 import com.examw.test.app.AppConstant;
-import com.examw.test.app.AppContext;
 import com.examw.test.daonew.FavoriteDao;
 import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
-import com.examw.test.util.GsonUtil;
-import com.examw.test.util.LogUtil;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 import com.examw.test.widget.AnswerSettingLayout;
 import com.examw.test.widget.AnswerSettingLayout.FontSizeChangeListerner;
 import com.examw.test.widget.AnswerSettingLayout.ItemChangeListerner;
@@ -105,7 +102,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		LogUtil.d( "考试界面启动onCreate");
+		//LogUtil.d( "考试界面启动onCreate");
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_do_real_paper);
 		preferences = this.getSharedPreferences("wdkaoshi", 0);
@@ -147,7 +144,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	// 取得主界面的组件,只取得不操作
 	private void initView() {
-		LogUtil.d( "初始化组件");
+		//LogUtil.d( "初始化组件");
 		this.favoriteBtn = (ImageButton) this.findViewById(R.id.favoriteBtn); // 收藏按钮
 		this.answerBtn = (ImageButton) this.findViewById(R.id.answerBtn); // 交卷按钮
 		this.answerBtn.setImageResource(R.drawable.exam_answer_img);
@@ -203,9 +200,9 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	// 初始化数据
 	private void initData() {
-		LogUtil.d( "初始化数据");
+		//LogUtil.d( "初始化数据");
 		Intent intent = getIntent();
-		username = ((AppContext) getApplication()).getUsername();
+		//username = ((AppContext) getApplication()).getUsername();
 		action = intent.getIntExtra("action", 0);
 		subjectId = intent.getStringExtra("subjectId");
 		questionCursor = intent.getIntExtra("cursor", 0);
@@ -217,19 +214,19 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 			public void run() {
 				try {
 					SimplePaper paper = null;
-					if (action == AppConstant.ACTION_FAVORITE) {
-						paper = FavoriteDao.loadFavoritePaper(subjectId, username);
-					}else if(action == AppConstant.ACTION_ERROR)
-					{
-						paper = PaperRecordDao.loadErrorPaper(subjectId, username);
-					}
+//					if (action == AppConstant.ACTION_FAVORITE) {
+//						paper = FavoriteDao.loadFavoritePaper(subjectId, username);
+//					}else if(action == AppConstant.ACTION_ERROR)
+//					{
+//						paper = PaperRecordDao.loadErrorPaper(subjectId, username);
+//					}
 					if (paper == null) {
 						handler.sendEmptyMessage(-1);
-					} else {
-						ruleList = paper.getRuleList();
-						questionList = paper.getItems();
-						tOrF = new int[questionList.size()];
-					}
+					}// else {
+//						ruleList = paper.getRuleList();
+//						questionList = paper.getItems();
+//						tOrF = new int[questionList.size()];
+				//	}
 					Message msg = handler.obtainMessage();
 					msg.what = 1;
 					msg.arg1 = questionCursor;
@@ -255,7 +252,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 			PaperDoPracticeActivity q2 = weak.get();
 			switch (msg.what) {
 			case 1: // 初始化完成
-				LogUtil.d( "数据初始化完成");
+				//LogUtil.d( "数据初始化完成");
 				if (q2.ruleList != null && q2.ruleList.size() > 0) {
 					q2.examTypeTextView.setText(q2.ruleList.get(0).getTitle()); // 大题名字
 				} else {
@@ -344,11 +341,11 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 			if (currentQuestion.getIsCollected() == null) {
 				favor = new FavoriteItem();
 				favor.setItemId(currentQuestion.getId());
-				favor.setItemContent(GsonUtil.objectToJson(currentQuestion));
+				//favor.setItemContent(GsonUtil.objectToJson(currentQuestion));
 				favor.setSubjectId(currentQuestion.getSubjectId());
 				favor.setItemType(currentQuestion.getType());
 //				favor.setUserAnswer(currentQuestion.getUserAnswer());
-				favor.setUsername(((AppContext) getApplication()).getUsername());
+				//favor.setUsername(((AppContext) getApplication()).getUsername());
 			} else {
 				favor = new FavoriteItem();
 				favor.setItemId(currentQuestion.getId());
@@ -513,8 +510,8 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 		} else {
 			mIntent.putExtra("action", "otherChooseQuestion");
 		}
-		mIntent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
-		mIntent.putExtra("trueOfFalse", GsonUtil.objectToJson(tOrF));
+		//mIntent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
+		//mIntent.putExtra("trueOfFalse", GsonUtil.objectToJson(tOrF));
 		this.startActivityForResult(mIntent, 1);
 	}
 
@@ -593,7 +590,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onPause() {
-		LogUtil.d( "onPause");
+		//LogUtil.d( "onPause");
 		// 收藏试题
 		if (favor != null && favor.isNeedDelete() != null) {
 			FavoriteDao.favorOrCancel(favor);
@@ -606,7 +603,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onStop() {
-		LogUtil.d( "onStop");
+		//LogUtil.d( "onStop");
 		if (vibrator != null) {
 			vibrator.cancel();
 		}
@@ -615,7 +612,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	protected void onDestroy() {
-		LogUtil.d( "onDestroy");
+		//LogUtil.d( "onDestroy");
 		if (exitDialog != null) {
 			exitDialog.dismiss();
 		}

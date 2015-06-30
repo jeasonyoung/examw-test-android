@@ -17,15 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.examw.test.R;
-import com.examw.test.app.AppContext;
 import com.examw.test.domain.Chapter;
 import com.examw.test.exception.AppException;
-import com.examw.test.model.KnowledgeInfo;
-import com.examw.test.support.ApiClient;
 import com.examw.test.support.ReturnBtnClickListener;
-import com.examw.test.util.GsonUtil;
-import com.examw.test.util.ToastUtils;
-import com.google.gson.reflect.TypeToken;
+import com.examw.test.utils.ToastUtils;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
@@ -144,32 +139,32 @@ public class KnowledgeDetailActivity extends BaseActivity {
 //						currentContent = SyllabusDao
 //								.loadKnowledgeContent(chapterId);// 查询知识点的内容
 						if (currentContent == null) {
-							String content = ApiClient.loadKnowledgeContent(
-									(AppContext) getApplication(), chapterId);
-							if (content == null) {
+							//String content = ApiClient.loadKnowledgeContent(
+								//	(AppContext) getApplication(), chapterId);
+							//if (content == null) {
 								handler.sendEmptyMessage(10); // 没有内容
-							} else {
-								List<KnowledgeInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<List<KnowledgeInfo>>(){}.getType());
-								if(list == null || list.isEmpty())
-								{
-									handler.sendEmptyMessage(10); // 没有内容
-								}else
-								{
-//									currentContent = SyllabusDao.insertChapters(list.get(0));
-									handler.sendEmptyMessage(1);
-								}
-							}
+							//} else {
+//								List<KnowledgeInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<List<KnowledgeInfo>>(){}.getType());
+//								if(list == null || list.isEmpty())
+//								{
+//									handler.sendEmptyMessage(10); // 没有内容
+//								}else
+//								{
+////									currentContent = SyllabusDao.insertChapters(list.get(0));
+//									handler.sendEmptyMessage(1);
+//								}
+							//}
 						}else
 						{
 							handler.sendEmptyMessage(1);
 						}
 					}
-				} catch (AppException e) {
+				} /*catch (AppException e) {
 					Message msg = handler.obtainMessage();
 					msg.what = -1;
 					msg.obj = e;
 					handler.sendMessage(msg);
-				} catch (Exception e) {
+				} */catch (Exception e) {
 					e.printStackTrace();
 					handler.sendEmptyMessage(-2);
 				}
@@ -252,31 +247,31 @@ public class KnowledgeDetailActivity extends BaseActivity {
 			try {
 //				currentContent = SyllabusDao.loadKnowledgeContent(chapterId);// 查询知识点的内容
 				if (currentContent == null) {
-					String content = ApiClient.loadKnowledgeContent(
-							(AppContext) getApplication(), chapterId);
-					if (content == null) {
-						handler.sendEmptyMessage(10); // 没有内容
-					} else {
-						List<KnowledgeInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<List<KnowledgeInfo>>(){}.getType());
-						if(list == null || list.isEmpty())
-						{
-							handler.sendEmptyMessage(10); // 没有内容
-						}else
-						{
-//							currentContent = SyllabusDao.insertChapters(list.get(0));
-							handler.sendEmptyMessage(1);
-						}
-					}
+//					String content = ApiClient.loadKnowledgeContent(
+//							(AppContext) getApplication(), chapterId);
+//					if (content == null) {
+//						handler.sendEmptyMessage(10); // 没有内容
+//					} else {
+//						List<KnowledgeInfo> list = GsonUtil.getGson().fromJson(content, new TypeToken<List<KnowledgeInfo>>(){}.getType());
+//						if(list == null || list.isEmpty())
+//						{
+//							handler.sendEmptyMessage(10); // 没有内容
+//						}else
+//						{
+////							currentContent = SyllabusDao.insertChapters(list.get(0));
+//							handler.sendEmptyMessage(1);
+//						}
+//					}
 				}else
 				{
 					handler.sendEmptyMessage(1);
 				}
-			} catch (AppException e) {
+			} /*catch (AppException e) {
 				Message msg = handler.obtainMessage();
 				msg.what = -1;
 				msg.obj = e;
 				handler.sendMessage(msg);
-			} catch (Exception e) {
+			} */catch (Exception e) {
 				e.printStackTrace();
 				handler.sendEmptyMessage(-2);
 			}

@@ -7,8 +7,8 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
+
 import com.examw.test.R;
-import com.examw.test.app.AppContext;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class ExamInfoActivity extends BaseActivity {
 		loading = (RelativeLayout) this.findViewById(R.id.loading);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new SampleWebViewClient());
-		webView.loadUrl(AppContext.getMetaInfo("infoUrl"));
+		//webView.loadUrl(AppContext.getMetaInfo("infoUrl"));
 	}
 
 	private class SampleWebViewClient extends WebViewClient {

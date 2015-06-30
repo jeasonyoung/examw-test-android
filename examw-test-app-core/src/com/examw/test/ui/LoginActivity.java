@@ -32,8 +32,7 @@ import com.examw.test.daonew.UserDao;
 import com.examw.test.domain.User;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
-import com.examw.test.util.LogUtil;
-import com.examw.test.util.ToastUtils;
+import com.examw.test.utils.ToastUtils;
 
 /**
  * 登录界面
@@ -70,7 +69,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui_login);
-		appConfig = AppConfig.getAppConfig(this);
+		appConfig = null;//AppConfig.getAppConfig(this);
 		appContext = (AppContext) this.getApplication();
 		curLoginType = this.getIntent().getIntExtra("loginFrom", LOGIN_OTHER);
 		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -135,23 +134,23 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 		// 检查输入
 		if (checkInput(username, password)) {
 			// 检查网络
-			if (appContext.isNetworkConnected()) {
+			if (appContext.hasNetworkConnected()) {
 				// 提示登陆中
-				if (appContext.getLoginState() == AppContext.LOGINING) {
-					if (o != null) {
-						o.show();
-						return;
-					}
-				}
+//				if (appContext.getLoginState() == AppContext.LOGINING) {
+//					if (o != null) {
+//						o.show();
+//						return;
+//					}
+//				}
 				o = ProgressDialog.show(LoginActivity.this, null, "登录中请稍候",
 						true, true);
 				o.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 				new Thread() {
 					public void run() {
 						try {
-							LogUtil.d("开线程进行登录");
+							//LogUtil.d("开线程进行登录");
 							//设置登录状态为正在登陆
-							appContext.setLoginState(AppContext.LOGINING);// 正在登录
+							//appContext.setLoginState(AppContext.LOGINING);// 正在登录
 							//解析登陆返回结果
 							Json result = ApiClient.login_proxy(appContext, username, password);
 							Message message = handler.obtainMessage();
@@ -192,9 +191,9 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 				}.start();
 			} else {
 				ToastUtils.show(this, "无法连接,请检查网络...");
-				if (appContext.getLoginState() != AppContext.LOCAL_LOGINED
-						|| "sysnc".equals(curLoginType)) // 本地已经登录就不再显示
-					localLoginBtn.setVisibility(View.VISIBLE);
+//				if (appContext.getLoginState() != AppContext.LOCAL_LOGINED
+//						|| "sysnc".equals(curLoginType)) // 本地已经登录就不再显示
+//					localLoginBtn.setVisibility(View.VISIBLE);
 			}
 		}
 	}
@@ -207,7 +206,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 			if (user != null) {
 				String password = pwdText.getText().toString();
 				if (password.equals(user.getPassword())) {
-					appContext.saveLocalLoginInfo(username);
+					//appContext.saveLocalLoginInfo(username);
 					ToastUtils.show(this,"本地登录成功");
 					if (fromClass == null) {
 						LoginActivity.this.finish(); // 找不到类直接finish
@@ -258,7 +257,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 	}
 	// 保存自动登录信息
 	private void saveAutoLoginPreferences(boolean flag) {
-		appConfig.set(AppConfig.CONF_AUTOLOGIN, String.valueOf(flag));
+		//appConfig.set(AppConfig.CONF_AUTOLOGIN, String.valueOf(flag));
 	}
 	// 注册
 	private void gotoRegister() {
@@ -324,8 +323,8 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 			switch (msg.what) {
 			case 1:
 				// 登录成功
-				User result = (User) msg.obj;
-					login.appContext.saveLoginInfo(result);
+				//User result = (User) msg.obj;
+					//login.appContext.saveLoginInfo(result);
 					int code = 0;
 					if (login.curLoginType == LOGIN_MAIN) {
 						code = 20;
@@ -360,12 +359,12 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 					break;
 			case 0:
 				// 修改登录状态
-				login.appContext.setLoginState(AppContext.LOGIN_FAIL);
+				//login.appContext.setLoginState(AppContext.LOGIN_FAIL);
 				ToastUtils.show(login, "登录失败 "+msg.obj);
 				break;
 			case -1:
 				// 修改登录状态
-				login.appContext.setLoginState(AppContext.LOGIN_FAIL);
+				//login.appContext.setLoginState(AppContext.LOGIN_FAIL);
 				Toast.makeText(login, "无法连接服务器", Toast.LENGTH_SHORT).show();
 				login.showLocalLoginBtn();
 				break;

@@ -24,9 +24,7 @@ import com.examw.test.domain.PaperRecord;
 import com.examw.test.exception.AppException;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
-import com.examw.test.support.ApiClient;
-import com.examw.test.util.GsonUtil;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 
 /**
  * 试卷信息页
@@ -74,7 +72,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 		appContext = (AppContext) getApplication();
 		// //恢复登录的状态，
 //		appContext.recoverLoginStatus();
-		username = appContext.getUsername();
+		//username = appContext.getUsername();
 		loading.setVisibility(View.VISIBLE);
 		handler = new MyHandler(this);
 		// 开线程 findRuleList
@@ -88,15 +86,15 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 				if(StringUtils.isEmpty(content))
 				{
 					try{
-						content = ApiClient.loadPaperContent(appContext,paperId);
+						//content = ApiClient.loadPaperContent(appContext,paperId);
 						PaperDao.updatePaperContent(paperId, content,username);
-					}catch(AppException e)
+					}catch(Exception e)
 					{
 						e.printStackTrace();
 						handler.sendEmptyMessage(-1);
 					}
 				}
-				paper = GsonUtil.getGson().fromJson(content, PaperPreview.class);
+				//paper = GsonUtil.getGson().fromJson(content, PaperPreview.class);
 				handler.sendEmptyMessage(1);
 			};
 		}.start();
@@ -122,7 +120,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 	 */
 	private void restart() {
 		Intent mIntent = new Intent(this, PaperDoPaperActivity.class);
-		mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
+		//mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
 		mIntent.putExtra("paperId", record.getPaperId());
 		this.startActivity(mIntent);
 		this.finish();
@@ -130,24 +128,24 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 
 	private void gotoDoExamActivity() {
 		Intent intent = null;
-		if(record!=null && AppConstant.STATUS_DONE.equals(record.getStatus()))	//已经交卷
-		{
-			intent = new Intent(this, AnswerCardActivity.class);
-			intent.putExtra("paperId", paper.getId());
-			intent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
-			intent.putExtra("trueOfFalse", record.getTorf());
-			intent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
-			intent.putExtra("paperScore", paper.getScore().doubleValue());
-			intent.putExtra("paperTime", paper.getTime());
-			intent.putExtra("paperType", paper.getType());
-			intent.putExtra("username", username);
-			intent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
-			intent.putExtra("userScore", record.getScore()); // 本次得分
-		}else{
-			intent = new Intent(this, PaperDoPaperActivity.class);
-			intent.putExtra("paperId", paper.getId());
-			intent.putExtra("action", AppConstant.ACTION_DO_EXAM);
-		}
+//		if(record!=null && AppConstant.STATUS_DONE.equals(record.getStatus()))	//已经交卷
+//		{
+//			intent = new Intent(this, AnswerCardActivity.class);
+//			intent.putExtra("paperId", paper.getId());
+//			//intent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
+//			intent.putExtra("trueOfFalse", record.getTorf());
+//			intent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
+//			intent.putExtra("paperScore", paper.getScore().doubleValue());
+//			intent.putExtra("paperTime", paper.getTime());
+//			intent.putExtra("paperType", paper.getType());
+//			intent.putExtra("username", username);
+//			intent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
+//			intent.putExtra("userScore", record.getScore()); // 本次得分
+//		}else{
+//			intent = new Intent(this, PaperDoPaperActivity.class);
+//			intent.putExtra("paperId", paper.getId());
+//			intent.putExtra("action", AppConstant.ACTION_DO_EXAM);
+//		}
 		this.startActivity(intent);
 		this.finish(); // 结束生命
 	}
@@ -194,21 +192,21 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 		int length = rules.size();
 		this.ruleSize.setText(length + "");
 		//每日一练,没有总分和时间
-		if(paper.getType().equals(AppConstant.PAPER_TYPE_DAILY))
-		{
-			this.findViewById(R.id.scoreTimeLayout).setVisibility(View.GONE);
-		}else{
-			this.paperScore.setText(paper.getScore() + "");
-			this.paperTime.setText(paper.getTime() + "");
-		}
-		if (record != null && AppConstant.STATUS_NONE.equals(record.getStatus())) {
-			this.startBtn.setText("继续考试");
-		} else if (record != null && AppConstant.STATUS_DONE.equals(record.getStatus())) {
-			this.startBtn.setText("查看成绩");
-		} else {
-			this.startBtn.setText("开始考试");
-			this.restarBtn.setVisibility(View.GONE);
-		}
+//		if(paper.getType().equals(AppConstant.PAPER_TYPE_DAILY))
+//		{
+//			this.findViewById(R.id.scoreTimeLayout).setVisibility(View.GONE);
+//		}else{
+//			this.paperScore.setText(paper.getScore() + "");
+//			this.paperTime.setText(paper.getTime() + "");
+//		}
+//		if (record != null && AppConstant.STATUS_NONE.equals(record.getStatus())) {
+//			this.startBtn.setText("继续考试");
+//		} else if (record != null && AppConstant.STATUS_DONE.equals(record.getStatus())) {
+//			this.startBtn.setText("查看成绩");
+//		} else {
+//			this.startBtn.setText("开始考试");
+//			this.restarBtn.setVisibility(View.GONE);
+//		}
 		this.totalNum.setText(paper.getTotal()+"");
 		for (int i = 0; i < length; i++) {
 			StructureInfo r = rules.get(i);

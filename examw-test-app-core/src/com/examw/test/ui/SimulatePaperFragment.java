@@ -1,9 +1,7 @@
 package com.examw.test.ui;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -28,9 +26,8 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
-import com.examw.test.app.AppContext;
 import com.examw.test.support.AppUpdateManager;
-import com.examw.test.util.BrightnessUtil;
+import com.examw.test.utils.BrightnessUtil;
 
 /**
  * 
@@ -40,10 +37,11 @@ import com.examw.test.util.BrightnessUtil;
 public class SimulatePaperFragment extends Fragment implements OnClickListener {
 	private TextView // dateTxt, versionTxt, cacheSizeTxt,
 	// usernameTxt, loginTxt
-			newDataFlag, newVersionFlag;
+		//	newDataFlag, 
+	newVersionFlag;
 	private CheckBox checkBox;
 	private AppConfig appConfig;
-	private AppContext appContext;
+	//private AppContext appContext;
 	private Context mContext;
 	private Button logoutBtn;
 	private PopupWindow pop;
@@ -63,18 +61,18 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 //		newDataFlag = (TextView) v.findViewById(R.id.newDataFlag);
 		newVersionFlag = (TextView) v.findViewById(R.id.newVersionFlag);
 		//parent = v.findViewById(R.id.setting_parent);
-		appConfig = AppConfig.getAppConfig(getActivity());
-		appContext = (AppContext) getActivity().getApplication();
-		if (appContext.getLoginState() == AppContext.LOGINED
-				|| appContext.getLoginState() == AppContext.LOCAL_LOGINED) {
-			// loginTxt.setText("注销登录");
-			logoutBtn.setText("退出当前帐号");
-			// usernameTxt.setText(appContext.getUsername());
-		} else {
-			// loginTxt.setText("登录/注册");
-			logoutBtn.setText("登录/注册");
-			// usernameTxt.setText("未登录");
-		}
+		//appConfig = AppConfig.getAppConfig(getActivity());
+		//appContext = (AppContext) getActivity().getApplication();
+//		if (appContext.getLoginState() == AppContext.LOGINED
+//				|| appContext.getLoginState() == AppContext.LOCAL_LOGINED) {
+//			// loginTxt.setText("注销登录");
+//			logoutBtn.setText("退出当前帐号");
+//			// usernameTxt.setText(appContext.getUsername());
+//		} else {
+//			// loginTxt.setText("登录/注册");
+//			logoutBtn.setText("登录/注册");
+//			// usernameTxt.setText("未登录");
+//		}
 		mContext = getActivity();
 		checkBox.setOnClickListener(this);
 
@@ -111,13 +109,13 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 	public void onStart() {
 		super.onStart();
 		// this.versionTxt.setText(appContext.getVersionName());
-		if (appContext.isHasNewData())
-			newDataFlag.setVisibility(View.VISIBLE);
-		if (appContext.isHasNewVersion())
-			newVersionFlag.setVisibility(View.VISIBLE);
+//		if (appContext.isHasNewData())
+//			newDataFlag.setVisibility(View.VISIBLE);
+//		if (appContext.isHasNewVersion())
+//			newVersionFlag.setVisibility(View.VISIBLE);
 		// this.usernameTxt.setText(appContext.getUsername());
 		// this.cacheSizeTxt.setText(appContext.calculateCacheSize());
-		checkBox.setChecked(appContext.isCheckUp());
+		//checkBox.setChecked(appContext.isCheckUp());
 	}
 
 	@Override
@@ -148,7 +146,7 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 		// 清理缓存
 		case R.id.layout_clear_cache:
 			// 清理缓存
-			appContext.clearAppCache();
+			//appContext.clearAppCache();
 			// 重新计算缓存
 			// this.cacheSizeTxt.setText(appContext.calculateCacheSize());
 			// 提示消息
@@ -173,9 +171,9 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 		// 一开始就检测更新
 		case R.id.checkWhenStart:
 			if (checkBox.isChecked()) {
-				appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(true));
+				//appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(true));
 			} else {
-				appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(false));
+				//appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(false));
 			}
 			break;
 		case R.id.layout_checkupdate_when_start:
@@ -193,14 +191,14 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 	}
 
 	private void loginOrLogout() {
-		if (appContext.getLoginState() == AppContext.LOGINED) {
-			showLogoutDialog();
-		} else {
-			// 转到登录界面
-			// Intent intent = new Intent(getActivity(), LoginActivity.class);
-			// intent.putExtra("loginFrom", LoginActivity.LOGIN_SETTING);
-			// startActivityForResult(intent, 10);
-		}
+//		if (appContext.getLoginState() == AppContext.LOGINED) {
+//			showLogoutDialog();
+//		} else {
+//			// 转到登录界面
+//			// Intent intent = new Intent(getActivity(), LoginActivity.class);
+//			// intent.putExtra("loginFrom", LoginActivity.LOGIN_SETTING);
+//			// startActivityForResult(intent, 10);
+//		}
 	}
 
 //	// 分享
@@ -228,10 +226,10 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 	private void checkWhenStart() {
 		if (checkBox.isChecked()) {
 			checkBox.setChecked(false);
-			appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(false));
+			//appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(false));
 		} else {
 			checkBox.setChecked(true);
-			appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(true));
+			//appConfig.set(AppConfig.CONF_CHECKUP, String.valueOf(true));
 		}
 
 	}
@@ -389,51 +387,51 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 
 	public void setLoginTxt() {
 		// TODO Auto-generated method stub
-		if (appContext.getLoginState() == AppContext.LOGINED) {
+		//if (appContext.getLoginState() == AppContext.LOGINED) {
 			// loginTxt.setText("注销登录");
 			// usernameTxt.setText(appContext.getUsername());
-		}
+		//}
 	}
 
-	private void showLogoutDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(
-				this.getActivity());
-		builder.setIcon(android.R.drawable.ic_dialog_info);
-		builder.setTitle(R.string.app_setting_surelogout);
-		// builder.setMessage(" 当前帐号：" + appContext.getUsername());
-		builder.setPositiveButton(R.string.sure,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						// 退出
-						// 退出登录,清除登录信息
-						// loginTxt.setText("登录/注册");
-						logoutBtn.setText("登录/注册");
-						// usernameTxt.setText("未登录");
-						// to do something...
-						new Thread() {
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								try {
-									// ApiClient.logout(appContext,appContext.getUsername());
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						}.start();
-						// appContext.cleanLoginInfo();
-						((MainActivity) getActivity()).changeMenu(); // 改变菜单文字
-					}
-				});
-		builder.setNegativeButton(R.string.cancle,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-		builder.show();
-	}
+//	private void showLogoutDialog() {
+//		AlertDialog.Builder builder = new AlertDialog.Builder(
+//				this.getActivity());
+//		builder.setIcon(android.R.drawable.ic_dialog_info);
+//		builder.setTitle(R.string.app_setting_surelogout);
+//		// builder.setMessage(" 当前帐号：" + appContext.getUsername());
+//		builder.setPositiveButton(R.string.sure,
+//				new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.dismiss();
+//						// 退出
+//						// 退出登录,清除登录信息
+//						// loginTxt.setText("登录/注册");
+//						logoutBtn.setText("登录/注册");
+//						// usernameTxt.setText("未登录");
+//						// to do something...
+//						new Thread() {
+//							@Override
+//							public void run() {
+//								// TODO Auto-generated method stub
+//								try {
+//									// ApiClient.logout(appContext,appContext.getUsername());
+//								} catch (Exception e) {
+//									e.printStackTrace();
+//								}
+//							}
+//						}.start();
+//						// appContext.cleanLoginInfo();
+//						((MainActivity) getActivity()).changeMenu(); // 改变菜单文字
+//					}
+//				});
+//		builder.setNegativeButton(R.string.cancle,
+//				new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.dismiss();
+//					}
+//				});
+//		builder.show();
+//	}
 
 //	private OnItemClickListener itemClick = new OnItemClickListener() {
 //		@Override

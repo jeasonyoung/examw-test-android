@@ -11,9 +11,6 @@ import java.util.zip.ZipInputStream;
 import android.content.Context;
 import android.content.res.AssetManager;
 
-import com.examw.test.util.FileUtils;
-import com.examw.test.util.LogUtil;
-
 /**
  * 资源文件管理
  * @author fengwei.
@@ -69,11 +66,11 @@ public class AssetFileManager {
 	 */
 	public static void copyDataBase(Context context,String fileName,String dbPath)
 	{
-		LogUtil.d( String.format("复制[%1$s]数据库到指定应用数据位置[%2$s]",fileName,dbPath));
+		//LogUtil.d( String.format("复制[%1$s]数据库到指定应用数据位置[%2$s]",fileName,dbPath));
 		AssetManager assetManager = context.getAssets();
 		try
 		{
-			FileUtils.copyFile(assetManager.open(fileName), dbPath);
+			//FileUtils.copyFile(assetManager.open(fileName), dbPath);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -94,8 +91,8 @@ public class AssetFileManager {
 			}
 			for(String path:filePaths)
 			{
-				LogUtil.d(path);
-				FileUtils.copyFile(assetManager.open("data/image/"+path), imagePath + path);
+				//LogUtil.d(path);
+				//FileUtils.copyFile(assetManager.open("data/image/"+path), imagePath + path);
 			}
 		}catch(Exception e)
 		{

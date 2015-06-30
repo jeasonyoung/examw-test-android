@@ -2,6 +2,7 @@ package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -19,12 +20,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.examw.test.R;
 import com.examw.test.adapter.PaperListAdapter;
-import com.examw.test.app.AppContext;
 import com.examw.test.daonew.PaperDao;
-import com.examw.test.domain.Paper;
-import com.examw.test.util.LogUtil;
+import com.examw.test.domain.PaperModel;
 import com.examw.test.widget.NewDataToast;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -37,7 +37,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
  */
 public class RealPaperFragment extends Fragment{
 	private PullToRefreshListView paperListView;
-	private ArrayList<Paper> papers;
+	private ArrayList<PaperModel> papers;
 	private Handler handler;
 	private LinearLayout nodataLayout,loadingLayout,reloadLayout;
 	private View lvPapers_footer;
@@ -51,13 +51,13 @@ public class RealPaperFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		LogUtil.d("RealPaperFragment 创建");
+		//LogUtil.d("RealPaperFragment 创建");
 		View v = inflater.inflate(R.layout.paper_fragment, container, false);
 		Bundle data = this.getArguments();
 		subjectId = data.getString("subjectId");
 		paperType = data.getString("paperType");
 		// appContext.recoverLoginStatus();
-		username = ((AppContext) this.getActivity().getApplication()).getUsername();
+		//username = ((AppContext) this.getActivity().getApplication()).getUsername();
 		initViews(v);
 		initData();
 		return v;
@@ -104,10 +104,10 @@ public class RealPaperFragment extends Fragment{
 		this.loadingLayout.setVisibility(View.VISIBLE);
 		new GetPaperListThread().start();
 	}
-	private class GetPaperTask extends AsyncTask<String,Void,ArrayList<Paper>>
+	private class GetPaperTask extends AsyncTask<String,Void,ArrayList<PaperModel>>
 	{
 		@Override
-		protected ArrayList<Paper> doInBackground(String... params) {
+		protected ArrayList<PaperModel> doInBackground(String... params) {
 			try{
 				Thread.sleep(2000);return null;
 //				PaperList list1 = XMLParseUtil.parsePaperList(ApiClient.getPaperListData((AppContext)getApplication(), classid, String.valueOf(areacode)));
@@ -120,7 +120,7 @@ public class RealPaperFragment extends Fragment{
 			}
 		}
 		@Override
-		protected void onPostExecute(ArrayList<Paper> result) {
+		protected void onPostExecute(ArrayList<PaperModel> result) {
 			// TODO Auto-generated method stub
 			int newdata = 0;
 //			if (result!=null&&result.getPaperlist().size() > 0) {
@@ -204,7 +204,7 @@ public class RealPaperFragment extends Fragment{
             		Toast.makeText(theActivity.getActivity(), "本地没有数据", Toast.LENGTH_SHORT).show();//提示
             		break;
                 case 4:
-                	theActivity.papers.addAll((ArrayList<Paper>) msg.obj);
+                	theActivity.papers.addAll((ArrayList<PaperModel>) msg.obj);
                 	theActivity.mAdapter.notifyDataSetChanged();
                 	//判断剩余加载量
                 	if(theActivity.total > theActivity.papers.size())

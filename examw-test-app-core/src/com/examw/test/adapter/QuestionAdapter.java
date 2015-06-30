@@ -28,7 +28,7 @@ import com.examw.test.app.AppConstant;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.ui.BaseActivity;
 import com.examw.test.ui.PaperDoPaperActivity;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 import com.examw.test.widget.CheckBoxGroup;
 import com.examw.test.widget.ImageTextView;
 import com.examw.test.widget.OptionLayout;
@@ -90,7 +90,7 @@ public class QuestionAdapter extends BaseAdapter {
 	@SuppressLint("ViewTag")
 	@Override
 	public View getView(int position, View v, ViewGroup parent) {
-		int action = AppConstant.ACTION_DO_EXAM;
+		int action = 0;// AppConstant.ACTION_DO_EXAM;
 		if (activity2 != null) {
 			action = activity2.getAction();
 		}
@@ -170,13 +170,13 @@ public class QuestionAdapter extends BaseAdapter {
 				else
 					option.setText((char) (64 + i) + "．" + optionItem.getContent());
 				option.setValue(optionItem.getId());
-				if (type.equals(AppConstant.ITEM_TYPE_SINGLE)) {
-					option.setButtonDrawable(R.drawable.radio_button);
-					option.setType(OptionLayout.RADIO_BUTTON);
-				} else {
-					option.setButtonDrawable(R.drawable.checkbox_button);
-					option.setType(OptionLayout.CHECK_BOX);
-				}
+//				if (type.equals(AppConstant.ITEM_TYPE_SINGLE)) {
+//					option.setButtonDrawable(R.drawable.radio_button);
+//					option.setType(OptionLayout.RADIO_BUTTON);
+//				} else {
+//					option.setButtonDrawable(R.drawable.checkbox_button);
+//					option.setType(OptionLayout.CHECK_BOX);
+//				}
 				if (answer != null && answer.indexOf(optionItem.getId()) != -1) {
 					option.setChecked(true);
 				}
@@ -184,125 +184,125 @@ public class QuestionAdapter extends BaseAdapter {
 				i++;
 			}
 		}
-		else if (type.equals(AppConstant.ITEM_TYPE_JUDGE)) { // 判断题
-			contentHolder.modeLayout.setVisibility(View.VISIBLE);
-			contentHolder.modeLayout4.setVisibility(View.GONE);
-			contentHolder.showAnswerBtn.setVisibility(View.GONE);
-			// 显示图片
-			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
-			//选项
-			OptionLayout rb_t, rb_f;
-			if (contentHolder.examOption.getChildCount() == 0) {
-				rb_t = new OptionLayout(context, null);
-				rb_t.setId(1);
-				rb_t.resetColor();
-				rb_f = new OptionLayout(context, null);
-				rb_f.setId(2);
-				rb_f.resetColor();
-				rb_t.setText(" √");
-				rb_t.setValue("A");
-				rb_t.setFontColor(context.getResources()
-						.getColor(R.color.black));
-				rb_t.setFontSize(size);
-				rb_t.setType(OptionLayout.RADIO_BUTTON);
-				rb_t.setButtonDrawable(R.drawable.radio_button);
-				rb_f.setText(" ×");
-				rb_f.setValue("B");
-				rb_f.setFontColor(context.getResources()
-						.getColor(R.color.black));
-				rb_f.setFontSize(size);
-				rb_f.setButtonDrawable(R.drawable.radio_button);
-				rb_f.setType(OptionLayout.RADIO_BUTTON);
-				contentHolder.examOption.addView(rb_t, 0);
-				contentHolder.examOption.addView(rb_f, 1);
-			}
-			// this.examOption1.clearCheck();
-			rb_t = (OptionLayout) contentHolder.examOption.getChildAt(0);
-			rb_f = (OptionLayout) contentHolder.examOption.getChildAt(1);
-			rb_t.setOnClickListener(contentHolder.checkBoxListener);
-			rb_f.setOnClickListener(contentHolder.checkBoxListener);
-			if (contentHolder.examOption.getChildCount() >= 2) {
-				contentHolder.examOption.removeAllViews();
-				rb_t.setId(1);
-				rb_t.resetColor();
-				rb_f.setId(2);
-				rb_f.resetColor();
-				rb_t.setText(" √");
-				rb_t.setFontColor(context.getResources()
-						.getColor(R.color.black));
-				rb_t.setFontSize(size);
-				rb_t.setValue("A");
-				rb_t.setButtonDrawable(R.drawable.radio_button);
-				rb_t.setType(OptionLayout.RADIO_BUTTON);
-				rb_f.setText(" ×");
-				rb_f.setFontColor(context.getResources()
-						.getColor(R.color.black));
-				rb_f.setFontSize(size);
-				rb_f.setButtonDrawable(R.drawable.radio_button);
-				rb_f.setType(OptionLayout.RADIO_BUTTON);
-				rb_f.setValue("B");
-				contentHolder.examOption.addView(rb_t, 0);
-				contentHolder.examOption.addView(rb_f, 1);
-			}
-			if (answer != null) {
-				if (answer.indexOf("0") != -1) {
-					rb_f.setChecked(true);
-					rb_t.setChecked(false);
-				} else if (answer.indexOf("1") != -1) {
-					rb_t.setChecked(true);
-					rb_f.setChecked(false);
-				} else {
-					rb_t.setChecked(false);
-					rb_f.setChecked(false);
-				}
-			}
-		} else if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
-			contentHolder.modeLayout.setVisibility(View.GONE);
-			contentHolder.modeLayout4.setVisibility(View.VISIBLE);
-			
-			//TODO 显示问答题的题干
-			contentHolder.textContent.setText(position + 1 + "、"+currentQuestion.getContent());
-			
-			if (answer != null) {
-				contentHolder.answerEditText.setText(answer);
-			}else
-			{
-				contentHolder.answerEditText.setText("");
-			}
-			contentHolder.submitExamBtn.setVisibility(View.VISIBLE);
-			contentHolder.submitExamBtn
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							EditText editText = (EditText) v.getTag();
-							String txtAnswer = editText.getText().toString();
-							activity2.saveTextAnswer(txtAnswer);
-						}
-					});
-		}
-		if (action != AppConstant.ACTION_DO_EXAM) {
-			if (action == AppConstant.ACTION_DO_PRACTICE && currentQuestion.getUserAnswer() == null) {
-				answerHolder.examAnswerLayout.setVisibility(View.GONE);
-				//多选题显示按钮
-				if(type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN))
-					contentHolder.showAnswerBtn.setVisibility(View.VISIBLE);
-				else
-					contentHolder.showAnswerBtn.setVisibility(View.GONE);
-//				contentHolder.examOption.forbidden(true);
-			} else if ((action == AppConstant.ACTION_DO_PRACTICE || action == AppConstant.ACTION_SHOW_ANSWER)
-							&& currentQuestion.getUserAnswer() != null) {
-				answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
-				contentHolder.showAnswerBtn.setVisibility(View.GONE);
-				contentHolder.examOption.setFontColor(context.getResources()
-						.getColor(R.color.green), currentQuestion.getAnswer(),context.getResources()
-						.getColor(R.color.red), currentQuestion.getUserAnswer(),type);
-			} else {
-				answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
-				contentHolder.showAnswerBtn.setVisibility(View.GONE);
-				// 禁用选择
-			}
+//		else if (type.equals(AppConstant.ITEM_TYPE_JUDGE)) { // 判断题
+//			contentHolder.modeLayout.setVisibility(View.VISIBLE);
+//			contentHolder.modeLayout4.setVisibility(View.GONE);
+//			contentHolder.showAnswerBtn.setVisibility(View.GONE);
+//			// 显示图片
+//			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
+//			//选项
+//			OptionLayout rb_t, rb_f;
+//			if (contentHolder.examOption.getChildCount() == 0) {
+//				rb_t = new OptionLayout(context, null);
+//				rb_t.setId(1);
+//				rb_t.resetColor();
+//				rb_f = new OptionLayout(context, null);
+//				rb_f.setId(2);
+//				rb_f.resetColor();
+//				rb_t.setText(" √");
+//				rb_t.setValue("A");
+//				rb_t.setFontColor(context.getResources()
+//						.getColor(R.color.black));
+//				rb_t.setFontSize(size);
+//				rb_t.setType(OptionLayout.RADIO_BUTTON);
+//				rb_t.setButtonDrawable(R.drawable.radio_button);
+//				rb_f.setText(" ×");
+//				rb_f.setValue("B");
+//				rb_f.setFontColor(context.getResources()
+//						.getColor(R.color.black));
+//				rb_f.setFontSize(size);
+//				rb_f.setButtonDrawable(R.drawable.radio_button);
+//				rb_f.setType(OptionLayout.RADIO_BUTTON);
+//				contentHolder.examOption.addView(rb_t, 0);
+//				contentHolder.examOption.addView(rb_f, 1);
+//			}
+//			// this.examOption1.clearCheck();
+//			rb_t = (OptionLayout) contentHolder.examOption.getChildAt(0);
+//			rb_f = (OptionLayout) contentHolder.examOption.getChildAt(1);
+//			rb_t.setOnClickListener(contentHolder.checkBoxListener);
+//			rb_f.setOnClickListener(contentHolder.checkBoxListener);
+//			if (contentHolder.examOption.getChildCount() >= 2) {
+//				contentHolder.examOption.removeAllViews();
+//				rb_t.setId(1);
+//				rb_t.resetColor();
+//				rb_f.setId(2);
+//				rb_f.resetColor();
+//				rb_t.setText(" √");
+//				rb_t.setFontColor(context.getResources()
+//						.getColor(R.color.black));
+//				rb_t.setFontSize(size);
+//				rb_t.setValue("A");
+//				rb_t.setButtonDrawable(R.drawable.radio_button);
+//				rb_t.setType(OptionLayout.RADIO_BUTTON);
+//				rb_f.setText(" ×");
+//				rb_f.setFontColor(context.getResources()
+//						.getColor(R.color.black));
+//				rb_f.setFontSize(size);
+//				rb_f.setButtonDrawable(R.drawable.radio_button);
+//				rb_f.setType(OptionLayout.RADIO_BUTTON);
+//				rb_f.setValue("B");
+//				contentHolder.examOption.addView(rb_t, 0);
+//				contentHolder.examOption.addView(rb_f, 1);
+//			}
+//			if (answer != null) {
+//				if (answer.indexOf("0") != -1) {
+//					rb_f.setChecked(true);
+//					rb_t.setChecked(false);
+//				} else if (answer.indexOf("1") != -1) {
+//					rb_t.setChecked(true);
+//					rb_f.setChecked(false);
+//				} else {
+//					rb_t.setChecked(false);
+//					rb_f.setChecked(false);
+//				}
+//			}
+//		} else if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
+//			contentHolder.modeLayout.setVisibility(View.GONE);
+//			contentHolder.modeLayout4.setVisibility(View.VISIBLE);
+//			
+//			//TODO 显示问答题的题干
+//			contentHolder.textContent.setText(position + 1 + "、"+currentQuestion.getContent());
+//			
+//			if (answer != null) {
+//				contentHolder.answerEditText.setText(answer);
+//			}else
+//			{
+//				contentHolder.answerEditText.setText("");
+//			}
+//			contentHolder.submitExamBtn.setVisibility(View.VISIBLE);
+//			contentHolder.submitExamBtn
+//					.setOnClickListener(new OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							EditText editText = (EditText) v.getTag();
+//							String txtAnswer = editText.getText().toString();
+//							activity2.saveTextAnswer(txtAnswer);
+//						}
+//					});
+//		}
+//		if (action != AppConstant.ACTION_DO_EXAM) {
+//			if (action == AppConstant.ACTION_DO_PRACTICE && currentQuestion.getUserAnswer() == null) {
+//				answerHolder.examAnswerLayout.setVisibility(View.GONE);
+//				//多选题显示按钮
+//				if(type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN))
+//					contentHolder.showAnswerBtn.setVisibility(View.VISIBLE);
+//				else
+//					contentHolder.showAnswerBtn.setVisibility(View.GONE);
+////				contentHolder.examOption.forbidden(true);
+//			} else if ((action == AppConstant.ACTION_DO_PRACTICE || action == AppConstant.ACTION_SHOW_ANSWER)
+//							&& currentQuestion.getUserAnswer() != null) {
+//				answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
+//				contentHolder.showAnswerBtn.setVisibility(View.GONE);
+//				contentHolder.examOption.setFontColor(context.getResources()
+//						.getColor(R.color.green), currentQuestion.getAnswer(),context.getResources()
+//						.getColor(R.color.red), currentQuestion.getUserAnswer(),type);
+//			} else {
+//				answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
+//				contentHolder.showAnswerBtn.setVisibility(View.GONE);
+//				// 禁用选择
+	//}
 			showAnswer(answerHolder, currentQuestion, answer);
-		}
+	//	}
 		//设置字体
 		setFontSize(answerHolder, size, v);
 		return v;
@@ -378,22 +378,22 @@ public class QuestionAdapter extends BaseAdapter {
 			holder.sysAnswerTextView.setText(answerToTF(trueAnswer));
 		}
 		holder.analysisTextView.setText(currentQuestion.getAnalysis());
-		if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
-			holder.answerResultImg.setVisibility(View.GONE);
-		} else {
-			holder.answerResultImg.setVisibility(View.VISIBLE);
-			if (trueAnswer.equals(userAnswer)) {
-				holder.answerResultImg
-						.setImageResource(R.drawable.answer_correct_pto);
-			} else if (userAnswer != null && !"".equals(userAnswer)
-					&& isContain(trueAnswer, userAnswer)) {
-				holder.answerResultImg
-						.setImageResource(R.drawable.answer_halfcorrect_pto);
-			} else {
-				holder.answerResultImg
-						.setImageResource(R.drawable.answer_wrong_pto);
-			}
-		}
+//		if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
+//			holder.answerResultImg.setVisibility(View.GONE);
+//		} else {
+//			holder.answerResultImg.setVisibility(View.VISIBLE);
+//			if (trueAnswer.equals(userAnswer)) {
+//				holder.answerResultImg
+//						.setImageResource(R.drawable.answer_correct_pto);
+//			} else if (userAnswer != null && !"".equals(userAnswer)
+//					&& isContain(trueAnswer, userAnswer)) {
+//				holder.answerResultImg
+//						.setImageResource(R.drawable.answer_halfcorrect_pto);
+//			} else {
+//				holder.answerResultImg
+//						.setImageResource(R.drawable.answer_wrong_pto);
+//			}
+//		}
 	}
 	//计算用户答案的选项
 	private String calculateUserAnswer(StructureItemInfo currentQuestion, String userAnswer){

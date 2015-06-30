@@ -1,13 +1,9 @@
 package com.examw.test.ui;
 
-import java.lang.ref.WeakReference;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,14 +18,7 @@ import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
-import com.examw.test.daonew.UserDao;
-import com.examw.test.domain.User;
-import com.examw.test.model.FrontUserInfo;
-import com.examw.test.model.Json;
-import com.examw.test.support.ApiClient;
-import com.examw.test.support.AppUpdateManager;
-import com.examw.test.util.CyptoUtils;
-import com.examw.test.util.ToastUtils;
+import com.examw.test.utils.ToastUtils;
 import com.examw.test.widget.BadgeView;
 import com.examw.test.widget.slidingmenu.SlidingMenu;
 
@@ -44,7 +33,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	// private LinearLayout menuLayout;
 	private AppContext appContext;// 全局Context
 	private AppConfig appConfig;
-	private Handler mHandler = null;
+	//private Handler mHandler = null;
 	public static final int MAIN_SETTING = 3;
 	public static final int MAIN_INDEX = 0;
 	public static final int MAIN_ACCOUNT = 1;
@@ -62,14 +51,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// 添加Activity到堆栈
 		AppManager.getAppManager().addActivity(this);
 		appContext = (AppContext) getApplication();
-		appConfig = AppConfig.getAppConfig(this);
+		//appConfig = AppConfig.getAppConfig(this);
 		this.setContentView(R.layout.ui_main);
-		mHandler = new MyHandler(this);
+		//mHandler = new MyHandler(this);
 		initViews();
 		initFragment(flag);
 		initSlidingMenu();
 		// 网络连接判断
-		if (!appContext.isNetworkConnected()) {
+		if (!appContext.hasNetworkConnected()) {
 			ToastUtils.show(this, R.string.network_not_connected);
 		} else {
 			// //检查数据更新
@@ -77,53 +66,53 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// false);
 
 		}
-		// 检查新版本
-		if (appContext.isCheckUp() && !appContext.isAutoCheckuped()) {
-			// 老式的自动更新
-			AppUpdateManager.getUpdateManager().checkAppUpdate(this, false);
-			appContext.setAutoCheckuped(true);
-			// UmengUpdateAgent.update(this); //umeng update
-		}
-		// 是否自动登录
-		if (appContext.isAutoLogin() && !appContext.isAutoLogined()) {
-			// 开线程去登录
-			new Thread() {
-				public void run() {
-					Message msg = mHandler.obtainMessage();
-					String username = appConfig.get("user.account");
-					if(username == null) return;
-					String pwd = CyptoUtils.decode("changheng", appConfig.get("user.pwd")).trim();
-					try {
-						appContext.setLoginState(AppContext.LOGINING); // 登录中
-						Json result = ApiClient.login_proxy(appContext, username, pwd);
-						msg.what = 1;
-						if (result != null){
-							//查询本地数据库用户信息
-							User user = UserDao.findByUsername(username);
-							if(result.isSuccess())	//远程登录成功
-							{
-								msg.what = 1;
-							}else	//远程登录不成功
-							{
-								msg.what = 0;	//登录失败
-								msg.obj = result.getMsg();
-							}
-							msg.obj = user;
-						}else	//登录失败
-						{
-							localLogin(msg, username, pwd);
-						}
-						/////////////////////////////////////////
-					} catch (Exception e) {
-						e.printStackTrace();
-						//转本地登录
-						localLogin(msg, username, pwd);
-					}
-					mHandler.sendMessage(msg);
-				};
-			}.start();
-			appContext.setAutoLogined(true);
-		}
+//		// 检查新版本
+//		if (appContext.isCheckUp() && !appContext.isAutoCheckuped()) {
+//			// 老式的自动更新
+//			AppUpdateManager.getUpdateManager().checkAppUpdate(this, false);
+//			appContext.setAutoCheckuped(true);
+//			// UmengUpdateAgent.update(this); //umeng update
+//		}
+//		// 是否自动登录
+//		if (appContext.isAutoLogin() && !appContext.isAutoLogined()) {
+//			// 开线程去登录
+//			new Thread() {
+//				public void run() {
+//					Message msg = mHandler.obtainMessage();
+//					String username = appConfig.get("user.account");
+//					if(username == null) return;
+//					String pwd = CyptoUtils.decode("changheng", appConfig.get("user.pwd")).trim();
+//					try {
+//						appContext.setLoginState(AppContext.LOGINING); // 登录中
+//						Json result = ApiClient.login_proxy(appContext, username, pwd);
+//						msg.what = 1;
+//						if (result != null){
+//							//查询本地数据库用户信息
+//							User user = UserDao.findByUsername(username);
+//							if(result.isSuccess())	//远程登录成功
+//							{
+//								msg.what = 1;
+//							}else	//远程登录不成功
+//							{
+//								msg.what = 0;	//登录失败
+//								msg.obj = result.getMsg();
+//							}
+//							msg.obj = user;
+//						}else	//登录失败
+//						{
+//							localLogin(msg, username, pwd);
+//						}
+//						/////////////////////////////////////////
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//						//转本地登录
+//						localLogin(msg, username, pwd);
+//					}
+//					mHandler.sendMessage(msg);
+//				};
+//			}.start();
+//			appContext.setAutoLogined(true);
+//		}
 	}
 
 	private void initFragment(int curFragment) {
@@ -208,7 +197,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private void initViews() {
 		// this.menuLayout = (LinearLayout) this.findViewById(R.id.menuLayout);
-		((TextView)this.findViewById(R.id.examTitle)).setText(appConfig.get("exam_name"));
+		//((TextView)this.findViewById(R.id.examTitle)).setText(appConfig.get("exam_name"));
 		this.moreBtn = (RadioButton) this.findViewById(R.id.btn_more);
 		this.setBtn = (RadioButton) this.findViewById(R.id.btn_setting);
 		this.homeBtn = (RadioButton) this.findViewById(R.id.btn_home);
@@ -270,9 +259,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public void onResume() {
 		super.onResume();
 		changeMenu();
-		if (appContext.isHasNewVersion() || appContext.isHasNewData()) {
-			showNew();
-		}
+//		if (appContext.isHasNewVersion() || appContext.isHasNewData()) {
+//			showNew();
+//		}
 	}
 
 	@Override
@@ -343,41 +332,41 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		this.footer.setVisibility(flag);
 	}
 
-	private static class MyHandler extends Handler {
-		WeakReference<MainActivity> mActivity;
-
-		public MyHandler(MainActivity activity) {
-			mActivity = new WeakReference<MainActivity>(activity);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			MainActivity theActivity = mActivity.get();
-			switch (msg.what) {
-			case 1:
-				theActivity.appContext.saveLoginInfo((User)msg.obj);
-				theActivity.changeMenu();
-				ToastUtils.show(theActivity, "登录成功");
-				break;
-			case 0:
-				ToastUtils.show(theActivity, msg.obj.toString());
-				theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
-				theActivity.changeMenu();
-				break;
-			case 2:
-				ToastUtils.show(theActivity, "本地登录成功");
-				theActivity.appContext.saveLoginInfo((User)msg.obj);
-				theActivity.appContext.setLoginState(AppContext.LOCAL_LOGINED);
-				theActivity.changeMenu();
-				break;
-			case -2:
-				ToastUtils.show(theActivity, "登录失败");
-				theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
-				theActivity.changeMenu();
-				break;
-			}
-		}
-	}
+//	private static class MyHandler extends Handler {
+//		WeakReference<MainActivity> mActivity;
+//
+//		public MyHandler(MainActivity activity) {
+//			mActivity = new WeakReference<MainActivity>(activity);
+//		}
+//
+//		@Override
+//		public void handleMessage(Message msg) {
+//			MainActivity theActivity = mActivity.get();
+//			switch (msg.what) {
+//			case 1:
+//				//theActivity.appContext.saveLoginInfo((User)msg.obj);
+//				theActivity.changeMenu();
+//				ToastUtils.show(theActivity, "登录成功");
+//				break;
+//			case 0:
+//				ToastUtils.show(theActivity, msg.obj.toString());
+//				//theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
+//				theActivity.changeMenu();
+//				break;
+//			case 2:
+//				ToastUtils.show(theActivity, "本地登录成功");
+//				//theActivity.appContext.saveLoginInfo((User)msg.obj);
+//				//theActivity.appContext.setLoginState(AppContext.LOCAL_LOGINED);
+//				theActivity.changeMenu();
+//				break;
+//			case -2:
+//				ToastUtils.show(theActivity, "登录失败");
+//				//theActivity.appContext.setLoginState(AppContext.LOGIN_FAIL);
+//				theActivity.changeMenu();
+//				break;
+//			}
+//		}
+//	}
 
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getRepeatCount() > 0
@@ -432,58 +421,58 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	 *            密码
 	 * @return
 	 */
-	private void localLogin(Message msg,String username, String password){
-		//转本地登录
-		//查询本地数据库用户信息
-		try{
-		User user = UserDao.findByUsername(username);
-		if (user!=null && password.equals(user.getPassword())) {
-			if(user.getProductUserId()==null)
-			{
-				FrontUserInfo userInfo = new FrontUserInfo();
-				userInfo.setCode(user.getUid());
-				userInfo.setName(username);
-				Json json = ApiClient.getProductUser(appContext, userInfo);
-				//失败则登录失败
-				if(json.isSuccess())
-				{
-					//保存至数据库
-					user.setProductUserId(json.getData().toString());
-					UserDao.saveOrUpdate(user);
-					msg.what = 2;
-				}else
-				{
-					msg.what = -2;	//登录失败
-				}
-			}else
-			{
-				msg.what = 2;
-			}
-			msg.obj = user;
-		}else
-		{
-			//登录失败
-			msg.what = -2;
-		}
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-			msg.what = -2;
-		}
-	}
+//	private void localLogin(Message msg,String username, String password){
+//		//转本地登录
+//		//查询本地数据库用户信息
+//		try{
+//		User user = UserDao.findByUsername(username);
+//		if (user!=null && password.equals(user.getPassword())) {
+//			if(user.getProductUserId()==null)
+//			{
+//				FrontUserInfo userInfo = new FrontUserInfo();
+//				userInfo.setCode(user.getUid());
+//				userInfo.setName(username);
+////				Json json = ApiClient.getProductUser(appContext, userInfo);
+////				//失败则登录失败
+////				if(json.isSuccess())
+////				{
+////					//保存至数据库
+////					user.setProductUserId(json.getData().toString());
+////					UserDao.saveOrUpdate(user);
+////					msg.what = 2;
+////				}else
+////				{
+////					msg.what = -2;	//登录失败
+////				}
+//			}else
+//			{
+//				msg.what = 2;
+//			}
+//			msg.obj = user;
+//		}else
+//		{
+//			//登录失败
+//			msg.what = -2;
+//		}
+//		}catch(Exception e)
+//		{
+//			e.printStackTrace();
+//			msg.what = -2;
+//		}
+//	}
 
-	/**
-	 * 显示有更新
-	 */
-	private void showNew() {
-		if (v == null) {
-			v = new BadgeView(this, setBtn);
-			v.setBackgroundResource(R.drawable.ic_redpoint);
-			v.setText("new");
-			v.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-		}
-		v.show();
-	}
+//	/**
+//	 * 显示有更新
+//	 */
+//	private void showNew() {
+//		if (v == null) {
+//			v = new BadgeView(this, setBtn);
+//			v.setBackgroundResource(R.drawable.ic_redpoint);
+//			v.setText("new");
+//			v.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+//		}
+//		v.show();
+//	}
 
 	/**
 	 * 退出程序

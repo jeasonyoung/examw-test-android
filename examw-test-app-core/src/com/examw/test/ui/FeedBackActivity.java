@@ -19,9 +19,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.model.FeedBackInfo;
-import com.examw.test.model.Json;
-import com.examw.test.support.ApiClient;
-import com.examw.test.util.ToastUtils;
+import com.examw.test.utils.ToastUtils;
 
 /**
  * 反馈界面
@@ -136,11 +134,11 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 		@Override
 		public void run() {
 			try{
-				Json result = ApiClient.feedBack(appContext, info);
-				if(result.isSuccess())
-				{
-					mHandler.sendEmptyMessage(1);
-				}else
+				//Json result = ApiClient.feedBack(appContext, info);
+				//if(result.isSuccess())
+				//{
+					//mHandler.sendEmptyMessage(1);
+				//}else
 					mHandler.sendEmptyMessage(2);
 			}catch(Exception e)
 			{
@@ -162,13 +160,13 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 		FeedBackInfo info = new FeedBackInfo();
 		StringBuffer buf = new StringBuffer();
 		buf.append("来自android客户端").append(appContext.getVersionName()).append("\n");
-		buf.append("产品ID:").append(AppContext.getMetaInfo("productId")).append("\n");
+		//buf.append("产品ID:").append(AppContext.getMetaInfo("productId")).append("\n");
 //		buf.append("名称:").append(ProductDao.findProductName()).append("\n");
-		buf.append("用户:").append(appContext.getUsername()).append("\n");
+		//buf.append("用户:").append(appContext.getUsername()).append("\n");
 		buf.append("content:").append(content);
 		info.setContent(buf.toString());
-		info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
-		info.setUsername(appContext.getUsername());
+		//info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
+		//info.setUsername(appContext.getUsername());
 		buf = null;
 		return info;
 	}

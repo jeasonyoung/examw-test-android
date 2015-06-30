@@ -1,6 +1,5 @@
 package com.examw.test.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
@@ -22,8 +21,6 @@ import com.examw.test.adapter.AnswerScoreGridAdatper;
 import com.examw.test.app.AppConstant;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.support.DataConverter;
-import com.examw.test.util.GsonUtil;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * 答题卡
@@ -37,7 +34,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private GridView scoreGridView;
 	private ListView questionListView;
 	private List<StructureInfo> ruleList;
-	private String ruleListJson;
+	//private String ruleListJson;
 	private String[] data ;
 	private int[] trueOfFalse;
 	private Intent intent;
@@ -81,73 +78,73 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private void initData()
 	{
 		intent = this.getIntent();
-		this.action = intent.getIntExtra("action",AppConstant.ACTION_CHOOSE_ITEM);
+		//this.action = intent.getIntExtra("action",AppConstant.ACTION_CHOOSE_ITEM);
 		this.paperId = intent.getStringExtra("paperId");
 		this.recordId = intent.getStringExtra("recordId");
-		this.ruleListJson = intent.getStringExtra("ruleListJson");
-		this.ruleList = GsonUtil.getGson().fromJson(ruleListJson, new TypeToken<ArrayList<StructureInfo>>(){}.getType());
-		this.trueOfFalse = GsonUtil.getGson().fromJson(intent.getStringExtra("trueOfFalse"), int[].class);
-		this.paperType = intent.getIntExtra("paperType", AppConstant.PAPER_TYPE_SIMU);
+		//this.ruleListJson = intent.getStringExtra("ruleListJson");
+		//this.ruleList = GsonUtil.getGson().fromJson(ruleListJson, new TypeToken<ArrayList<StructureInfo>>(){}.getType());
+		//this.trueOfFalse = GsonUtil.getGson().fromJson(intent.getStringExtra("trueOfFalse"), int[].class);
+		//this.paperType = intent.getIntExtra("paperType", AppConstant.PAPER_TYPE_SIMU);
 	}
 	private void initView()
 	{
-		switch(action)
-		{
-		case AppConstant.ACTION_CHOOSE_ITEM:
-			((ImageView)this.findViewById(R.id.colorTipsIV)).setImageResource(R.drawable.answer_color_tips2);
-			this.scoreLayout.setVisibility(View.GONE);
-			this.loadingLayout.setVisibility(View.GONE);
-			if(this.ruleList!=null&&this.ruleList.size()>0)
-			{
-				this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,false));
-			}else
-			{
-				this.nodataLayout.setVisibility(View.VISIBLE);
-			}
-			break;
-		case  AppConstant.ACTION_SHOW_ANSWER:
-		case AppConstant.ACTION_SUBMIT:
-			this.scoreLayout.setVisibility(View.VISIBLE);
-			int i = 0;
-			int hasDone = DataConverter.getHasDone(trueOfFalse);
-			int right = DataConverter.getRightNum(trueOfFalse);
-			if(paperType.equals(AppConstant.PAPER_TYPE_DAILY))
-			{
-				this.data = new String[6];
-				i = 4;
-				if(hasDone < trueOfFalse.length)
-				{
-					repeatTv.setText("继续做题");
-				}
-				this.data[5] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
-			}else
-			{
-				this.data = new String[10];
-				this.data[0] = "试题总分:"+intent.getDoubleExtra("paperScore",0)+"分";//总分
-				this.data[1] = "试题限时:"+intent.getIntExtra("paperTime",0)+"分钟";//总时
-				this.data[2] = "本次得分:"+intent.getDoubleExtra("userScore",0)+"分";//本次得分[红色]
-				this.data[3] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
-				if(hasDone ==0)
-				{
-					this.data[9] = "正确率:0.0%";
-				}else
-					this.data[9] = "正确率:"+(((int)(right*10000/hasDone)/100.0))+"%";//正确率
-			}
-			this.data[4-i] = "已做:"+hasDone+"题";//已做
-			this.data[5-i] = "未做:"+(trueOfFalse.length-hasDone)+"题";//未做
-			this.data[6-i] = "做对:"+right+"题";	//做对
-			this.data[7-i] = "做错:"+(hasDone - right)+"题";	//做错
-			this.data[8-i] = "共计:"+trueOfFalse.length+"题";		//共计题
-			this.scoreGridView.setAdapter(new AnswerScoreGridAdatper(this,data));
-			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
-			this.loadingLayout.setVisibility(View.GONE);
-			break;
-		default:
-			this.scoreLayout.setVisibility(View.GONE);
-			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
-			this.loadingLayout.setVisibility(View.GONE);
-			break;
-		}
+//		switch(action)
+//		{
+//		case AppConstant.ACTION_CHOOSE_ITEM:
+//			((ImageView)this.findViewById(R.id.colorTipsIV)).setImageResource(R.drawable.answer_color_tips2);
+//			this.scoreLayout.setVisibility(View.GONE);
+//			this.loadingLayout.setVisibility(View.GONE);
+//			if(this.ruleList!=null&&this.ruleList.size()>0)
+//			{
+//				this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,false));
+//			}else
+//			{
+//				this.nodataLayout.setVisibility(View.VISIBLE);
+//			}
+//			break;
+//		case  AppConstant.ACTION_SHOW_ANSWER:
+//		case AppConstant.ACTION_SUBMIT:
+//			this.scoreLayout.setVisibility(View.VISIBLE);
+//			int i = 0;
+//			int hasDone = DataConverter.getHasDone(trueOfFalse);
+//			int right = DataConverter.getRightNum(trueOfFalse);
+//			if(paperType.equals(AppConstant.PAPER_TYPE_DAILY))
+//			{
+//				this.data = new String[6];
+//				i = 4;
+//				if(hasDone < trueOfFalse.length)
+//				{
+//					repeatTv.setText("继续做题");
+//				}
+//				this.data[5] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
+//			}else
+//			{
+//				this.data = new String[10];
+//				this.data[0] = "试题总分:"+intent.getDoubleExtra("paperScore",0)+"分";//总分
+//				this.data[1] = "试题限时:"+intent.getIntExtra("paperTime",0)+"分钟";//总时
+//				this.data[2] = "本次得分:"+intent.getDoubleExtra("userScore",0)+"分";//本次得分[红色]
+//				this.data[3] = "答题耗时:"+intent.getIntExtra("useTime",0)+"分钟";//耗时
+//				if(hasDone ==0)
+//				{
+//					this.data[9] = "正确率:0.0%";
+//				}else
+//					this.data[9] = "正确率:"+(((int)(right*10000/hasDone)/100.0))+"%";//正确率
+//			}
+//			this.data[4-i] = "已做:"+hasDone+"题";//已做
+//			this.data[5-i] = "未做:"+(trueOfFalse.length-hasDone)+"题";//未做
+//			this.data[6-i] = "做对:"+right+"题";	//做对
+//			this.data[7-i] = "做错:"+(hasDone - right)+"题";	//做错
+//			this.data[8-i] = "共计:"+trueOfFalse.length+"题";		//共计题
+//			this.scoreGridView.setAdapter(new AnswerScoreGridAdatper(this,data));
+//			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
+//			this.loadingLayout.setVisibility(View.GONE);
+//			break;
+//		default:
+//			this.scoreLayout.setVisibility(View.GONE);
+//			this.questionListView.setAdapter(new AnswerCardStructureListAdatper(this,this,ruleList,trueOfFalse,true));
+//			this.loadingLayout.setVisibility(View.GONE);
+//			break;
+//		}
 	}
 	@Override
 	public void onClick(View v) {
@@ -169,14 +166,14 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	}
 	private void returnMethod()
 	{
-		if(action == AppConstant.ACTION_CHOOSE_ITEM)
-		{
-			this.setResult(50);
-			this.finish();
-		}else
-		{
-			this.finish();
-		}
+//		if(action == AppConstant.ACTION_CHOOSE_ITEM)
+//		{
+//			this.setResult(50);
+//			this.finish();
+//		}else
+//		{
+//			this.finish();
+//		}
 	}
 	private void toggleShowView()
 	{
@@ -195,79 +192,79 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	}
 	private void doItAgain()
 	{
-		if(action == AppConstant.ACTION_SUBMIT)
-		{
-			Intent data = new Intent();
-			data.putExtra("action", AppConstant.ACTION_DO_EXAM);
-			if("继续做题".equals(repeatTv.getText()))
-			{
-				this.setResult(40,data);
-			}else
-				this.setResult(30, data);
-			this.finish();
-		}else
-		{
-			//启动DoExamQuestion
-			Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
-			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
-			mIntent.putExtra("paperId", paperId);
-			this.startActivity(mIntent);
-			this.finish();
-		}
+//		if(action == AppConstant.ACTION_SUBMIT)
+//		{
+//			Intent data = new Intent();
+//			data.putExtra("action", AppConstant.ACTION_DO_EXAM);
+//			if("继续做题".equals(repeatTv.getText()))
+//			{
+//				this.setResult(40,data);
+//			}else
+//				this.setResult(30, data);
+//			this.finish();
+//		}else
+//		{
+//			//启动DoExamQuestion
+//			Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
+//			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
+//			mIntent.putExtra("paperId", paperId);
+//			this.startActivity(mIntent);
+//			this.finish();
+//		}
 	}
 	//查看题目
 	public void showAnswer(int cursor)
 	{
-		Intent data = null;
-		switch(action)
-		{
-		case AppConstant.ACTION_SUBMIT:
-			data = new Intent();
-			data.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);  
-        	data.putExtra("cursor", cursor);  
-         	//设置请求代码 
-        	this.setResult(20, data);
-        	this.finish();
-        	break;
-		case AppConstant.ACTION_CHOOSE_ITEM:
-			data=new Intent();  
-         	data.putExtra("action", AppConstant.ACTION_DO_EXAM);  
-         	data.putExtra("cursor", cursor);  
-         	//设置请求代码  
-         	this.setResult(20, data);  
-         	//结束Activity
-         	this.finish();
-         	break;
-		case AppConstant.ACTION_CHOOSE_ITEM_WITH_ANSWER:
-			data=new Intent();  
-         	data.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);  
-         	data.putExtra("cursor", cursor);  
-         	//设置请求代码  
-         	this.setResult(20, data);  
-         	//结束Activity
-         	this.finish();
-         	break;
-         default:
-         	//启动DoExamQuestion,显示答案
-    		Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
-    		mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
-    		mIntent.putExtra("paperId", paperId);
-    		mIntent.putExtra("recordId", recordId);
-    		mIntent.putExtra("cursor", cursor);
-    		this.startActivity(mIntent);
-		}
+//		Intent data = null;
+//		switch(action)
+//		{
+//		case AppConstant.ACTION_SUBMIT:
+//			data = new Intent();
+//			data.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);  
+//        	data.putExtra("cursor", cursor);  
+//         	//设置请求代码 
+//        	this.setResult(20, data);
+//        	this.finish();
+//        	break;
+//		case AppConstant.ACTION_CHOOSE_ITEM:
+//			data=new Intent();  
+//         	data.putExtra("action", AppConstant.ACTION_DO_EXAM);  
+//         	data.putExtra("cursor", cursor);  
+//         	//设置请求代码  
+//         	this.setResult(20, data);  
+//         	//结束Activity
+//         	this.finish();
+//         	break;
+//		case AppConstant.ACTION_CHOOSE_ITEM_WITH_ANSWER:
+//			data=new Intent();  
+//         	data.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);  
+//         	data.putExtra("cursor", cursor);  
+//         	//设置请求代码  
+//         	this.setResult(20, data);  
+//         	//结束Activity
+//         	this.finish();
+//         	break;
+//         default:
+//         	//启动DoExamQuestion,显示答案
+//    		Intent mIntent = new Intent(this,PaperDoPaperActivity.class);
+//    		mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
+//    		mIntent.putExtra("paperId", paperId);
+//    		mIntent.putExtra("recordId", recordId);
+//    		mIntent.putExtra("cursor", cursor);
+//    		this.startActivity(mIntent);
+//		}
 	}
 	public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent)
 	{
-	    if ((paramKeyEvent.getKeyCode() == 4) && (paramKeyEvent.getRepeatCount() == 0))
-	    {
-	    	if(action == AppConstant.ACTION_CHOOSE_ITEM)
-	    	{
-	    		this.setResult(50);
-				this.finish();
-	    		return true;
-	    	}
-	    }
+//	    if ((paramKeyEvent.getKeyCode() == 4) && (paramKeyEvent.getRepeatCount() == 0))
+//	    {
+//	    	if(action == AppConstant.ACTION_CHOOSE_ITEM)
+//	    	{
+//	    		this.setResult(50);
+//				this.finish();
+//	    		return true;
+//	    	}
+//	    }
 	    return super.onKeyDown(paramInt, paramKeyEvent);
 	}
 	

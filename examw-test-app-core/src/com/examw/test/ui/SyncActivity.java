@@ -1,18 +1,11 @@
 package com.examw.test.ui;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -24,54 +17,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.app.AppConfig;
-import com.examw.test.app.AppContext;
-import com.examw.test.daonew.ExamDao;
-import com.examw.test.daonew.FavoriteDao;
-import com.examw.test.daonew.PaperDao;
-import com.examw.test.daonew.PaperRecordDao;
-import com.examw.test.daonew.UserDao;
 import com.examw.test.exception.AppException;
-import com.examw.test.model.Json;
 import com.examw.test.model.sync.AppClientPush;
 import com.examw.test.model.sync.AppClientSync;
-import com.examw.test.model.sync.ExamSync;
 import com.examw.test.model.sync.FavoriteSync;
-import com.examw.test.model.sync.PaperItemRecordSync;
-import com.examw.test.model.sync.PaperRecordSync;
-import com.examw.test.model.sync.PaperSync;
-import com.examw.test.support.ApiClient;
-import com.examw.test.support.URLs;
-import com.examw.test.util.LogUtil;
-import com.examw.test.util.StringUtils;
-import com.examw.test.util.ToastUtils;
 
 public class SyncActivity extends BaseActivity implements OnClickListener,
 		OnCheckedChangeListener {
 	private CheckBox favorCB, paperCB;
 	private Button sysncBtn,updateBtn;
-	private AppContext appContext;
-	private AppConfig appConfig;
+//	private AppContext appContext;
+	//private AppConfig appConfig;
 	private LinearLayout loadingLayout;
 	private MyHandler mHandler;
 	private int favorFlag, paperFlag;
 	private TextView syncText;
 	private String code;
-	private static final String dataDir = Environment
-			.getExternalStorageDirectory().getPath()
-			+ File.separator
-			+ "examw" + File.separator + "image" + File.separator;
-	
+//	private static final String dataDir = Environment
+//			.getExternalStorageDirectory().getPath()
+//			+ File.separator
+//			+ "examw" + File.separator + "image" + File.separator;
+//	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_sysnc);
 		mHandler = new MyHandler(this);
-		appContext = (AppContext) this.getApplication();
-		appConfig = AppConfig.getAppConfig(this);
+	//	appContext = (AppContext) this.getApplication();
+		//appConfig = AppConfig.getAppConfig(this);
 		initViews();
-
 	}
 
 	private void initViews() {
@@ -94,13 +69,13 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (appContext.getLoginState() != AppContext.LOGINED) {
-			sysncBtn.setText("登录后方可同步");
-			updateBtn.setText("登录后方可更新");
-		} else {
-			sysncBtn.setText("开始同步");
-			updateBtn.setText("点击更新");
-		}
+//		if (appContext.getLoginState() != AppContext.LOGINED) {
+//			sysncBtn.setText("登录后方可同步");
+//			updateBtn.setText("登录后方可更新");
+//		} else {
+//			sysncBtn.setText("开始同步");
+//			updateBtn.setText("点击更新");
+//		}
 	}
 
 	@Override
@@ -150,20 +125,20 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 	
 	private boolean check()
 	{
-		if (appContext.getLoginState() != AppContext.LOGINED) {
-			//当前不是在线登陆状态
-			ToastUtils.show(this, "当前不是在线登录状态,请先在线登录");
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivity(intent);
-			return false;
-		}
-		if(appConfig.get(appContext.getUsername() + "_code") == null)
-		{
-			ToastUtils.show(this, "请先激活注册码!");
-			this.startActivity(new Intent(this,RegisterCodeActivity.class));
-			return false;
-		}
-		code = appConfig.get(appContext.getUsername() + "_code");
+//		if (appContext.getLoginState() != AppContext.LOGINED) {
+//			//当前不是在线登陆状态
+//			ToastUtils.show(this, "当前不是在线登录状态,请先在线登录");
+//			Intent intent = new Intent(this, LoginActivity.class);
+//			startActivity(intent);
+//			return false;
+//		}
+//		if(appConfig.get(appContext.getUsername() + "_code") == null)
+//		{
+//			ToastUtils.show(this, "请先激活注册码!");
+//			this.startActivity(new Intent(this,RegisterCodeActivity.class));
+//			return false;
+//		}
+//		code = appConfig.get(appContext.getUsername() + "_code");
 		return true;
 	}
 	
@@ -177,42 +152,42 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 			return;
 		}
 		syncText.setText("数据更新中...");
-		final String username = appContext.getUsername();
+		//final String username = appContext.getUsername();
 		loadingLayout.setVisibility(View.VISIBLE);
 		new Thread(){
 			public void run() {
 				//更新试卷
 				try{
 					//查询上次试卷的更新时间
-					String lastTime = UserDao.getLastTime(username, "lastUpdateTime");
+					//String lastTime = UserDao.getLastTime(username, "lastUpdateTime");
 					//获取最新的试卷信息
-					AppClientSync req = new AppClientSync();
-					req.setCode(code);
-					req.setProductId(AppContext.getMetaInfo("productId"));
-					req.setStartTime(lastTime);
-					ExamSync result = ApiClient.getExams(appContext, req);
-					ExamDao.saveSubjects(result,username);
+					//AppClientSync req = new AppClientSync();
+					//req.setCode(code);
+					//req.setProductId(AppContext.getMetaInfo("productId"));
+					//req.setStartTime(lastTime);
+					//ExamSync result = ApiClient.getExams(appContext, req);
+					//ExamDao.saveSubjects(result,username);
 					//导入试卷
-					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
+				//	ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
 					//更新试卷
-					if(list == null || list.size()==0)
-						mHandler.sendEmptyMessage(10);
-					else
-					{
-						PaperDao.insertPapers(list,username);
-						File file = new File(dataDir);
-						if(!file.exists())
-						{
-							file.mkdirs();
-						}
-						//导入试卷的数据
-						for(PaperSync paper:list)
-						{
-							//加载试卷的图片
-							loadImage(paper.getContent(), dataDir);
-						}
-						mHandler.sendEmptyMessage(10);
-					}
+//					if(list == null || list.size()==0)
+//						mHandler.sendEmptyMessage(10);
+//					else
+//					{
+//						PaperDao.insertPapers(list,username);
+//						File file = new File(dataDir);
+//						if(!file.exists())
+//						{
+//							file.mkdirs();
+//						}
+//						//导入试卷的数据
+//						for(PaperSync paper:list)
+//						{
+//							//加载试卷的图片
+//							loadImage(paper.getContent(), dataDir);
+//						}
+//						mHandler.sendEmptyMessage(10);
+//					}
 					//更新大纲以及大纲下面的试题
 					//查询科目
 //					ArrayList<Subject> subjects = ProductDao.findSubjects();
@@ -228,88 +203,89 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 //						}
 //					}
 //					//保存上次的更新时间
-					UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastUpdateTime");
+					//UserDao.updateLastTime(username, StringUtils.toStandardDateStr(new Date(ApiClient.getStandardTime())), "lastUpdateTime");
 					mHandler.sendEmptyMessage(20);
-				}catch(AppException e)
+				}catch(Exception e)
 				{
 					e.printStackTrace();
 					Message msg = mHandler.obtainMessage();
 					msg.what = -10;
 					msg.obj = e;
 					mHandler.sendMessage(msg);
-				}catch(Exception e)
-				{
-					e.printStackTrace();
-					mHandler.sendEmptyMessage(-20);
 				}
+					//catch(Exception e)
+//				{
+//					e.printStackTrace();
+//					mHandler.sendEmptyMessage(-20);
+//				}
 			};
 		}.start();
 	}
 
-	private void loadImage(String content,String imagePath)throws Exception 
-	{
-		Log.e("导入图片","ddddddddddd");
-		//查询字符串中是否包含图片
-		if(StringUtils.isEmpty(content)) return;
-		Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*[\\\\][\"]([^\"]+)[\\\\][\"][^>]*>");//<img[^<>]*src=[\'\"]([0-9A-Za-z.\\/]*)[\'\"].(.*?)>");
-        Matcher m = ps.matcher(content);
-        while(m.find()){
-        	String url = m.group(1);
-        	if(!url.startsWith("http"))
-        	{
-        		url = URLs.HOST + url;
-        	}
-        	Log.e("导入图片",url);
-        	ApiClient.getNetImage(url, imagePath);
-        }
-	}
+//	private void loadImage(String content,String imagePath)throws Exception 
+//	{
+//		Log.e("导入图片","ddddddddddd");
+//		//查询字符串中是否包含图片
+//		if(StringUtils.isEmpty(content)) return;
+//		Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*[\\\\][\"]([^\"]+)[\\\\][\"][^>]*>");//<img[^<>]*src=[\'\"]([0-9A-Za-z.\\/]*)[\'\"].(.*?)>");
+//        Matcher m = ps.matcher(content);
+//        while(m.find()){
+//        	String url = m.group(1);
+//        	if(!url.startsWith("http"))
+//        	{
+//        	//	url = URLs.HOST + url;
+//        	}
+//        	Log.e("导入图片",url);
+//        //	ApiClient.getNetImage(url, imagePath);
+//        }
+//	}
 
 	private void syncTruely() {
 		syncText.setText("数据同步中...");
 		loadingLayout.setVisibility(View.VISIBLE);
-		final String username = appContext.getUsername();
-		final String userId = appContext.getProductUserId();
+	//	final String username = appContext.getUsername();
+		//final String userId = appContext.getProductUserId();
 		if (paperCB.isChecked()) {
 			new Thread() {
 				public void run() {
 					try {
 						synchronized (SyncActivity.this) {
 							if(paperFlag!=0) return;
-							LogUtil.d("开始同步考试记录");
+						//	LogUtil.d("开始同步考试记录");
 							//查询用户的考试记录并且转换为上传数据对象
-							ArrayList<PaperRecordSync> list = PaperRecordDao.findSyncPaperRecords(username);
-							if(list == null || list.size() == 0)
+							//ArrayList<PaperRecordSync> list = PaperRecordDao.findSyncPaperRecords(username);
+							//if(list == null || list.size() == 0)
 							{
 								mHandler.sendEmptyMessage(4);
 								return;
 							}
-							LogUtil.d("需要同步的考试记录个数:"+list.size());
-							AppClientPush<PaperRecordSync> syncPapers= new AppClientPush<PaperRecordSync>();
-							syncPapers.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
-							syncPapers.setCode(code);
-							syncPapers.setProductId(AppContext.getMetaInfo("productId"));
-							syncPapers.setUserId(userId);
-							syncPapers.setRecords(list);
-							Json json1 = ApiClient.syncRecords(appContext, URLs.PAPER_RECORD_SYNC, syncPapers);
+							//LogUtil.d("需要同步的考试记录个数:"+list.size());
+							//AppClientPush<PaperRecordSync> syncPapers= new AppClientPush<PaperRecordSync>();
+							//syncPapers.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
+							//syncPapers.setCode(code);
+							//syncPapers.setProductId(AppContext.getMetaInfo("productId"));
+							//syncPapers.setUserId(userId);
+							//syncPapers.setRecords(list);
+							//Json json1 = ApiClient.syncRecords(appContext, URLs.PAPER_RECORD_SYNC, syncPapers);
 							
 							//试题记录
-							ArrayList<PaperItemRecordSync> itemRecords = PaperRecordDao.findSyncItemRecords(username);
-							AppClientPush<PaperItemRecordSync> syncItems= new AppClientPush<PaperItemRecordSync>();
-							syncItems.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
-							syncItems.setCode(code);
-							syncItems.setProductId(AppContext.getMetaInfo("productId"));
-							syncItems.setUserId(userId);
-							syncItems.setRecords(itemRecords);
-							Json json2 = ApiClient.syncRecords(appContext, URLs.ITEM_RECORD_SYNC, syncItems);
-							if((json1 !=null && json1.isSuccess())&&(json2 !=null && json2.isSuccess()))
-							{
-								//更新表
-								PaperRecordDao.updateRecords(username);
-								mHandler.sendEmptyMessage(4);
-							}else
-							{
-								mHandler.sendEmptyMessage(-4);
-							}
+							//ArrayList<PaperItemRecordSync> itemRecords = PaperRecordDao.findSyncItemRecords(username);
+							//AppClientPush<PaperItemRecordSync> syncItems= new AppClientPush<PaperItemRecordSync>();
+							//syncItems.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
+							//syncItems.setCode(code);
+							//syncItems.setProductId(AppContext.getMetaInfo("productId"));
+							//syncItems.setUserId(userId);
+							//syncItems.setRecords(itemRecords);
+							//Json json2 = ApiClient.syncRecords(appContext, URLs.ITEM_RECORD_SYNC, syncItems);
+							//if((json1 !=null && json1.isSuccess())&&(json2 !=null && json2.isSuccess()))
+//							{
+//								//更新表
+//								PaperRecordDao.updateRecords(username);
+//								mHandler.sendEmptyMessage(4);
+//							}else
+//							{
+//								mHandler.sendEmptyMessage(-4);
+//							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -324,30 +300,30 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 					try {
 						synchronized (SyncActivity.this) {
 							if(favorFlag!=0) return;
-							LogUtil.d("开始收藏记录上传");
+							//LogUtil.d("开始收藏记录上传");
 							//查询需要上传的收藏记录
-							ArrayList<FavoriteSync> list = FavoriteDao.findFavorites(username);
-							if(list == null || list.size() == 0)
-							{
-								mHandler.sendEmptyMessage(2);
-								return;
-							}
-							LogUtil.d("需要同步的收藏个数:"+list.size());
-							AppClientPush<FavoriteSync> syncPapers= new AppClientPush<FavoriteSync>();
-							syncPapers.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
-							syncPapers.setCode(code);
-							syncPapers.setProductId(AppContext.getMetaInfo("productId"));
-							syncPapers.setUserId(userId);
-							syncPapers.setRecords(list);
-							Json json = ApiClient.syncRecords(appContext, URLs.FAVORITE_SYNC, syncPapers);
-							if(json !=null && json.isSuccess())
-							{
-								FavoriteDao.deleteTruely(username);
-								mHandler.sendEmptyMessage(2);
-							}else
-							{
-								mHandler.sendEmptyMessage(-2);
-							}
+//							ArrayList<FavoriteSync> list = FavoriteDao.findFavorites(username);
+//							if(list == null || list.size() == 0)
+//							{
+//								mHandler.sendEmptyMessage(2);
+//								return;
+//							}
+						//	LogUtil.d("需要同步的收藏个数:"+list.size());
+							//AppClientPush<FavoriteSync> syncPapers= new AppClientPush<FavoriteSync>();
+							//syncPapers.setClientTypeCode(AppContext.getMetaInfo("terminalId"));
+							//syncPapers.setCode(code);
+							//syncPapers.setProductId(AppContext.getMetaInfo("productId"));
+						//	syncPapers.setUserId(userId);
+							//syncPapers.setRecords(list);
+							//Json json = ApiClient.syncRecords(appContext, URLs.FAVORITE_SYNC, syncPapers);
+//							if(json !=null && json.isSuccess())
+//							{
+//								FavoriteDao.deleteTruely(username);
+//								mHandler.sendEmptyMessage(2);
+//							}else
+//							{
+//								mHandler.sendEmptyMessage(-2);
+//							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

@@ -7,7 +7,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 
 /**
  * TextView的跑马灯效果

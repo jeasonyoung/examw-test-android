@@ -19,9 +19,9 @@ import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.support.URLs;
 import com.examw.test.ui.ImageZoomActivity;
-import com.examw.test.util.BitmapManager;
-import com.examw.test.util.HtmlUtils;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.BitmapManager;
+import com.examw.test.utils.HtmlUtils;
+import com.examw.test.utils.StringUtils;
 
 public class ImageTextView1 extends LinearLayout {
 	//private static final String TAG = "ImageTextView";
@@ -106,17 +106,17 @@ public class ImageTextView1 extends LinearLayout {
 			String url = temp.substring(0, temp.indexOf("\""));
 			if (arr.length == 1) {
 				this.tv_before.setText(HtmlUtils.filterImgTag(arr[0]));
-				imageView.setTag(URLs.HOST+url);
+				//imageView.setTag(URLs.HOST+url);
 				if(!loadLocaleImage(url))
-				bmpManager.loadBitmap(URLs.HOST+url, imageView);
+				//bmpManager.loadBitmap(URLs.HOST+url, imageView);
 				this.tv_after.setVisibility(View.GONE);
 			} else if (arr.length >= 2) {
 				this.tv_before.setText(HtmlUtils.filterImgTag(arr[0]));
-				imageView.setTag(URLs.HOST+url);
+				//imageView.setTag(URLs.HOST+url);
 				if(!loadLocaleImage(url))
 //				bmpManager.loadBitmap(url, imageView,BitmapFactory.decodeResource(
 //						context.getResources(), R.drawable.img_empty),width,height);
-				bmpManager.loadBitmap(URLs.HOST+url, imageView);
+				//bmpManager.loadBitmap(URLs.HOST+url, imageView);
 				this.tv_after.setVisibility(View.VISIBLE);
 				this.tv_after.setText(HtmlUtils.filterImgTag(arr[1]));
 			}
@@ -125,7 +125,7 @@ public class ImageTextView1 extends LinearLayout {
 	private boolean loadLocaleImage(String url)
 	{
 		String myJpgPath = url.substring(url.lastIndexOf("/")+1); 
-		myJpgPath = AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath;
+		//myJpgPath = AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath;
         File file = new File(myJpgPath);
         if(file.exists())
         {

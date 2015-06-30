@@ -10,18 +10,13 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Date;
 
-import org.apache.commons.httpclient.HttpException;
-
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.os.Environment;
 import android.os.Looper;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
-import com.examw.test.util.LogUtil;
 
 /**
  * 自定义异常
@@ -182,9 +177,9 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 		if(e instanceof UnknownHostException || e instanceof ConnectException){
 			return new AppException(TYPE_NETWORK, 0, e);
 		}
-		else if(e instanceof HttpException){
-			return http(e);
-		}
+//		else if(e instanceof HttpException){
+//			return http(e);
+//		}
 		else if(e instanceof SocketException){
 			return socket(e);
 		}
@@ -228,13 +223,13 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 			return false;
 		}
 		
-		final String crashReport = getCrashReport(context, ex);
+		//final String crashReport = getCrashReport(context, ex);
 		//显示异常信息&发送报告
 		new Thread() {
 			public void run() {
 				Looper.prepare();
 				//UIHelper.sendAppCrashReport(context, crashReport);
-				LogUtil.d("崩溃日志:"+crashReport);
+			//	LogUtil.d("崩溃日志:"+crashReport);
 				Looper.loop();
 			}
 
@@ -246,16 +241,16 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 	 * @param ex
 	 * @return
 	 */
-	private String getCrashReport(Context context, Throwable ex) {
-		PackageInfo pinfo = ((AppContext)context.getApplicationContext()).getPackageInfo();
-		StringBuffer exceptionStr = new StringBuffer();
-		exceptionStr.append("Version: "+pinfo.versionName+"("+pinfo.versionCode+")\n");
-		exceptionStr.append("Android: "+android.os.Build.VERSION.RELEASE+"("+android.os.Build.MODEL+")\n");
-		exceptionStr.append("Exception: "+ex.getMessage()+"\n");
-		StackTraceElement[] elements = ex.getStackTrace();
-		for (int i = 0; i < elements.length; i++) {
-			exceptionStr.append(elements[i].toString()+"\n");
-		}
-		return exceptionStr.toString();
-	}
+//	private String getCrashReport(Context context, Throwable ex) {
+//		//PackageInfo pinfo = ((AppContext)context.getApplicationContext()).getPackageInfo();
+//		StringBuffer exceptionStr = new StringBuffer();
+//	//	exceptionStr.append("Version: "+pinfo.versionName+"("+pinfo.versionCode+")\n");
+//		exceptionStr.append("Android: "+android.os.Build.VERSION.RELEASE+"("+android.os.Build.MODEL+")\n");
+//		exceptionStr.append("Exception: "+ex.getMessage()+"\n");
+//		StackTraceElement[] elements = ex.getStackTrace();
+//		for (int i = 0; i < elements.length; i++) {
+//			exceptionStr.append(elements[i].toString()+"\n");
+//		}
+//		return exceptionStr.toString();
+//	}
 }

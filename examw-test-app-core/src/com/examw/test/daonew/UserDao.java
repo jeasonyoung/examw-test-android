@@ -6,8 +6,6 @@ import android.util.Base64;
 
 import com.examw.test.db.UserDBUtil;
 import com.examw.test.domain.User;
-import com.examw.test.util.CyptoUtils;
-import com.examw.test.util.LogUtil;
 
 /**
  * 用户数据DAO
@@ -26,7 +24,7 @@ public class UserDao {
 	{
 		long i = 0;
 		SQLiteDatabase db = UserDBUtil.getDatabase();
-		LogUtil.d( "addUser方法打开了数据库连接");
+		//LogUtil.d( "addUser方法打开了数据库连接");
 		db.beginTransaction();
 		try{
 			String sql = "insert into UserTab(uid,username,password,info,productUserId)values(?,?,?,?,?)";
@@ -54,7 +52,7 @@ public class UserDao {
 		Cursor cursor = null;
 		try{
 			SQLiteDatabase db = UserDBUtil.getDatabase();
-			LogUtil.d( "findByUsername方法打开了数据库连接");
+			//LogUtil.d( "findByUsername方法打开了数据库连接");
 			cursor = db.rawQuery("select uid,username,password,productUserId from UserTab where username = ?", new String[]{username});
 			if(cursor.moveToNext())
 			{
@@ -63,7 +61,7 @@ public class UserDao {
 				user.setUsername(cursor.getString(1));
 				user.setPassword(cursor.getString(2));
 				user.setProductUserId(cursor.getString(3));
-				user.setPassword(CyptoUtils.decode("changheng", user.getPassword()));
+				//user.setPassword(CyptoUtils.decode("changheng", user.getPassword()));
 			}
 		}catch(Exception e)
 		{
@@ -90,16 +88,16 @@ public class UserDao {
 			user1.setProductUserId(cursor.getString(3));
 		}
 		cursor.close();
-		String pwd = CyptoUtils.encode("changheng", user.getPassword());
+		//String pwd = CyptoUtils.encode("changheng", user.getPassword());
 		if(user1 == null)
 		{
 			//插入
 			db.beginTransaction();
 			try{
-				String sql1 = "insert into UserTab(uid,username,password,info,productUserId)values(?,?,?,?,?)";
-				Object[] values = new Object[] { user.getUid(),
-						user.getUsername(), pwd,user.getInfo(),user.getProductUserId() };
-				db.execSQL(sql1, values);
+				//String sql1 = "insert into UserTab(uid,username,password,info,productUserId)values(?,?,?,?,?)";
+//				Object[] values = new Object[] { user.getUid(),
+//						user.getUsername(), pwd,user.getInfo(),user.getProductUserId() };
+//				db.execSQL(sql1, values);
 				db.setTransactionSuccessful();
 			}finally
 			{
@@ -108,11 +106,11 @@ public class UserDao {
 		}else
 		{
 			//更新
-			if(!user1.getPassword().equals(pwd))
-			{
-				String sql = "update UserTab set uid = ?,password = ?,productUserId = ? where username = ?";
-				db.execSQL(sql, new Object[] {user.getUid(),pwd,user.getProductUserId(),user.getUsername()});
-			}
+//			if(!user1.getPassword().equals(pwd))
+//			{
+//				String sql = "update UserTab set uid = ?,password = ?,productUserId = ? where username = ?";
+//				db.execSQL(sql, new Object[] {user.getUid(),pwd,user.getProductUserId(),user.getUsername()});
+//			}
 		}
 		UserDBUtil.close();
 	}
@@ -123,7 +121,7 @@ public class UserDao {
 	 */
 	public static void updateLastTime(String username,String lastTime,String column)
 	{
-		LogUtil.d(String.format("更新[%1$s]的时间[%2$s]", column,lastTime));
+		//LogUtil.d(String.format("更新[%1$s]的时间[%2$s]", column,lastTime));
 		SQLiteDatabase db = UserDBUtil.getDatabase();
 		String sql = "update UserTab set "+column+" = datetime(?) where username = ?";
 		db.execSQL(sql, new Object[] {lastTime,username});
@@ -148,7 +146,7 @@ public class UserDao {
 		}
 		cursor.close();
 		db.close();
-		LogUtil.d(String.format("查询[%1$s]的时间是[%2$s]", column,time));
+		//LogUtil.d(String.format("查询[%1$s]的时间是[%2$s]", column,time));
 		return time;
 	}
 }

@@ -1,5 +1,7 @@
 package com.examw.test.model.sync;
 
+import android.content.Context;
+
 
 /**
  * 登录用户信息。
@@ -10,6 +12,10 @@ package com.examw.test.model.sync;
 public class LoginUser extends AppClient {
 	private static final long serialVersionUID = 1L;
 	private String account,password;
+	public LoginUser(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * 获取用户名。
 	 * @return 用户名。

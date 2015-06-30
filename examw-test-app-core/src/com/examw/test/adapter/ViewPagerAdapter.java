@@ -97,12 +97,12 @@ public class ViewPagerAdapter  extends PagerAdapter {
      * method desc：设置已经引导过了，下次启动不用再次引导 
      */  
     private void setGuided() {  
-        SharedPreferences preferences = activity.getSharedPreferences(AppConfig.SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);  
-        Editor editor = preferences.edit();  
-        // 存入数据  
-        editor.putBoolean("isFirstIn"+code, false);  
-        // 提交修改  
-        editor.commit();  
+       // SharedPreferences preferences = activity.getSharedPreferences(AppConfig.SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);  
+//        Editor editor = preferences.edit();  
+//        // 存入数据  
+//        editor.putBoolean("isFirstIn"+code, false);  
+//        // 提交修改  
+//        editor.commit();  
     }  
   
     // 判断是否由对象生成界面  

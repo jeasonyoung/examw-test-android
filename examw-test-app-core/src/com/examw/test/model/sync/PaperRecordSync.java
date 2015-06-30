@@ -134,17 +134,4 @@ public class PaperRecordSync implements Serializable {
 	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
 	}
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("id").append(":").append(this.getId()).append(",")
-				   .append("paperId").append(":").append(this.getPaperId()).append(",")
-				   .append("status").append(":").append(this.getStatus()).append(",")
-				   .append("rights").append(":").append(this.getRights()).append(",")
-				   .append("useTimes").append(":").append(this.getUseTimes()).append(",")
-				   .append("score").append(":").append(this.getScore()).append(",")
-				   .append("createTime").append(":").append(this.getCreateTime()).append(",")
-				   .append("lastTime").append(":").append(this.getLastTime());
-		return builder.toString();
-	}
 }

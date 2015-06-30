@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
-import com.examw.test.support.URLs;
 
 /**
  * 材料题显示材料
@@ -365,11 +364,11 @@ public class QuestionMaterialLayout extends RelativeLayout implements
 		ArrayList<String> images = new ArrayList<String>();
 		while(m.find()){
 //            System.out.println(m.group());	//.replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(/[^/'\"]+)(['\"][^>]*>)", "file://$2/aaaaaaa"
-            String fileUrl = AppConfig.DEFAULT_SAVE_IMAGE_PATH + m.group(2);
-            if(new File(fileUrl).exists())
-            	images.add(m.group().replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(/[^/'\"]+)(['\"][^>]*>)", "$1file:///"+fileUrl+"$4"));
-            else
-            	images.add(m.group().replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(['\"][^>]*>)", "$1"+URLs.HOST+"\" onClick=\"javascript:mWebViewImageListener.onImageClick('$2')$3"));
+            //String fileUrl = AppConfig.DEFAULT_SAVE_IMAGE_PATH + m.group(2);
+           // if(new File(fileUrl).exists())
+            //	images.add(m.group().replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(/[^/'\"]+)(['\"][^>]*>)", "$1file:///"+fileUrl+"$4"));
+            //else
+            //	images.add(m.group().replaceAll("(<img[^>]+src\\s*=\\s*['\"])([^'\"]+)(['\"][^>]*>)", "$1"+URLs.HOST+"\" onClick=\"javascript:mWebViewImageListener.onImageClick('$2')$3"));
         }
 		int j = 0;
 		while(content.matches("[\\S\\s]*<img[^>]+[/?]>[\\S\\s]*"))

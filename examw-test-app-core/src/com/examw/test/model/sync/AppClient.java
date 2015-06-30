@@ -2,29 +2,56 @@ package com.examw.test.model.sync;
 
 import java.io.Serializable;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.examw.test.app.AppConstant;
+import com.examw.test.app.AppContext;
+import com.google.gson.Gson;
+
 /**
- * 客户端应用。
+ * 应用客户端数据模型。
  * 
  * @author yangyong
  * @since 2015年2月4日
  */
 public class AppClient implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final String TAG = "AppClient";
 	private String clientId,clientName,clientVersion,clientTypeCode,clientMachine,productId;
+	/**
+	 * 构造函数。
+	 */
+	public AppClient(Context context){
+		if(context == null){
+			Log.d(TAG, "构造函数参数context为null");
+			throw new IllegalArgumentException();
+		}
+		//客户端唯一标示
+		this.clientId = AppConstant.APP_ID;
+		//客户端类型代码
+		this.clientTypeCode = String.valueOf(AppConstant.APP_TYPECODE);
+		//获取当前应用对象
+		AppContext appContext = (AppContext)context.getApplicationContext();
+		if(appContext != null){
+			//客户端名称
+			this.clientName = appContext.getAppName();
+			//客户端软件版本
+			this.clientVersion = appContext.getVersionName();
+			//设备唯一标示
+			this.clientMachine = appContext.getDeviceId();
+			//产品ID
+			if(appContext.getCurrentSettings() != null){
+				this.productId = appContext.getCurrentSettings().getProductId();
+			}
+		}
+	}
 	/**
 	 * 获取客户端ID。
 	 * @return 客户端ID。
 	 */
 	public String getClientId() {
 		return clientId;
-	}
-	/**
-	 * 设置客户端ID。
-	 * @param clientId 
-	 *	  客户端ID。
-	 */
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
 	}
 	/**
 	 * 获取客户端名称。
@@ -34,27 +61,11 @@ public class AppClient implements Serializable {
 		return clientName;
 	}
 	/**
-	 * 设置客户端名称。
-	 * @param clientName 
-	 *	  客户端名称。
-	 */
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
-	}
-	/**
 	 * 获取客户端版本。
 	 * @return 客户端版本。
 	 */
 	public String getClientVersion() {
 		return clientVersion;
-	}
-	/**
-	 * 设置客户端版本。
-	 * @param clientVersion 
-	 *	  客户端版本。
-	 */
-	public void setClientVersion(String clientVersion) {
-		this.clientVersion = clientVersion;
 	}
 	/**
 	 * 获取客户端软件类型代码。
@@ -64,27 +75,11 @@ public class AppClient implements Serializable {
 		return clientTypeCode;
 	}
 	/**
-	 * 设置客户端软件类型代码。
-	 * @param clientTypeCode
-	 *	  客户端软件类型类型代码。。
-	 */
-	public void setClientTypeCode(String clientTypeCode) {
-		this.clientTypeCode = clientTypeCode;
-	}
-	/**
 	 * 获取客户端机器码。
 	 * @return 客户端机器码。
 	 */
 	public String getClientMachine() {
 		return clientMachine;
-	}
-	/**
-	 * 设置客户端机器码。
-	 * @param clientMachine 
-	 *	  客户端机器码。
-	 */
-	public void setClientMachine(String clientMachine) {
-		this.clientMachine = clientMachine;
 	}
 	/**
 	 * 获取产品ID。
@@ -93,23 +88,14 @@ public class AppClient implements Serializable {
 	public String getProductId() {
 		return productId;
 	}
-	/**
-	 * 设置产品ID。
-	 * @param productId 
-	 *	  产品ID。
+	/*
+	 * 重载。
+	 * @see java.lang.Object#toString()
 	 */
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("clientId").append(":").append(this.clientId).append(",")
-				   .append("clientName").append(":").append(this.clientName).append(",")
-				   .append("clientVersion").append(":").append(this.clientVersion).append(",")
-				   .append("clientTypeCode").append(":").append(this.clientTypeCode).append(",")
-				   .append("clientMachine").append(":").append(this.clientMachine).append(",")
-				   .append("productId").append(":").append(this.productId);
-		return builder.toString();
+		Log.d(TAG, "生成JSON字符串...");
+		Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 }

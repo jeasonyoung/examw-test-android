@@ -341,7 +341,7 @@ public class PaperRecord implements Serializable{
 	public String getPaperTypeName()
 	{
 		if(paperType == null) return "";
-		return AppConstant.getPaperTypeName(paperType);
+		return null;//AppConstant.getPaperTypeName(paperType);
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package com.examw.test.ui;
 
 import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,18 +24,13 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
+
 import com.examw.test.R;
 import com.examw.test.adapter.SubjectListAdapter;
 import com.examw.test.app.AppConstant;
-import com.examw.test.app.AppContext;
-import com.examw.test.daonew.ExamDao;
-import com.examw.test.daonew.FavoriteDao;
-import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.PaperRecord;
 import com.examw.test.domain.Subject;
-import com.examw.test.support.ApiClient;
-import com.examw.test.util.LogUtil;
-import com.examw.test.util.ToastUtils;
+import com.examw.test.utils.ToastUtils;
 
 /**
  * 科目选择
@@ -59,13 +55,13 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 		this.setContentView(R.layout.ui_choose_subject);
 		action = getIntent().getIntExtra("action", 0);
 		initViews();
-		if(action != AppConstant.ACTION_FAVORITE)
-			initData();
+		//if(action != AppConstant.ACTION_FAVORITE)
+			//initData();
 	}
 	@SuppressLint("HandlerLeak")
 	private void initData()
 	{
-		LogUtil.d("初始化科目数据,action == "+action);
+		//LogUtil.d("初始化科目数据,action == "+action);
 		final Handler handler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -85,19 +81,19 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 				}
 			}
 		};
-		final String username = ((AppContext) getApplication()).getUsername();
+		//final String username = ((AppContext) getApplication()).getUsername();
 		proDialog = ProgressDialog.show(ChooseSubjectActivity.this, null, "加载中...",true, true);
 		proDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		new Thread(){
 			public void run() {
 				try{
-					subjects = ExamDao.findSubjects(username);
+					//subjects = ExamDao.findSubjects(username);
 					if(subjects!=null&&subjects.size()>0)
 					{
-						if(action == AppConstant.ACTION_ERROR)
-							subjects = PaperRecordDao.getCount(subjects, username);
-						else if(action == AppConstant.ACTION_FAVORITE)
-							subjects = FavoriteDao.getCount(subjects, username);
+						//if(action == AppConstant.ACTION_ERROR)
+							//subjects = PaperRecordDao.getCount(subjects, username);
+						//else if(action == AppConstant.ACTION_FAVORITE)
+							//subjects = FavoriteDao.getCount(subjects, username);
 						handler.sendEmptyMessage(1);
 					}else
 						handler.sendEmptyMessage(0);
@@ -111,10 +107,10 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	}
 	private void initViews()
 	{
-		String title = action == AppConstant.ACTION_ERROR?"错题记录":
-				action == AppConstant.ACTION_FAVORITE?"我的收藏":
-			action == AppConstant.ACTION_CHAPTER?"章节练习":"模拟考试";
-		((TextView) this.findViewById(R.id.title)).setText(title);
+//		String title = action == AppConstant.ACTION_ERROR?"错题记录":
+//				action == AppConstant.ACTION_FAVORITE?"我的收藏":
+//			action == AppConstant.ACTION_CHAPTER?"章节练习":"模拟考试";
+		//((TextView) this.findViewById(R.id.title)).setText(title);
 		this.courseList = (ListView) this.findViewById(R.id.course_list);
 		this.reloadLayout = (LinearLayout) this.findViewById(R.id.reload);//重载视图
 		this.btnShowPop = (Button) this.findViewById(R.id.showPop);	//显示上一次的练习
@@ -132,32 +128,32 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	{
 		Intent intent = null;
 		//设置当前所在的科目
-		((AppContext)this.getApplication()).setCurrentSubjectCode(subject.getSubjectId());
-		switch(action)
-		{
-		case AppConstant.ACTION_ERROR:
-		case AppConstant.ACTION_FAVORITE:
-			if(subject.getTotal()==null || subject.getTotal().equals(0))
-			{
-				ToastUtils.show(this, "暂无记录");
-				return;
-			}
-			intent = new Intent(ChooseSubjectActivity.this,PaperDoPracticeActivity.class);
-			intent.putExtra("subjectId", subject.getSubjectId());
-			intent.putExtra("action", action);
-			break;
-		case AppConstant.ACTION_CHAPTER:
-			intent = new Intent(ChooseSubjectActivity.this,ChapterActivity.class);
-			intent.putExtra("subjectId", subject.getSubjectId());
-			intent.putExtra("subjectName",subject.getName());
-			intent.putExtra("action", action);
-			break;
-		case AppConstant.ACTION_NONE:
-			intent = new Intent(ChooseSubjectActivity.this,SimulateActivity.class);
-			intent.putExtra("subjectId", subject.getSubjectId());
-			intent.putExtra("subjectName",subject.getName());
-			break;
-		}
+		//((AppContext)this.getApplication()).setCurrentSubjectCode(subject.getSubjectId());
+//		switch(action)
+//		{
+//		case AppConstant.ACTION_ERROR:
+//		case AppConstant.ACTION_FAVORITE:
+//			if(subject.getTotal()==null || subject.getTotal().equals(0))
+//			{
+//				ToastUtils.show(this, "暂无记录");
+//				return;
+//			}
+//			intent = new Intent(ChooseSubjectActivity.this,PaperDoPracticeActivity.class);
+//			intent.putExtra("subjectId", subject.getSubjectId());
+//			intent.putExtra("action", action);
+//			break;
+//		case AppConstant.ACTION_CHAPTER:
+//			intent = new Intent(ChooseSubjectActivity.this,ChapterActivity.class);
+//			intent.putExtra("subjectId", subject.getSubjectId());
+//			intent.putExtra("subjectName",subject.getName());
+//			intent.putExtra("action", action);
+//			break;
+//		case AppConstant.ACTION_NONE:
+//			intent = new Intent(ChooseSubjectActivity.this,SimulateActivity.class);
+//			intent.putExtra("subjectId", subject.getSubjectId());
+//			intent.putExtra("subjectName",subject.getName());
+//			break;
+//		}
 		this.startActivity(intent);
 	}
 	
@@ -202,9 +198,10 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 		protected ArrayList<Subject> doInBackground(String... params) {
 			try
 			{
-				ArrayList<Subject> result = ApiClient.getSubjectList((AppContext)(ChooseSubjectActivity.this.getApplication()));
+				//ArrayList<Subject> result = ApiClient.getSubjectList((AppContext)(ChooseSubjectActivity.this.getApplication()));
 //				ProductDao.saveSubjects(result);
-				return result;
+				//return result;
+				return null;
 			}catch(Exception e)
 			{
 				e.printStackTrace();
@@ -232,8 +229,8 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	private void initPop()
 	{
 		btnShowPop.setVisibility(View.GONE);
-		String userName = ((AppContext)(ChooseSubjectActivity.this.getApplication())).getUsername();
-		r = PaperRecordDao.findLastRecord(userName,AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE);
+		//String userName = ((AppContext)(ChooseSubjectActivity.this.getApplication())).getUsername();
+		//r = PaperRecordDao.findLastRecord(userName,AppConstant.PAPER_TYPE_REAL+","+AppConstant.PAPER_TYPE_SIMU+","+AppConstant.PAPER_TYPE_FORECAST+","+AppConstant.PAPER_TYPE_PRACTICE);
 		if(r==null) return;
 		final Handler mHandler = new Handler();
 		if(popWindow == null)
@@ -288,10 +285,10 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(action == AppConstant.ACTION_NONE)
-			initPop();
-		if(action == AppConstant.ACTION_FAVORITE)
-			initData();
+//		if(action == AppConstant.ACTION_NONE)
+//			initPop();
+//		if(action == AppConstant.ACTION_FAVORITE)
+//			initData();
 	}
 	@Override
 	protected void onDestroy() {

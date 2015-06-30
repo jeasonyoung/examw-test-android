@@ -13,10 +13,7 @@ import com.examw.test.domain.Subject;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
-import com.examw.test.util.CryptoUtils;
-import com.examw.test.util.GsonUtil;
-import com.examw.test.util.LogUtil;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 
 /**
  * 
@@ -24,7 +21,7 @@ import com.examw.test.util.StringUtils;
  * @since 2015年3月18日 下午2:16:31.
  */
 public class NewFavoriteDao {
-	private static final String DIGEST_CODE = "F6A1V22O15R18I9T20E5";
+	//private static final String DIGEST_CODE = "F6A1V22O15R18I9T20E5";
 	/**
 	 * 收藏或取消收藏
 	 * @param favor
@@ -33,7 +30,7 @@ public class NewFavoriteDao {
 	{
 		if(favor == null) return;
 		if(favor.getUsername() == null) return;
-		LogUtil.d("收藏或取消收藏");
+		//LogUtil.d("收藏或取消收藏");
 		SQLiteDatabase db = UserDBManager.openDatabase(favor.getUsername());
 		Cursor cursor = db.rawQuery("select status from tbl_favorites where itemId = ? and username = ?", new String[]{favor.getItemId(),favor.getUsername()});
 		if(cursor.getCount() == 0) //还没有收藏
@@ -42,24 +39,24 @@ public class NewFavoriteDao {
 			db.execSQL("insert into tbl_favorites(id,subjectCode,itemId,itemType,content,remarks,status,sync)",
 					new Object[]{UUID.randomUUID().toString(),favor.getSubjectId(),favor.getItemId(),favor.getItemType(),
 					//TODO 加密试题数据
-					CryptoUtils.encrypto(DIGEST_CODE, favor.getItemContent()),favor.getRemarks(),
-					AppConstant.STATUS_DONE,AppConstant.SYNC_DONE});
+					//CryptoUtils.encrypto(DIGEST_CODE, favor.getItemContent()),favor.getRemarks(),
+					/*AppConstant.STATUS_DONE,AppConstant.SYNC_DONE*/0,0});
 			db.close();
 			return;
 		}
 		cursor.moveToNext();
 		int status = cursor.getInt(0);
-		if(AppConstant.STATUS_DONE.equals(status))
-		{
-			//已经收藏,取消收藏
-			db.execSQL("update tbl_favorites set status = ? where itemId = ?", 
-						new Object[]{AppConstant.STATUS_NONE,favor.getItemId()});
-		}else
-		{
-			//收藏
-			db.execSQL("update tbl_favorites set status = ? where itemId = ?", 
-					new Object[]{AppConstant.STATUS_DONE,favor.getItemId()});
-		}
+//		if(AppConstant.STATUS_DONE.equals(status))
+//		{
+//			//已经收藏,取消收藏
+//			db.execSQL("update tbl_favorites set status = ? where itemId = ?", 
+//						new Object[]{AppConstant.STATUS_NONE,favor.getItemId()});
+//		}else
+//		{
+//			//收藏
+//			db.execSQL("update tbl_favorites set status = ? where itemId = ?", 
+//					new Object[]{AppConstant.STATUS_DONE,favor.getItemId()});
+//		}
 		cursor.close();
 		db.close();
 	}
@@ -88,11 +85,11 @@ public class NewFavoriteDao {
 		cursor.moveToNext();
 		int status = cursor.getInt(0);
 		cursor.close();
-		return AppConstant.STATUS_DONE.equals(status);
+		return false;//AppConstant.STATUS_DONE.equals(status);
 	}
 	public static ArrayList<Subject> getCount(ArrayList<Subject> subjects,String username)
 	{
-		LogUtil.d("查询各个科目的收藏情况");
+		//LogUtil.d("查询各个科目的收藏情况");
 		if(username == null) return subjects;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		for(Subject subject:subjects)
@@ -125,7 +122,7 @@ public class NewFavoriteDao {
 	 */
 	public static SimplePaper loadFavoritePaper(String subjectId,String username)
 	{
-		LogUtil.d("查询单个科目的收藏试题");
+		//LogUtil.d("查询单个科目的收藏试题");
 		if(username == null || subjectId==null) return null;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		int total = getCount(db,subjectId,null);
@@ -138,7 +135,7 @@ public class NewFavoriteDao {
 			int type = cursor.getInt(0);
 			StructureInfo info = new StructureInfo();
 			info.setType(type);
-			info.setTitle(AppConstant.getItemTypeName(type));
+			//info.setTitle(AppConstant.getItemTypeName(type));
 			info.setTotal(getCount(db, subjectId, type));
 			structures.add(info);
 		}
@@ -154,14 +151,14 @@ public class NewFavoriteDao {
 		ArrayList<StructureItemInfo> items = new ArrayList<StructureItemInfo>();
 		while(cursor.moveToNext())
 		{
-			String content = cursor.getString(0);
+			//String content = cursor.getString(0);
 			//TODO 解密试题数据
-			content = CryptoUtils.decrypto(DIGEST_CODE, content);
-			StructureItemInfo item = GsonUtil.jsonToBean(content, StructureItemInfo.class);
-			item.setUserAnswer(null);
-			item.setAnswerStatus(null);
-			item.setIsCollected(true);
-			items.add(item);
+//			content = CryptoUtils.decrypto(DIGEST_CODE, content);
+//			StructureItemInfo item = GsonUtil.jsonToBean(content, StructureItemInfo.class);
+//			item.setUserAnswer(null);
+//			item.setAnswerStatus(null);
+//			item.setIsCollected(true);
+//			items.add(item);
 		}
 		cursor.close();
 		return items;
@@ -212,7 +209,7 @@ public class NewFavoriteDao {
 	 */
 	public static void deleteTruely(String username)
 	{
-		LogUtil.d("查询单个科目的收藏试题");
+		//LogUtil.d("查询单个科目的收藏试题");
 		if(StringUtils.isEmpty(username)) return;
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		db.beginTransaction();

@@ -262,7 +262,7 @@ public class ItemRecord implements Serializable{
 	public String getItemTypeName()
 	{
 		if(itemType == null) return "";
-		return AppConstant.getPaperTypeName(itemType);
+		return null;//AppConstant.getPaperTypeName(itemType);
 	}
 	/**
 	 * 获取 

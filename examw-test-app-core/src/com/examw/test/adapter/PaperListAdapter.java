@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
-import com.examw.test.domain.Paper;
+import com.examw.test.domain.PaperModel;
 
 /**
  * 
@@ -21,8 +21,8 @@ import com.examw.test.domain.Paper;
  */
 public class PaperListAdapter extends BaseAdapter{
 	private LayoutInflater mInflater;
-	private ArrayList<Paper> papers;
-	public PaperListAdapter(Context context,ArrayList<Paper> papers) {
+	private ArrayList<PaperModel> papers;
+	public PaperListAdapter(Context context,ArrayList<PaperModel> papers) {
 		this.mInflater = LayoutInflater.from(context);
 		this.papers = papers;
 	}
@@ -59,19 +59,19 @@ public class PaperListAdapter extends BaseAdapter{
 		{
 			holder = (ViewHolder) convertView.getTag(); 
 		}
-		final Paper p = papers.get(position);
-		holder.title.setText(p.getTitle());
+		final PaperModel p = papers.get(position);
+		//holder.title.setText(p.getTitle());
 		//每日一练显示情况不同
-		if(p.getType().equals(AppConstant.PAPER_TYPE_DAILY))
-		{
-			holder.info.setText("总题数:"+p.getTotal());
-			holder.scoreTimeLayout.setVisibility(View.GONE);
-		}else
-		{
-			holder.info.setText("总题数: "+p.getTotal());
-			holder.scoreTimeLayout.setVisibility(View.GONE);
-		}
-		holder.publishTime.setText(p.getCreateTime().substring(0, 11));
+//		if(p.getType().equals(AppConstant.PAPER_TYPE_DAILY))
+//		{
+//			holder.info.setText("总题数:"+p.getTotal());
+//			holder.scoreTimeLayout.setVisibility(View.GONE);
+//		}else
+//		{
+//			holder.info.setText("总题数: "+p.getTotal());
+//			holder.scoreTimeLayout.setVisibility(View.GONE);
+//		}
+		//holder.publishTime.setText(p.getCreateTime().substring(0, 11));
 		return convertView;
 	}
 	static class ViewHolder

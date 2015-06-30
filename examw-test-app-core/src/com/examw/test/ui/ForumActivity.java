@@ -8,7 +8,6 @@ import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 
 import com.examw.test.R;
-import com.examw.test.app.AppContext;
 
 /**
  * 交流圈
@@ -25,9 +24,9 @@ public class ForumActivity extends BaseActivity {
 		setContentView(R.layout.ui_exam_info);
 		webView = (WebView) this.findViewById(R.id.web_view);
 		loading = (RelativeLayout) this.findViewById(R.id.loading);
-		webView.getSettings().setJavaScriptEnabled(true);
+		//webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new SampleWebViewClient());
-		webView.loadUrl(AppContext.getMetaInfo("bbsUrl"));
+		//webView.loadUrl(AppContext.getMetaInfo("bbsUrl"));
 	}
 
 	private class SampleWebViewClient extends WebViewClient {

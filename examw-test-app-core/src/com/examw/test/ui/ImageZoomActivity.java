@@ -1,6 +1,7 @@
 package com.examw.test.ui;
 
 import java.io.File;
+
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,10 +13,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
-import com.examw.test.util.BitmapManager;
-import com.examw.test.util.LogUtil;
+import com.examw.test.utils.BitmapManager;
 
 /**
  * 图片缩放界面
@@ -32,12 +33,12 @@ public class ImageZoomActivity extends BaseActivity{
         setContentView(R.layout.ui_image_zoom);
         imageView = (ImageView) findViewById(R.id.img);
         String url = getIntent().getStringExtra("url");
-        String myJpgPath = AppConfig.DEFAULT_SAVE_IMAGE_PATH + url.substring(url.lastIndexOf("/")+1); 
+        String myJpgPath =  null;// AppConfig.DEFAULT_SAVE_IMAGE_PATH + url.substring(url.lastIndexOf("/")+1); 
         File file = new File(myJpgPath);
         if(file.exists())
         {
-        	LogUtil.d("图片文件存在....");
-        	LogUtil.d(myJpgPath);
+        	//LogUtil.d("图片文件存在....");
+        	//LogUtil.d(myJpgPath);
 //        	myJpgPath = "/mnt/sdcard/examw/image/123456.bmp";
         	BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;

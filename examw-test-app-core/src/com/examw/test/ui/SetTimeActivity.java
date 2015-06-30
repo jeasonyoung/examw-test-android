@@ -42,7 +42,7 @@ public class SetTimeActivity extends BaseActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.ui_settime);
 		format = new SimpleDateFormat("yyyy年MM月dd日",Locale.CHINA);
-		appConfig = AppConfig.getAppConfig(this);
+		//appConfig = AppConfig.getAppConfig(this);
 		initViews();
 	}
 	@Override
@@ -57,7 +57,7 @@ public class SetTimeActivity extends BaseActivity implements OnClickListener{
 		topTitle = (TextView) this.findViewById(R.id.title);
 		topTitle.setText(R.string.setExamTime);
 		dateTxt = (TextView) this.findViewById(R.id.dateTxt);
-		setTime = appConfig.getExamTime();
+		//setTime = appConfig.getExamTime();
 		restDaysTxt = (TextView) this.findViewById(R.id.restDaysTxt);
 		this.findViewById(R.id.btn_goback).setOnClickListener(this);
 		dateTxt.setOnClickListener(this);
@@ -142,7 +142,7 @@ public class SetTimeActivity extends BaseActivity implements OnClickListener{
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			AppConfig.getAppConfig(this).setExamTime(value);
+			//AppConfig.getAppConfig(this).setExamTime(value);
 			break;
 		case R.id.btn_goback:
 			this.finish();

@@ -10,10 +10,9 @@
             android:anyDensity="true" />
 	
 	<!-- 支持的androidSDK版本 -->
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="22" />
+    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="22" />
     
     <!-- 权限申明 -->
-    
 	<!-- 接入网络 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 访问网络状态 -->
@@ -34,88 +33,95 @@
 	
     <application android:name=".app.AppContext" android:allowBackup="true"
         android:icon="@drawable/app_logo" android:label="@string/app_name" android:theme="@style/AppTheme" >
-        <!-- 启动入口 -->
-        <activity android:name=".app.AppStart" android:screenOrientation="portrait"
+        
+        <!-- 启动入口,欢迎界面 -->
+        <activity android:name=".ui.WelcomeActivity" android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- 引导界面  -->
-        <activity android:name=".ui.GuideActivity" 
-            android:screenOrientation="portrait" />
-        <!-- 主界面   -->
+        <!-- 产品切换界面  -->
+        <activity android:name=".ui.SwitchActivity" 
+            android:screenOrientation="portrait"/>
+        <!-- 主界面 -->
         <activity android:name=".ui.MainActivity" 
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <!-- 登录界面 -->
+        
+         <!--
+        <activity android:name=".ui.GuideActivity" 
+            android:screenOrientation="portrait" />
+          
+        
+        登录界面
         <activity android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
-        <!-- 注册界面 -->
+        注册界面
         <activity android:name=".ui.RegisterActivity"
             android:screenOrientation="portrait" />
-        <!-- 选择科目界面 -->
+        选择科目界面
         <activity android:name=".ui.ChooseSubjectActivity"
             android:screenOrientation="portrait" />
-        <!-- 模拟考试界面  -->
+        模拟考试界面 
         <activity android:name=".ui.SimulateActivity"
             android:screenOrientation="portrait" />
-         <!-- 试卷介绍页面  -->
+         试卷介绍页面 
         <activity android:name=".ui.PaperInfoActivity"
             android:screenOrientation="portrait" />
-        <!-- 试卷考试界面 -->
+        试卷考试界面
          <activity android:name=".ui.PaperDoPaperActivity"
             android:screenOrientation="portrait" />
-        <!-- 答题卡界面  -->
+        答题卡界面 
          <activity android:name=".ui.AnswerCardActivity"
             android:screenOrientation="portrait" />
-        <!-- 章节练习界面  -->
+        章节练习界面 
         <activity android:name=".ui.ChapterActivity"
             android:screenOrientation="portrait" />
-        <!-- 章节练习界面  -->
+        章节练习界面 
         <activity android:name=".ui.ChapterDetailActivity"
             android:screenOrientation="portrait" />
-        <!-- 每日一练界面  -->
+        每日一练界面 
         <activity android:name=".ui.DailyActivity"
             android:screenOrientation="portrait" />
-        <!--错题,收藏的练习界面 -->
+        错题,收藏的练习界面
         <activity android:name=".ui.PaperDoPracticeActivity"
             android:screenOrientation="portrait" />
-        <!-- 知识点界面 -->
+        知识点界面
         <activity android:name=".ui.KnowledgeActivity"
             android:screenOrientation="portrait" />
-         <!-- 知识点详细界面 -->
+         知识点详细界面
         <activity android:name=".ui.KnowledgeDetailActivity"
             android:screenOrientation="portrait" />
-        <!-- 论坛界面 -->
+        论坛界面
         <activity android:name=".ui.ForumActivity"
             android:screenOrientation="portrait" />
-        <!-- 考试指南界面 -->
+        考试指南界面
         <activity android:name=".ui.ExamInfoActivity"
             android:screenOrientation="portrait" />
-        <!-- 考试记录界面  -->
+        考试记录界面 
         <activity android:name=".ui.PaperRecordActivity"
             android:screenOrientation="portrait" />
-        <!-- 关于应用界面  -->
+        关于应用界面 
         <activity android:name=".ui.AboutActivity"
             android:screenOrientation="portrait" />
-        <!-- 隐私协议界面 -->
+        隐私协议界面
         <activity android:name=".ui.PrivacyAgreementActivity"
             android:screenOrientation="portrait" />
-        <!-- 时间设置界面 -->
+        时间设置界面
         <activity android:name=".ui.SetTimeActivity"
             android:screenOrientation="portrait" />
-        <!-- 同步界面 -->
+        同步界面
         <activity android:name=".ui.SyncActivity"
             android:screenOrientation="portrait" />
-        <!-- 意见界面 -->
+        意见界面
         <activity android:name=".ui.FeedBackActivity"
             android:screenOrientation="portrait" />
-        <!-- 数据导入界面 -->
+        数据导入界面
         <activity android:name=".ui.ImportDataActivity"
             android:screenOrientation="portrait" />
-        <!-- 图片缩放界面 -->
+        图片缩放界面
         <activity android:name=".ui.ImageZoomActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
@@ -123,9 +129,9 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ui.WebViewActivity"
             android:screenOrientation="portrait" />
-        <!-- 注册码激活  -->
+        注册码激活 
          <activity android:name=".ui.RegisterCodeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" /> -->
          
         <!-- 校验用户 -->
         <meta-data android:value="digest" android:name="username" />

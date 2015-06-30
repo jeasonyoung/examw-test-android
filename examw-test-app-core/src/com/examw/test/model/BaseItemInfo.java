@@ -69,7 +69,8 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	 */
 	public String getTypeName() {
 		if(type == null) return typeName;
-		return AppConstant.getItemTypeName(type);
+		//return AppConstant.getItemTypeName(type);
+		return null;
 	}
 	/**
 	 * 设置题型名称。
@@ -592,15 +593,18 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>> implements Seriali
 	//是否单选或者判断
 	public boolean isSingle()
 	{
-		return (this.type.equals(AppConstant.ITEM_TYPE_SINGLE) || this.type.equals(AppConstant.ITEM_TYPE_JUDGE));
+		//return (this.type.equals(AppConstant.ITEM_TYPE_SINGLE) || this.type.equals(AppConstant.ITEM_TYPE_JUDGE));
+		return false;
 	}
 	//是否多选
 	public boolean isMulty()
 	{
-		return this.type.equals(AppConstant.ITEM_TYPE_MULTI) || this.type.equals(AppConstant.ITEM_TYPE_UNCERTAIN);
+		//return this.type.equals(AppConstant.ITEM_TYPE_MULTI) || this.type.equals(AppConstant.ITEM_TYPE_UNCERTAIN);
+		return false;
 	}
 	public boolean isChoose()
 	{
-		return (type.equals(AppConstant.ITEM_TYPE_SINGLE) || type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN));
+		//return (type.equals(AppConstant.ITEM_TYPE_SINGLE) || type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN));
+		return false;
 	}
 }

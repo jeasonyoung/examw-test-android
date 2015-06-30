@@ -21,8 +21,8 @@ import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.support.URLs;
 import com.examw.test.ui.ImageZoomActivity;
-import com.examw.test.util.BitmapManager;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.BitmapManager;
+import com.examw.test.utils.StringUtils;
 
 /**
  * 
@@ -101,9 +101,9 @@ public class ImageTextView2 extends LinearLayout {
 					iv.setMaxHeight(300);
 					iv.setScaleType(ScaleType.FIT_START);
 					String url = images.get(i);
-					iv.setTag(URLs.HOST+ url);
+					//iv.setTag(URLs.HOST+ url);
 					if(!loadLocaleImage(images.get(i),iv)){
-						bmpManager.loadBitmap(URLs.HOST+url, iv);
+						//bmpManager.loadBitmap(URLs.HOST+url, iv);
 					}
 //					iv.setImageResource(R.drawable.welcome);
 					iv.setOnClickListener(imageViewOnClick);
@@ -116,7 +116,7 @@ public class ImageTextView2 extends LinearLayout {
 	private boolean loadLocaleImage(String url,ImageView iv)
 	{
 		String myJpgPath = url.substring(url.lastIndexOf("/")+1); 
-		myJpgPath = AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath;
+		//myJpgPath = AppConfig.DEFAULT_SAVE_IMAGE_PATH+myJpgPath;
         File file = new File(myJpgPath);
         if(file.exists())
         {

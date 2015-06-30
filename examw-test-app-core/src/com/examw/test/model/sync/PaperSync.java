@@ -118,20 +118,4 @@ public class PaperSync implements Serializable {
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
-	
-	public PaperSync() {
-		
-	}
-	
-	public PaperSync(String id, String title, Integer type, Integer total, String content, String subjectCode, String createTime) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.type = type;
-		this.total = total;
-		this.content = content;
-		this.subjectCode = subjectCode;
-		this.createTime = createTime;
-	}
-	
 }

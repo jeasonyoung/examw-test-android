@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppManager;
-import com.examw.test.util.LogUtil;
 
 /**
  * 菜单列表
@@ -45,7 +44,7 @@ public class MenuListFragment extends ListFragment {
 		adapter.add(new SampleItem("设置", R.drawable.slide_menu_set));
 		adapter.add(new SampleItem("注销", R.drawable.slide_menu_logout));
 		adapter.add(new SampleItem("退出", R.drawable.slide_menu_exit));
-		if(LogUtil.showLog)
+		//if(LogUtil.showLog)
 			adapter.add(new SampleItem("导入数据",R.drawable.slide_menu_qiehuan));
 		setListAdapter(adapter);
 	}
@@ -55,26 +54,26 @@ public class MenuListFragment extends ListFragment {
 			accountItem = new SampleItem();
 			accountItem.iconRes = R.drawable.slide_menu_picture;
 		}
-		int flag = appContext.getLoginState();
-		String loginStr = "";
-		switch (flag) {
-		case AppContext.LOGINED:
-//			loginStr = "账户(" + appContext.getUsername() + ")";
-			loginStr = "账户(abcd)";
-			break;
-		case AppContext.UNLOGIN:
-			loginStr = "账户(未登录)";
-			break;
-		case AppContext.LOGIN_FAIL:
-			loginStr = "账户(未登录)";
-			break;
-		case AppContext.LOGINING:
-			loginStr = "账户(正登录)";
-			break;
-		case AppContext.LOCAL_LOGINED:
-			loginStr = "账户(本地登录)";
-		}
-		accountItem.tag = loginStr;
+//		int flag = appContext.getLoginState();
+//		String loginStr = "";
+//		switch (flag) {
+//		case AppContext.LOGINED:
+////			loginStr = "账户(" + appContext.getUsername() + ")";
+//			loginStr = "账户(abcd)";
+//			break;
+//		case AppContext.UNLOGIN:
+//			loginStr = "账户(未登录)";
+//			break;
+//		case AppContext.LOGIN_FAIL:
+//			loginStr = "账户(未登录)";
+//			break;
+//		case AppContext.LOGINING:
+//			loginStr = "账户(正登录)";
+//			break;
+//		case AppContext.LOCAL_LOGINED:
+//			loginStr = "账户(本地登录)";
+//		}
+//		accountItem.tag = loginStr;
 	}
 
 	@Override
@@ -132,29 +131,29 @@ public class MenuListFragment extends ListFragment {
 			}
 			break;
 		case 2: //注销
-			if (appContext.getLoginState() != AppContext.LOCAL_LOGINED
-					&& appContext.getLoginState() != AppContext.LOGINED) {
-				Toast.makeText(this.getActivity(), "您还没有登录", Toast.LENGTH_SHORT)
-						.show();
-			} else {
-				Toast.makeText(this.getActivity(), "注销成功", Toast.LENGTH_SHORT)
-						.show();
-				new Thread() {
-					@Override
-					public void run() {
-						try {
-//							ApiClient.logout(appContext,
-//									appContext.getUsername());
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}.start();
-				main.logout();
-				appContext.cleanLoginInfo();
-				accountItem.tag = "账户(未登录)";
-				adapter.notifyDataSetChanged();
-			}
+//			if (appContext.getLoginState() != AppContext.LOCAL_LOGINED
+//					&& appContext.getLoginState() != AppContext.LOGINED) {
+//				Toast.makeText(this.getActivity(), "您还没有登录", Toast.LENGTH_SHORT)
+//						.show();
+//			} else {
+//				Toast.makeText(this.getActivity(), "注销成功", Toast.LENGTH_SHORT)
+//						.show();
+//				new Thread() {
+//					@Override
+//					public void run() {
+//						try {
+////							ApiClient.logout(appContext,
+////									appContext.getUsername());
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}.start();
+//				main.logout();
+//				appContext.cleanLoginInfo();
+//				accountItem.tag = "账户(未登录)";
+//				adapter.notifyDataSetChanged();
+//			}
 			break;
 		case 3:	//退出
 			AppManager.getAppManager().AppExit();

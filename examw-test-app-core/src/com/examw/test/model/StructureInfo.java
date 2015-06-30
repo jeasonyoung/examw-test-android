@@ -58,32 +58,32 @@ public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	public String getDescription() {
 		if(description == null)
 		{
-			switch (type) {
-			case AppConstant.ITEM_TYPE_SINGLE:
-				description = " 每小题备选答案中，只有一个符合题意的正确答案。";
-				break;
-			case AppConstant.ITEM_TYPE_MULTI:
-				description = " 每小题备选答案中，有两个或两个以上符合题意的正确答案。";
-				break;
-			case AppConstant.ITEM_TYPE_JUDGE:
-				description = " 请判断每小题的表述是否正确。";
-				break;
-			case AppConstant.ITEM_TYPE_UNCERTAIN:
-				description = " 每小题备选答案中，有至少一个符合题意的正确答案。";
-				break;
-			case AppConstant.ITEM_TYPE_QANDA:
-				description = "请根据题干回答问题,如涉及计算,请写出计算过程。";
-				break;
-			case AppConstant.ITEM_TYPE_SHARE_TITLE:
-				description = "请根据所给材料回答,材料后的几个问题。";
-				break;
-			case AppConstant.ITEM_TYPE_SHARE_ANSWER:
-				description = "从备选答案中，选择最切合下列各题题意的正确答案。";
-				break;
-			default:
-				description = "";
-				break;
-			}
+//			switch (type) {
+//			case AppConstant.ITEM_TYPE_SINGLE:
+//				description = " 每小题备选答案中，只有一个符合题意的正确答案。";
+//				break;
+//			case AppConstant.ITEM_TYPE_MULTI:
+//				description = " 每小题备选答案中，有两个或两个以上符合题意的正确答案。";
+//				break;
+//			case AppConstant.ITEM_TYPE_JUDGE:
+//				description = " 请判断每小题的表述是否正确。";
+//				break;
+//			case AppConstant.ITEM_TYPE_UNCERTAIN:
+//				description = " 每小题备选答案中，有至少一个符合题意的正确答案。";
+//				break;
+//			case AppConstant.ITEM_TYPE_QANDA:
+//				description = "请根据题干回答问题,如涉及计算,请写出计算过程。";
+//				break;
+//			case AppConstant.ITEM_TYPE_SHARE_TITLE:
+//				description = "请根据所给材料回答,材料后的几个问题。";
+//				break;
+//			case AppConstant.ITEM_TYPE_SHARE_ANSWER:
+//				description = "从备选答案中，选择最切合下列各题题意的正确答案。";
+//				break;
+//			default:
+//				description = "";
+//				break;
+//			}
 		}
 		return description;
 	}

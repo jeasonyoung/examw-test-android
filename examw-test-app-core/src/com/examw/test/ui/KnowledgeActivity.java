@@ -29,7 +29,7 @@ import com.examw.test.adapter.SyllabusListAdapter;
 import com.examw.test.adapter.SyllabusListAdapter.OnSyllabusNodeClickListener;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
-import com.examw.test.util.ToastUtils;
+import com.examw.test.utils.ToastUtils;
 
 /**
  * 每日知识大纲

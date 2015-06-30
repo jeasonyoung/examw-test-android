@@ -11,14 +11,11 @@ import android.database.sqlite.SQLiteDatabase;
 import com.examw.test.app.AppConstant;
 import com.examw.test.db.LibraryDBUtil;
 import com.examw.test.db.UserDBManager;
-import com.examw.test.domain.Paper;
+import com.examw.test.domain.PaperModel;
 import com.examw.test.model.PaperPreview;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.sync.PaperSync;
-import com.examw.test.util.CryptoUtils;
-import com.examw.test.util.GsonUtil;
-import com.examw.test.util.LogUtil;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 
 /**
  * 试卷数据
@@ -49,7 +46,7 @@ public class PaperDao {
 	 * @param paper 试卷
 	 * 
 	 */
-	public static void insertPaper(Paper paper,String username) {
+	public static void insertPaper(PaperModel paper,String username) {
 		/*
 		 * 先看存不存在,不存在就加入
 		 */
@@ -58,19 +55,19 @@ public class PaperDao {
 		Cursor cursor = db.rawQuery("select * from tbl_papers where id = ?",
 				new String[] { paper.getId() });
 		if (cursor.getCount() > 0) {
-			LogUtil.d( "该试卷已经加过了");
+			//LogUtil.d( "该试卷已经加过了");
 			cursor.close();
 			db.close();
 			return;
 		}
 		cursor.close();
 		// id,title,type,total,content,createTime,subjectCode
-		String sql = "insert into tbl_papers(id,title,type,total,content,subjectCode,createTime)values(?,?,?,?,?,?,?)";
-		Object[] params = new Object[] { paper.getId(), paper.getTitle(),
-				paper.getType(), paper.getTotal(), paper.getContent(),
-				paper.getSubjectCode(),paper.getCreateTime()
-				};
-		db.execSQL(sql, params);
+//		String sql = "insert into tbl_papers(id,title,type,total,content,subjectCode,createTime)values(?,?,?,?,?,?,?)";
+//		Object[] params = new Object[] { paper.getId(), paper.getTitle(),
+//				paper.getType(), paper.getTotal(), paper.getContent(),
+//				paper.getSubjectCode(),paper.getCreateTime()
+//				};
+//		db.execSQL(sql, params);
 		db.close();
 	}
 
@@ -80,7 +77,7 @@ public class PaperDao {
 	 * @param list
 	 * @return 返回更新的数量
 	 */
-	public static int insertPaperList(ArrayList<Paper> list,String username) {
+	public static int insertPaperList(ArrayList<PaperModel> list,String username) {
 		int count = 0;
 		if (list != null && list.size() > 0) {
 			SQLiteDatabase db = getDatabase(username);
@@ -88,17 +85,17 @@ public class PaperDao {
 			String sql2 = "insert into tbl_papers(id,title,type,total,content,subjectCode,createTime)values(?,?,?,?,?,?,?)";
 			db.beginTransaction();
 			try {
-				for (Paper paper : list) {
+				for (PaperModel paper : list) {
 					Cursor cursor = db.rawQuery(sql1,new String[] { paper.getId() });
 					if (cursor.getCount() > 0) {
 						cursor.close();
 						continue;
 					}
 					cursor.close();
-					Object[] params = new Object[] { paper.getId(), paper.getTitle(),
-							paper.getType(), paper.getTotal(), paper.getContent(),
-							paper.getSubjectCode(),paper.getCreateTime()};
-					db.execSQL(sql2, params);
+//					Object[] params = new Object[] { paper.getId(), paper.getTitle(),
+//							paper.getType(), paper.getTotal(), paper.getContent(),
+//							paper.getSubjectCode(),paper.getCreateTime()};
+//					db.execSQL(sql2, params);
 					count++;
 				}
 				db.setTransactionSuccessful();
@@ -137,7 +134,7 @@ public class PaperDao {
 							paper.getTitle(), paper.getType(),
 							paper.getTotal(),
 							//加密试卷数据
-							CryptoUtils.encrypto(paper.getId(), paper.getContent()),
+							//CryptoUtils.encrypto(paper.getId(), paper.getContent()),
 							paper.getSubjectCode(), paper.getCreateTime()
 							};
 					db.execSQL(sql2, params);
@@ -157,7 +154,7 @@ public class PaperDao {
 	 * @param types
 	 * @return
 	 */
-	public static ArrayList<Paper> findPapers(String subjectCode,String types,String username) {
+	public static ArrayList<PaperModel> findPapers(String subjectCode,String types,String username) {
 		SQLiteDatabase db = getDatabase(username);
 		//String id, String title, Integer type, Integer total, String content, String subjectCode, String createTime
 		StringBuilder sql = new StringBuilder("select id,title,type,total,subjectCode,createTime from tbl_papers where 1 = 1 ");
@@ -178,12 +175,12 @@ public class PaperDao {
 			db.close();
 			return null;
 		}
-		ArrayList<Paper> list = new ArrayList<Paper>();
+		ArrayList<PaperModel> list = new ArrayList<PaperModel>();
 		while (cursor.moveToNext()) {
-			Paper p = new Paper(cursor.getString(0), cursor.getString(1),
-					cursor.getInt(2), cursor.getInt(3),null, cursor.getString(4),
-					cursor.getString(5));
-			list.add(p);
+//			PaperModel p = new PaperModel(cursor.getString(0), cursor.getString(1),
+//					cursor.getInt(2), cursor.getInt(3),null, cursor.getString(4),
+//					cursor.getString(5));
+//			list.add(p);
 		}
 		sql = null;params.clear();params = null;
 		cursor.close();
@@ -197,23 +194,23 @@ public class PaperDao {
 	 */
 	public static String findPaperContent(String paperId,String username)
 	{
-		LogUtil.d( String.format("查询试卷[PaperId= %s]的内容",paperId));
+		//LogUtil.d( String.format("查询试卷[PaperId= %s]的内容",paperId));
 		if(StringUtils.isEmpty(paperId)) return null;
 		SQLiteDatabase db = getDatabase(username);
 		Cursor cursor = db.rawQuery("select content from tbl_papers where id = ?", new String[]{paperId});
 		if (cursor.getCount() == 0) {
 			cursor.close();
 			db.close();
-			LogUtil.d( String.format("试卷[PaperId= %s]没有内容",paperId));
+			//LogUtil.d( String.format("试卷[PaperId= %s]没有内容",paperId));
 			return null;
 		}
 		cursor.moveToNext();
 		String content = cursor.getString(0);
 		cursor.close();
 		db.close();
-		LogUtil.d( String.format("试卷[PaperId= %s]已有内容",paperId));
+		//LogUtil.d( String.format("试卷[PaperId= %s]已有内容",paperId));
 		//解密数据的内容
-		content = CryptoUtils.decrypto(paperId, content);
+		//content = CryptoUtils.decrypto(paperId, content);
 		//转换数据
 		return content;
 	}
@@ -224,11 +221,11 @@ public class PaperDao {
 	 */
 	public static void updatePaperContent(String paperId,String content,String username)
 	{
-		LogUtil.d( String.format("插入试卷[PaperId= %s]的内容",paperId));
+		//LogUtil.d( String.format("插入试卷[PaperId= %s]的内容",paperId));
 		if (StringUtils.isEmpty(content) || StringUtils.isEmpty(paperId)) return;
 		SQLiteDatabase db = getDatabase(username);
 		//加密试卷的数据内容
-		content = CryptoUtils.encrypto(paperId, content);
+		//content = CryptoUtils.encrypto(paperId, content);
 		db.execSQL("update tbl_papers set content = ? where id = ?", new Object[]{content,paperId});
 		db.close();
 	}
@@ -239,7 +236,8 @@ public class PaperDao {
 		List<StructureInfo> rules = paper.getStructures();
 		if(rules == null) return "";
 		clearItems(rules);
-		return GsonUtil.objectToJson(paper);
+		//return GsonUtil.objectToJson(paper);
+		return null;
 	}
 	
 	private static void clearItems(List<StructureInfo> rules)
@@ -256,20 +254,20 @@ public class PaperDao {
 	}
 
 	//查找每日一练
-	public static ArrayList<Paper> findDailyPapers(long today,int dayOffset,String username) {
-		LogUtil.d("查询每日一练的数据");
+	public static ArrayList<PaperModel> findDailyPapers(long today,int dayOffset,String username) {
+	//	LogUtil.d("查询每日一练的数据");
 		SQLiteDatabase db = getDatabase(username);
 		StringBuilder sql = new StringBuilder("select id,title,type,total,subjectCode,createTime from tbl_papers where 1 = 1 and type = ? and createTime > ? and createTime < ? ");
 		ArrayList<String> params = new ArrayList<String>();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date(today));
 		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)-dayOffset, 0, 0, 0);
-		params.add(String.valueOf(AppConstant.PAPER_TYPE_DAILY));
+		//params.add(String.valueOf(AppConstant.PAPER_TYPE_DAILY));
 		params.add(StringUtils.toStandardDateShort(cal.getTime()));
-		LogUtil.d("当天的时间1:"+params.get(1));
+		//LogUtil.d("当天的时间1:"+params.get(1));
 		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)+1, 0, 0, 0);
 		params.add(StringUtils.toStandardDateShort(cal.getTime()));
-		LogUtil.d("当天的时间2:"+params.get(2));
+		//LogUtil.d("当天的时间2:"+params.get(2));
 		sql.append(" order by createTime desc");
 		Cursor cursor = db.rawQuery(sql.toString(), params.toArray(new String[0]));
 		if (cursor.getCount() == 0) {
@@ -277,12 +275,12 @@ public class PaperDao {
 			db.close();
 			return null;
 		}
-		ArrayList<Paper> list = new ArrayList<Paper>();
+		ArrayList<PaperModel> list = new ArrayList<PaperModel>();
 		while (cursor.moveToNext()) {
-			Paper p = new Paper(cursor.getString(0), cursor.getString(1),
-					cursor.getInt(2), cursor.getInt(3),null, cursor.getString(4),
-					cursor.getString(5));
-			list.add(p);
+//			PaperModel p = new PaperModel(cursor.getString(0), cursor.getString(1),
+//					cursor.getInt(2), cursor.getInt(3),null, cursor.getString(4),
+//					cursor.getString(5));
+//			list.add(p);
 		}
 		sql = null;params.clear();params = null;
 		cursor.close();
@@ -296,15 +294,15 @@ public class PaperDao {
 	 */
 	public static String findLastedPaperAddTime(String username)
 	{
-		LogUtil.d("查询最新的试卷时间");
+		//LogUtil.d("查询最新的试卷时间");
 		SQLiteDatabase db = getDatabase(username);
-		Cursor cursor = db.rawQuery("select createTime from tbl_papers order by createTime desc limit 1 where paperType != "+AppConstant.PAPER_TYPE_DAILY,new String[0]);
+//		Cursor cursor = db.rawQuery("select createTime from tbl_papers order by createTime desc limit 1 where paperType != "+AppConstant.PAPER_TYPE_DAILY,new String[0]);
 		String time = null;
-		if(cursor.moveToNext())
-		{
-			time = cursor.getString(0);
-		}
-		cursor.close();
+//		if(cursor.moveToNext())
+//		{
+//			time = cursor.getString(0);
+//		}
+//		cursor.close();
 		db.close();
 		return time;
 	}

@@ -2,15 +2,12 @@ package com.examw.test.ui;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -20,11 +17,6 @@ import com.examw.test.app.AppContext;
 import com.examw.test.dao.ImportDao;
 import com.examw.test.domain.Subject;
 import com.examw.test.model.sync.AppClientSync;
-import com.examw.test.model.sync.ExamSync;
-import com.examw.test.model.sync.PaperSync;
-import com.examw.test.support.ApiClient;
-import com.examw.test.support.URLs;
-import com.examw.test.util.StringUtils;
 
 /**
  * 导入数据界面(不在用户界面中显示)
@@ -218,16 +210,16 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		new Thread() {
 			public void run() {
 				try {
-					com.examw.test.model.sync.AppClientSync req = new AppClientSync();
+					//com.examw.test.model.sync.AppClientSync req = new AppClientSync();
 					//TODO 设置注册码 
-					req.setCode("150");
-					req.setProductId(AppContext.getMetaInfo("productId"));
-					req.setStartTime("1970-01-01 00:00:00");
-					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
-					dao.insertPaperList(list);
-					if(list == null || list.size()==0)
-						handler.sendEmptyMessage(3);
-					else
+					//req.setCode("150");
+					//req.setProductId(AppContext.getMetaInfo("productId"));
+					//req.setStartTime("1970-01-01 00:00:00");
+					//ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
+					//dao.insertPaperList(list);
+					//if(list == null || list.size()==0)
+						//handler.sendEmptyMessage(3);
+					//else
 					{
 						File file = new File(dataDir);
 						if(!file.exists())
@@ -235,13 +227,13 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 							file.mkdirs();
 						}
 						//导入试卷的数据
-						for(PaperSync paper:list)
-						{
-							String content = ApiClient.loadPaperContent(appContext,paper.getId());
-							dao.updatePaperContent(paper.getId(), content);
-							//加载试卷的图片
-							loadImage(content, dataDir);
-						}
+//						for(PaperSync paper:list)
+//						{
+//							String content = ApiClient.loadPaperContent(appContext,paper.getId());
+//							dao.updatePaperContent(paper.getId(), content);
+//							//加载试卷的图片
+//							loadImage(content, dataDir);
+//						}
 					}
 					handler.sendEmptyMessage(3);
 				}catch(Exception e)
@@ -253,24 +245,24 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		}.start();
 	}
 	
-	private void loadImage(String content,String imagePath)throws Exception 
-	{
-		Log.e("导入图片","ddddddddddd");
-		//查询字符串中是否包含图片
-		if(StringUtils.isEmpty(content)) return;
-		Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*[\\\\][\"]([^\"]+)[\\\\][\"][^>]*>");//<img[^<>]*src=[\'\"]([0-9A-Za-z.\\/]*)[\'\"].(.*?)>");
-        Matcher m = ps.matcher(content);
-        while(m.find()){
-        	String url = m.group(1);
-        	if(!url.startsWith("http"))
-        	{
-        		url = URLs.HOST + url;
-        	}
-        	Log.e("导入图片",url);
-        	ApiClient.getNetImage(url, imagePath);
-        }
-		
-	}
+//	private void loadImage(String content,String imagePath)throws Exception 
+//	{
+//		Log.e("导入图片","ddddddddddd");
+//		//查询字符串中是否包含图片
+//		if(StringUtils.isEmpty(content)) return;
+//		Pattern ps = Pattern.compile("<img[^>]+src\\s*=\\s*[\\\\][\"]([^\"]+)[\\\\][\"][^>]*>");//<img[^<>]*src=[\'\"]([0-9A-Za-z.\\/]*)[\'\"].(.*?)>");
+//        Matcher m = ps.matcher(content);
+//        while(m.find()){
+//        	String url = m.group(1);
+//        	if(!url.startsWith("http"))
+//        	{
+//        		//url = URLs.HOST + url;
+//        	}
+//        	Log.e("导入图片",url);
+//        	//ApiClient.getNetImage(url, imagePath);
+//        }
+//		
+//	}
 	
 	private void importSyllabus() {
 		if (proDialog == null) {
@@ -285,14 +277,14 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 				try {
 					if(subjects!=null && subjects.size()>0)
 					{
-						for(Subject s:subjects)
+					//for(Subject s:subjects)
 						{
-							String content = ApiClient.loadSyllabusContent(
-									(AppContext) getApplication(), s.getSubjectId());
-							if (!StringUtils.isEmpty(content)) {
-								dao.insertSyllabusAndLoadChapters(
-										s, content);
-							}
+//							String content = ApiClient.loadSyllabusContent(
+//									(AppContext) getApplication(), s.getSubjectId());
+//							if (!StringUtils.isEmpty(content)) {
+//								dao.insertSyllabusAndLoadChapters(
+//										s, content);
+//							}
 						}
 					}
 					handler.sendEmptyMessage(3);
@@ -373,30 +365,30 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 			public void run() {
 				try {
 					//导入考试,导入科目
-					AppClientSync req = new AppClientSync();
+					//AppClientSync req = new AppClientSync();
 					//TODO 设置注册码 
-					req.setCode("150");
-					req.setProductId(AppContext.getMetaInfo("productId"));
-					req.setStartTime("1970-01-01 00:00:00");
-					ExamSync result = ApiClient.getExams(appContext, req);
-					dao.insertExamSubjects(result);
+					//req.setCode("150");
+					//req.setProductId(AppContext.getMetaInfo("productId"));
+					//req.setStartTime("1970-01-01 00:00:00");
+					//ExamSync result = ApiClient.getExams(appContext, req);
+					//dao.insertExamSubjects(result);
 					
 					//导入试卷
-					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
-					if(list != null && list.size()>0)
-					{
-						dao.insertPaperList(list);
-						File file = new File(dataDir);
-						if(!file.exists())
-						{
-							file.mkdirs();
-						}
-						for(PaperSync paper:list)
-						{
-							//加载试卷的图片
-							loadImage(paper.getContent(), dataDir);
-						}
-					}
+//					ArrayList<PaperSync> list = ApiClient.getPapers((AppContext)getApplication(),req);
+//					if(list != null && list.size()>0)
+//					{
+//						dao.insertPaperList(list);
+//						File file = new File(dataDir);
+//						if(!file.exists())
+//						{
+//							file.mkdirs();
+//						}
+//						for(PaperSync paper:list)
+//						{
+//							//加载试卷的图片
+//							loadImage(paper.getContent(), dataDir);
+//						}
+//					}
 					// 所有地区数据都搞定后
 					handler.sendEmptyMessage(5);
 				} catch (Exception e) {

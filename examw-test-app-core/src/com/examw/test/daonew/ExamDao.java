@@ -11,8 +11,7 @@ import com.examw.test.db.UserDBManager;
 import com.examw.test.domain.Subject;
 import com.examw.test.model.sync.ExamSync;
 import com.examw.test.model.sync.SubjectSync;
-import com.examw.test.util.LogUtil;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 
 /**
  * 考试Dao
@@ -47,7 +46,7 @@ public class ExamDao {
 	 */
 	public static ArrayList<Subject> findSubjects(String username)
 	{
-		LogUtil.d("查询科目信息");
+		//LogUtil.d("查询科目信息");
 		SQLiteDatabase db = null;
 		if(username != null)
 			db = UserDBManager.openDatabase(username);
@@ -77,7 +76,7 @@ public class ExamDao {
 		if(result == null) return;
 		Set<SubjectSync> subjects = result.getSubjects();
 		if(subjects == null || subjects.size()==0) return;
-		LogUtil.d("插入考试");
+		//LogUtil.d("插入考试");
 		SQLiteDatabase db = UserDBManager.openDatabase(username);
 		db.beginTransaction();
 		db.execSQL("update tbl_exams set status = 0");

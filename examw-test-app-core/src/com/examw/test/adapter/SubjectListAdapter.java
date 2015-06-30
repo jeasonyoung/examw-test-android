@@ -49,24 +49,24 @@ public class SubjectListAdapter extends BaseAdapter{
 			holder = new ViewHolder();
 //			holder.icon = (ImageView) v.findViewById(R.id.home_list_icon);
 			holder.title = (TextView) v.findViewById(R.id.list_title);
-			if(action == AppConstant.ACTION_ERROR || action == AppConstant.ACTION_FAVORITE)
-			{
-				holder.countLayout = (LinearLayout) v.findViewById(R.id.count_layout);
-				holder.count = (TextView) v.findViewById(R.id.txt_count);
-				holder.countLayout.setVisibility(View.VISIBLE);
-			}
+//			if(action == AppConstant.ACTION_ERROR || action == AppConstant.ACTION_FAVORITE)
+//			{
+//				holder.countLayout = (LinearLayout) v.findViewById(R.id.count_layout);
+//				holder.count = (TextView) v.findViewById(R.id.txt_count);
+//				holder.countLayout.setVisibility(View.VISIBLE);
+//			}
 //			int rid = action==0?R.drawable.icon_book:action==1?R.drawable.icon_timer:R.drawable.icon_frequent;
 //			holder.icon.setImageResource(rid);
 			v.setTag(holder);
 		}
 		holder = (ViewHolder) v.getTag();
 		holder.title.setText(dataList.get(position).getName());
-		if(action == AppConstant.ACTION_ERROR || action == AppConstant.ACTION_FAVORITE)
-		{
-			Integer total = dataList.get(position).getTotal();
-			holder.count.setText(total==null?"0":total+"");
-			if(total == null || total.equals(0)) holder.count.setTextColor(mContext.getResources().getColor(R.color.grey));
-		}
+//		if(action == AppConstant.ACTION_ERROR || action == AppConstant.ACTION_FAVORITE)
+//		{
+//			Integer total = dataList.get(position).getTotal();
+//			holder.count.setText(total==null?"0":total+"");
+//			if(total == null || total.equals(0)) holder.count.setTextColor(mContext.getResources().getColor(R.color.grey));
+//		}
 		return v;
 	}
 	static class ViewHolder

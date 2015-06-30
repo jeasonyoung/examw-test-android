@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
-import com.examw.test.util.StringUtils;
+import com.examw.test.utils.StringUtils;
 
 public class CheckBoxGroup extends LinearLayout{
 	private List<OptionLayout> checkboxList = new ArrayList<OptionLayout>();
@@ -107,17 +107,17 @@ public class CheckBoxGroup extends LinearLayout{
 	 */
 	public void setFontColor(int rightColor,String rightAnswer,int wrongColor,String userAnswer,Integer type)
 	{
-		if(type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN))
-		{
-			for(OptionLayout cb: checkboxList)
-			{
-				if(rightAnswer.contains(cb.getValue()))
-				{
-					cb.setFontColor(rightColor);
-				}
-			}
-			return;
-		}
+//		if(type.equals(AppConstant.ITEM_TYPE_MULTI) || type.equals(AppConstant.ITEM_TYPE_UNCERTAIN))
+//		{
+//			for(OptionLayout cb: checkboxList)
+//			{
+//				if(rightAnswer.contains(cb.getValue()))
+//				{
+//					cb.setFontColor(rightColor);
+//				}
+//			}
+//			return;
+//		}
 		if("1".equals(userAnswer))
 		{
 			userAnswer = "A";

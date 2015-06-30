@@ -26,12 +26,9 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.adapter.DailyDateAdapter;
 import com.examw.test.adapter.PaperListAdapter;
-import com.examw.test.app.AppContext;
 import com.examw.test.daonew.PaperDao;
-import com.examw.test.domain.Paper;
+import com.examw.test.domain.PaperModel;
 import com.examw.test.model.DateInfo;
-import com.examw.test.support.ApiClient;
-import com.examw.test.util.LogUtil;
 import com.examw.test.widget.DateHorizontalScrollView;
 
 /**
@@ -42,7 +39,7 @@ import com.examw.test.widget.DateHorizontalScrollView;
 public class DailyActivity extends BaseActivity implements OnClickListener,OnGestureListener {
 	private LinearLayout loadingLayout, nodataLayout, reloadLayout;
 	private ListView paperListView;
-	private ArrayList<Paper> paperList;
+	private ArrayList<PaperModel> paperList;
 	private PaperListAdapter mAdapter;
 	private Handler handler;
 	private long today;
@@ -57,7 +54,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui_daily);
-		username =  ((AppContext) this.getApplication()).getUsername();
+	//	username =  ((AppContext) this.getApplication()).getUsername();
 		initViews();
 		//
 		mGestureDetector = new GestureDetector(this,this); 
@@ -112,7 +109,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 		@Override
 		public void run() {
 			if (today == 0) {
-				today = ApiClient.getStandardTime();
+				//today = ApiClient.getStandardTime();
 				handler.sendEmptyMessage(2);
 			}
 			paperList = com.examw.test.daonew.PaperDao.findDailyPapers(today, currentDayOrder,username);
@@ -194,7 +191,7 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 	}
 
 	private void buildDailyDate() {
-		LogUtil.d("构造滑动星期条");
+		//LogUtil.d("构造滑动星期条");
 		weekdays = new ArrayList<DateInfo>();
 		SimpleDateFormat weekFormat = new SimpleDateFormat("EEE",Locale.CHINA);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd",Locale.CHINA);
