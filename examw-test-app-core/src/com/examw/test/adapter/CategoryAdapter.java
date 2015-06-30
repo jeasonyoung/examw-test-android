@@ -70,7 +70,7 @@ public class CategoryAdapter extends BaseAdapter{
 		ItemViewWrapper itemViewWrapper = null;
 		if(convertView == null){
 			Log.d(TAG, "创建新行:" + position);
-			convertView = LayoutInflater.from(this.context).inflate(R.layout.ui_switch_category_item, parent);
+			convertView = LayoutInflater.from(this.context).inflate(R.layout.ui_switch_category_item, parent, false);
 			//初始化
 			itemViewWrapper = new ItemViewWrapper();
 			//考试分类名称

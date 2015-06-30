@@ -2,16 +2,16 @@ package com.examw.test.app;
 
 import java.io.Serializable;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.examw.codec.digest.DigestUtils;
+import com.google.gson.Gson;
 /**
  * 应用设置。
  * 

@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -90,16 +91,16 @@ public class CategoryModel implements Serializable {
 		this.abbr = abbr;
 	}
 	/**
-	 * 获取exams
-	 * @return exams
+	 * 获取考试集合。
+	 * @return 考试集合。
 	 */
 	public List<ExamModel> getExams() {
 		return exams;
 	}
 	/**
-	 * 设置 exams
+	 * 设置考试集合。
 	 * @param exams 
-	 *	  exams
+	 *	  考试集合。
 	 */
 	public void setExams(List<ExamModel> exams) {
 		this.exams = exams;
@@ -140,7 +141,7 @@ public class CategoryModel implements Serializable {
 			//文件是否存在
 			if(localFile.exists()){
 				Gson gson = new Gson();
-				Type objType =   new TypeToken<List<CategoryModel>>(){}.getType();
+				Type objType =   new TypeToken<ArrayList<CategoryModel>>(){}.getType();
 				List<CategoryModel> list = gson.fromJson(new FileReader(localFile), objType);
 				if(list != null && list.size() > 0){
 					return list;
@@ -167,9 +168,9 @@ public class CategoryModel implements Serializable {
 				Log.d(TAG, "本地存储路径:" + localFile.getAbsolutePath());
 
 				Gson gson = new Gson();
-				
-				FileWriter writer =  new FileWriter(localFile, false);
-				gson.toJson(categories, writer);
+				Type objType =   new TypeToken<ArrayList<CategoryModel>>(){}.getType();
+				FileWriter writer =  new FileWriter(localFile,false);
+				gson.toJson(categories, objType,  writer);
 				writer.close();
 				
 				return true;

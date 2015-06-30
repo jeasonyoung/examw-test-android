@@ -4,13 +4,14 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
+
+import com.examw.codec.binary.Hex;
+import com.examw.codec.digest.DigestUtils;
 /**
  * 对称加密工具类。
  * @author yangyong.

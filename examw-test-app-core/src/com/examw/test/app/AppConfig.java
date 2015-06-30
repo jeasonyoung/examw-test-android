@@ -1,17 +1,5 @@
 package com.examw.test.app;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Properties;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-
-import com.examw.test.utils.StringUtils;
 
 /**
  * 应用程序配置类：用于保存用户相关信息及设置

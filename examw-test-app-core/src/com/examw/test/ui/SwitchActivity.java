@@ -34,6 +34,7 @@ import com.examw.test.widget.WaitingViewDialog;
  */
 public class SwitchActivity extends FragmentActivity {
 	private static final String TAG = "SwitchActivity";
+	private WaitingViewDialog waitingViewDialog;
 	private SubFragmentType subType;
 	private MyHandler msgHandler;
 	/*
@@ -45,7 +46,9 @@ public class SwitchActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		//加载布局XML 
 		this.setContentView(R.layout.ui_switch_main);
-		//
+		//初始化等待框
+		this.waitingViewDialog = new WaitingViewDialog(this);
+		//初始化通知处理器
 		this.msgHandler = new MyHandler(this);
 		//创建考试类别Fragment
 		this.createSubFragment(SubFragmentType.Category);
@@ -57,7 +60,7 @@ public class SwitchActivity extends FragmentActivity {
 		switch(this.subType = type){
 			case Category:{//考试分类。
 				Log.d(TAG, "考试分类Fragment...");
-				fragment = new CategoryFragment();
+				fragment = new CategoryFragment(this);
 				break;
 			}
 			case Exam:{//考试
@@ -132,10 +135,21 @@ public class SwitchActivity extends FragmentActivity {
 	 * @author jeasonyoung
 	 * @since 2015年6月26日
 	 */
-	class CategoryFragment extends Fragment{
+	private class CategoryFragment extends Fragment{
 		private ListView listView;
-		private WaitingViewDialog waitingViewDialog;
-	    private SwitchProductDao dao;
+		private Context context;
+	    private CategoryAdapter categoryAdapter;
+	    private List<CategoryModel> categoryDataSource;
+	    /**
+	     * 构造函数。
+	     * @param context
+	     * 上下文。
+	     */
+	    public CategoryFragment(Context context){
+	    	this.context = context;
+	    	this.categoryDataSource = new ArrayList<CategoryModel>();
+	    	this.categoryAdapter = new CategoryAdapter(context, this.categoryDataSource);
+	    }
 		/*
 		 * 重载创建视图。
 		 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -147,8 +161,7 @@ public class SwitchActivity extends FragmentActivity {
 			final View view = inflater.inflate(R.layout.ui_switch_category, container, false);
 			//加载列表
 			this.listView = (ListView)view.findViewById(R.id.listSwitchCategory);
-			//this.listView.setAdapter(adapter);
-			this.dao =  new SwitchProductDao(getActivity());
+			this.listView.setAdapter(this.categoryAdapter);
 			return view;
 		}
 		/*
@@ -158,10 +171,8 @@ public class SwitchActivity extends FragmentActivity {
 		@Override
 		public void onStart() {
 			super.onStart();
-			//初始化等待动画
-			this.waitingViewDialog = new WaitingViewDialog(this.getActivity());
-			//显示等待
-			this.waitingViewDialog.show();
+			//显示等待动画
+			waitingViewDialog.show();
 			//加载数据。
 			this.loadDataTask.execute((String)null);
 		}
@@ -181,6 +192,7 @@ public class SwitchActivity extends FragmentActivity {
 					return null;
 				}else {
 					 Log.d(TAG, "加载考试分类");
+					 SwitchProductDao dao = new SwitchProductDao(context);
 					 //检查是否有本地数据缓存
 					 if(!dao.hasLocalCategories()){
 						 //从网络加载数据
@@ -201,7 +213,7 @@ public class SwitchActivity extends FragmentActivity {
 						});
 					 }
 					 //返回数据
-					 return (dao.getCategories() == null ? null : dao.getCategories().toArray(new CategoryModel[0]));
+					 return (dao.getCategories() == null ? null : dao.getCategories().toArray());
 				}
 			}
 			/*
@@ -211,20 +223,23 @@ public class SwitchActivity extends FragmentActivity {
 			@Override
 			protected void onPostExecute(Object result[]) {
 				//取消等待动画
-				waitingViewDialog.cancel();
+				if(waitingViewDialog != null){
+					waitingViewDialog.cancel();
+				}
 				//结果数据处理
 				if(result != null && result.length > 0){
 					//考试分类数据
 					if(result[0] instanceof CategoryModel){
-						List<CategoryModel> list = new ArrayList<CategoryModel>();
+						Log.d(TAG, "添加考试分类数据到数据源...");
 						for(Object obj : result){
 							if(obj == null)continue;
 							if(obj instanceof CategoryModel){
-								list.add((CategoryModel)obj);
+								categoryDataSource.add((CategoryModel)obj);
 							}
 						}
-						//装载到适配器
-						listView.setAdapter(new CategoryAdapter(getActivity(), list));
+						//通知适配器
+						Log.d(TAG, "通知适配器更新数据...");
+						categoryAdapter.notifyDataSetChanged();
 					}
 					//
 				}

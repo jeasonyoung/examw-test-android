@@ -2,7 +2,6 @@ package com.examw.test.app;
 
 import java.io.Serializable;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import android.content.Context;
@@ -11,6 +10,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.examw.codec.digest.DigestUtils;
 import com.examw.test.utils.AESUtils;
 import com.google.gson.Gson;
 

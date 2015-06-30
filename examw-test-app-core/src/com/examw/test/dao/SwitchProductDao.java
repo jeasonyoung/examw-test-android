@@ -44,7 +44,7 @@ public class SwitchProductDao implements Serializable {
 	}
 	//是否存在本地数据
 	public synchronized boolean hasLocalCategories(){
-		Log.d(TAG, "是否存在本地数据缓存...");
+		Log.d(TAG, "检查是否存在本地数据缓存...");
 		if(localCategoriesCache == null || localCategoriesCache.size() == 0){
 			Log.d(TAG, "加载本地缓存数据...");
 			localCategoriesCache = CategoryModel.categoriesFromLocal();

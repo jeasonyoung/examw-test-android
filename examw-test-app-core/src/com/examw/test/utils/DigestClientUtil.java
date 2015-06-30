@@ -15,9 +15,11 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import android.util.Log;
+
+import com.examw.codec.digest.DigestUtils;
 
 /**
  * HTTP摘要认证客户端工具类
