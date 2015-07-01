@@ -3,11 +3,6 @@ package com.examw.test.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.examw.test.R;
-import com.examw.test.app.AppContext;
-import com.examw.test.dao.DownloadDao;
-import com.examw.test.dao.PaperDao;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +16,10 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.examw.test.R;
+import com.examw.test.app.AppContext;
+import com.examw.test.dao.PaperDao;
 
 /**
  * 首页Fragment

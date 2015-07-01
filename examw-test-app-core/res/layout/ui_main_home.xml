@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/list_top"
         android:paddingBottom="@dimen/list_bottom"
+        android:layout_marginBottom="@dimen/list_bottom"
         android:paddingLeft="@dimen/list_left"
         android:paddingStart="@dimen/list_left"
         android:paddingRight="@dimen/list_right"
