@@ -132,6 +132,17 @@
         <item name="android:scaleType">fitStart</item>
     </style>
     
+    <!-- 底部菜单选项样式 -->
+    <style name="main_bottom_radio">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>  
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/main_bottom_radio_bg</item>
+        <item name="android:padding">5.0dip</item>
+    </style>
+    
 	<!-- 等待加载动画样式 -->
     <style name="WaitingViewDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>

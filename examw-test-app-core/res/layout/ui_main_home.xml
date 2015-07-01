@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 首页 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+    <!-- 标题 -->
+    <TextView android:id="@+id/main_home_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/list_top"
+        android:minHeight="@dimen/top_title_minHeight"
+        android:background="@color/default_color" 
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontsize_l"
+        android:layout_alignParentTop="true" />
+
+     <!-- 列表数据 -->
+    <ListView android:id="@+id/list_main_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:background="@color/white"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/topic_driver"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:visibility="visible" />
+    
+</RelativeLayout>

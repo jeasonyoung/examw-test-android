@@ -43,7 +43,7 @@ import com.examw.test.dao.SwitchProductDao;
 import com.examw.test.model.sync.CategoryModel;
 import com.examw.test.model.sync.ExamModel;
 import com.examw.test.model.sync.ProductModel;
-import com.examw.test.widget.MsgHandler;
+import com.examw.test.support.MsgHandler;
 import com.examw.test.widget.WaitingViewDialog;
 /**
  * 切换产品Activity。
@@ -51,7 +51,7 @@ import com.examw.test.widget.WaitingViewDialog;
  * @author jeasonyoung
  * @since 2015年6月26日
  */
-public class SwitchActivity extends FragmentActivity {
+public class SwitchActivity extends FragmentActivity implements FragmentManager.OnBackStackChangedListener {
 	private static final String TAG = "SwitchActivity";
 	private static final ExecutorService signPools = Executors.newSingleThreadExecutor();
 	
@@ -78,34 +78,33 @@ public class SwitchActivity extends FragmentActivity {
 		//创建考试类别Fragment
 		this.createSubFragment(SubFragmentType.Category);
 		//添加back事件处理
-		this.getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-			/*
-			 * back事件处理
-			 * @see android.support.v4.app.FragmentManager.OnBackStackChangedListener#onBackStackChanged()
-			 */
-			@Override
-			public void onBackStackChanged() {
-				Log.d(TAG, "back前fragment类型：" + subType);
-				switch(subType){
-					case None:{//none
-						break;
-					}
-					case Category:{//考试分类
-						subType = SubFragmentType.None;
-						break;
-					}
-					case Exam:{//考试列表
-						subType = SubFragmentType.Category;
-						break;
-					}
-					case Product:{//产品列表
-						subType = SubFragmentType.Exam;
-						break;
-					}
-				}
-				Log.d(TAG, "back后fragment类型：" + subType);
+		this.getSupportFragmentManager().addOnBackStackChangedListener(this);
+	}
+	/*
+	 * 返回事件处理。
+	 * @see android.support.v4.app.FragmentManager.OnBackStackChangedListener#onBackStackChanged()
+	 */
+	@Override
+	public void onBackStackChanged() {
+		Log.d(TAG, "back前fragment类型：" + this.subType);
+		switch(this.subType){
+			case None:{//none
+				break;
 			}
-		});
+			case Category:{//考试分类
+				this.subType = SubFragmentType.None;
+				break;
+			}
+			case Exam:{//考试列表
+				this.subType = SubFragmentType.Category;
+				break;
+			}
+			case Product:{//产品列表
+				this.subType = SubFragmentType.Exam;
+				break;
+			}
+		}
+		Log.d(TAG, "back后fragment类型：" + subType);
 	}
 	//创建子Fragment
 	private void createSubFragment(SubFragmentType type){
@@ -137,13 +136,13 @@ public class SwitchActivity extends FragmentActivity {
 			.commit();
 		}
 	}
-	 
 	/*
 	 * 键盘响应。
 	 * @see android.support.v4.app.FragmentActivity#onKeyDown(int, android.view.KeyEvent)
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.d(TAG, "键盘响应:" + keyCode);
 		if(event.getKeyCode() == KeyEvent.KEYCODE_BACK && this.subType == SubFragmentType.None){
 			if(event.getRepeatCount() == 0){
 				Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
@@ -201,9 +200,9 @@ public class SwitchActivity extends FragmentActivity {
 			//加载界面视图
 			final View view = inflater.inflate(R.layout.ui_switch_category, container, false);
 			//加载搜索框
-			final EditText txtSearch = (EditText)view.findViewById(R.id.listSwitchCategorySearchText);
+			final EditText txtSearch = (EditText)view.findViewById(R.id.switch_category_search_text);
 			//加载所属按钮
-			Button btnSearch = (Button)view.findViewById(R.id.listSwitchCategorySearchBtn);
+			Button btnSearch = (Button)view.findViewById(R.id.switch_category_search_btn);
 			if(btnSearch != null && txtSearch != null){
 				//添加点击事件处理
 				btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -234,7 +233,7 @@ public class SwitchActivity extends FragmentActivity {
 				});
 			}
 			//加载列表
-			this.listView = (ListView)view.findViewById(R.id.listSwitchCategory);
+			this.listView = (ListView)view.findViewById(R.id.list_switch_category);
 			//设置数据适配器
 			this.listView.setAdapter(this.categoryAdapter);
 			this.isCategory = true;
@@ -471,7 +470,7 @@ public class SwitchActivity extends FragmentActivity {
 				});
 			}
 			//加载考试列表
-			this.listView = (ListView)view.findViewById(R.id.listSwitchExam);
+			this.listView = (ListView)view.findViewById(R.id.list_switch_exam);
 			//设置数据适配器
 			this.listView.setAdapter(this.adapter);
 			//设置数据行点击事件处理
@@ -596,8 +595,8 @@ public class SwitchActivity extends FragmentActivity {
 					}
 				});
 			}
-			//加载考试列表
-			this.listView = (ListView)view.findViewById(R.id.listSwitchProduct);
+			//加载产品列表
+			this.listView = (ListView)view.findViewById(R.id.list_switch_product);
 			//设置数据适配器
 			this.listView.setAdapter(this.adapter);
 			//设置数据行点击事件处理

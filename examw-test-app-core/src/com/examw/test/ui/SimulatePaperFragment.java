@@ -136,8 +136,7 @@ public class SimulatePaperFragment extends Fragment implements OnClickListener {
 		// 检测应用更新
 		case R.id.layout_checkupdate:
 			newVersionFlag.setVisibility(View.GONE);
-			AppUpdateManager.getUpdateManager().checkAppUpdate(
-					this.getActivity(), true);
+			//AppUpdateManager.getUpdateManager().checkAppUpdate( this.getActivity(), true);
 			break;
 		// 检测数据更新
 //		case R.id.layout_checkupdata:

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
@@ -82,15 +81,15 @@ public class MenuListFragment extends ListFragment {
 		MainActivity main = (MainActivity) getActivity();
 		switch (position) {
 		case 0:	//首页
-			main.showContent();
-			Fragment f = null;
-			if (main.getFlag() != MainActivity.MAIN_INDEX) {
-				MainFragment m =  new MainFragment();
-				f = m;
-				createFragment(f);
-				main.setFlag(MainActivity.MAIN_INDEX);
-				main.setMainFragment(m);
-			}
+//			main.showContent();
+//			Fragment f = null;
+//			if (main.getFlag() != MainActivity.MAIN_INDEX) {
+//				MainFragment m =  new MainFragment();
+//				f = m;
+//				createFragment(f);
+//				main.setFlag(MainActivity.MAIN_INDEX);
+//				main.setMainFragment(m);
+//			}
 			break;
 //		case 1:	//用户页
 //			if (appContext.getLoginState() == AppContext.UNLOGIN
@@ -121,14 +120,14 @@ public class MenuListFragment extends ListFragment {
 //			}
 //			break;
 		case 1:	//设置
-			main.showContent();
-			main.hideNewTag();
-			if (main.getFlag() != MainActivity.MAIN_SETTING) {
-				f = new SettingFragment();
-				createFragment(f);
-				main.setFlag(MainActivity.MAIN_SETTING);
-				main.setMainFragment(null);
-			}
+//			main.showContent();
+//			main.hideNewTag();
+//			if (main.getFlag() != MainActivity.MAIN_SETTING) {
+//				f = new SettingFragment();
+//				createFragment(f);
+//				main.setFlag(MainActivity.MAIN_SETTING);
+//				main.setMainFragment(null);
+//			}
 			break;
 		case 2: //注销
 //			if (appContext.getLoginState() != AppContext.LOCAL_LOGINED
@@ -170,12 +169,12 @@ public class MenuListFragment extends ListFragment {
 		adapter.notifyDataSetChanged();
 	}
 
-	private void createFragment(Fragment f) {
-		FragmentManager fm = getActivity().getSupportFragmentManager();
-		fm.beginTransaction()
-				.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-				.replace(R.id.fragment_replace_layout, f).commit();
-	}
+//	private void createFragment(Fragment f) {
+////		FragmentManager fm = getActivity().getSupportFragmentManager();
+////		fm.beginTransaction()
+////				.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+////				.replace(R.id.fragment_replace_layout, f).commit();
+//	}
 
 	private class SampleItem {
 		public String tag;

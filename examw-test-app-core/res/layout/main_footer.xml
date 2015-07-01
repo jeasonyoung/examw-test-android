@@ -24,7 +24,7 @@
     <RadioButton
         android:id="@+id/btn_setting"
        	style="@style/main_footbar_radio"
-        android:drawableBottom="@drawable/weight_setting"
+        android:drawableBottom="@drawable/weight_my"
         android:drawablePadding="-20dip"
         />
 

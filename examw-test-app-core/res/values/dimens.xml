@@ -11,6 +11,15 @@
     <dimen name="list_right">0.0dip</dimen>
     <!-- 最小行高 -->
     <dimen name="list_min_cellHeight">35.0dip</dimen>
+    
+    <!-- 底部菜单高度 -->
+    <dimen name="main_bottom_menuHeight">44.0dip</dimen>
+    <!-- 底部菜单图片间隔 -->
+    <dimen name="main_bottom_menuImgPadding">2dip</dimen>
+    
+    <!-- 顶部Bar最小高度 -->
+    <dimen name="top_title_minHeight">40.0dip</dimen>
+    
     <!-- 行字体 -->
     <!-- 大字体尺寸 -->  
     <dimen name="list_l_size">16.0sp</dimen>
@@ -28,6 +37,8 @@
     <dimen name="fontsize_l">16.0sp</dimen>
     <dimen name="fontsize_m">14.0sp</dimen>
     <dimen name="fontsize_s">12.0sp</dimen>
+    
+    
     
     
     <!-- Default screen margins, per the Android Design guidelines. -->

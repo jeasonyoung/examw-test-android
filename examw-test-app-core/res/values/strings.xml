@@ -14,6 +14,13 @@
     <!-- 取消 -->
     <string name="cancle">取消</string>
     
+    <!-- 底部菜单 -->
+    <string name="main_bottom_home">首页</string>
+    <string name="main_bottom_favorites">错题</string>
+    <string name="main_bottom_my">我的</string>
+    <string name="main_bottom_more">更多</string>
+    
+    
     
     <string name="app_name_suffix">(全国版)</string>
     <string name="action_settings">Settings</string>

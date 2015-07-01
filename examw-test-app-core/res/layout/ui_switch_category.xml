@@ -16,7 +16,7 @@
         android:background="@color/transparent">
         
         <!-- 文本框 靠左-->
-        <EditText android:id="@+id/listSwitchCategorySearchText" 
+        <EditText android:id="@+id/switch_category_search_text" 
             android:layout_weight="8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:textSize="@dimen/fontsize_m"/>
         
          <!-- 查询按钮 靠右-->
-        <Button android:id="@+id/listSwitchCategorySearchBtn"
+        <Button android:id="@+id/switch_category_search_btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
           	android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
     </LinearLayout>
     
     <!-- 列表数据 -->
-    <ListView android:id="@+id/listSwitchCategory"
+    <ListView android:id="@+id/list_switch_category"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"

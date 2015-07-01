@@ -12,7 +12,7 @@
         layout="@layout/top_head" />
     
     <!-- 列表数据 -->
-    <ListView android:id="@+id/listSwitchProduct"
+    <ListView android:id="@+id/list_switch_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"

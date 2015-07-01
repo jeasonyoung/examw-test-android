@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
+    <!-- 默认主色 -->
+    <color name="default_color">#FFBA2121</color>
+    <!-- 主界面底部菜单背景色 -->
+    <color name="main_bottom_bgcolor">#FFBEBEBE</color>
+    <!-- 白色 -->
+    <color name="white">#ffffffff</color>
+    <!-- 黑色 -->
+    <color name="black">#ff000000</color>
+    <!-- 灰色 -->
+    <color name="gray">#ff888888</color>
+    <!-- 灰白色 -->
+    <color name="grey">#ffc0c7c7</color>
+    
 
     <color name="transparent">#00000000</color>
     <color name="translucent">#80000000</color>
@@ -19,18 +33,18 @@
     <color name="nav_name">#ffffffff</color>
     <color name="nav_subname">#ffffffff</color>
     <color name="login_bg">#ff509cd8</color>
-    <color name="gray">#ff888888</color>
+    
     <color name="umenu_login">#40bbbbbb</color>
     <color name="umenu_login_pre">#903ab1ff</color>
     <color name="default_bg_white">#ffffffff</color>
-    <color name="grey">#ffc0c7c7</color>
+    
     <color name="grey2">#ddc0c7c7</color>
     <color name="oogrey">#0fc0c7c7</color>
-    <color name="black">#ff000000</color>
+    
     <color name="orange">#ffff6600</color>
     <color name="ashen">#fff6f6f6</color>
     <color name="pink">#ffF4DADA</color>
-    <color name="white">#ffffffff</color>
+    
     <color name="none">#00000000</color>
     <color name="textblue">#ff767676</color>
     <color name="blue">#ff2182bd</color>
