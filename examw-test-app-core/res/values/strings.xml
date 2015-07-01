@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 应用名称 -->
     <string name="app_name">中华网校题库</string>
+    <!-- 等待加载文字 -->
     <string name="wating_img_load">LOADING</string>
+    <!-- 查询考试名称placeholder -->
+    <string name="search_examname_placeholder">请输入考试名称</string>
+    <!-- 查询按钮名称 -->
+    <string name="search_examname_btn">搜索</string>
+    
+    <!-- 确认 -->
+    <string name="confirm">确认</string>
+    <!-- 取消 -->
+    <string name="cancle">取消</string>
     
     
     <string name="app_name_suffix">(全国版)</string>
@@ -113,7 +124,7 @@
     <string name="app_menu_surelogout">确定退出程序吗？</string>
     <string name="app_setting_surelogout">确定要退出登录吗?</string>
     <string name="sure">确定</string>
-    <string name="cancle">取消</string>
+    
     <string name="msg_load_image_fail">图片加载失败</string>
     <string name="msg_load_userface_fail">用户头像加载失败</string>
     <string name="msg_login_success">登录成功</string>

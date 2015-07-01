@@ -35,59 +35,59 @@ public class ImportDao {
 	 */
 	public void insertExamSubjects(ExamSync result)
 	{
-		if(result == null) return;
-		Set<SubjectSync> subjects = result.getSubjects();
-		if(subjects == null || subjects.size()==0) return;
-		//LogUtil.d("插入考试");
-		SQLiteDatabase db =  dbManager.openDatabase();
-		db.beginTransaction();
-		db.execSQL("update tbl_exams set status = 0");
-		db.execSQL("update tbl_subjects set status = 0");
-		//查询考试
-		Cursor cursor = db.rawQuery("select name from tbl_exams where code = ?",new String[]{result.getCode()});
-		String name = "";
-		if(cursor.moveToNext())
-		{
-			name = cursor.getString(0);
-		}
-		cursor.close();
-		//没有考试插入
-		if(StringUtils.isEmpty(name))
-		{
-			db.execSQL("insert into tbl_exams(code,name,abbr,status)values(?,?,?,1)", 
-					new Object[]{result.getCode(),result.getName(),result.getAbbr()});
-			//插入考试
-			for(SubjectSync s:subjects)
-			{
-				db.execSQL("insert into tbl_subjects(code,name,status,examCode)values(?,?,1,?)", new Object[]{s.getCode(),s.getName(),result.getCode()});
-			}
-		}else
-		{
-			//修改状态
-			db.execSQL("update tbl_exams set name = ?,abbr = ?,status = 1 where code = ?",
-					new Object[]{result.getCode()});
-			//修改科目
-			for(SubjectSync s:subjects)
-			{
-				Cursor cursor1 = db.rawQuery("select name from tbl_subjects where code = ?",new String[]{s.getCode()});
-				String name1 = "";
-				if(cursor.moveToNext())
-				{
-					name1 = cursor.getString(0);
-				}
-				cursor1.close();
-				if(StringUtils.isEmpty(name1))
-				{
-					db.execSQL("insert into tbl_subjects(code,name,status,examCode)values(?,?,1,?)", 
-							new Object[]{s.getCode(),s.getName(),result.getCode()});
-				}else
-					db.execSQL("update tbl_subjects set name = ?,examCode = ?,status = 1 where code = ?", 
-							new Object[]{s.getName(),result.getCode(),s.getCode()});
-			}
-		}
-		db.setTransactionSuccessful();
-		db.endTransaction();
-		db.close();
+//		if(result == null) return;
+//		Set<SubjectSync> subjects = result.getSubjects();
+//		if(subjects == null || subjects.size()==0) return;
+//		//LogUtil.d("插入考试");
+//		SQLiteDatabase db =  dbManager.openDatabase();
+//		db.beginTransaction();
+//		db.execSQL("update tbl_exams set status = 0");
+//		db.execSQL("update tbl_subjects set status = 0");
+//		//查询考试
+//		Cursor cursor = db.rawQuery("select name from tbl_exams where code = ?",new String[]{result.getCode()});
+//		String name = "";
+//		if(cursor.moveToNext())
+//		{
+//			name = cursor.getString(0);
+//		}
+//		cursor.close();
+//		//没有考试插入
+//		if(StringUtils.isEmpty(name))
+//		{
+//			db.execSQL("insert into tbl_exams(code,name,abbr,status)values(?,?,?,1)", 
+//					new Object[]{result.getCode(),result.getName(),result.getAbbr()});
+//			//插入考试
+//			for(SubjectSync s:subjects)
+//			{
+//				db.execSQL("insert into tbl_subjects(code,name,status,examCode)values(?,?,1,?)", new Object[]{s.getCode(),s.getName(),result.getCode()});
+//			}
+//		}else
+//		{
+//			//修改状态
+//			db.execSQL("update tbl_exams set name = ?,abbr = ?,status = 1 where code = ?",
+//					new Object[]{result.getCode()});
+//			//修改科目
+//			for(SubjectSync s:subjects)
+//			{
+//				Cursor cursor1 = db.rawQuery("select name from tbl_subjects where code = ?",new String[]{s.getCode()});
+//				String name1 = "";
+//				if(cursor.moveToNext())
+//				{
+//					name1 = cursor.getString(0);
+//				}
+//				cursor1.close();
+//				if(StringUtils.isEmpty(name1))
+//				{
+//					db.execSQL("insert into tbl_subjects(code,name,status,examCode)values(?,?,1,?)", 
+//							new Object[]{s.getCode(),s.getName(),result.getCode()});
+//				}else
+//					db.execSQL("update tbl_subjects set name = ?,examCode = ?,status = 1 where code = ?", 
+//							new Object[]{s.getName(),result.getCode(),s.getCode()});
+//			}
+//		}
+//		db.setTransactionSuccessful();
+//		db.endTransaction();
+//		db.close();
 	}
 	/**
 	 * 插入试卷的集合

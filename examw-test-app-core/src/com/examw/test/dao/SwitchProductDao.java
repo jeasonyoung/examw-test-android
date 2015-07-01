@@ -1,11 +1,16 @@
 package com.examw.test.dao;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+
+import android.content.Context;
+import android.util.Log;
 
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
@@ -14,9 +19,8 @@ import com.examw.test.model.sync.ExamModel;
 import com.examw.test.model.sync.JSONCallback;
 import com.examw.test.model.sync.ProductModel;
 import com.examw.test.utils.DigestClientUtil;
-
-import android.content.Context;
-import android.util.Log;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 切换产品数据Dao.
@@ -98,7 +102,9 @@ public class SwitchProductDao implements Serializable {
 				return;
 			}
 			//反馈数据模型反序列化
-			JSONCallback<List<CategoryModel>> callback = new JSONCallback<List<CategoryModel>>(result);
+			Gson gson = new Gson();
+			Type type = new TypeToken<JSONCallback<List<CategoryModel>>>(){}.getType();
+			JSONCallback<List<CategoryModel>> callback = gson.fromJson(result, type);
 			if(!callback.getSuccess()){
 				Log.d(TAG, callback.getMsg());
 				if(handler != null){
@@ -106,15 +112,15 @@ public class SwitchProductDao implements Serializable {
 				}
 				return;
 			}
-			//保存到本地变量缓存。
-			localCategoriesCache = callback.getData();
 			//保存到本地文件中
-			boolean saveResult = CategoryModel.saveLocal(localCategoriesCache);
+			boolean saveResult = CategoryModel.saveLocal(callback.getData());
 			Log.d(TAG, "保存到本地文件：" + saveResult);
 			//下载保存完毕
 			if(handler != null){
 				handler.onComplete(true, null);
 			}
+			//加载本地数据到缓存变量中
+			localCategoriesCache = CategoryModel.categoriesFromLocal();
 		} catch (Exception e) {
 			Log.d(TAG, "下载数据异常:" + e.getMessage(), e);
 			if(handler != null){
@@ -152,19 +158,46 @@ public class SwitchProductDao implements Serializable {
 	public void findSearchExams(final String searchName,final SearchResultListener handler){
 		Log.d(TAG, "根据考试名称模糊查询考试:" + searchName);
 		if(StringUtils.isNotBlank(searchName) && this.hasLocalCategories() && handler != null){
-			for(final CategoryModel category : localCategoriesCache){
-				if(category == null || category.getExams() == null || category.getExams().size() == 0){
-					Log.d(TAG, "考试分类["+category+"]下没有考试数据...");
-					continue;
-				}
+			final AtomicInteger count = new AtomicInteger(0);
+			final int totalCategory = localCategoriesCache.size();
+			int i = 0;
+			boolean isLast = false;
+ 			for(final CategoryModel category : localCategoriesCache){
+ 				if(totalCategory == (++i)){
+ 					isLast = true;
+ 				}
 				//开启线程查询结果
+				final boolean isLastCategory = isLast;
 				pools.execute(new Runnable() {
 					@Override
 					public void run() {
-						for(ExamModel exam : category.getExams()){
-							if(exam == null || StringUtils.isBlank(exam.getName())) continue;
+						List<ExamModel> examModels = category.getExams();
+						int totalExam = (examModels == null ? 0 : examModels.size()), index = 0;
+						//科目下没有考试
+						if(totalExam == 0){
+							if(isLastCategory && count.get() == 0){
+								Log.d(TAG, "没有找到考试:" + searchName);
+								handler.onSearchResult(null);
+							}
+							return;
+						}
+						//循环考试
+						for(ExamModel exam : examModels){
+							//计数
+							index++;
+							//名称不存在
+							if(exam == null || StringUtils.isBlank(exam.getName())){
+								continue;
+							}
+							//比较考试名称
 							if(StringUtils.equalsIgnoreCase(searchName, exam.getName())){
+								count.incrementAndGet();
 								handler.onSearchResult(exam);
+							}
+							//没有找到匹配的考试名称
+							if(isLastCategory && count.get() == 0 && (index == totalExam)){
+								//没有找到
+								handler.onSearchResult(null);
 							}
 						}
 					}

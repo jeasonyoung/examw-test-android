@@ -1,6 +1,7 @@
 package com.examw.test.dao;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import com.examw.test.model.sync.PaperSync;
 import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.utils.DigestClientUtil;
 import com.examw.test.utils.PaperUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 下载服务器数据。
@@ -130,7 +133,9 @@ public class DownloadDao implements Serializable{
 				return;
 			}
 			//初始化反馈数据模型
-			JSONCallback<ExamSync> callback =  new JSONCallback<ExamSync>(result);
+			Gson gson = new Gson();
+			Type type = new TypeToken<JSONCallback<ExamSync>>(){}.getType();
+			JSONCallback<ExamSync> callback = gson.fromJson(result, type);
 			if(!callback.getSuccess()){
 				Log.d(TAG, "服务器发生异常:" + callback.getMsg());
 				if(handler != null){
@@ -139,7 +144,7 @@ public class DownloadDao implements Serializable{
 				return;
 			}
 			ExamSync data = callback.getData();
-			if(data == null || data.getSubjects() == null || data.getSubjects().size() == 0){
+			if(data == null || data.getSubjects() == null || data.getSubjects().length == 0){
 				Log.d(TAG, "未获取考试科目数据!");
 				if(handler != null){
 					handler.onComplete(false, "未获取考试科目数据!");
@@ -173,7 +178,7 @@ public class DownloadDao implements Serializable{
 			 //重置已有科目状态
 			 db.execSQL("update tbl_subjects set status = 0 ");
 			 //科目数据更新
-			 Log.d(TAG, "需要更新科目数据:" + examSync.getSubjects().size());
+			 Log.d(TAG, "需要更新科目数据:" + examSync.getSubjects().length);
 			 //循环更新科目数据
 			 for(SubjectSync subject : examSync.getSubjects()){
 				 if(subject == null) continue;
@@ -276,7 +281,9 @@ public class DownloadDao implements Serializable{
 				return;
 			}
 			//反馈数据模型反序列化
-			JSONCallback<List<PaperSync>> callback  = new JSONCallback<List<PaperSync>>(result);
+			Gson gson = new Gson();
+			Type type = new TypeToken<JSONCallback<List<PaperSync>>>(){}.getType();
+			JSONCallback<List<PaperSync>> callback  = gson.fromJson(result, type);
 			if(!callback.getSuccess()){
 				Log.d(TAG, "下载试卷失败:" + callback.getMsg());
 				if(handler != null){

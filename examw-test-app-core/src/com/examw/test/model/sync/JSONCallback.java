@@ -18,33 +18,9 @@ import com.google.gson.reflect.TypeToken;
  */
 public class JSONCallback<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private static final String TAG = "JSONCallback<T>";
 	private Boolean success;
 	private T data;
 	private String msg;
-	/**
-	 * 构造函数。
-	 * @param json
-	 */
-	public JSONCallback(String json){
-		Log.d(TAG, "开始从JSON反序列化对象...");
-		if(StringUtils.isBlank(json)){
-			Log.d(TAG, "json字符串为空!");
-			throw new IllegalArgumentException("json字符串为空!");
-		}
-		Type type = new TypeToken<JSONCallback<T>>(){}.getType();
-		Gson gson = new Gson();
-		JSONCallback<T> obj = gson.fromJson(json, type);
-		if(obj == null){
-			Log.d(TAG, "JSON反序列化对象失败!");
-			throw new RuntimeException("JSON反序列化对象失败!");
-		}
-		//赋值
-		this.success = obj.getSuccess();
-		this.data = obj.getData();
-		this.msg = obj.getMsg();
-	}
-	
 	/**
 	 * 获取是否成功。
 	 * @return 是否成功。

@@ -1,7 +1,6 @@
 package com.examw.test.model.sync;
 
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * 考试同步数据。
@@ -12,7 +11,7 @@ import java.util.Set;
 public class ExamSync implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String code,name,abbr;
-	private Set<SubjectSync> subjects;
+	private SubjectSync [] subjects;
 	/**
 	 * 获取考试代码。
 	 * @return 考试代码。
@@ -62,7 +61,7 @@ public class ExamSync implements Serializable {
 	 * 获取所属科目集合。
 	 * @return 所属科目集合。
 	 */
-	public Set<SubjectSync> getSubjects() {
+	public SubjectSync [] getSubjects() {
 		return subjects;
 	}
 	/**
@@ -70,7 +69,7 @@ public class ExamSync implements Serializable {
 	 * @param subjects 
 	 *	  所属科目集合。
 	 */
-	public void setSubjects(Set<SubjectSync> subjects) {
+	public void setSubjects(SubjectSync [] subjects) {
 		this.subjects = subjects;
 	}
 }

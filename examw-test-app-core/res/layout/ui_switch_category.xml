@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 切换产品－考试分类布局 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"  
     android:orientation="vertical" 
     android:animateLayoutChanges="true">
     
-     <ListView
-            android:id="@+id/listSwitchCategory"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/transparent"
-            android:cacheColorHint="@android:color/transparent"
-            android:divider="@drawable/topic_driver"
-            android:drawSelectorOnTop="false"
-            android:fadingEdge="none"
-            android:scrollbars="none"
-            android:visibility="visible" />
-     
+    <!-- 查询框 -->
+    <LinearLayout 
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:minHeight="@dimen/height_min"
+        android:orientation="horizontal"
+        android:background="@color/transparent">
+        
+        <!-- 文本框 靠左-->
+        <EditText android:id="@+id/listSwitchCategorySearchText" 
+            android:layout_weight="8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/list_left"
+            android:layout_marginStart="@dimen/list_left"
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
+            android:hint="@string/search_examname_placeholder"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/black"
+            android:textSize="@dimen/fontsize_m"/>
+        
+         <!-- 查询按钮 靠右-->
+        <Button android:id="@+id/listSwitchCategorySearchBtn"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+          	android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:text="@string/search_examname_btn" 
+            android:textColor="@color/black"
+            android:textSize="@dimen/fontsize_m"/>
+    </LinearLayout>
+    
+    <!-- 列表数据 -->
+    <ListView android:id="@+id/listSwitchCategory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/topic_driver"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:visibility="visible" />
+      
 </LinearLayout>

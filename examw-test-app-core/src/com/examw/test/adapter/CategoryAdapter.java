@@ -83,7 +83,7 @@ public class CategoryAdapter extends BaseAdapter{
 			convertView.setTag(itemViewWrapper);
 		}else {
 			Log.d(TAG, "重复使用行:" + position);
-			//获取包装对象
+			//重用包装对象
 			itemViewWrapper = (ItemViewWrapper)convertView.getTag();
 		}
 		//装载数据
