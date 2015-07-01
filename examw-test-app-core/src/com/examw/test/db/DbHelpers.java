@@ -65,7 +65,7 @@ public class DbHelpers implements Serializable {
 		private String username,productId;
 		
 		private static final String no_login = "_nologin_";//未登录用户名
-		private static final String dbName_format = "exm_$%1$s$%2$s";//数据库名称格式
+		private static final String dbName_format = "exm_%1$s$%2$s";//数据库名称格式
 		/**
 		 * 构造函数。
 		 * @param base

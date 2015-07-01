@@ -1,14 +1,6 @@
 package com.examw.test.model.sync;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
-
-import org.apache.commons.lang3.StringUtils;
-
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * HTTP反馈数据模型。
