@@ -1,6 +1,5 @@
 package com.examw.test.dao;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +32,7 @@ import com.google.gson.reflect.TypeToken;
  * @author jeasonyoung
  * @since 2015年6月27日
  */
-public class DownloadDao implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class DownloadDao{
 	private static final String TAG = "DownloadDao";
 	private Context context;
 	private DbHelpers dbHelpers;

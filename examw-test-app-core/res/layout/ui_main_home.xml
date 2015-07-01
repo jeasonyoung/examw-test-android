@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 首页 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
@@ -11,16 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/list_top"
+        android:paddingBottom="@dimen/list_bottom"
+        android:paddingLeft="@dimen/list_left"
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_right"
+        android:paddingEnd="@dimen/list_right"
         android:minHeight="@dimen/top_title_minHeight"
         android:background="@color/default_color" 
         android:textColor="@color/white"
-        android:textSize="@dimen/fontsize_l"
-        android:layout_alignParentTop="true" />
+        android:textSize="@dimen/fontsize_l"/>
 
      <!-- 列表数据 -->
     <ListView android:id="@+id/list_main_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/list_top"
         android:layout_marginBottom="@dimen/list_bottom"
         android:background="@color/white"
@@ -31,4 +35,4 @@
         android:scrollbars="none"
         android:visibility="visible" />
     
-</RelativeLayout>
+</LinearLayout>
