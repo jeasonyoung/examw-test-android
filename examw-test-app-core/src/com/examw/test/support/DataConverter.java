@@ -10,12 +10,10 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.examw.test.app.AppConstant;
-import com.examw.test.daonew.FavoriteDao;
 import com.examw.test.domain.FavoriteItem;
-import com.examw.test.domain.ItemRecord;
-import com.examw.test.domain.PaperRecord;
 import com.examw.test.model.ItemInfo;
+import com.examw.test.model.ItemRecordModel;
+import com.examw.test.model.PaperRecordModel;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.model.UserItemFavoriteInfo;
@@ -34,7 +32,7 @@ public class DataConverter {
 	private static final SimpleDateFormat formatter_upload = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ",Locale.CHINA);
 	// 查询一个接一个的试题
 	public static ArrayList<StructureItemInfo> findItems(
-			List<StructureInfo> structures, ArrayList<ItemRecord> itemRecords,
+			List<StructureInfo> structures, ArrayList<ItemRecordModel> itemRecords,
 			String username) {
 		userName = username;
 		ArrayList<StructureItemInfo> result = new ArrayList<StructureItemInfo>();
@@ -50,7 +48,7 @@ public class DataConverter {
 	}
 
 	private static void getStructureItems(ArrayList<StructureItemInfo> result,
-			StructureInfo info, ArrayList<ItemRecord> itemRecords) {
+			StructureInfo info, ArrayList<ItemRecordModel> itemRecords) {
 		if (info.getChildren() != null && info.getChildren().size() > 0) {
 			for (StructureInfo child : info.getChildren()) {
 				getStructureItems(result, child, itemRecords);
@@ -78,9 +76,9 @@ public class DataConverter {
 
 	// 设置用户答案
 	private static void setUserAnswer(StructureItemInfo item,
-			ArrayList<ItemRecord> itemRecords) {
+			ArrayList<ItemRecordModel> itemRecords) {
 		if (itemRecords != null && itemRecords.size() > 0) {
-			for (ItemRecord info : itemRecords) {
+			for (ItemRecordModel info : itemRecords) {
 				if (item.getId().equalsIgnoreCase(info.getItemId())) {
 					item.setUserAnswer(info.getAnswer()); // 设置用户答案
 					item.setUserScore(info.getScore());
@@ -98,14 +96,14 @@ public class DataConverter {
 	private static void isCollected(StructureItemInfo item) {
 		if (userName == null)
 			return;
-		item.setIsCollected((FavoriteDao.isCollected(item.getId(), userName)));
+	//	item.setIsCollected((FavoriteDao.isCollected(item.getId(), userName)));
 	}
 
 	/*
 	 * 获取共享题干题按序子题集合
 	 */
 	private static ArrayList<StructureItemInfo> getShareTitleSortedChildrenList(
-			StructureItemInfo item, ArrayList<ItemRecord> records) {
+			StructureItemInfo item, ArrayList<ItemRecordModel> records) {
 		ArrayList<StructureItemInfo> list = new ArrayList<StructureItemInfo>();
 		TreeSet<StructureItemInfo> set = new TreeSet<StructureItemInfo>();
 		set.addAll(item.getChildren());
@@ -124,7 +122,7 @@ public class DataConverter {
 	 * 获取共享答案题按序子题集合
 	 */
 	private static ArrayList<StructureItemInfo> getShareAnswerSortedChildrenList(
-			StructureItemInfo item, ArrayList<ItemRecord> records) {
+			StructureItemInfo item, ArrayList<ItemRecordModel> records) {
 		ArrayList<StructureItemInfo> list = new ArrayList<StructureItemInfo>();
 		TreeSet<StructureItemInfo> set = new TreeSet<StructureItemInfo>();
 		set.addAll(item.getChildren());
@@ -191,11 +189,11 @@ public class DataConverter {
 		}
 		return sum;
 	}
-	public static ArrayList<UserPaperRecordInfo> convertPaperRecords(ArrayList<PaperRecord> list)
+	public static ArrayList<UserPaperRecordInfo> convertPaperRecords(ArrayList<PaperRecordModel> list)
 	{
 		if(list == null || list.isEmpty()) return null;
 		ArrayList<UserPaperRecordInfo> result = new ArrayList<UserPaperRecordInfo>();
-		for(PaperRecord r:list)
+		for(PaperRecordModel r:list)
 		{
 			UserPaperRecordInfo info = paperRecordConvert(r);
 			if(info != null)
@@ -207,7 +205,7 @@ public class DataConverter {
 	}
 	
 	
-	private static UserPaperRecordInfo paperRecordConvert(PaperRecord data) {
+	private static UserPaperRecordInfo paperRecordConvert(PaperRecordModel data) {
 		if (data == null)
 			return null;
 		/**
@@ -219,37 +217,37 @@ public class DataConverter {
 		 */
 		UserPaperRecordInfo info = new UserPaperRecordInfo();
 		//info.setProductId(AppContext.getMetaInfo("productId"));
-		info.setUserId(data.getUserId());
-		info.setId(data.getRecordId());
-		info.setPaperType(data.getPaperType());
-		info.setPaperId(data.getPaperId()); // 试卷Id
-		info.setUsedTime(data.getUsedTime().longValue());
-		//info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
-		info.setStatus(data.getStatus()); // 刚加入未完成
-		info.setScore(new BigDecimal(data.getScore()));
-		info.setRightNum(data.getRightNum());
-		try{
-			info.setCreateTime(formatter_upload.format(formatter.parse(data.getCreateTime())));
-			info.setLastTime(formatter_upload.format(formatter.parse(data.getLastTime())));
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		ArrayList<ItemRecord> items = data.getItems();
-		if (items != null && !items.isEmpty()) {
-			Set<UserItemRecordInfo> set = new HashSet<UserItemRecordInfo>();
-			for (ItemRecord itemData : items) {
-				UserItemRecordInfo itemInfo = itemRecordConvert(itemData);
-				if (itemInfo != null) {
-					set.add(itemInfo);
-				}
-			}
-			info.setItems(set);
-		}
+//		info.setUserId(data.getUserId());
+//		info.setId(data.getRecordId());
+//		info.setPaperType(data.getPaperType());
+//		info.setPaperId(data.getPaperId()); // 试卷Id
+//		info.setUsedTime(data.getUsedTime().longValue());
+//		//info.setTerminalCode(Integer.valueOf(AppContext.getMetaInfo("terminalId")));
+//		info.setStatus(data.getStatus()); // 刚加入未完成
+//		info.setScore(new BigDecimal(data.getScore()));
+//		info.setRightNum(data.getRightNum());
+//		try{
+//			info.setCreateTime(formatter_upload.format(formatter.parse(data.getCreateTime())));
+//			info.setLastTime(formatter_upload.format(formatter.parse(data.getLastTime())));
+//		}catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//		ArrayList<ItemRecordModel> items = data.getItems();
+//		if (items != null && !items.isEmpty()) {
+//			Set<UserItemRecordInfo> set = new HashSet<UserItemRecordInfo>();
+//			for (ItemRecordModel itemData : items) {
+//				UserItemRecordInfo itemInfo = itemRecordConvert(itemData);
+//				if (itemInfo != null) {
+//					set.add(itemInfo);
+//				}
+//			}
+//			info.setItems(set);
+//		}
 		return info;
 	}
 
-	private static UserItemRecordInfo itemRecordConvert(ItemRecord data) {
+	private static UserItemRecordInfo itemRecordConvert(ItemRecordModel data) {
 		if (data == null)
 			return null;
 		/**

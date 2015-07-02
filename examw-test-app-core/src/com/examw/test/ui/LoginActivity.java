@@ -28,10 +28,8 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
 import com.examw.test.app.AppContext;
-import com.examw.test.daonew.UserDao;
 import com.examw.test.domain.User;
 import com.examw.test.model.Json;
-import com.examw.test.support.ApiClient;
 import com.examw.test.utils.ToastUtils;
 
 /**
@@ -152,7 +150,7 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 							//设置登录状态为正在登陆
 							//appContext.setLoginState(AppContext.LOGINING);// 正在登录
 							//解析登陆返回结果
-							Json result = ApiClient.login_proxy(appContext, username, password);
+							Json result = null;//ApiClient.login_proxy(appContext, username, password);
 							Message message = handler.obtainMessage();
 							if(result == null)
 							{
@@ -202,23 +200,23 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 		password = pwdText.getText().toString().trim();
 		if (checkInput(username, password)) {
 			// String name = usernameText.getText().toString();
-			User user = UserDao.findByUsername(username);
-			if (user != null) {
-				String password = pwdText.getText().toString();
-				if (password.equals(user.getPassword())) {
-					//appContext.saveLocalLoginInfo(username);
-					ToastUtils.show(this,"本地登录成功");
-					if (fromClass == null) {
-						LoginActivity.this.finish(); // 找不到类直接finish
-					} else {
-						this.startActivity();
-					}
-				} else {
-					ToastUtils.show(this,"请先在线登录");
-				}
-			} else {
-				ToastUtils.show(this,"请先在线登录");
-			}
+//			User user = UserDao.findByUsername(username);
+//			if (user != null) {
+//				String password = pwdText.getText().toString();
+//				if (password.equals(user.getPassword())) {
+//					//appContext.saveLocalLoginInfo(username);
+//					ToastUtils.show(this,"本地登录成功");
+//					if (fromClass == null) {
+//						LoginActivity.this.finish(); // 找不到类直接finish
+//					} else {
+//						this.startActivity();
+//					}
+//				} else {
+//					ToastUtils.show(this,"请先在线登录");
+//				}
+//			} else {
+//				ToastUtils.show(this,"请先在线登录");
+//			}
 		}
 	}
 	// 检查输入 check input
@@ -267,12 +265,12 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 	// 保存用户信息至本地数据库
 	public void saveToLocaleDB(User user) {
 		try {
-			UserDao.saveOrUpdate(user);
+			//UserDao.saveOrUpdate(user);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		}/*catch (IllegalAccessException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	// 初始化组件
@@ -372,9 +370,9 @@ public class LoginActivity extends BaseActivity implements TextWatcher, OnClickL
 		}
 	}
 	private void showLocalLoginBtn() {
-		User user = UserDao.findByUsername(username);
-		if (user != null)
-			localLoginBtn.setVisibility(View.VISIBLE);
+//		User user = UserDao.findByUsername(username);
+//		if (user != null)
+//			localLoginBtn.setVisibility(View.VISIBLE);
 	}
 	private void startActivity()
 	{

@@ -1,8 +1,16 @@
-package com.examw.test.domain;
+package com.examw.test.model;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import android.util.Log;
 
 /**
  * 试卷数据模型。
@@ -11,9 +19,26 @@ import java.util.Locale;
  */
 public class PaperModel implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final String TAG = "PaperModel";
 	private String id,name,description,sourceName,areaName;
 	private Integer type,time,year,total,score;
 	private List<PaperStructureModel> structures;
+	
+	/**
+	 * JSON反序列化
+	 * @param json
+	 * @return
+	 */
+	public static PaperModel fromJSON(String json){
+		Log.d(TAG, "JSON反序列化试卷对象...");
+		if(StringUtils.isNotBlank(json)){
+			Type type = new TypeToken<PaperModel>(){}.getType();
+			Gson gson = new Gson();
+			return  (PaperModel)gson.fromJson(json, type);
+		}
+		return null;
+	}
+	
 	/**
 	 * 获取试卷ID。
 	 * @return 试卷ID。

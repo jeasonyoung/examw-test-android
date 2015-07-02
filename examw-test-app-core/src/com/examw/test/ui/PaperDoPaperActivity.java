@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -44,13 +43,10 @@ import com.examw.test.adapter.PopRuleListAdapter;
 import com.examw.test.adapter.QuestionAdapter;
 import com.examw.test.adapter.QuestionAdapter.AnswerViewHolder;
 import com.examw.test.adapter.QuestionAdapter.ContentViewHolder;
-import com.examw.test.app.AppConstant;
-import com.examw.test.daonew.FavoriteDao;
-import com.examw.test.daonew.PaperDao;
-import com.examw.test.daonew.PaperRecordDao;
+import com.examw.test.dao.PaperDao;
 import com.examw.test.domain.FavoriteItem;
-import com.examw.test.domain.ItemRecord;
-import com.examw.test.domain.PaperRecord;
+import com.examw.test.model.ItemRecordModel;
+import com.examw.test.model.PaperRecordModel;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.support.DataConverter;
@@ -91,9 +87,9 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	private StructureItemInfo currentQuestion;
 	private Integer questionCursor;
 	private StructureInfo currentRule;
-	private PaperRecord record;
+	private PaperRecordModel record;
 	private FavoriteItem favor;
-	private ArrayList<ItemRecord> itemRecords;
+	private ArrayList<ItemRecordModel> itemRecords;
 	//private AppContext appContext;
 	// 计时器
 	private Handler timeHandler;
@@ -202,7 +198,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 				questionCursor = position;
 				//收藏试题
 				if (favor != null && favor.isNeedDelete() != null) {
-					FavoriteDao.favorOrCancel(favor);
+					//FavoriteDao.favorOrCancel(favor);
 					if(currentQuestion!=null) currentQuestion.setIsCollected(!favor.isNeedDelete());
 					favor = null;
 				}
@@ -263,17 +259,17 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		new Thread() {
 			public void run() {
 				try {
-					String content = PaperDao.findPaperContent(paperId,username);
-					if(!StringUtils.isEmpty(recordId))
-					{
-						record = PaperRecordDao.findById(username,recordId,true);
-					}else
-						record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
-					if (StringUtils.isEmpty(content)) {
-						//LogUtil.d("没有内容");
-						handler.sendEmptyMessage(-1);
-						return;
-					}
+//					String content = PaperDao.findPaperContent(paperId,username);
+//					if(!StringUtils.isEmpty(recordId))
+//					{
+//						record = PaperRecordDao.findById(username,recordId,true);
+//					}else
+//						record = PaperRecordDao.findLastPaperRecord(paperId,username, true);
+//					if (StringUtils.isEmpty(content)) {
+//						//LogUtil.d("没有内容");
+//						handler.sendEmptyMessage(-1);
+//						return;
+//					}
 					//PaperPreview paper = null;//GsonUtil.jsonToBean(content,PaperPreview.class);
 					//是做题模式,若找到最新的记录已经做完则添加新的纪录
 //					if (action == AppConstant.ACTION_DO_EXAM && (record == null || AppConstant.STATUS_DONE.equals(record.getStatus()))) // 保存考试记录
@@ -295,15 +291,15 @@ public class PaperDoPaperActivity extends BaseActivity implements
 //						//保存考试记录
 //						PaperRecordDao.save(record);
 //					}
-					itemRecords = record.getItems(); // 考试题目记录
+					//itemRecords = record.getItems(); // 考试题目记录
 					//ruleList = paper.getStructures();
 					// 初始化试题数据
 					questionList = DataConverter.findItems(ruleList,itemRecords,username);
-					//初始化答题情况
-					if(!StringUtils.isEmpty(record.getTorf()))
-						tOrF = null;//GsonUtil.jsonToBean(record.getTorf(), int[].class);
-					else
-						tOrF = new int[questionList.size()]; // 对错
+//					//初始化答题情况
+//					if(!StringUtils.isEmpty(record.getTorf()))
+//						tOrF = null;//GsonUtil.jsonToBean(record.getTorf(), int[].class);
+//					else
+//						tOrF = new int[questionList.size()]; // 对错
 					//如果是每日一练,不用计算时间
 					//if(paper.getType().equals(AppConstant.PAPER_TYPE_DAILY))
 					//{
@@ -579,7 +575,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		// 保存答案,或者去除答案
 		currentQuestion.setUserAnswer(abcd);
 		// 取出题目记录或者新增一个题目记录
-		ItemRecord currentRecord = getItemRecord();
+		ItemRecordModel currentRecord = getItemRecord();
 		currentRecord.setAnswer(abcd);
 		currentRecord.setLastTime(StringUtils.toStandardDateStr(new Date()));
 		// 判断题目的对错
@@ -603,16 +599,16 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	}
 
 	// 获取或更新考试记录
-	private ItemRecord getItemRecord() {
-		ItemRecord currentRecord = null;
-		for (ItemRecord ir : itemRecords) {
+	private ItemRecordModel getItemRecord() {
+		ItemRecordModel currentRecord = null;
+		for (ItemRecordModel ir : itemRecords) {
 			if (ir.getItemId().equals(currentQuestion.getId())) {
 				currentRecord = ir;
 				break;
 			}
 		}
 		if (currentRecord == null) {
-			currentRecord = new ItemRecord();
+			currentRecord = new ItemRecordModel();
 			currentRecord.setItemId(currentQuestion.getId());
 			//currentRecord.setSubjectId(appContext.getCurrentSubjectCode());
 //			currentRecord.setSubjectId(currentQuestion.getSubjectId());
@@ -620,7 +616,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			currentRecord.setUserName(username);
 			//currentRecord.setItemContent(GsonUtil.objectToJson(currentQuestion));
 			currentRecord.setCreateTime(StringUtils.toStandardDateStr(new Date()));
-			currentRecord.setRecordId(record.getRecordId());
+			//currentRecord.setRecordId(record.getRecordId());
 			currentRecord.setStructureId(currentQuestion.getStructureId());
 			itemRecords.add(currentRecord);
 		}
@@ -630,7 +626,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	/*
 	 * 判断题目是对是错
 	 */
-	private boolean judgeItemIsRight(ItemRecord itemRecord,
+	private boolean judgeItemIsRight(ItemRecordModel itemRecord,
 			StructureItemInfo item, BigDecimal min, BigDecimal per) {
 		min = min==null?BigDecimal.ZERO:min;
 		per = per==null?BigDecimal.ZERO:per;
@@ -709,7 +705,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		// TODO 保存问答题答案
 		// 单个题目记录的保存or修改
 		currentQuestion.setUserAnswer(txtAnswer);
-		ItemRecord itemRecord = getItemRecord();
+		ItemRecordModel itemRecord = getItemRecord();
 		itemRecord.setLastTime(StringUtils.toStandardDateStr(new Date()));
 		itemRecord.setAnswer(txtAnswer);
 		itemRecord.setScore(BigDecimal.ZERO);
@@ -722,8 +718,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	{
 		if(itemRecords ==null || itemRecords.size()==0)
 		{
-			record.setRightNum(0);
-			record.setScore(0.0);
+//			record.setRightNum(0);
+//			record.setScore(0.0);
 			//record.setStatus(AppConstant.STATUS_NONE);
 			//record.setTorf(GsonUtil.objectToJson(tOrF));
 			return;
@@ -741,8 +737,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 //				sum++;
 //			}
 		}
-		record.setRightNum(rightNum);
-		record.setScore((double) sum);
+//		record.setRightNum(rightNum);
+//		record.setScore((double) sum);
 		//record.setTorf(GsonUtil.objectToJson(tOrF));
 //		if(sum == paperScore)
 //			record.setStatus(AppConstant.STATUS_DONE);
@@ -754,8 +750,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 	private void submitPaper() {
 		if(itemRecords ==null || itemRecords.size()==0)
 		{
-			record.setRightNum(0);
-			record.setScore(0.0);
+//			record.setRightNum(0);
+//			record.setScore(0.0);
 			//record.setStatus(AppConstant.STATUS_DONE);
 			//record.setTorf(GsonUtil.objectToJson(tOrF));
 			return;
@@ -766,7 +762,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		{
 			BigDecimal ruleScore = BigDecimal.ZERO;
 			StructureInfo r = ruleList.get(k);
-			for(ItemRecord item:itemRecords)
+			for(ItemRecordModel item:itemRecords)
 			{
 				if(r.getId().equals(item.getStructureId()))
 				{
@@ -780,8 +776,8 @@ public class PaperDoPaperActivity extends BaseActivity implements
 			if(ruleScore.compareTo(BigDecimal.ZERO)==-1) ruleScore = BigDecimal.ZERO;
 			userScore = userScore.add(ruleScore);
 		}
-		record.setRightNum(DataConverter.getRightNum(tOrF));
-		record.setScore(userScore.doubleValue());
+		//record.setRightNum(DataConverter.getRightNum(tOrF));
+		//record.setScore(userScore.doubleValue());
 		//record.setTorf(GsonUtil.objectToJson(tOrF));
 		//record.setStatus(AppConstant.STATUS_DONE);
 	}
@@ -859,13 +855,13 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		timerFlag = false;
 		record.setLastTime(StringUtils.toStandardDateStr(new Date()));
 		//record.setStatus(AppConstant.STATUS_NONE);	//还是未做完状态
-		record.setUsedTime(time == 0?paperTime:(time - paperTime));	//每日一练只记录时间
-		record.setItems(itemRecords);
-		//record.setTorf(GsonUtil.objectToJson(tOrF));
-		record.setUserName(username);
-		hasRecordSaved = true;
-		//TODO 需不需要另加线程
-		PaperRecordDao.updatePaperRecord(record);
+//		record.setUsedTime(time == 0?paperTime:(time - paperTime));	//每日一练只记录时间
+//		record.setItems(itemRecords);
+//		//record.setTorf(GsonUtil.objectToJson(tOrF));
+//		record.setUserName(username);
+//		hasRecordSaved = true;
+//		//TODO 需不需要另加线程
+//		PaperRecordDao.updatePaperRecord(record);
 		this.exitDialog.dismiss();
 		this.finish();
 	}
@@ -875,11 +871,11 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		if (this.exitDialog != null && this.exitDialog.isShowing()) {
 			this.exitDialog.dismiss();
 		}
-		if ((record.getItems() == null || record.getItems().size() == 0)
-				&& paperTime != 0) {
-			Toast.makeText(this, "亲,您一题都没有做吖!", Toast.LENGTH_SHORT).show();
-			return;
-		}
+//		if ((record.getItems() == null || record.getItems().size() == 0)
+//				&& paperTime != 0) {
+//			Toast.makeText(this, "亲,您一题都没有做吖!", Toast.LENGTH_SHORT).show();
+//			return;
+//		}
 		timerFlag = false;
 		if (proDialog == null) {
 			proDialog = ProgressDialog.show(this, null, "正在交卷...", true, true);
@@ -897,11 +893,11 @@ public class PaperDoPaperActivity extends BaseActivity implements
 					submitPaper();// 交卷
 				// 更新记录,转到 选题界面
 				record.setLastTime(StringUtils.toStandardDateStr(new Date()));
-				record.setUsedTime(time == 0?paperTime:(time - paperTime));
-				record.setItems(itemRecords);
-				record.setUserName(username);
-				// 保存考试记录
-				PaperRecordDao.updatePaperRecord(record);
+//				record.setUsedTime(time == 0?paperTime:(time - paperTime));
+//				record.setItems(itemRecords);
+//				record.setUserName(username);
+//				// 保存考试记录
+//				PaperRecordDao.updatePaperRecord(record);
 				timeHandler.sendEmptyMessage(10);
 			};
 		}.start();
@@ -1007,7 +1003,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		mIntent.putExtra("username", username);
 		mIntent.putExtra("paperid", paperId);
 		mIntent.putExtra("paperType", paperType);
-		mIntent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
+		//mIntent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
 		mIntent.putExtra("userScore", record.getScore()); // 本次得分
 		this.startActivityForResult(mIntent, 1);
 	}
@@ -1151,7 +1147,7 @@ public class PaperDoPaperActivity extends BaseActivity implements
 		//收藏试题
 		if (favor != null && favor.isNeedDelete() != null) {
 			favor.setUsername(username);
-			FavoriteDao.favorOrCancel(favor);
+			//FavoriteDao.favorOrCancel(favor);
 			if(currentQuestion!=null) currentQuestion.setIsCollected(!favor.isNeedDelete());
 			favor = null;
 		}

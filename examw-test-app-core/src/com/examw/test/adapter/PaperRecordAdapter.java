@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
-import com.examw.test.domain.PaperRecord;
+import com.examw.test.model.PaperRecordModel;
 import com.google.gson.Gson;
 
 /**
@@ -22,8 +22,8 @@ import com.google.gson.Gson;
  */
 public class PaperRecordAdapter extends BaseAdapter{
 	private Context context;
-	private List<PaperRecord> records;
-	public PaperRecordAdapter(Context context,List<PaperRecord> records) {
+	private List<PaperRecordModel> records;
+	public PaperRecordAdapter(Context context,List<PaperRecordModel> records) {
 		this.context = context;
 		this.records = records;
 	}
@@ -60,9 +60,9 @@ public class PaperRecordAdapter extends BaseAdapter{
 		{
 			holder = (ViewHolder) convertView.getTag(); 
 		}
-		PaperRecord r = records.get(position);
-		holder.title.setText(String.format("[%1$s] %2$s", r.getPaperTypeName(),r.getPaperName()));
-		holder.usedTime.setText(getTimeStr(r.getUsedTime()));
+		PaperRecordModel r = records.get(position);
+//		holder.title.setText(String.format("[%1$s] %2$s", r.getPaperTypeName(),r.getPaperName()));
+//		holder.usedTime.setText(getTimeStr(r.getUsedTime()));
 		//if(r.getPaperType().equals(AppConstant.PAPER_TYPE_DAILY)) holder.img.setImageResource(R.drawable.record_exercise_img);
 //		if(r.getStatus().equals(AppConstant.STATUS_DONE))
 //		{

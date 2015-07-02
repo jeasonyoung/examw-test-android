@@ -2,7 +2,6 @@ package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,14 +19,9 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.adapter.PaperRecordAdapter;
-import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.daonew.PaperDao;
-import com.examw.test.daonew.PaperRecordDao;
-import com.examw.test.domain.PaperRecord;
-import com.examw.test.exception.AppException;
 import com.examw.test.model.PaperPreview;
-import com.examw.test.model.StructureInfo;
+import com.examw.test.model.PaperRecordModel;
 import com.examw.test.support.ReturnBtnClickListener;
 
 /**
@@ -40,8 +34,8 @@ public class PaperRecordActivity extends BaseActivity {
 	private LinearLayout contentLayout, nodataLayout, loadingLayout;
 	private ListView paperListView;
 	private String username;
-	private ArrayList<PaperRecord> recordList;
-	private PaperRecord currentRecord;
+	private ArrayList<PaperRecordModel> recordList;
+	private PaperRecordModel currentRecord;
 	private PaperRecordAdapter mAdapter;
 	private Handler handler;
 	private AppContext appContext;
@@ -124,20 +118,20 @@ public class PaperRecordActivity extends BaseActivity {
 			public void run() {
 				try {
 					Thread.sleep(1000);
-					total = PaperRecordDao.findRecordTotalOfUser(username);// 查询总数
-					if (total > 0) {
-						currentPage = 0;
-						if(recordList == null)
-						{
-							recordList = new ArrayList<PaperRecord>();
-						}else
-						{
-							recordList.clear();
-						}
-						recordList.addAll(PaperRecordDao.findRecordsByUsername(
-								username, currentPage));
-					}
-					handler.sendEmptyMessage(11);
+//					total = PaperRecordDao.findRecordTotalOfUser(username);// 查询总数
+//					if (total > 0) {
+//						currentPage = 0;
+//						if(recordList == null)
+//						{
+//							recordList = new ArrayList<PaperRecordModel>();
+//						}else
+//						{
+//							recordList.clear();
+//						}
+//						recordList.addAll(PaperRecordDao.findRecordsByUsername(
+//								username, currentPage));
+//					}
+//					handler.sendEmptyMessage(11);
 				} catch (Exception e) {
 					e.printStackTrace();
 					handler.sendEmptyMessage(-11);
@@ -154,11 +148,10 @@ public class PaperRecordActivity extends BaseActivity {
 		new Thread(){
 			public void run() {
 				try {
-					ArrayList<PaperRecord> records = PaperRecordDao.findRecordsByUsername(username,
-							currentPage);
+					//ArrayList<PaperRecordModel> records = PaperRecordDao.findRecordsByUsername(username, currentPage);
 					Message msg = handler.obtainMessage();
 					msg.what = 14;
-					msg.obj = records;
+					//msg.obj = records;
 					handler.sendMessage(msg);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -169,7 +162,7 @@ public class PaperRecordActivity extends BaseActivity {
 	}
 
 	private void itemClickMethod() {
-		Intent mIntent = null;
+		//Intent mIntent = null;
 //		if (AppConstant.STATUS_NONE.equals(currentRecord.getStatus())) {
 //			mIntent = new Intent(this, PaperDoPaperActivity.class);
 //			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
@@ -202,21 +195,21 @@ public class PaperRecordActivity extends BaseActivity {
 	private void startMyActivity(PaperPreview paper) {
 		Intent mIntent = new Intent(this, AnswerCardActivity.class);
 		mIntent.putExtra("paperId", currentRecord.getPaperId());
-		mIntent.putExtra("trueOfFalse", currentRecord.getTorf());
+		//mIntent.putExtra("trueOfFalse", currentRecord.getTorf());
 		//mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
-		mIntent.putExtra("paperScore", currentRecord.getScore().doubleValue());
+		//mIntent.putExtra("paperScore", currentRecord.getScore().doubleValue());
 		mIntent.putExtra("paperType", paper.getType());
 		// findPaper
 		mIntent.putExtra("paperTime", paper.getTime());
 		//mIntent.putExtra("ruleListJson",
 			//	GsonUtil.objectToJson(this.getRuleList(paper)));
 		mIntent.putExtra("username", username);
-		mIntent.putExtra(
-				"useTime",
-				currentRecord.getUsedTime() % 60 == 0 ? currentRecord
-						.getUsedTime() / 60
-						: currentRecord.getUsedTime() / 60 + 1);
-		mIntent.putExtra("userScore", currentRecord.getScore()); // 本次得分
+//		mIntent.putExtra(
+//				"useTime",
+//				currentRecord.getUsedTime() % 60 == 0 ? currentRecord
+//						.getUsedTime() / 60
+//						: currentRecord.getUsedTime() / 60 + 1);
+//		mIntent.putExtra("userScore", currentRecord.getScore()); // 本次得分
 		this.startActivity(mIntent); // 仍然是要启动这个Activity不带结果返回
 	}
 	
@@ -249,9 +242,9 @@ public class PaperRecordActivity extends BaseActivity {
 				theActivity.startMyActivity((PaperPreview) msg.obj);
 				break;
 			case -2:
-				Toast.makeText(theActivity,
-						((AppException) msg.obj).getMessage(),
-						Toast.LENGTH_SHORT).show();
+//				Toast.makeText(theActivity,
+//						((AppException) msg.obj).getMessage(),
+//						Toast.LENGTH_SHORT).show();
 				break;
 			case -1:
 				Toast.makeText(theActivity, "找不到试卷信息", Toast.LENGTH_SHORT).show();
@@ -266,22 +259,22 @@ public class PaperRecordActivity extends BaseActivity {
 					if (theActivity.mAdapter == null) {
 						theActivity.mAdapter = new PaperRecordAdapter(theActivity, theActivity.recordList);
 						theActivity.paperListView.setAdapter(theActivity.mAdapter);
-						if(theActivity.total<=PaperRecordDao.PAGESIZE)
-                    	{
-							theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
-                    		theActivity.lvPapers_foot_more.setText("已经加载全部");
-                    	}else{
-                    		theActivity.lvPapers_footer.setVisibility(View.VISIBLE);
-                    		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
-                    		theActivity.lvPapers_foot_more.setText("更多");
-                    	}
+//						if(theActivity.total<=PaperRecordDao.PAGESIZE)
+//                    	{
+//							theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
+//                    		theActivity.lvPapers_foot_more.setText("已经加载全部");
+//                    	}else{
+//                    		theActivity.lvPapers_footer.setVisibility(View.VISIBLE);
+//                    		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
+//                    		theActivity.lvPapers_foot_more.setText("更多");
+//                    	}
 					} else {
 						theActivity.mAdapter.notifyDataSetChanged();
 					}
 				}
 				break;
 			 case 14:
-             	theActivity.recordList.addAll((ArrayList<PaperRecord>) msg.obj);
+             	theActivity.recordList.addAll((ArrayList<PaperRecordModel>) msg.obj);
              	theActivity.mAdapter.notifyDataSetChanged();
              	//判断剩余加载量
              	if(theActivity.total > theActivity.recordList.size())

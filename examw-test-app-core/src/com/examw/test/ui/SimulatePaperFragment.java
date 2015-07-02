@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConfig;
-import com.examw.test.support.AppUpdateManager;
 import com.examw.test.utils.BrightnessUtil;
 
 /**

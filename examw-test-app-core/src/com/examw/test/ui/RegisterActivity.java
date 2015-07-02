@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.domain.User;
-import com.examw.test.exception.AppException;
 import com.examw.test.model.Json;
 import com.examw.test.support.ApiClient;
 import com.examw.test.support.LoginTips;
@@ -297,7 +296,7 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 					try
 					{
 						//改为代理模式
-						result = ApiClient.register_proxy(appContext, username, pwd, phone,name,email);
+						result = null;//ApiClient.register_proxy(appContext, username, pwd, phone,name,email);
 						msg.what = 1;
 						msg.obj = result;
 						handler.sendMessage(msg);
@@ -460,7 +459,7 @@ public class RegisterActivity  extends BaseActivity implements OnClickListener{
 				}
 				break;
 			case -1:
-				((AppException)msg.obj).makeToast(r);
+				//((AppException)msg.obj).makeToast(r);
 				break;
 			}
 		}

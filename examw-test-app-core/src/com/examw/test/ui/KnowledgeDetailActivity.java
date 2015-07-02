@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.domain.Chapter;
-import com.examw.test.exception.AppException;
 import com.examw.test.support.ReturnBtnClickListener;
 import com.examw.test.utils.ToastUtils;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
@@ -202,7 +201,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 				k.webView.onRefreshComplete();
 				break;
 			case -1:
-				((AppException)msg.obj).makeToast(k);
+				//((AppException)msg.obj).makeToast(k);
 				k.nodata.setVisibility(View.GONE);
 				k.loading.setVisibility(View.GONE);
 				k.reload.setVisibility(View.VISIBLE);

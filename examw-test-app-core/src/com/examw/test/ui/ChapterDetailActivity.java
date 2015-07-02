@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
 import com.examw.test.domain.Chapter;
-import com.examw.test.domain.PaperModel;
+import com.examw.test.model.PaperModel;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.model.StructureItemInfo;
 import com.examw.test.widget.NewDataToast;

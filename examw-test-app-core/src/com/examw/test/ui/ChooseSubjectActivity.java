@@ -28,8 +28,8 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.adapter.SubjectListAdapter;
 import com.examw.test.app.AppConstant;
-import com.examw.test.domain.PaperRecord;
 import com.examw.test.domain.Subject;
+import com.examw.test.model.PaperRecordModel;
 import com.examw.test.utils.ToastUtils;
 
 /**
@@ -46,7 +46,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 	
 	private Button btnLast,btnShowPop;
 	private PopupWindow popWindow;
-	private PaperRecord r;
+	private PaperRecordModel r;
 	private int action;
 	
 	@Override

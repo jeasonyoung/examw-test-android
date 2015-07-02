@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.adapter.PaperListAdapter;
-import com.examw.test.daonew.PaperDao;
-import com.examw.test.domain.PaperModel;
+import com.examw.test.dao.PaperDao;
+import com.examw.test.model.PaperModel;
 import com.examw.test.widget.NewDataToast;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -155,7 +155,7 @@ public class RealPaperFragment extends Fragment{
 	{
 		@Override
 		public void run() {
-			papers = PaperDao.findPapers(subjectId,paperType,username);
+			//papers = PaperDao.findPapers(subjectId,paperType,username);
 			handler.sendEmptyMessage(1);
 		}
 	}

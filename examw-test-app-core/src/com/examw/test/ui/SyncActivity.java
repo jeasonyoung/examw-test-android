@@ -17,10 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.exception.AppException;
-import com.examw.test.model.sync.AppClientPush;
-import com.examw.test.model.sync.AppClientSync;
-import com.examw.test.model.sync.FavoriteSync;
 
 public class SyncActivity extends BaseActivity implements OnClickListener,
 		OnCheckedChangeListener {
@@ -417,8 +413,8 @@ public class SyncActivity extends BaseActivity implements OnClickListener,
 				break;
 			case -10:
 				sync.loadingLayout.setVisibility(View.GONE);
-				AppException e = (AppException) msg.obj;
-				e.makeToast(sync);
+				//AppException e = (AppException) msg.obj;
+				//e.makeToast(sync);
 				break;
 			}
 		}

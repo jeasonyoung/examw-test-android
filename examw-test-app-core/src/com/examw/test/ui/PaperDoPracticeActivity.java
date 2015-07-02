@@ -38,9 +38,6 @@ import com.examw.test.adapter.PopRuleListAdapter;
 import com.examw.test.adapter.PracticeQuestionAdapter;
 import com.examw.test.adapter.PracticeQuestionAdapter.AnswerViewHolder;
 import com.examw.test.adapter.PracticeQuestionAdapter.ContentViewHolder;
-import com.examw.test.app.AppConstant;
-import com.examw.test.daonew.FavoriteDao;
-import com.examw.test.daonew.PaperRecordDao;
 import com.examw.test.domain.FavoriteItem;
 import com.examw.test.model.SimplePaper;
 import com.examw.test.model.StructureInfo;
@@ -175,7 +172,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 				questionCursor = position;
 				// 收藏试题
 				if (favor != null && favor.isNeedDelete() != null) {
-					FavoriteDao.favorOrCancel(favor);
+					//FavoriteDao.favorOrCancel(favor);
 					if (currentQuestion != null)
 						currentQuestion.setIsCollected(!favor.isNeedDelete());
 					favor = null;
@@ -593,7 +590,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 		//LogUtil.d( "onPause");
 		// 收藏试题
 		if (favor != null && favor.isNeedDelete() != null) {
-			FavoriteDao.favorOrCancel(favor);
+			//FavoriteDao.favorOrCancel(favor);
 			if (currentQuestion != null)
 				currentQuestion.setIsCollected(!favor.isNeedDelete());
 			favor = null;

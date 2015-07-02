@@ -16,13 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.daonew.PaperDao;
-import com.examw.test.daonew.PaperRecordDao;
-import com.examw.test.domain.PaperRecord;
-import com.examw.test.exception.AppException;
+import com.examw.test.dao.PaperDao;
 import com.examw.test.model.PaperPreview;
+import com.examw.test.model.PaperRecordModel;
 import com.examw.test.model.StructureInfo;
 import com.examw.test.utils.StringUtils;
 
@@ -39,7 +36,7 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 	private String paperId;
 	private Handler handler;
 	private String username;
-	private PaperRecord record;
+	private PaperRecordModel record;
 	private PaperPreview paper;
 	private AppContext appContext;
 	private List<StructureInfo> ruleList;
@@ -81,19 +78,19 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 				/**
 				 * 先去数据库中查询
 				 */
-				String content = PaperDao.findPaperContent(paperId,username);
-				record = PaperRecordDao.findLastPaperRecord(paperId, username,false);
-				if(StringUtils.isEmpty(content))
-				{
-					try{
-						//content = ApiClient.loadPaperContent(appContext,paperId);
-						PaperDao.updatePaperContent(paperId, content,username);
-					}catch(Exception e)
-					{
-						e.printStackTrace();
-						handler.sendEmptyMessage(-1);
-					}
-				}
+//				String content = PaperDao.findPaperContent(paperId,username);
+//				record = PaperRecordDao.findLastPaperRecord(paperId, username,false);
+//				if(StringUtils.isEmpty(content))
+//				{
+//					try{
+//						//content = ApiClient.loadPaperContent(appContext,paperId);
+//						PaperDao.updatePaperContent(paperId, content,username);
+//					}catch(Exception e)
+//					{
+//						e.printStackTrace();
+//						handler.sendEmptyMessage(-1);
+//					}
+//				}
 				//paper = GsonUtil.getGson().fromJson(content, PaperPreview.class);
 				handler.sendEmptyMessage(1);
 			};
@@ -172,9 +169,9 @@ public class PaperInfoActivity extends BaseActivity implements OnClickListener {
 				theActivity.loading.setVisibility(View.GONE);
 				break;
 			case -2:
-				Toast.makeText(theActivity,
-						((AppException) msg.obj).getMessage(),
-						Toast.LENGTH_SHORT).show();
+//				Toast.makeText(theActivity,
+//						//((AppException) msg.obj).getMessage(),
+//						Toast.LENGTH_SHORT).show();
 				theActivity.loading.setVisibility(View.GONE);
 				break;
 			case -1:

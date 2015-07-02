@@ -26,9 +26,9 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.adapter.DailyDateAdapter;
 import com.examw.test.adapter.PaperListAdapter;
-import com.examw.test.daonew.PaperDao;
-import com.examw.test.domain.PaperModel;
+import com.examw.test.dao.PaperDao;
 import com.examw.test.model.DateInfo;
+import com.examw.test.model.PaperModel;
 import com.examw.test.widget.DateHorizontalScrollView;
 
 /**
@@ -112,31 +112,31 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 				//today = ApiClient.getStandardTime();
 				handler.sendEmptyMessage(2);
 			}
-			paperList = com.examw.test.daonew.PaperDao.findDailyPapers(today, currentDayOrder,username);
-			if (paperList != null && paperList.size() > 0) {
-				// 本地数据库中有试卷
-				handler.sendEmptyMessage(1);
-			} else {
-				// 本地数据库中没有试卷,访问网络
-				try {
-//					ArrayList<FrontPaperInfo> list = ApiClient
-//							.getDailyPaperList((AppContext) getApplication());
-////					PaperDao.insertPaperList(list);
-//					if (list == null || list.size() == 0)
-//						handler.sendEmptyMessage(-3);
-//					else {
-//						paperList = PaperDao.findDailyPapers(today,
-//								currentDayOrder,username);
-//						handler.sendEmptyMessage(1);
-//					}
-					handler.sendEmptyMessage(1);
-				} catch (Exception e) {
-					e.printStackTrace();
-					Message msg = handler.obtainMessage();
-					msg.what = -1;
-					handler.sendMessage(msg);
-				}
-			}
+//			paperList = com.examw.test.daonew.PaperDao.findDailyPapers(today, currentDayOrder,username);
+//			if (paperList != null && paperList.size() > 0) {
+//				// 本地数据库中有试卷
+//				handler.sendEmptyMessage(1);
+//			} else {
+//				// 本地数据库中没有试卷,访问网络
+//				try {
+////					ArrayList<FrontPaperInfo> list = ApiClient
+////							.getDailyPaperList((AppContext) getApplication());
+//////					PaperDao.insertPaperList(list);
+////					if (list == null || list.size() == 0)
+////						handler.sendEmptyMessage(-3);
+////					else {
+////						paperList = PaperDao.findDailyPapers(today,
+////								currentDayOrder,username);
+////						handler.sendEmptyMessage(1);
+////					}
+//					handler.sendEmptyMessage(1);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//					Message msg = handler.obtainMessage();
+//					msg.what = -1;
+//					handler.sendMessage(msg);
+//				}
+//			}
 		}
 	}
 
@@ -225,8 +225,8 @@ public class DailyActivity extends BaseActivity implements OnClickListener,OnGes
 				try
 				{
 					Thread.sleep(1000);
-					paperList = PaperDao.findDailyPapers(today,
-							currentDayOrder,username);
+//					paperList = PaperDao.findDailyPapers(today,
+//							currentDayOrder,username);
 					handler.sendEmptyMessage(1);
 				}catch(Exception e)
 				{

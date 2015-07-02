@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
-import com.examw.test.domain.PaperModel;
+import com.examw.test.model.PaperModel;
 
 /**
  * 

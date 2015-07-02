@@ -3,7 +3,6 @@ package com.examw.test.support;
 import java.io.UnsupportedEncodingException;
 
 import com.examw.test.app.AppContext;
-import com.examw.test.exception.AppException;
 import com.examw.test.model.Json;
 
 /**
@@ -13,7 +12,7 @@ import com.examw.test.model.Json;
  */
 public class ApiClient {
 	//登录
-	public static Json login(AppContext appContext,String username,String password) throws AppException{
+	public static Json login(AppContext appContext,String username,String password){
 //		/*
 //		 *  SubSource = "Mobile"  提交来源
 //			ClientNo 客户端唯一标示
@@ -64,7 +63,7 @@ public class ApiClient {
 		return null;
 	}
 	//注册
-	public static Json register(AppContext appContext,String username,String password,String phone,String name,String email)throws AppException, UnsupportedEncodingException
+	public static Json register(AppContext appContext,String username,String password,String phone,String name,String email)throws UnsupportedEncodingException
 	{
 //		/*
 //		 * UserName  用户名
@@ -131,7 +130,7 @@ public class ApiClient {
 	/*****************************************************************
 	 *	登录注册的代理实现  start
 	 ************************************************************/
-	public static Json login_proxy(AppContext appContext,String username,String password) throws AppException{
+	public static Json login_proxy(AppContext appContext,String username,String password){
 //		LoginUser user = new LoginUser();
 //		user.setAccount(username);
 //		user.setPassword(password);
@@ -141,7 +140,7 @@ public class ApiClient {
 //		return GsonUtil.jsonToBean(result, Json.class);
 		return null;
 	}
-	public static Json register_proxy(AppContext appContext,String username,String password,String phone,String name,String email)throws AppException, UnsupportedEncodingException
+	public static Json register_proxy(AppContext appContext,String username,String password,String phone,String name,String email)throws UnsupportedEncodingException
 	{
 //		RegisterUser user = new RegisterUser();
 //		user.setAccount(username);

@@ -1,6 +1,7 @@
-package com.examw.test.domain;
+package com.examw.test.model;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import com.google.gson.reflect.TypeToken;
 /**
  * 试题数据模型。
  * 
@@ -31,6 +33,21 @@ public class PaperItemModel implements Serializable {
 	private Integer index;
 	private Float structureScore,structureMin;
 	private List<String> itemContentImgUrls,itemAnalysisImgUrls;
+	
+	
+	private static final Gson GSON = new Gson();
+	private static final Type ITEM_TypeOfT = new TypeToken<PaperItemModel>(){}.getType();
+	/**
+	 * JSON反序列化对象。
+	 * @param json
+	 * @return
+	 */
+	public static PaperItemModel fromJSON(String json){
+		if(StringUtils.isNotBlank(json)){
+			return (PaperItemModel)GSON.fromJson(json, ITEM_TypeOfT);
+		}
+		return null;
+	}
 	
 	/**
 	 * 获取试题ID。

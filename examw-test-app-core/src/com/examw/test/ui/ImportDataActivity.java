@@ -14,9 +14,7 @@ import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.ImportDao;
 import com.examw.test.domain.Subject;
-import com.examw.test.model.sync.AppClientSync;
 
 /**
  * 导入数据界面(不在用户界面中显示)
@@ -28,7 +26,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 	private ProgressDialog proDialog;
 	private Handler handler;
 	private ArrayList<Subject> subjects;
-	private ImportDao dao;
+	//private ImportDao dao;
 //	private boolean productFlag,paperFlag,syllabusFlag,allFlag;
 //	//SD卡中数据库压缩文件保存目录  /mnt/sdcard/kuaiji/zipfiles/
 	private static final String dataDir = Environment
@@ -60,7 +58,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 		this.findViewById(R.id.importSyllabus).setOnClickListener(this);
 		this.findViewById(R.id.importAll).setOnClickListener(this);
 		appContext = (AppContext) getApplication();
-		dao = new ImportDao(appContext);
+//		dao = new ImportDao(appContext);
 		handler = new Handler() {
 			public void handleMessage(android.os.Message msg) {
 				if (proDialog != null) {
@@ -139,7 +137,7 @@ public class ImportDataActivity extends BaseActivity implements OnClickListener 
 			@SuppressLint("SdCardPath")
 			public void run() {
 				try {
-					dao.clear();
+					//dao.clear();
 					//删除图片文件夹
 					new File("/mnt/sdcard/examw").delete();
 					handler.sendEmptyMessage(1);

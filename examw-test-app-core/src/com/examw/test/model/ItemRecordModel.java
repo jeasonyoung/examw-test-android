@@ -1,4 +1,4 @@
-package com.examw.test.domain;
+package com.examw.test.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ import com.examw.test.app.AppConstant;
  * @author fengwei.
  * @since 2014年11月27日 下午4:36:51.
  */
-public class ItemRecord implements Serializable{
+public class ItemRecordModel implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String recordId,userId,structureId,subjectId,userName,answer,itemId,itemContent,terminalId;
 	private Integer itemType,status,sync;
@@ -246,10 +246,10 @@ public class ItemRecord implements Serializable{
 	public void setSubjectId(String subjectId) {
 		this.subjectId = subjectId;
 	}
-	public ItemRecord() {}
+	public ItemRecordModel() {}
 	
 //	/recordId,structureId,itemId,answer,status,score
-	public ItemRecord(String recordId, String structureId, String itemId,
+	public ItemRecordModel(String recordId, String structureId, String itemId,
 			String answer, int status, BigDecimal score) {
 		this.recordId = recordId;
 		this.structureId = structureId;

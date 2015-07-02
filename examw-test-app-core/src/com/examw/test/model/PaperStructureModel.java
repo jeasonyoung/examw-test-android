@@ -1,4 +1,4 @@
-package com.examw.test.domain;
+package com.examw.test.model;
 
 import java.io.Serializable;
 import java.util.List;
