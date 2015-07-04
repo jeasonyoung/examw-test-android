@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:animateLayoutChanges="true">
     
     <!-- 标题 -->
     <TextView android:id="@+id/main_home_title"
@@ -22,7 +23,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/fontsize_l"/>
 
-     <!-- 列表数据 -->
+    <!-- 列表数据 -->
     <ListView android:id="@+id/list_main_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

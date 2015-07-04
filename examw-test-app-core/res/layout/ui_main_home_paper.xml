@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 首页 科目下试卷列表 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+    <!-- 试卷类型标题布局 -->
+    <RadioGroup android:id="@+id/home_paper_titlegroups"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="2dip"
+        android:paddingBottom="2dip"
+        android:minHeight="10dip"
+        android:background="@color/default_color"
+        android:gravity="center_vertical|center_horizontal"
+	    android:orientation="horizontal">
+        <!-- 动态布局编码实现 -->    
+    </RadioGroup>
+    
+    <!-- 试卷列表 -->
+    <android.support.v4.view.ViewPager android:id="@+id/home_paper_viewpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:flipInterval="30" 
+        android:persistentDrawingCache="animation" />
+    
+</LinearLayout>

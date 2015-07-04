@@ -260,6 +260,7 @@ public class PaperModel implements Serializable {
 		 * @param value
 		 */
 		private PaperType(String name, int value){
+			this.name = name;
 			this.value = value;
 		}
 		/**

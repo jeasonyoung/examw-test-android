@@ -25,6 +25,7 @@ import com.examw.test.model.PaperModel;
 import com.examw.test.model.PaperRecordModel;
 import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.utils.PaperUtils;
+import com.google.gson.Gson;
 
 /**
  * 试卷数据Dao
@@ -150,6 +151,7 @@ public class PaperDao {
 			//2.创建数据查询对象
 			db = this.getDbHelpers().getReadableDatabase();
 			//3.查询数据
+			Log.d(TAG, "exec - " + sqlBuilder);
 			Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{  String.valueOf(type.getValue()), subjectCode });
 			while(cursor.moveToNext()){
 				PaperInfoModel data = new PaperInfoModel();
@@ -1285,6 +1287,15 @@ public class PaperDao {
 		 */
 		public void setCreateTime(String createTime) {
 			this.createTime = createTime;
+		}
+		/*
+		 * 重载
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			 Gson gson = new Gson();
+			 return gson.toJson(this);
 		}
 	}
 	/**

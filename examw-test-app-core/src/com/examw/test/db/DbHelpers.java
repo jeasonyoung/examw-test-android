@@ -135,6 +135,7 @@ public class DbHelpers implements Serializable {
 					Log.e(TAG, "创建数据库文件异常:" + e.getMessage(), e);
 				}
 			}
+			Log.d(TAG, "数据库文件路径:" + path.getAbsolutePath());
 			return path;
 		}
 		/*

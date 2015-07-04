@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
@@ -24,6 +23,7 @@ import com.examw.test.dao.PaperDao;
 /**
  * 首页Fragment
  * 
+ * (用于按科目统计试卷列表)
  * @author jeasonyoung
  * @since 2015年7月1日
  */
@@ -44,7 +44,6 @@ public class MainHomeFragment extends Fragment implements AdapterView.OnItemClic
 	public MainHomeFragment(MainActivity mainActivity){
 		Log.d(TAG, "初始化...");
 		this.mainActivity = mainActivity;
-		this.dao = new PaperDao(this.mainActivity);
 		this.dataSource = new ArrayList<PaperDao.SubjectTotalModel>();
 		this.adapter = new MainHomeAdapter(this.mainActivity, this.dataSource);
 	}
@@ -75,8 +74,12 @@ public class MainHomeFragment extends Fragment implements AdapterView.OnItemClic
 	@Override
 	public void onStart() {
 		super.onStart();
-		//启动等待
+		//启动等待动画
 		this.mainActivity.waitingViewDialog.show();
+		//惰性初始化数据访问
+		if(this.dao == null){
+			this.dao = new PaperDao(this.mainActivity);
+		}
 		//加载数据
 		new LoadDataTask().execute();
 	}
@@ -86,8 +89,16 @@ public class MainHomeFragment extends Fragment implements AdapterView.OnItemClic
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		// TODO Auto-generated method stub
-		Toast.makeText(this.mainActivity, String.valueOf(position), Toast.LENGTH_SHORT).show();
+		Log.d(TAG, "选中行:" + position);
+		if(this.dataSource.size() >  position && this.mainActivity != null){
+			//初始化试卷列表
+			MainHomePaperFragment fragment = new MainHomePaperFragment(this.mainActivity, this.dataSource.get(position));
+			//UI切换
+			this.mainActivity.getSupportFragmentManager().beginTransaction()
+			.addToBackStack(null)
+			.replace(R.id.main_fragment_replace, fragment)
+			.commit();
+		}
 	}
 	/**
 	 * 加载数据任务。
@@ -95,13 +106,13 @@ public class MainHomeFragment extends Fragment implements AdapterView.OnItemClic
 	 * @author jeasonyoung
 	 * @since 2015年7月1日
 	 */
-	private class LoadDataTask extends AsyncTask<Void, Void, Object[]>{
+	private class LoadDataTask extends AsyncTask<Void, Void, String>{
 		/*
 		 * 后台线程加载数据.
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
 		@Override
-		protected Object[] doInBackground(Void... params) {
+		protected String doInBackground(Void... params) {
 			Log.d(TAG, "后台线程加载数据...");
 			//加载产品名称
 			String productName = null;
@@ -112,36 +123,27 @@ public class MainHomeFragment extends Fragment implements AdapterView.OnItemClic
 				}
 			}
 			//加载科目试卷统计
-			PaperDao.SubjectTotalModel [] subjectTotalModels = null;
-			if(dao != null){
-				subjectTotalModels = dao.totalSubjects().toArray(new PaperDao.SubjectTotalModel[0]);
+			dataSource.clear();
+			List<PaperDao.SubjectTotalModel> list = dao.totalSubjects();
+			if(list != null && list.size() > 0){
+				dataSource.addAll(list);
 			}
 			//
-			return new Object[]{ productName, subjectTotalModels };
+			return productName;
 		}
 		/*
 		 * 前台线程数据处理。
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
-		protected void onPostExecute(Object[] result) {
+		protected void onPostExecute(String result) {
 			Log.d(TAG, "前台线程处理...");
 			//关闭等待
 			mainActivity.waitingViewDialog.cancel();
 			//
-			if(result != null && result.length > 0){
-				//1.产品名称
-				tvTitle.setText((String)result[0]);
-				//2.加载列表数据
-				PaperDao.SubjectTotalModel [] models = (PaperDao.SubjectTotalModel[])result[1];
-				if(models != null && models.length > 0){
-					for(PaperDao.SubjectTotalModel m : models){
-						if(m == null)continue;
-						dataSource.add(m);
-					}
-				}
-			}
-			//通知适配器更新数据
+			//1.产品名称
+			tvTitle.setText(result);
+			//2.通知适配器更新数据
 			adapter.notifyDataSetChanged();
 		}
 	}
