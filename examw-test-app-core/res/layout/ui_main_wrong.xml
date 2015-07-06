@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center_vertical|center_horizontal"
-	    android:orientation="horizontal">
+	    android:orientation="horizontal" android:weightSum="4">
             
         <!-- 错题 -->
         <RadioButton android:id="@+id/main_wrong_options_wrong"
-            android:layout_width="match_parent" 
+            android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:minHeight="@dimen/top_title_minHeight"
             android:layout_marginTop="@dimen/padding_top"
@@ -34,7 +34,7 @@
         
         <!-- 收藏 -->
         <RadioButton android:id="@+id/main_wrong_options_favorite"
-            android:layout_width="match_parent" 
+            android:layout_width="wrap_content" 
             android:layout_height="wrap_content"
             android:minHeight="@dimen/top_title_minHeight"
             android:layout_marginTop="@dimen/padding_top"
