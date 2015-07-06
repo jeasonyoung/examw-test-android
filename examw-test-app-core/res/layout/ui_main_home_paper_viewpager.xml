@@ -8,7 +8,7 @@
     android:animateLayoutChanges="true">
     
     <!-- 列表数据 -->
-    <com.handmark.pulltorefresh.library.PullToRefreshListView xmlns:ptr="http://schemas.android.com/apk/res-auto"
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/list_home_papers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,8 +19,6 @@
         android:drawSelectorOnTop="false"
         android:fadingEdge="none"
         android:scrollbars="none"
-        android:visibility="visible" 
-        ptr:ptrAnimationStyle="flip" 
-        ptr:ptrHeaderBackground="#383838" ptr:ptrHeaderTextColor="#FFFFFF"/>
+        android:visibility="visible"/>
     
 </LinearLayout>

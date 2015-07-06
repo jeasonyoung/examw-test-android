@@ -24,6 +24,15 @@
     <string name="main_wrong_options_wrong">错题</string>
     <string name="main_wrong_options_favorite">收藏</string>
     
+    <!-- 我的模块标题 -->
+    <string name="main_my_title">我的</string>
+    <string name="main_my_record_title">做题记录:</string>
+    <string name="main_my_nologin_title">您还没有登录</string>
+    <string name="main_my_nologin_btnReg">注册</string>
+    <string name="main_my_nologin_btnLogin">登录</string>
+    <!-- 更多模块标题 -->
+    <string name="main_more_title">更多</string>
+    
     
     
     <string name="app_name_suffix">(全国版)</string>

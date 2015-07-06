@@ -116,11 +116,11 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
 				break;
 			}
 			case My:{//3.我的
-				fragment = null;
+				fragment = new MainMyFragment(this);
 				break;
 			}
 			case More:{//4.更多
-				fragment = null;
+				fragment = new MainMoreFragment(this);
 				break;
 			}
 		}

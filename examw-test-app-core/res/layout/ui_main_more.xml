@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 首页 -->
+<!-- 更多模块布局 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
-    android:orientation="vertical" 
-    android:animateLayoutChanges="true">
+    android:orientation="vertical" >
     
-    <!-- 标题 -->
-    <TextView android:id="@+id/main_home_title"
+     <!-- 标题 -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/top_title_minHeight"
@@ -20,21 +19,11 @@
         android:paddingRight="@dimen/list_right"
         android:paddingEnd="@dimen/list_right"
         android:background="@color/default_color" 
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/main_more_title"
         android:textColor="@color/white"
         android:textSize="@dimen/fontsize_l"/>
-
-    <!-- 列表数据 -->
-    <ListView android:id="@+id/list_main_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_top"
-        android:layout_marginBottom="@dimen/list_bottom"
-        android:background="@color/white"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@drawable/topic_driver"
-        android:drawSelectorOnTop="false"
-        android:fadingEdge="none"
-        android:scrollbars="none"
-        android:visibility="visible" />
     
+    
+
 </LinearLayout>

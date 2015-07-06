@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我的－未登录View -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/list_top"
+    android:layout_marginBottom="@dimen/list_bottom"
+    android:paddingTop="@dimen/list_top"
+    android:background="@color/transparent"
+    android:orientation="vertical" >
+    
+    <!-- 文本标题  -->
+     <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/list_min_cellHeight"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/main_my_nologin_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontsize_l"/>
+    
+     <!-- 按钮 -->
+     <LinearLayout 
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:minHeight="@dimen/list_min_cellHeight"
+         android:layout_marginTop="@dimen/list_top"
+    	 android:background="@color/transparent"
+    	 android:gravity="center_vertical|center_horizontal"
+    	 android:weightSum="4"
+    	 android:orientation="horizontal">
+         
+         <!-- 注册按钮 -->
+         <Button android:id="@+id/my_nologin_btnregister"
+             style="?android:attr/buttonBarButtonStyle"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:minHeight="@dimen/list_min_cellHeight"
+             android:paddingTop="@dimen/padding_top"
+             android:paddingBottom="@dimen/padding_bottom"
+             android:text="@string/main_my_nologin_btnReg"
+             android:textColor="@color/main_my_nologin_btn_textcolor"
+             android:textSize="@dimen/fontsize_l"
+             android:background="@drawable/btn_my_nologin_bg"
+             android:layout_weight="1"/>
+         
+         <!-- 登录按钮 -->
+         <Button android:id="@+id/my_nologin_btnlogin"
+             style="?android:attr/buttonBarButtonStyle"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:minHeight="@dimen/list_min_cellHeight"
+             android:layout_marginLeft="@dimen/list_left"
+             android:layout_marginStart="@dimen/list_left"
+             android:paddingTop="@dimen/padding_top"
+             android:paddingBottom="@dimen/padding_bottom"
+             android:text="@string/main_my_nologin_btnLogin"
+             android:textColor="@color/main_my_nologin_btn_textcolor"
+             android:textSize="@dimen/fontsize_l"
+             android:background="@drawable/btn_my_nologin_bg"
+             android:layout_weight="1"/>
+     </LinearLayout>
+
+</LinearLayout>

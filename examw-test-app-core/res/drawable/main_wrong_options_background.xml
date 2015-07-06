@@ -2,12 +2,12 @@
 <!-- 错题模版选项背景 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 选中时背景颜色 -->
-    <item android:state_checked="true" android:drawable="@color/default_color"/>
+    <item android:state_checked="true" android:drawable="@color/default_color" />
     <!-- 未选中时背景颜色 -->
     <item android:state_checked="false">
         <shape>
             	<!--背景色  -->
-	            <solid android:color="@color/white"/>
+	            <solid android:color="@color/white" />
 	            <!-- 边框色 -->
 	            <stroke android:width="0.5dip" android:color="@color/default_color"/>
 	            <padding android:left="0.5dip" android:bottom="0.5dip" android:right="0.5dip" android:top="0.5dip"/>

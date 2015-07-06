@@ -20,6 +20,9 @@
     <!-- 顶部Bar最小高度 -->
     <dimen name="top_title_minHeight">30.0dip</dimen>
     
+    <!-- 通用图片与文件的间隔 -->
+    <dimen name="img_text_padding">2dip</dimen>
+    
     <!-- 行字体 -->
     <!-- 大字体尺寸 -->  
     <dimen name="list_l_size">16.0sp</dimen>

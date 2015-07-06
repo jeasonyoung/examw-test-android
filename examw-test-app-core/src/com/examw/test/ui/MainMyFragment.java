@@ -1,9 +1,12 @@
 package com.examw.test.ui;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.examw.test.R;
+import com.examw.test.app.AppContext;
+import com.examw.test.app.UserAccount;
 import com.examw.test.dao.PaperDao;
 
 import android.content.Context;
@@ -14,56 +17,53 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * 错题Fragment
+ * 我的Fragment。
  * 
  * @author jeasonyoung
- * @since 2015年7月4日
+ * @since 2015年7月6日
  */
-public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedChangeListener,AdapterView.OnItemClickListener {
-	private static final String TAG = "MainWrongFragment";
+public class MainMyFragment extends Fragment implements AdapterView.OnItemClickListener {
+	private static final String TAG = "MainMyFragment";
 	private final MainActivity mainActivity;
 	
-	private WrongOption option = WrongOption.Wrong;
-	private List<PaperDao.SubjectTotalModel> dataSource;
-	private WrongAdapter adapter;
+	private final List<PaperDao.SubjectTotalModel> dataSource;
+	private final RecordAdapter adapter;
 	private ListView listView;
 	/**
 	 * 构造函数。
 	 * @param mainActivity
 	 */
-	public MainWrongFragment(final MainActivity mainActivity){
+	public MainMyFragment(final MainActivity mainActivity){
 		Log.d(TAG, "初始化...");
 		this.mainActivity = mainActivity;
 		this.dataSource = new ArrayList<PaperDao.SubjectTotalModel>();
-		this.adapter = new WrongAdapter(this.mainActivity, this.dataSource);
+		this.adapter = new RecordAdapter(this.mainActivity, this.dataSource);
 	}
 	/*
-	 * 加载UI。
+	 * 加载布局。
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.d(TAG, "加载UI布局...");
-		//加载错题UI布局
-		final View view = inflater.inflate(R.layout.ui_main_wrong, container, false);
-		//标题选项
-		final RadioGroup options = (RadioGroup)view.findViewById(R.id.main_wrong_options);
-		options.setOnCheckedChangeListener(this);
-		//数据列表
-		this.listView = (ListView)view.findViewById(R.id.list_main_wrong);
-		//设置列表数据源
+		Log.d(TAG, "加载布局文件...");
+		//加载布局
+		final View view = inflater.inflate(R.layout.ui_main_my, container, false);
+		//加载用户信息
+		new AsyncLoadUserTask(this.mainActivity).execute();
+		//加载做题记录列表
+		this.listView = (ListView)view.findViewById(R.id.list_my_records);
+		//设置数据源
 		this.listView.setAdapter(this.adapter);
-		//设置行点击事件处理
+		//设置行事件监听器
 		this.listView.setOnItemClickListener(this);
-		//返回视图
+		//返回
 		return view;
 	}
 	/*
@@ -75,89 +75,100 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 		super.onStart();
 		//启动等待动画
 		this.mainActivity.waitingViewDialog.show();
-		//加载数据处理
-		new AsynLoadTask(this.mainActivity).execute();
+		//加载数据
+		new AsyncLoadTask(this.mainActivity).execute();
 	}
 	/*
-	 * 标题选中处理
-	 * @see android.widget.RadioGroup.OnCheckedChangeListener#onCheckedChanged(android.widget.RadioGroup, int)
-	 */
-	@Override
-	public void onCheckedChanged(RadioGroup group, int checkedId) {
-		Log.d(TAG, "标题选项处理:" + checkedId);
-		//启动等待动画
-		this.mainActivity.waitingViewDialog.show();
-		//选项转换		
-		switch(checkedId){
-			case R.id.main_wrong_options_favorite:{//收藏
-				this.option = WrongOption.Favorite;
-				break;
-			}
-			case R.id.main_wrong_options_wrong:
-			default:
-			{
-				this.option = WrongOption.Wrong;
-			}
-		}
-		//加载数据处理
-		new AsynLoadTask(this.mainActivity).execute();
-	}
-	/*
-	 * 数据项选中事件处理
+	 * 选中行事件处理。
 	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Log.d(TAG, "选中行..." + position);
 		if(this.dataSource.size() > position){
 			PaperDao.SubjectTotalModel data = this.dataSource.get(position);
-			if(data != null){
-				Toast.makeText(this.mainActivity, this.option + ":" + data.toString(), Toast.LENGTH_SHORT).show();
-			}
+			Toast.makeText(this.mainActivity, data.toString(), Toast.LENGTH_SHORT).show();
+			///TODO:
 		}
 	}
-	//选项枚举
-	private enum WrongOption { Wrong, Favorite };
 	/**
-	 * 异步线程加载数据。
+	 * 异步加载用户信息。
 	 * 
 	 * @author jeasonyoung
 	 * @since 2015年7月6日
 	 */
-	private class AsynLoadTask extends AsyncTask<Void, Void, Void>{
+	private class AsyncLoadUserTask extends AsyncTask<Void, Void, UserAccount>{
+		private final WeakReference<MainActivity> refMainActivity;
+		/**
+		 * 构造函数。
+		 * @param activity
+		 */
+		public AsyncLoadUserTask(final MainActivity activity){
+			Log.d(TAG, "初始化");
+			this.refMainActivity = new WeakReference<MainActivity>(activity);
+		}
+		/*
+		 * 后台线程加载数据。
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
+		@Override
+		protected UserAccount doInBackground(Void... params) {
+			Log.d(TAG, "后台线程加载当前用户数据...");
+			MainActivity  activity = this.refMainActivity.get();
+			if(activity != null){
+				AppContext app = (AppContext)activity.getApplication();
+				if(app != null){
+					return app.getCurrentUser();
+				}
+			}
+			return null;
+		}
+		/*
+		 * 前台UI处理。
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(UserAccount result) {
+			Log.d(TAG, "当前用户前台UI处理..." + result);
+			MainActivity  activity = this.refMainActivity.get();
+			if(activity != null){
+				Fragment fragment = (result == null ? new MainMyNoLoginViewFragment(activity) : 
+					new MainMyUserViewFragment(activity, result));
+				//替换Fragment
+				activity.getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.my_userinfo_replace, fragment)
+				.commit();
+			}
+		}
+	}
+	/**
+	 * 异步加载数据。
+	 * @author jeasonyoung
+	 * @since 2015年7月6日
+	 */
+	private class AsyncLoadTask extends AsyncTask<Void, Void, Void>{
 		private final PaperDao dao;
 		/**
 		 * 构造函数。
 		 * @param context
 		 */
-		public AsynLoadTask(final Context context){
+		public AsyncLoadTask(final Context context){
+			Log.d(TAG, "初始化异步加载数据...");
 			this.dao = new PaperDao(context);
 		}
 		/*
-		 * 台线程数据处理。
+		 * 后台线程加载数据。
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
 		@Override
 		protected Void doInBackground(Void... params) {
-			Log.d(TAG, "开始后台线程数据处理...");
-			//清空数据源
+			Log.d(TAG, "后台线程加载数据...");
+			//1.清空数据源
 			dataSource.clear();
-			//加载数据
-			switch(option){
-				case Wrong:{//错题数据
-					List<PaperDao.SubjectTotalModel> list = this.dao.totalSubjectWrongRecords();
-					if(list != null && list.size() > 0){
-						dataSource.addAll(list);
-					}
-					break;
-				}
-				case Favorite:{//收藏数据
-					List<PaperDao.SubjectTotalModel> list = this.dao.totalFavoriteRecords();
-					if(list != null && list.size() > 0){
-						dataSource.addAll(list);
-					}
-					break;
-				}
+			//2.查询数据
+			List<PaperDao.SubjectTotalModel> list = dao.totalPaperRecords();
+			if(list != null && list.size() > 0){
+				dataSource.addAll(list);
 			}
 			return null;
 		}
@@ -168,19 +179,19 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 		@Override
 		protected void onPostExecute(Void result) {
 			Log.d(TAG, "主线程UI处理...");
-			//数据源更新
+			//1.更新数据适配器
 			adapter.notifyDataSetChanged();
-			//关闭等待动画
+			//2.关闭等待
 			mainActivity.waitingViewDialog.cancel();
-		};
+		}
 	}
 	/**
-	 * 错题数据适配器。
+	 * 做题记录数据适配器。
 	 * 
 	 * @author jeasonyoung
 	 * @since 2015年7月6日
 	 */
-	private class WrongAdapter extends BaseAdapter{
+	private class RecordAdapter extends BaseAdapter{
 		private final Context context;
 		private final List<PaperDao.SubjectTotalModel> list;
 		/**
@@ -190,12 +201,13 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 		 * @param list
 		 * 列表数据源。
 		 */
-		public WrongAdapter(final Context context,final List<PaperDao.SubjectTotalModel> list){
+		public RecordAdapter(final Context context, final List<PaperDao.SubjectTotalModel> list){
+			Log.d(TAG, "初始化数据适配器...");
 			this.context = context;
 			this.list = list;
 		}
 		/*
-		 * 获取数据行数。
+		 * 获取行数据.
 		 * @see android.widget.Adapter#getCount()
 		 */
 		@Override
@@ -208,10 +220,7 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 		 */
 		@Override
 		public Object getItem(int position) {
-			if(this.list.size() > position){
-				return this.list.get(position);
-			}
-			return null;
+			return this.list.get(position);
 		}
 		/*
 		 * 获取行ID。
@@ -231,64 +240,58 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 			ItemViewWrapper wrapper = null;
 			if(convertView == null){
 				Log.d(TAG, "新建行..." + position);
-				//0.加载列表布局
-				convertView = LayoutInflater.from(this.context).inflate(R.layout.ui_main_wrong_item, parent, false);
 				wrapper = new ItemViewWrapper();
+				//0.加载行布局
+				convertView = LayoutInflater.from(this.context).inflate(R.layout.ui_main_my_item, parent, false);
 				//1.科目
-				wrapper.setSubject((TextView)convertView.findViewById(R.id.wrong_item_subjectname));
+				wrapper.setSubject((TextView)convertView.findViewById(R.id.my_item_subjectname));
 				//2.试题数
-				wrapper.setTotals((TextView)convertView.findViewById(R.id.wrong_item_totals));
+				wrapper.setTotals((TextView)convertView.findViewById(R.id.my_item_totals));
 				//保存
 				convertView.setTag(wrapper);
 			}else {
-				Log.d(TAG, "重用行..." + position);
-				//加载ui 
+				Log.d(TAG, "复用行..." + position);
 				wrapper = (ItemViewWrapper)convertView.getTag();
 			}
 			//加载数据
 			PaperDao.SubjectTotalModel data = (PaperDao.SubjectTotalModel)this.getItem(position);
 			if(data != null && wrapper != null){
-				//科目
+				//1.科目
 				wrapper.getSubject().setText(data.getName());
-				//试题数
-				wrapper.getTotals().setText("("+data.getTotal()+")");
+				//2.试题数
+				wrapper.getTotals().setText(String.valueOf(data.getTotal()));
 			}
 			return convertView;
 		}
-		/**
-		 * 行视图包装器。
-		 * 
-		 * @author jeasonyoung
-		 * @since 2015年7月6日
-		 */
+		//行视图包装类。
 		private class ItemViewWrapper{
 			private TextView subject,totals;
 			/**
-			 * 获取科目名称。
-			 * @return 科目名称。
+			 * 获取科目。
+			 * @return 科目。
 			 */
 			public TextView getSubject() {
 				return subject;
 			}
 			/**
-			 * 设置科目名称。
+			 * 设置科目。
 			 * @param subject 
-			 *	  科目名称。
+			 *	  科目。
 			 */
 			public void setSubject(TextView subject) {
 				this.subject = subject;
 			}
 			/**
 			 * 获取试题数。
-			 * @return 试题数。
+			 * @return totals
 			 */
 			public TextView getTotals() {
 				return totals;
 			}
 			/**
-			 * 设置试题数。
+			 * 设置 totals
 			 * @param totals 
-			 *	  试题数。
+			 *	  totals
 			 */
 			public void setTotals(TextView totals) {
 				this.totals = totals;

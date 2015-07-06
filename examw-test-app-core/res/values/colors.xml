@@ -3,6 +3,8 @@
     
     <!-- 默认主色 -->
     <color name="default_color">#FFBA2121</color>
+    <!-- 按钮按下颜色 -->
+    <color name="default_pressed_color">#77BA2121</color>
     <!-- 主界面底部菜单背景色 -->
     <color name="main_bottom_bgcolor">#FFBEBEBE</color>
     <!-- 白色 -->
