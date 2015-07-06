@@ -18,7 +18,7 @@
     <dimen name="main_bottom_menuImgPadding">2dip</dimen>
     
     <!-- 顶部Bar最小高度 -->
-    <dimen name="top_title_minHeight">40.0dip</dimen>
+    <dimen name="top_title_minHeight">30.0dip</dimen>
     
     <!-- 行字体 -->
     <!-- 大字体尺寸 -->  
@@ -32,6 +32,10 @@
     <dimen name="padding_normal">10.0dip</dimen>
     <!-- 通用最小高度 -->
     <dimen name="height_min">40.0dip</dimen>
+    <!-- 通用顶部内间距 -->
+    <dimen name="padding_top">2.0dip</dimen>
+    <!-- 通用底部内间距-->
+    <dimen name="padding_bottom">2.0dip</dimen>
     
     <!-- 通用字体 -->
     <dimen name="fontsize_l">16.0sp</dimen>

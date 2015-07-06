@@ -29,7 +29,7 @@ import com.examw.test.dao.PaperDao;
  */
 public class MainHomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 	private static final String TAG = "MainHomeFragment";
-	private MainActivity mainActivity;
+	private final MainActivity mainActivity;
 	private PaperDao dao;
 	
 	private TextView tvTitle;
@@ -41,7 +41,7 @@ public class MainHomeFragment extends Fragment implements AdapterView.OnItemClic
 	 * 构造函数。
 	 * @param mainActivity
 	 */
-	public MainHomeFragment(MainActivity mainActivity){
+	public MainHomeFragment(final MainActivity mainActivity){
 		Log.d(TAG, "初始化...");
 		this.mainActivity = mainActivity;
 		this.dataSource = new ArrayList<PaperDao.SubjectTotalModel>();

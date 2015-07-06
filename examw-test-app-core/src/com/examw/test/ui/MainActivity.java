@@ -112,7 +112,7 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
 				break;
 			}
 			case Favorites:{//2.错题
-				fragment = null;
+				fragment = new MainWrongFragment(this);
 				break;
 			}
 			case My:{//3.我的

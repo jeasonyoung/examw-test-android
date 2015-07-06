@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 错题 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/list_top"
+    android:layout_marginBottom="@dimen/list_bottom"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/list_min_cellHeight"
+    android:orientation="horizontal" >
+    
+     <!-- 科目名称 -->
+    <TextView android:id="@+id/wrong_item_subjectname"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/list_l_size" 
+        android:paddingLeft="@dimen/list_left" 
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_right"
+        android:paddingEnd="@dimen/list_right"/>
+    
+    <!-- 试题数 -->
+    <TextView android:id="@+id/wrong_item_totals"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/list_s_size" />
+    
+</LinearLayout>

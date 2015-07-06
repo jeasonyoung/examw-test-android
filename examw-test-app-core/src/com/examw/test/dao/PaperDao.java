@@ -1320,6 +1320,15 @@ public class PaperDao {
 		 */
 		public void setTotal(int total) {
 			this.total = total;
-		}	
+		}
+		/*
+		 * 重载。
+		 * @see com.examw.test.model.sync.SubjectSync#toString()
+		 */
+		@Override
+		public String toString() {
+			Gson gson = new Gson();
+			return gson.toJson(this);
+		}
 	}
 }

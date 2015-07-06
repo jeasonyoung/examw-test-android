@@ -10,9 +10,9 @@
     <RadioGroup android:id="@+id/home_paper_titlegroups"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:paddingTop="2dip"
-        android:paddingBottom="2dip"
-        android:minHeight="10dip"
+	    android:paddingTop="@dimen/padding_top"
+        android:paddingBottom="@dimen/padding_bottom"
+        android:minHeight="@dimen/top_title_minHeight"
         android:background="@color/default_color"
         android:gravity="center_vertical|center_horizontal"
 	    android:orientation="horizontal">

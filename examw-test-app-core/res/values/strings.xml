@@ -20,6 +20,10 @@
     <string name="main_bottom_my">我的</string>
     <string name="main_bottom_more">更多</string>
     
+    <!-- 错题模块标题 -->
+    <string name="main_wrong_options_wrong">错题</string>
+    <string name="main_wrong_options_favorite">收藏</string>
+    
     
     
     <string name="app_name_suffix">(全国版)</string>
