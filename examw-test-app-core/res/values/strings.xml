@@ -30,6 +30,20 @@
     <string name="main_my_nologin_title">您还没有登录</string>
     <string name="main_my_nologin_btnReg">注册</string>
     <string name="main_my_nologin_btnLogin">登录</string>
+    
+    <string name="main_my_nologin_reg_username">用户名:</string>
+    <string name="main_my_nologin_reg_username_placeholder">请输入用户名</string>
+    <string name="main_my_nologin_reg_password">密码:</string>
+    <string name="main_my_nologin_reg_password_placeholder">请输入密码</string>
+    <string name="main_my_nologin_reg_repassword">重复密码:</string>
+    <string name="main_my_nologin_reg_repassword_placeholder">请输入重复密码</string>
+    <string name="main_my_nologin_reg_name">姓名:</string>
+    <string name="main_my_nologin_reg_name_placeholder">请输入姓名</string>
+    <string name="main_my_nologin_reg_email">电子邮箱:</string>
+    <string name="main_my_nologin_reg_email_placeholder">请输入电子邮箱</string>
+    <string name="main_my_nologin_reg_phone">手机号码:</string>
+    <string name="main_my_nologin_reg_phone_placeholder">请输入手机号码</string>
+    
     <!-- 更多模块标题 -->
     <string name="main_more_title">更多</string>
     

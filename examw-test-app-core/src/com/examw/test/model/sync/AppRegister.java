@@ -1,5 +1,7 @@
 package com.examw.test.model.sync;
 
+import com.google.gson.Gson;
+
 import android.content.Context;
 
 
@@ -15,7 +17,6 @@ public class AppRegister extends AppClient {
 	private String userId,code;
 	public AppRegister(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * 获取用户ID。
@@ -53,10 +54,7 @@ public class AppRegister extends AppClient {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(super.toString()).append(",")
-		.append("userId").append("=").append(this.userId).append(",")
-		.append("code").append("=").append(this.code);
-		return builder.toString();
+		Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 }
