@@ -34,7 +34,7 @@ public class MainMoreFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "加载布局文件...");
 		//加载布局
-		final View view = inflater.inflate(R.layout.ui_main_my, container, false);
+		final View view = inflater.inflate(R.layout.ui_main_more, container, false);
 		
 		//返回
 		return view;

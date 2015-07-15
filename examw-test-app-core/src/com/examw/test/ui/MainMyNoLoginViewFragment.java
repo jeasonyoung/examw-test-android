@@ -1,7 +1,5 @@
 package com.examw.test.ui;
 
-import com.examw.test.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+
+import com.examw.test.R;
 
 /**
  * 我的未登录Fragment
@@ -55,11 +54,11 @@ public class MainMyNoLoginViewFragment extends Fragment implements View.OnClickL
 		Log.d(TAG, "点击按钮:" + v.getId());
 		switch(v.getId()){
 			case R.id.my_nologin_btnregister:{//注册
-				this.mainActivity.startActivity(new Intent(this.mainActivity, RegisterActivity.class));
+				this.startActivity(new Intent(this.mainActivity, RegisterActivity.class));
 				break;
 			}
 			case R.id.my_nologin_btnlogin:{//登录
-				Toast.makeText(this.mainActivity, "登录", Toast.LENGTH_SHORT).show();
+				this.startActivity(new Intent(this.mainActivity, LoginActivity.class));
 				break;
 			}
 		}

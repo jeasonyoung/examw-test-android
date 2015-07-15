@@ -7,7 +7,7 @@
     android:orientation="vertical" >
     
      <!-- 标题 -->
-    <TextView
+    <TextView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/top_title_minHeight"
@@ -24,6 +24,40 @@
         android:textColor="@color/white"
         android:textSize="@dimen/fontsize_l"/>
     
+    <!-- 菜单列表 -->
+    <ListView android:id="@+id/list_more_menus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:background="@color/white" 
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/topic_driver"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:visibility="visible" />
     
+     <!-- 退出登录按钮 -->
+     <Button android:id="@+id/main_more_btnLogout"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:minHeight="@dimen/list_min_cellHeight" 
+         android:layout_marginTop="@dimen/list_top"
+         android:layout_marginLeft="@dimen/list_left"
+         android:layout_marginStart="@dimen/list_left"
+         android:layout_marginRight="@dimen/list_left"
+         android:layout_marginEnd="@dimen/list_left"
+         android:paddingTop="@dimen/list_top"
+         android:paddingBottom="@dimen/list_bottom"
+         android:gravity="center_vertical|center_horizontal"
+         android:text="@string/main_more_logout"
+         android:textColor="@color/btn_pressed_selected_textcolor"
+         android:textSize="@dimen/fontsize_l"
+         android:background="@drawable/btn_selected_bg"/>
+     
+     <!-- 占位空隙 -->
+     <View android:layout_width="match_parent"
+        android:layout_height="20dip"/>
 
 </LinearLayout>

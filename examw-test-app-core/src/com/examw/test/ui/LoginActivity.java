@@ -359,10 +359,10 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 			 //登录成功跳转
 			 if(result){
 				 Log.d(TAG, "登录成功跳转到");
-				 //发送广播
-				 sendBroadcast(new Intent(MainMyFragment.BROADCAST_LOGIN_ACTION));
 				 //关闭activity
 				 finish();
+				 //发送广播
+				 sendBroadcast(new Intent(MainMyFragment.BROADCAST_LOGIN_ACTION));
 			 }
 		}
 	}

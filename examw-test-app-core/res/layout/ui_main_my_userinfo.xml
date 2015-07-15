@@ -7,11 +7,13 @@
     android:layout_marginBottom="@dimen/list_bottom"
     android:paddingTop="@dimen/list_top"
     android:background="@color/transparent"
-    android:gravity="center_vertical"
+    android:gravity="center_vertical|center_horizontal"
     android:orientation="horizontal" >
     
     <!-- 用户图标 -->
-    <ImageView 
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginLeft="@dimen/list_left"
         android:layout_marginStart="@dimen/list_left"
         android:layout_marginRight="@dimen/img_text_padding"
