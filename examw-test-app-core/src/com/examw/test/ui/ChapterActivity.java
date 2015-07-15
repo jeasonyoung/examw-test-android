@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import com.examw.test.R;
 import com.examw.test.adapter.ChapterExpendableListAdatper;
 import com.examw.test.domain.Chapter;
-import com.examw.test.utils.ToastUtils;
 
 /**
  * 章节练习
@@ -123,7 +122,7 @@ public class ChapterActivity extends BaseActivity implements OnClickListener{
 				if(k.chapters != null)
 					k.expandView.setAdapter(new ChapterExpendableListAdatper(k,k.chapters));
 				else{
-					ToastUtils.show(k, "暂无数据");
+					//ToastUtils.show(k, "暂无数据");
 					k.reloadLayout.setVisibility(View.GONE);
 					k.nodataLayout.setVisibility(View.VISIBLE);
 				}

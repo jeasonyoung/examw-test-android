@@ -2,7 +2,7 @@
 <!-- 我的－未登录View -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/list_top"
     android:layout_marginBottom="@dimen/list_bottom"
     android:paddingTop="@dimen/list_top"
@@ -39,9 +39,9 @@
              android:paddingTop="@dimen/padding_top"
              android:paddingBottom="@dimen/padding_bottom"
              android:text="@string/main_my_nologin_btnReg"
-             android:textColor="@color/main_my_nologin_btn_textcolor"
+             android:textColor="@color/btn_pressed_normal_textcolor"
              android:textSize="@dimen/fontsize_l"
-             android:background="@drawable/btn_my_nologin_bg"
+             android:background="@drawable/btn_normal_bg"
              android:layout_weight="1"/>
          
          <!-- 登录按钮 -->
@@ -55,9 +55,9 @@
              android:paddingTop="@dimen/padding_top"
              android:paddingBottom="@dimen/padding_bottom"
              android:text="@string/main_my_nologin_btnLogin"
-             android:textColor="@color/main_my_nologin_btn_textcolor"
+             android:textColor="@color/btn_pressed_normal_textcolor"
              android:textSize="@dimen/fontsize_l"
-             android:background="@drawable/btn_my_nologin_bg"
+             android:background="@drawable/btn_normal_bg"
              android:layout_weight="1"/>
      </LinearLayout>
 

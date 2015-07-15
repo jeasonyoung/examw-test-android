@@ -2,26 +2,26 @@
 
     <!-- 列表行通用设置 -->
     <!-- 顶部间距 -->
-    <dimen name="list_top">10.0dip</dimen>
+    <dimen name="list_top">10.0dp</dimen>
     <!-- 左边间距 -->
-    <dimen name="list_left">10.0dip</dimen>
+    <dimen name="list_left">10.0dp</dimen>
     <!-- 底部间距 -->
-    <dimen name="list_bottom">10.0dip</dimen>
+    <dimen name="list_bottom">10.0dp</dimen>
     <!-- 右边间距 -->
-    <dimen name="list_right">0.0dip</dimen>
+    <dimen name="list_right">0.0dp</dimen>
     <!-- 最小行高 -->
-    <dimen name="list_min_cellHeight">35.0dip</dimen>
+    <dimen name="list_min_cellHeight">35.0dp</dimen>
     
     <!-- 底部菜单高度 -->
-    <dimen name="main_bottom_menuHeight">44.0dip</dimen>
+    <dimen name="main_bottom_menuHeight">44.0dp</dimen>
     <!-- 底部菜单图片间隔 -->
-    <dimen name="main_bottom_menuImgPadding">2dip</dimen>
+    <dimen name="main_bottom_menuImgPadding">2dp</dimen>
     
     <!-- 顶部Bar最小高度 -->
-    <dimen name="top_title_minHeight">30.0dip</dimen>
+    <dimen name="top_title_minHeight">30.0dp</dimen>
     
     <!-- 通用图片与文件的间隔 -->
-    <dimen name="img_text_padding">2dip</dimen>
+    <dimen name="img_text_padding">2dp</dimen>
     
     <!-- 行字体 -->
     <!-- 大字体尺寸 -->  
@@ -32,13 +32,13 @@
     <dimen name="list_s_size">12.0sp</dimen>
     
     <!-- 通用间距 -->
-    <dimen name="padding_normal">10.0dip</dimen>
+    <dimen name="padding_normal">10.0dp</dimen>
     <!-- 通用最小高度 -->
-    <dimen name="height_min">40.0dip</dimen>
+    <dimen name="height_min">40.0dp</dimen>
     <!-- 通用顶部内间距 -->
-    <dimen name="padding_top">2.0dip</dimen>
+    <dimen name="padding_top">2.0dp</dimen>
     <!-- 通用底部内间距-->
-    <dimen name="padding_bottom">2.0dip</dimen>
+    <dimen name="padding_bottom">2.0dp</dimen>
     
     <!-- 通用字体 -->
     <dimen name="fontsize_l">16.0sp</dimen>

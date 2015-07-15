@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.examw.test.R;
 import com.examw.test.domain.Chapter;
 import com.examw.test.support.ReturnBtnClickListener;
-import com.examw.test.utils.ToastUtils;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
@@ -207,7 +206,7 @@ public class KnowledgeDetailActivity extends BaseActivity {
 				k.reload.setVisibility(View.VISIBLE);
 				break;
 			case -2:
-				ToastUtils.show(k, "获取数据出错");
+				//ToastUtils.show(k, "获取数据出错");
 				k.nodata.setVisibility(View.VISIBLE);
 				k.reload.setVisibility(View.GONE);
 				k.loading.setVisibility(View.GONE);

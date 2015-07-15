@@ -56,17 +56,15 @@
         <activity android:name=".ui.RegisterActivity"
             android:screenOrientation="portrait" />
         
+        <!-- 登陆界面 -->
+        <activity android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait" />
          <!--
         <activity android:name=".ui.GuideActivity" 
             android:screenOrientation="portrait" />
           
         
-        登录界面
-        <activity android:name=".ui.LoginActivity"
-            android:screenOrientation="portrait" />
-        注册界面
-        <activity android:name=".ui.RegisterActivity"
-            android:screenOrientation="portrait" />
+       
         选择科目界面
         <activity android:name=".ui.ChooseSubjectActivity"
             android:screenOrientation="portrait" />

@@ -51,7 +51,12 @@ public final class DigestClientUtil {
 	 * @throws IOException
 	 */
 	public static String sendDigestRequest(String username,String password,String method,String uri,String data) throws Exception{
-		return sendDigestRequest(username, password, null, method, uri, data);
+		Map<String, String> headers = null;
+		if(StringUtils.isNotBlank(data)){
+			headers = new HashMap<String, String>();
+			headers.put("Content-type","application/json;charset=UTF-8");
+		}
+		return sendDigestRequest(username, password, headers, method, uri, data);
 	}
 	/**
 	 * 发送HTTP摘要认证请求。

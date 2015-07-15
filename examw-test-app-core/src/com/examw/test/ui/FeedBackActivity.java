@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.model.FeedBackInfo;
-import com.examw.test.utils.ToastUtils;
 
 /**
  * 反馈界面
@@ -119,12 +118,12 @@ public class FeedBackActivity extends BaseActivity implements OnClickListener {
 			switch(msg.what)
 			{
 			case 1:
-				ToastUtils.show(a, "提交成功,感谢反馈");
+				//ToastUtils.show(a, "提交成功,感谢反馈");
 				a.info = null;
 				a.editNoteEditText.setText("");
 				break;
 			case 2:
-				ToastUtils.show(a, "提交失败,稍后再试");
+				//ToastUtils.show(a, "提交失败,稍后再试");
 				break;
 			}
 		}

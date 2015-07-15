@@ -55,7 +55,6 @@ public class MainMyNoLoginViewFragment extends Fragment implements View.OnClickL
 		Log.d(TAG, "点击按钮:" + v.getId());
 		switch(v.getId()){
 			case R.id.my_nologin_btnregister:{//注册
-				//Toast.makeText(this.mainActivity, "注册", Toast.LENGTH_SHORT).show();
 				this.mainActivity.startActivity(new Intent(this.mainActivity, RegisterActivity.class));
 				break;
 			}

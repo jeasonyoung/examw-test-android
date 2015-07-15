@@ -70,6 +70,7 @@
                 android:gravity="center_vertical"
                 android:hint="@string/main_my_nologin_reg_password_placeholder"
                 android:singleLine="true"
+                android:inputType="textPassword"
                 android:imeOptions="actionNext"/>
             
             <!-- 重复密码 标签 -->
@@ -93,6 +94,7 @@
                 android:gravity="center_vertical"
                 android:hint="@string/main_my_nologin_reg_repassword_placeholder"
                 android:singleLine="true"
+                android:inputType="textPassword"
                 android:imeOptions="actionNext"/>
             
             <!-- 姓名标签 -->
@@ -139,6 +141,7 @@
                   android:gravity="center_vertical"
                   android:hint="@string/main_my_nologin_reg_email_placeholder"
                   android:singleLine="true"
+                  android:inputType="textEmailAddress"
                   android:imeOptions="actionNext"/>
               
               <!-- 手机号码标签 -->
@@ -163,7 +166,8 @@
                     android:gravity="center_vertical"
                     android:hint="@string/main_my_nologin_reg_phone_placeholder"
                     android:singleLine="true"
-                    android:imeOptions="actionNext"/>
+                    android:inputType="phone"
+                    android:imeOptions="actionDone"/>
                 
                 <!-- 注册按钮 -->
                 <Button android:id="@+id/register_btnSubmit" 
@@ -177,9 +181,9 @@
                     android:paddingBottom="@dimen/list_bottom"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/main_my_nologin_btnReg"
-                    android:textColor="@color/main_my_nologin_btn_textcolor"
+                    android:textColor="@color/btn_pressed_normal_textcolor"
                     android:textSize="@dimen/fontsize_m"
-                    android:background="@drawable/btn_my_nologin_bg"/>
+                    android:background="@drawable/btn_normal_bg"/>
                 
                 <!-- 占位空隙 -->
                 <View android:layout_width="match_parent"

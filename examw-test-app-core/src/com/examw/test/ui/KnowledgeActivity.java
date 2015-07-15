@@ -29,7 +29,6 @@ import com.examw.test.adapter.SyllabusListAdapter;
 import com.examw.test.adapter.SyllabusListAdapter.OnSyllabusNodeClickListener;
 import com.examw.test.domain.Chapter;
 import com.examw.test.domain.Subject;
-import com.examw.test.utils.ToastUtils;
 
 /**
  * 每日知识大纲
@@ -258,7 +257,7 @@ public class KnowledgeActivity extends BaseActivity implements OnClickListener {
 				}
 				break;
 			case -1:
-				ToastUtils.show(k, msg.obj.toString());
+				//ToastUtils.show(k, msg.obj.toString());
 				k.reloadLayout.setVisibility(View.VISIBLE);
 				break;
 			case 11:

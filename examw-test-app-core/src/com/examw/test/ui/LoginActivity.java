@@ -1,408 +1,369 @@
 package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
+import java.util.regex.Pattern;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Base64;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
+import org.apache.commons.lang3.StringUtils;
 
 import com.examw.test.R;
-import com.examw.test.app.AppConfig;
+import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.domain.User;
-import com.examw.test.model.Json;
-import com.examw.test.utils.ToastUtils;
+import com.examw.test.app.UserAccount;
+import com.examw.test.model.sync.JSONCallback;
+import com.examw.test.model.sync.LoginUser;
+import com.examw.test.support.MsgHandler;
+import com.examw.test.utils.DigestClientUtil;
+import com.examw.test.widget.WaitingViewDialog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * 登录界面
  * @author fengwei.
  * @since 2014年12月1日 上午9:42:52.
  */
-public class LoginActivity extends BaseActivity implements TextWatcher, OnClickListener {
-	//private static final String TAG = "LoginActivity";
-	private AutoCompleteTextView usernameText;
-	private String[] items;// 适配autoCompleteTextView的数据
-	private EditText pwdText;
-	private ProgressDialog o;
-	private Handler handler;
-	private CheckBox rememeberCheck;
-	private CheckBox autoLogin;
-	private Button localLoginBtn;
-	private String username;
-	private String password;
-	private SharedPreferences share;
-	private SharedPreferences share2;
-	private AppConfig appConfig;
-	private AppContext appContext;
-	private int curLoginType;
-	private Class<?> fromClass;
-	private String actionName;
-	private InputMethodManager imm;
-	public final static int LOGIN_OTHER = 0x00;
-	public final static int LOGIN_MAIN = 0x01;
-	public final static int LOGIN_SETTING = 0x02;
-	public final static int LOGIN_POST_PUB = 0x05;
-	public final static int LOGIN_POST_REPLY = 0x06;
-	
+public class LoginActivity extends Activity implements View.OnClickListener{
+	private static final String TAG = "LoginActivity";
+	private MsgHandler handler;
+	private WaitingViewDialog waitingViewDialog;
+	private DataInputViews dataInputViews;
+	/*
+	 * 重载创建。
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.ui_login);
-		appConfig = null;//AppConfig.getAppConfig(this);
-		appContext = (AppContext) this.getApplication();
-		curLoginType = this.getIntent().getIntExtra("loginFrom", LOGIN_OTHER);
-		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-		try {
-			fromClass = Class.forName(this.getIntent().getStringExtra(
-					"className"));
-			actionName = this.getIntent().getStringExtra("actionName");
-		} catch (Exception e) {
-			e.printStackTrace();
+		Log.d(TAG, "初始化创建Activity...");
+		//加载布局...
+		this.setContentView(R.layout.ui_main_my_nologin_login);
+		//初始化等待动画
+		this.waitingViewDialog = new WaitingViewDialog(this);
+		//初始化消息处理
+		this.handler = new MsgHandler(this);
+		//加载导航处理
+		final TextView tvTitle = (TextView)this.findViewById(R.id.title);
+		if(tvTitle != null){
+			tvTitle.setText(this.getResources().getString(R.string.main_my_nologin_btnLogin));
 		}
-		initView();
+		//加载返回按钮
+		final Button btnBack = (Button)this.findViewById(R.id.btn_goback);
+		btnBack.setOnClickListener(this);
+		//输入处理
+		this.dataInputViews = new DataInputViews(this);
+		//账号
+		this.dataInputViews.setAccount((EditText)this.findViewById(R.id.login_account));
+		//密码
+		this.dataInputViews.setPassword((EditText)this.findViewById(R.id.login_password));
+		
+		//登录按钮
+		final Button btnSubmit = (Button)this.findViewById(R.id.login_btnSubmit);
+		btnSubmit.setOnClickListener(this);
+		//注册按钮
+		final Button btnRegister = (Button)this.findViewById(R.id.login_btnRegister);
+		btnRegister.setOnClickListener(this);
 	}
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		String name = usernameText.getText().toString();
-		pwdText.setText(new String(Base64.decode(
-				Base64.decode(share.getString(name, ""), 0), 0)));
-		if (pwdText.getText().toString().length() > 0)
-			pwdText.requestFocus();
-	}
-
-	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
-	}
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-	}
-
-	// click事件
+	/*
+	 * 按钮事件处理。
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btn_goback:
-			this.finish();
-			break;
-		case R.id.registerBtn:
-			gotoRegister();
-			break;
-		case R.id.btnLogin:
-			login();
-			break;
-		case R.id.btnLocalLogin:
-			localLogin();
-			break;
-		}
-	}
-
-	// 登录方法
-	private void login() {
-		// 隐藏键盘
-		if (imm.isActive(usernameText)) {
-			imm.hideSoftInputFromWindow(usernameText.getWindowToken(), 0);
-		}
-		if (imm.isActive(pwdText)) {
-			imm.hideSoftInputFromWindow(pwdText.getWindowToken(), 0);
-		}
-		username = usernameText.getText().toString().trim();
-		password = pwdText.getText().toString().trim();
-		// 检查输入
-		if (checkInput(username, password)) {
-			// 检查网络
-			if (appContext.hasNetworkConnected()) {
-				// 提示登陆中
-//				if (appContext.getLoginState() == AppContext.LOGINING) {
-//					if (o != null) {
-//						o.show();
-//						return;
-//					}
-//				}
-				o = ProgressDialog.show(LoginActivity.this, null, "登录中请稍候",
-						true, true);
-				o.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				new Thread() {
-					public void run() {
-						try {
-							//LogUtil.d("开线程进行登录");
-							//设置登录状态为正在登陆
-							//appContext.setLoginState(AppContext.LOGINING);// 正在登录
-							//解析登陆返回结果
-							Json result = null;//ApiClient.login_proxy(appContext, username, password);
-							Message message = handler.obtainMessage();
-							if(result == null)
-							{
-								message.what = 0;
-								message.obj = "用户登录失败";
-								handler.sendMessage(message); //登录失败
-								return;
-							}
-							if (result.isSuccess()) { // 登陆成功
-								// 是否记住我
-								if (isRememberMe()) {
-									saveSharePreferences();
-								}
-								// 保存是否自动登录的信息
-								saveAutoLoginPreferences(isAutoLogin());
-								// 保存信息至数据库[创建属于用户的数据库]
-								//修改为代理登陆start
-								User user = new User();
-								user.setUsername(username);
-								user.setPassword(password);
-								user.setProductUserId(result.getData().toString());
-								//修改为代理登陆end
-								saveToLocaleDB(user);
-								message.what = 1;
-								message.obj = user;
-							}else{
-								message.what = 0;
-								message.obj = result.getMsg();
-							}
-							handler.sendMessage(message); //登录失败
-						} catch (Exception e) {
-							e.printStackTrace();
-							handler.sendEmptyMessage(-1); // 连接问题
-						}
-					};
-				}.start();
-			} else {
-				ToastUtils.show(this, "无法连接,请检查网络...");
-//				if (appContext.getLoginState() != AppContext.LOCAL_LOGINED
-//						|| "sysnc".equals(curLoginType)) // 本地已经登录就不再显示
-//					localLoginBtn.setVisibility(View.VISIBLE);
+		Log.d(TAG, "按钮事件处理..." + v);
+		switch(v.getId()){
+			case R.id.btn_goback:{//返回
+				Log.d(TAG, "返回按钮事件处理...");
+				this.finish();
+				break;
+			}
+			case R.id.login_btnSubmit:{//登录
+				Log.d(TAG, "登录处理...");
+				//开启等待动画
+				this.waitingViewDialog.show();
+				//校验输入
+				if(!this.dataInputViews.verification()){
+					Log.d(TAG, "输入数据校验未通过...");
+					this.waitingViewDialog.cancel();
+					return;
+				}
+				//异步登录处理
+				new LoginUserDataAsyncTask(this).execute(this.dataInputViews.getLoginUser());
+				break;
+			}
+			case R.id.login_btnRegister:{//注册
+				//启动注册activity
+				this.startActivity(new Intent(this, RegisterActivity.class));
+				//关闭当前activity
+				this.finish();
+				break;
 			}
 		}
 	}
-	private void localLogin() {
-		username = usernameText.getText().toString().trim();
-		password = pwdText.getText().toString().trim();
-		if (checkInput(username, password)) {
-			// String name = usernameText.getText().toString();
-//			User user = UserDao.findByUsername(username);
-//			if (user != null) {
-//				String password = pwdText.getText().toString();
-//				if (password.equals(user.getPassword())) {
-//					//appContext.saveLocalLoginInfo(username);
-//					ToastUtils.show(this,"本地登录成功");
-//					if (fromClass == null) {
-//						LoginActivity.this.finish(); // 找不到类直接finish
-//					} else {
-//						this.startActivity();
-//					}
-//				} else {
-//					ToastUtils.show(this,"请先在线登录");
-//				}
-//			} else {
-//				ToastUtils.show(this,"请先在线登录");
-//			}
+	/**
+	 * 登录数据输入处理。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月14日
+	 */
+	private class DataInputViews implements TextView.OnEditorActionListener{
+		private EditText account,password;
+		private final LoginUser loginUser; 
+		private final Resources resources;		
+		/**
+		 * 构造函数。
+		 * @param context
+		 * 上下文。
+		 */
+		public DataInputViews(Context context){
+			this.loginUser = new LoginUser(context);
+			this.resources = context.getResources();
 		}
-	}
-	// 检查输入 check input
-	private boolean checkInput(String username, String password) {
-		if ("".equals(username.trim()) || "".equals(password.trim())) {
-			Toast.makeText(LoginActivity.this, "用户名或密码不能为空", Toast.LENGTH_SHORT)
-					.show();
-			return false;
+		/**
+		 * 获取登录数据。
+		 * @return loginUser
+		 * 登录数据。
+		 */
+		public LoginUser getLoginUser() {
+			return loginUser;
 		}
-		return true;
-	}
-	// 是否记住密码
-	private boolean isRememberMe() {
-		return rememeberCheck.isChecked();
-	}
-	// 是否自动登录
-	private boolean isAutoLogin() {
-		return autoLogin.isChecked();
-	}
-	// 保存信息
-	private void saveSharePreferences() {
-		share.edit()
-				.putString(
-						usernameText.getText().toString(),
-						Base64.encodeToString(
-								Base64.encode(password.getBytes(), 0), 0))
-				.commit();
-		share2.edit().putString("n", usernameText.getText().toString())
-				.commit();
-		share2.edit()
-				.putString(
-						"p",
-						Base64.encodeToString(
-								Base64.encode(password.getBytes(), 0), 0))
-				.commit();
-	}
-	// 保存自动登录信息
-	private void saveAutoLoginPreferences(boolean flag) {
-		//appConfig.set(AppConfig.CONF_AUTOLOGIN, String.valueOf(flag));
-	}
-	// 注册
-	private void gotoRegister() {
-		this.startActivity(new Intent(this, RegisterActivity.class));
-	}
-
-	// 保存用户信息至本地数据库
-	public void saveToLocaleDB(User user) {
-		try {
-			//UserDao.saveOrUpdate(user);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}/*catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}*/
-	}
-
-	// 初始化组件
-	private void initView() {
-		usernameText = (AutoCompleteTextView) this
-				.findViewById(R.id.usernameText);// 用户名
-		pwdText = (EditText) this.findViewById(R.id.pwdText);// 密码
-		this.findViewById(R.id.btn_goback).setOnClickListener(this);
-		((TextView) this.findViewById(R.id.title)).setText("登录");
-		this.findViewById(R.id.btnLogin).setOnClickListener(this);// 登录按钮
-		localLoginBtn = (Button) this.findViewById(R.id.btnLocalLogin); // 本地登录
-		rememeberCheck = (CheckBox) this.findViewById(R.id.rememeberCheck);// 记住密码
-		autoLogin = (CheckBox) this.findViewById(R.id.cbAutoLogin); // 自动登录
-		this.findViewById(R.id.registerBtn).setOnClickListener(this);
-		// userdao = new UserDao(new MyDBHelper(this)); //������ݿ�
-		share = getSharedPreferences("passwordfile", 0);
-		share2 = getSharedPreferences("abfile", 0);
-		items = share.getAll().keySet().toArray(new String[0]);
-		usernameText.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, items));
-		pwdText.setOnEditorActionListener(new OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_GO)
-					// 去登陆
-					login();
+		/**
+		 * 设置用户账号输入。
+		 * @param account 
+		 *	  用户账号输入。
+		 */
+		public void setAccount(EditText account) {
+			this.account = account;
+			this.account.setOnEditorActionListener(this);
+		}
+		/**
+		 * 设置用户密码输入。
+		 * @param password 
+		 *	  用户密码输入。
+		 */
+		public void setPassword(EditText password) {
+			this.password = password;
+			this.password.setOnEditorActionListener(this);
+		}
+		//正则表达式验证
+		private boolean validateRegex(final String input, final String regex){
+			if(StringUtils.isBlank(regex)){
 				return true;
 			}
-		});
-		usernameText.addTextChangedListener(this);
-		localLoginBtn.setOnClickListener(this);
-		handler = new MyHandler(this);
-	}
-
-	static class MyHandler extends Handler {
-		WeakReference<LoginActivity> mActivity;
-
-		public MyHandler(LoginActivity activity) {
-			mActivity = new WeakReference<LoginActivity>(activity);
+			if(StringUtils.isNotBlank(input)){
+				return Pattern.compile(regex).matcher(input).matches();
+			}
+			return false;
 		}
-
+		//校验账号
+		private boolean validateAccount(){
+			Log.d(TAG, "验证用户账号...");
+			//1.用户名
+			this.loginUser.setAccount(StringUtils.trimToEmpty(this.account.getText().toString()));
+			//1.0验证为空
+			if(StringUtils.isBlank(this.loginUser.getAccount())){
+				Log.d(TAG, "用户名为空!");
+				this.account.setError(this.resources.getString(R.string.main_my_nologin_reg_username_error_blank));
+				return false;
+			}
+			//1.1验证格式
+			if(!this.validateRegex(this.loginUser.getAccount(), this.resources.getString(R.string.main_my_nologin_reg_username_regex))){
+				Log.d(TAG, "用户名格式不正确!");
+				this.account.setError(this.resources.getString(R.string.main_my_nologin_reg_username_error_formatter));
+				return false;
+			}
+			return true;
+		}
+		//2.验证密码
+		private boolean validatePassword(){
+			Log.d(TAG, "验证用户密码...");
+			//2.密码
+			this.loginUser.setPassword(StringUtils.trimToEmpty(this.password.getText().toString()));
+			//2.0验证为空
+			if(StringUtils.isBlank(this.loginUser.getPassword())){
+				Log.d(TAG, "密码为空!");
+				this.password.setError(this.resources.getString(R.string.main_my_nologin_reg_password_error_blank));
+				return false;
+			}
+			//2.1验证格式
+			if(!this.validateRegex(this.loginUser.getPassword(), this.resources.getString(R.string.main_my_nologin_reg_password_regex))){
+				Log.d(TAG, "密码格式错误!");
+				this.password.setError(this.resources.getString(R.string.main_my_nologin_reg_password_error_formatter));
+				return false;
+			}
+			return true;
+		}
+		/**
+		 * 校验输入。
+		 * @return
+		 */
+		public boolean verification(){
+			Log.d(TAG, "校验输入...");
+			boolean result = true;
+			//1.验证用户账号
+			if(!(result = this.validateAccount())){
+				return result;
+			}
+			//2.验证密码
+			if(!(result = this.validatePassword())){
+				return result;
+			}
+			//关闭键盘
+			this.closeSoftInputFromView(this.password);
+			return true;
+		}
+		//关闭键盘
+		private void closeSoftInputFromView(View v){
+			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+		}
+		/*
+		 * 文本编辑器处理。
+		 * @see android.widget.TextView.OnEditorActionListener#onEditorAction(android.widget.TextView, int, android.view.KeyEvent)
+		 */
 		@Override
-		public void handleMessage(Message msg) {
-			LoginActivity login = mActivity.get();
-			if (login.o != null && login.o.isShowing()) {
-				login.o.dismiss();
+		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			if(actionId == EditorInfo.IME_ACTION_GO){
+				this.closeSoftInputFromView(v);
+				return true;
 			}
-			switch (msg.what) {
-			case 1:
-				// 登录成功
-				//User result = (User) msg.obj;
-					//login.appContext.saveLoginInfo(result);
-					int code = 0;
-					if (login.curLoginType == LOGIN_MAIN) {
-						code = 20;
-						Intent intent = new Intent();
-						login.setResult(code, intent);
-						login.finish();
-					} else if (login.curLoginType == LOGIN_SETTING) {
-						code = 30;
-						Intent intent = new Intent();
-						login.setResult(code, intent);
-						login.finish();
-					}
-//					else if (login.curLoginType == LOGIN_POST_PUB) {
-//						Intent intent = new Intent(login,
-//								ForumPostPubActivity.class);
-//						login.startActivity(intent);
-//						login.finish();
-//					} 
-					else if (login.curLoginType == LOGIN_POST_REPLY) {
-						code = 40;
-						Intent intent = new Intent();
-						login.setResult(code, intent);
-						login.finish();
-					} else {
-						// 登录之后,
-						if (login.fromClass == null) {
-							login.finish(); // 找不到类直接finish
-						} else{
-							login.startActivity();
+			if(actionId == EditorInfo.IME_ACTION_NEXT){
+				boolean result = true;
+				switch(v.getId()){
+					case R.id.login_account:{//1.用户名
+						if(result = this.validateAccount()){
+							this.closeSoftInputFromView(v);
 						}
+						break;
 					}
-					break;
-			case 0:
-				// 修改登录状态
-				//login.appContext.setLoginState(AppContext.LOGIN_FAIL);
-				ToastUtils.show(login, "登录失败 "+msg.obj);
-				break;
-			case -1:
-				// 修改登录状态
-				//login.appContext.setLoginState(AppContext.LOGIN_FAIL);
-				Toast.makeText(login, "无法连接服务器", Toast.LENGTH_SHORT).show();
-				login.showLocalLoginBtn();
-				break;
+					case R.id.login_password:{//2.密码
+						if(result = this.validatePassword()){
+							this.closeSoftInputFromView(v);
+						}
+						break;
+					}
+				}
+				return result;
 			}
+			return false;
 		}
+		
+		
 	}
-	private void showLocalLoginBtn() {
-//		User user = UserDao.findByUsername(username);
-//		if (user != null)
-//			localLoginBtn.setVisibility(View.VISIBLE);
-	}
-	private void startActivity()
-	{
-		Intent intent = new Intent(this, this.fromClass);
-		if (this.actionName != null) {
-			intent.putExtra("actionName", this.actionName);
+	/**
+	 * 异步登录处理。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月14日
+	 */
+	private class LoginUserDataAsyncTask extends AsyncTask<LoginUser, Void, Boolean>{
+		private final WeakReference<Context> refContext;
+		/**
+		 * 构造函数。
+		 * @param context
+		 */
+		public LoginUserDataAsyncTask(final Context context){
+			this.refContext = new WeakReference<Context>(context);
 		}
-		this.startActivity(intent);
-		this.finish();
-	}
-	// 初始化输入框
-	@Override
-	public void onResume() {
-		super.onResume();
-		this.usernameText.setText(share2.getString("n", ""));
-		String pwd = share2.getString("p", "");
-		this.pwdText
-				.setText(new String(Base64.decode(Base64.decode(pwd, 0), 0)));
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		if (o != null) {
-			o.dismiss();
+		/*
+		 * 后台线程处理。
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
+		@Override
+		protected Boolean doInBackground(LoginUser... params) {
+			try{
+				Log.d(TAG, "后台异步线程处理登录...");
+				Context context = this.refContext.get();
+				if(context == null){
+					handler.sendMessage("获取上下文失败!");
+					return false;
+				}
+				AppContext app = (AppContext)context.getApplicationContext();
+				if(app == null){
+					handler.sendMessage("获取应用上下文失败!");
+					return false;
+				}
+				//检查网络
+				if(!app.hasNetworkConnected()){//没有网络本地验证
+					UserAccount account = UserAccount.loadAccount(params[0].getAccount());
+					if(account == null){
+						handler.sendMessage("请检查网络!");
+						return false;
+					}
+					if(!account.validatePassword(params[0].getPassword())){
+						handler.sendMessage("密码错误!");
+						return false;
+					}
+					//设置为当前用户
+					app.changedCurrentUser(account);
+					Log.d(TAG, "设置当前用户:" + account);
+					return true;
+				}else {//网络验证用户登录
+					//提交用户登录数据
+					String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, 
+							AppConstant.APP_API_PASSWORD, "POST", AppConstant.APP_API_LOGIN_URL, params[0].toString());
+					if(StringUtils.isBlank(result)){
+						Log.d(TAG, "反馈数据为空!");
+						handler.sendMessage("服务器未响应!");
+						return false;
+					}
+					//反序列化反馈数据
+					Gson gson = new Gson();
+					Type type = new TypeToken<JSONCallback<String>>(){}.getType();
+					JSONCallback<String> callback = gson.fromJson(result, type);
+					if(callback.getSuccess()){
+						Log.d(TAG, "验证成功!");
+						//初始化用户信息
+						UserAccount account = new UserAccount(callback.getData(), params[0].getAccount());
+						account.updatePassword(params[0].getPassword());
+						//设置为当前用户
+						app.changedCurrentUser(account);
+						
+						handler.sendMessage("验证成功!");
+						return true;
+					}else {
+						Log.d(TAG, "验证失败:" + callback.getMsg());
+						handler.sendMessage(callback.getMsg());
+						return false;
+					}
+				}
+			}catch(Exception e){
+				Log.e(TAG, "处理登录异常:" + e.getMessage(), e);
+			}
+			return false;
 		}
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		return super.onKeyDown(keyCode, event);
+		/*
+		 * 前台主线处理UI
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Boolean result) {
+			 Log.d(TAG, "前台主线程处理...");
+			 //关闭等待动画
+			 waitingViewDialog.cancel();
+			 //登录成功跳转
+			 if(result){
+				 Log.d(TAG, "登录成功跳转到");
+				 //发送广播
+				 sendBroadcast(new Intent(MainMyFragment.BROADCAST_LOGIN_ACTION));
+				 //关闭activity
+				 finish();
+			 }
+		}
 	}
 }

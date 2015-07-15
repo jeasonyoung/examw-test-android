@@ -13,9 +13,7 @@ import android.widget.LinearLayout;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
-import com.examw.test.model.sync.AppRegister;
 import com.examw.test.utils.StringUtils;
-import com.examw.test.utils.ToastUtils;
 
 /**
  * 注册码
@@ -69,7 +67,7 @@ public class RegisterCodeActivity extends BaseActivity implements OnClickListene
 		code = codeText.getText().toString().trim();
 		if(StringUtils.isEmpty(code))
 		{
-			ToastUtils.show(this, "请输入注册码!");
+			//ToastUtils.show(this, "请输入注册码!");
 			return;
 		}
 		loadingLayout.setVisibility(View.VISIBLE);
@@ -114,15 +112,15 @@ public class RegisterCodeActivity extends BaseActivity implements OnClickListene
 			sync.loadingLayout.setVisibility(View.GONE);
 			switch (msg.what) {
 			case 1:
-				ToastUtils.show(sync, "注册码激活成功");
+				//ToastUtils.show(sync, "注册码激活成功");
 				//sync.appConfig.set(sync.appContext.getUsername()+"_code", sync.code);
 				sync.finish();
 				break;
 			case 0:
-				ToastUtils.show(sync, "注册码激活失败,"+msg.obj);
+				//ToastUtils.show(sync, "注册码激活失败,"+msg.obj);
 				break;
 			case -1:
-				ToastUtils.show(sync, "注册码激活异常");
+				//ToastUtils.show(sync, "注册码激活异常");
 				break;
 			}
 		}

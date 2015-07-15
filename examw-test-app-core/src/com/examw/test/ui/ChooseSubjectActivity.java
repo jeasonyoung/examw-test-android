@@ -23,14 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
-import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.adapter.SubjectListAdapter;
-import com.examw.test.app.AppConstant;
 import com.examw.test.domain.Subject;
 import com.examw.test.model.PaperRecordModel;
-import com.examw.test.utils.ToastUtils;
 
 /**
  * 科目选择
@@ -76,7 +73,7 @@ public class ChooseSubjectActivity extends BaseActivity implements OnClickListen
 					break;
 				case -1:
 					proDialog.dismiss();
-					ToastUtils.show(ChooseSubjectActivity.this, "暂无记录");
+					//ToastUtils.show(ChooseSubjectActivity.this, "暂无记录");
 					break;
 				}
 			}

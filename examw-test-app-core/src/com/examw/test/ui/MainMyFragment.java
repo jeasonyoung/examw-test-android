@@ -9,7 +9,11 @@ import com.examw.test.app.AppContext;
 import com.examw.test.app.UserAccount;
 import com.examw.test.dao.PaperDao;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,10 +36,12 @@ import android.widget.Toast;
 public class MainMyFragment extends Fragment implements AdapterView.OnItemClickListener {
 	private static final String TAG = "MainMyFragment";
 	private final MainActivity mainActivity;
-	
 	private final List<PaperDao.SubjectTotalModel> dataSource;
 	private final RecordAdapter adapter;
 	private ListView listView;
+	private ReceiveBroadCast receiveBroadCast;
+	
+	public static final String BROADCAST_LOGIN_ACTION = "com.examw.test.login_success";
 	/**
 	 * 构造函数。
 	 * @param mainActivity
@@ -45,6 +51,20 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		this.mainActivity = mainActivity;
 		this.dataSource = new ArrayList<PaperDao.SubjectTotalModel>();
 		this.adapter = new RecordAdapter(this.mainActivity, this.dataSource);
+	}
+	/*
+	 * 重载当Fragment与Activity发生关联时调用。
+	 * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
+	 */
+	@Override
+	public void onAttach(Activity activity) {
+		Log.d(TAG, "注册广播...");
+		//初始化广播接收器
+		this.receiveBroadCast = new ReceiveBroadCast();
+		//注册广播
+		activity.registerReceiver(this.receiveBroadCast, new IntentFilter(BROADCAST_LOGIN_ACTION));
+		//
+		super.onAttach(activity);
 	}
 	/*
 	 * 加载布局。
@@ -78,6 +98,15 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		//加载数据
 		new AsyncLoadTask(this.mainActivity).execute();
 	}
+	
+	@Override
+	public void onDestroyView() {
+		if(this.receiveBroadCast != null){
+			Log.d(TAG, "注销广播...");
+			this.getActivity().unregisterReceiver(this.receiveBroadCast);
+		}
+		super.onDestroyView();
+	}
 	/*
 	 * 选中行事件处理。
 	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
@@ -88,6 +117,26 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 			PaperDao.SubjectTotalModel data = this.dataSource.get(position);
 			Toast.makeText(this.mainActivity, data.toString(), Toast.LENGTH_SHORT).show();
 			///TODO:
+		}
+	}
+	/**
+	 * 接收广播处理。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月14日
+	 */
+	private class ReceiveBroadCast extends BroadcastReceiver{
+		/*
+		 * 接收广播处理。
+		 * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
+		 */
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "接收广播处理...");
+			if(mainActivity != null){
+				//加载用户信息
+				new AsyncLoadUserTask(mainActivity).execute();
+			}
 		}
 	}
 	/**
@@ -129,10 +178,11 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		@Override
 		protected void onPostExecute(UserAccount result) {
 			Log.d(TAG, "当前用户前台UI处理..." + result);
+			//加载fragment
 			MainActivity  activity = this.refMainActivity.get();
 			if(activity != null){
 				Fragment fragment = (result == null ? new MainMyNoLoginViewFragment(activity) : 
-					new MainMyUserViewFragment(activity, result));
+					new MainMyUserViewFragment(result));
 				//替换Fragment
 				activity.getSupportFragmentManager()
 				.beginTransaction()
