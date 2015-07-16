@@ -2,4 +2,4 @@
 							 {"name":"产品注册","icon":"icon_register","activity":"","status":false,"order":1},
 							 {"name":"下载试卷","icon":"icon_down","activity":"","status":true,"order":2}]},
  {"name":1,"items":[{"name":"意见反馈","icon":"icon_callback","activity":"","status":true,"order":0}]},
- {"name":2,"items":[{"name":"关于应用","icon":"icon_about","activity":"","status":true,"order":0}]}]
+ {"name":2,"items":[{"name":"关于应用","icon":"icon_about","activity":"com.examw.test.ui.AboutActivity","status":true,"order":0}]}]

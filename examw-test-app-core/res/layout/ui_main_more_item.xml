@@ -15,7 +15,6 @@
         android:paddingStart="@dimen/list_left"
         android:paddingRight="@dimen/list_right"
         android:paddingEnd="@dimen/list_right"
-        android:drawablePadding="@dimen/img_text_padding"
         android:textColor="@color/black"
         android:textSize="@dimen/fontsize_m" />
 

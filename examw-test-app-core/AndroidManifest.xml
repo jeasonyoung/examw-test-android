@@ -59,6 +59,11 @@
         <!-- 登陆界面 -->
         <activity android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
+        
+        <!-- 关于应用 -->
+        <activity android:name=".ui.AboutActivity"
+            android:screenOrientation="portrait" />
+        
          <!--
         <activity android:name=".ui.GuideActivity" 
             android:screenOrientation="portrait" />
@@ -108,8 +113,7 @@
         <activity android:name=".ui.PaperRecordActivity"
             android:screenOrientation="portrait" />
         关于应用界面 
-        <activity android:name=".ui.AboutActivity"
-            android:screenOrientation="portrait" />
+        
         隐私协议界面
         <activity android:name=".ui.PrivacyAgreementActivity"
             android:screenOrientation="portrait" />

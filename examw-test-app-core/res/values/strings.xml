@@ -84,6 +84,9 @@
     <string name="main_more_title">更多</string>
     <string name="main_more_logout">退出</string>
     
+    <!-- 关于应用 -->
+    <string name="main_more_about_title">关于应用</string>
+    
     
     
     <string name="app_name_suffix">(全国版)</string>
