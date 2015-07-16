@@ -109,8 +109,6 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 			case R.id.login_btnRegister:{//注册
 				//启动注册activity
 				this.startActivity(new Intent(this, RegisterActivity.class));
-				//关闭当前activity
-				this.finish();
 				break;
 			}
 		}
@@ -359,10 +357,10 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 			 //登录成功跳转
 			 if(result){
 				 Log.d(TAG, "登录成功跳转到");
-				 //关闭activity
-				 finish();
 				 //发送广播
 				 sendBroadcast(new Intent(MainMyFragment.BROADCAST_LOGIN_ACTION));
+				//关闭activity
+				 finish();
 			 }
 		}
 	}

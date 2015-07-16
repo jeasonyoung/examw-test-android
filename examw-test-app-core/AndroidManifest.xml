@@ -10,7 +10,7 @@
             android:anyDensity="true" />
 	
 	<!-- 支持的androidSDK版本 -->
-    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="24" />
+    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="22" />
     
     <!-- 权限申明 -->
 	<!-- 接入网络 -->

@@ -38,7 +38,7 @@
         android:scrollbars="none"
         android:visibility="visible" />
     
-     <!-- 退出登录按钮 -->
+     <!-- 退出登录按钮(默认设置不可见)-->
      <Button android:id="@+id/main_more_btnLogout"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -54,7 +54,8 @@
          android:text="@string/main_more_logout"
          android:textColor="@color/btn_pressed_selected_textcolor"
          android:textSize="@dimen/fontsize_l"
-         android:background="@drawable/btn_selected_bg"/>
+         android:background="@drawable/btn_selected_bg"
+         android:visibility="invisible"/>
      
      <!-- 占位空隙 -->
      <View android:layout_width="match_parent"

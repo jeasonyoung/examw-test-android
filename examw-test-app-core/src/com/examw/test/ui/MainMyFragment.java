@@ -4,12 +4,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.examw.test.R;
-import com.examw.test.app.AppContext;
-import com.examw.test.app.UserAccount;
-import com.examw.test.dao.PaperDao;
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +20,11 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.examw.test.R;
+import com.examw.test.app.AppContext;
+import com.examw.test.app.UserAccount;
+import com.examw.test.dao.PaperDao;
 
 /**
  * 我的Fragment。
@@ -53,20 +52,6 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		this.adapter = new RecordAdapter(this.mainActivity, this.dataSource);
 	}
 	/*
-	 * 重载当Fragment与Activity发生关联时调用。
-	 * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
-	 */
-	@Override
-	public void onAttach(Activity activity) {
-		Log.d(TAG, "注册广播...");
-		//初始化广播接收器
-		this.receiveBroadCast = new ReceiveBroadCast();
-		//注册广播
-		activity.registerReceiver(this.receiveBroadCast, new IntentFilter(BROADCAST_LOGIN_ACTION));
-		//
-		super.onAttach(activity);
-	}
-	/*
 	 * 加载布局。
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -83,6 +68,11 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		this.listView.setAdapter(this.adapter);
 		//设置行事件监听器
 		this.listView.setOnItemClickListener(this);
+		Log.d(TAG, "注册广播...");
+		//初始化广播接收器
+		this.receiveBroadCast = new ReceiveBroadCast();
+		//注册广播
+		this.mainActivity.registerReceiver(this.receiveBroadCast, new IntentFilter(BROADCAST_LOGIN_ACTION));
 		//返回
 		return view;
 	}
