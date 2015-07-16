@@ -104,6 +104,8 @@ public class MainMoreFragment extends Fragment implements AdapterView.OnItemClic
 					Log.d(TAG, "反射Activity:" + item.getActivity());
 					Class<?> cls = Class.forName(item.getActivity());
 					this.startActivity(new Intent(this.mainActivity, cls));
+					//关闭Activity
+					this.mainActivity.finish();
 				} catch (Exception e) {
 					Log.e(TAG, "反射类["+item.getActivity()+"]异常:" + e.getMessage(), e);
 					Toast.makeText(this.mainActivity, "加载["+item.getActivity()+"]异常:" + e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -6,7 +6,7 @@
     android:background="@color/grey"
     android:orientation="vertical" >
     
-     <!-- 标题 -->
+    <!-- 标题 -->
     <TextView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

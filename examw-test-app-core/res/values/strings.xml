@@ -14,6 +14,9 @@
     <!-- 取消 -->
     <string name="cancle">取消</string>
     
+    <!-- 切换产品 -->
+    <string name="main_switch_main_title">切换产品</string>
+    
     <!-- 底部菜单 -->
     <string name="main_bottom_home">首页</string>
     <string name="main_bottom_favorites">错题</string>
