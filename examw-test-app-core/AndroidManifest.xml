@@ -60,6 +60,10 @@
         <activity android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
         
+        <!-- 下载界面 -->
+        <activity android:name=".ui.DownloadActivity"
+            android:screenOrientation="portrait" />
+        
         <!-- 意见反馈 -->
         <activity android:name=".ui.FeedBackActivity"
             android:screenOrientation="portrait" />

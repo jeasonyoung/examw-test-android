@@ -101,8 +101,9 @@ public class MainMoreFragment extends Fragment implements AdapterView.OnItemClic
 			MenuItem item = this.dataSource.get(position);
 			if(item != null && StringUtils.isNotBlank(item.getActivity())){
 				try {
-					Log.d(TAG, "反射Activity:" + item.getActivity());
-					Class<?> cls = Class.forName(item.getActivity());
+					String className = this.mainActivity.getPackageName() + item.getActivity();
+					Log.d(TAG, "反射Activity:" + className);
+					Class<?> cls = Class.forName(className);
 					this.startActivity(new Intent(this.mainActivity, cls));
 					//切换产品关闭当前Activity
 					if(StringUtils.equalsIgnoreCase(item.getIcon(), "icon_switch")){

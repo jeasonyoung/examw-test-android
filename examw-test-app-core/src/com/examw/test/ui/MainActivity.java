@@ -1,11 +1,18 @@
 package com.examw.test.ui;
 
+import org.apache.commons.lang3.StringUtils;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -21,7 +28,10 @@ import com.examw.test.widget.WaitingViewDialog;
 public class MainActivity extends FragmentActivity implements RadioGroup.OnCheckedChangeListener,FragmentManager.OnBackStackChangedListener {
 	private static final  String TAG = "MainActivity";
 	private BottomMenuType menuType = BottomMenuType.None;
+	private ReceiveBroadCast receiveBroadCast;
+	
 	protected WaitingViewDialog waitingViewDialog;
+	public static final String BROADCAST_HOME_ACTION = "com.examw.test.main_home";
 	/*
 	 * 创建Activity。
 	 * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
@@ -38,10 +48,27 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
 		final RadioGroup group = (RadioGroup)this.findViewById(R.id.main_bottom_groups);
 		//添加选中事件
 		group.setOnCheckedChangeListener(this);
+		
 		//装载Fragment
-		this.createSubFragment(BottomMenuType.Home);
+		this.createSubFragment(this.menuType);
+		
 		//添加back事件处理
 		this.getSupportFragmentManager().addOnBackStackChangedListener(this);
+		
+		//注册广播处理
+		this.receiveBroadCast = new ReceiveBroadCast();
+		this.registerReceiver(this.receiveBroadCast, new IntentFilter(BROADCAST_HOME_ACTION));
+	}
+	/*
+	 * 重载销毁
+	 * @see android.support.v4.app.FragmentActivity#onDestroy()
+	 */
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "撤销广播...");
+		this.unregisterReceiver(this.receiveBroadCast);
+		
+		super.onDestroy();
 	}
 	/*
 	 * 菜单选中处理。
@@ -129,15 +156,37 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
 			.beginTransaction()
 			.addToBackStack(null)
 			.replace(R.id.main_fragment_replace, fragment)
-			.commit();
+			.commitAllowingStateLoss();
 		}
 	}
-	
 	/**
 	 * 底部菜单类型枚举。
 	 * 
 	 * @author jeasonyoung
 	 * @since 2015年7月1日
 	 */
-	private enum BottomMenuType{ None, Home, Favorites, My, More }
+	private enum BottomMenuType{  None, Home, Favorites, My, More; }
+	/**
+	 * 接收广播处理。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月14日
+	 */
+	private class ReceiveBroadCast extends BroadcastReceiver{
+		/*
+		 * 接收广播处理。
+		 * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
+		 */
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "接收广播处理...");
+			String action = intent.getAction();
+			if(StringUtils.equals(action, BROADCAST_HOME_ACTION)){
+				final RadioButton btnRadio = (RadioButton)findViewById(R.id.main_bottom_btn_home);
+				if(btnRadio != null){
+					btnRadio.setChecked(true);
+				}
+			}
+		}
+	}
 }

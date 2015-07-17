@@ -84,6 +84,11 @@
     <string name="main_more_title">更多</string>
     <string name="main_more_logout">退出</string>
     
+    <!-- 下载试卷 -->
+    <string name="main_more_download_title">下载试卷</string>
+    <string name="main_more_download_desc"><![CDATA[提示:\n \t下载最新发布的试卷...]]> </string>
+    <string name="main_more_download_btn">下载最新试卷</string>
+    
     <!-- 意见反馈 -->
     <string name="main_more_feedback_title">意见反馈</string>
     <string name="main_more_feedback_placeholder">请输入您的意见或者建议</string>
