@@ -34,9 +34,11 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 	private final PaperModel.PaperType type;
 	private final PaperDao.SubjectTotalModel subject;
 	
+	private final PaperDao paperDao;
 	private final List<PaperDao.PaperInfoModel> dataSource;
 	private final PaperAdapter adapter;
-	private PullToRefreshListView listView;
+	
+	private PullToRefreshListView pullToRefreshListView;
 	
 	private int pageIndex;
 	/**
@@ -45,12 +47,12 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 	 * @param subject
 	 * @param type
 	 */
-	public MainHomePaperPagerFragment(final MainActivity mainActivity,
-			final PaperDao.SubjectTotalModel subject, final PaperModel.PaperType type){
+	public MainHomePaperPagerFragment(final MainActivity mainActivity,final PaperDao.SubjectTotalModel subject, final PaperModel.PaperType type){
 		Log.d(TAG, "初始化－" + type);
 		this.mainActivity =  mainActivity;
 		this.subject = subject;
 		this.type = type;
+		this.paperDao = new PaperDao(this.mainActivity);
 		this.dataSource = new ArrayList<PaperDao.PaperInfoModel>();
 		this.adapter = new PaperAdapter(this.mainActivity, this.dataSource);
 	}
@@ -64,15 +66,16 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 		//加载布局文件
 		final View view = inflater.inflate(R.layout.ui_main_home_paper_viewpager, container, false);
 		//加载列表
-		this.listView = (PullToRefreshListView)view.findViewById(R.id.list_home_papers);
-		//设置数据适配器
-		this.listView.setAdapter(this.adapter);
+		this.pullToRefreshListView = (PullToRefreshListView)view.findViewById(R.id.list_home_papers);
 		//设置刷新方向
-		this.listView.setMode(PullToRefreshListView.Mode.PULL_FROM_END);
+		this.pullToRefreshListView.setMode(PullToRefreshListView.Mode.PULL_FROM_END);
 		//设置刷新监听器
-		this.listView.setOnRefreshListener(this);
+		this.pullToRefreshListView.setOnRefreshListener(this);
 		//设置数据行监听器
-		this.listView.setOnItemClickListener(this);
+		this.pullToRefreshListView.setOnItemClickListener(this);
+		//设置数据适配器
+		final ListView listView = this.pullToRefreshListView.getRefreshableView();
+		listView.setAdapter(this.adapter);
 		//返回UI。
 		return view;
 	}
@@ -85,9 +88,10 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 		super.onStart();
 		//1.开始等待动画
 		this.mainActivity.waitingViewDialog.show();
-		//2.加载数据
+		//2.设置页码
 		this.pageIndex = 0;
-		new RefreshDataTask(null).execute();
+		//3.加载数据
+		new RefreshDataTask().execute();
 	}
 	/*
 	 * 刷新数据处理
@@ -100,7 +104,7 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 		//2.刷新数据
 		this.pageIndex += 1;
 		Log.d(TAG, "刷新数据页..." + this.pageIndex);
-		new RefreshDataTask(arg).execute();
+		new RefreshDataTask().execute();
 	}
 	/*
 	 * 选中行事件处理。
@@ -121,14 +125,6 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 	 * @since 2015年7月3日
 	 */
 	private class RefreshDataTask extends AsyncTask<Void, Void, Void>{
-		private final PullToRefreshBase<?> pullToRefresh;
-		/**
-		 * 构造函数。
-		 * @param pullToRefresh
-		 */
-		public RefreshDataTask(PullToRefreshBase<?> pullToRefresh){
-			this.pullToRefresh = pullToRefresh;
-		}
 		/*
 		 * 后台线程加载数据。
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
@@ -138,11 +134,9 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 			Log.d(TAG, "后台线程加载数据页..." + pageIndex + "-" + subject.getCode() + "-" + type);
 			 try {
 				//查询数据
-				PaperDao paperDao = new PaperDao(mainActivity);
 				List<PaperDao.PaperInfoModel> list = paperDao.findPaperInfos(subject.getCode(), type, pageIndex);
 				if(list != null && list.size() > 0){
 					Log.d(TAG, "加载数据行数:" + list.size());
-					//添加到数据源
 					dataSource.addAll(list);
 				}else if(pageIndex > 0) {
 					Log.d(TAG, "没有加载到数据....");
@@ -159,18 +153,19 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 		 */
 		@Override
 		protected void onPostExecute(Void result) {
-			Log.d(TAG, "前台线程更新UI...");
-			//0.关闭等待动画
-			mainActivity.waitingViewDialog.cancel();
-			//1.通知适配器更新
-			adapter.notifyDataSetChanged();
-			//2.刷新完成
-			if(this.pullToRefresh != null){
-				pullToRefresh.onRefreshComplete();
+			try {
+				Log.d(TAG, "前台线程更新UI...");
+				//通知数据适配器
+				adapter.notifyDataSetChanged(); 
+				//刷新
+				pullToRefreshListView.onRefreshComplete();
+				//关闭等待动画
+				mainActivity.waitingViewDialog.cancel();
+			} catch (Exception e) {
+				Log.e(TAG, "更新数据发送异常:" + e.getMessage(), e);
 			}
 		}
 	}
-	
 	/**
 	 * 试卷列表数据适配器。
 	 * 

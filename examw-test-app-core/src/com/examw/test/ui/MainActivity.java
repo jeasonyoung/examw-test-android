@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -29,6 +28,7 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
 	private static final  String TAG = "MainActivity";
 	private BottomMenuType menuType = BottomMenuType.None;
 	private ReceiveBroadCast receiveBroadCast;
+	private RadioGroup group;
 	
 	protected WaitingViewDialog waitingViewDialog;
 	public static final String BROADCAST_HOME_ACTION = "com.examw.test.main_home";
@@ -45,9 +45,9 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
 		//加载布局文件
 		this.setContentView(R.layout.ui_main);
 		//加载底部菜单group
-		final RadioGroup group = (RadioGroup)this.findViewById(R.id.main_bottom_groups);
+		this.group = (RadioGroup)this.findViewById(R.id.main_bottom_groups);
 		//添加选中事件
-		group.setOnCheckedChangeListener(this);
+		this.group.setOnCheckedChangeListener(this);
 		
 		//装载Fragment
 		this.createSubFragment(this.menuType);
@@ -181,11 +181,9 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "接收广播处理...");
 			String action = intent.getAction();
-			if(StringUtils.equals(action, BROADCAST_HOME_ACTION)){
-				final RadioButton btnRadio = (RadioButton)findViewById(R.id.main_bottom_btn_home);
-				if(btnRadio != null){
-					btnRadio.setChecked(true);
-				}
+			if(StringUtils.equals(action, BROADCAST_HOME_ACTION) && group != null){
+				//选中
+				group.check(R.id.main_bottom_btn_home);
 			}
 		}
 	}

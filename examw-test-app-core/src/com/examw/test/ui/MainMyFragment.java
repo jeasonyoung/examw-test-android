@@ -4,6 +4,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -123,7 +125,8 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "接收广播处理...");
-			if(mainActivity != null){
+			String action = intent.getAction();
+			if( StringUtils.equals(action, BROADCAST_LOGIN_ACTION) && mainActivity != null){
 				//加载用户信息
 				new AsyncLoadUserTask(mainActivity).execute();
 			}
@@ -177,7 +180,7 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 				activity.getSupportFragmentManager()
 				.beginTransaction()
 				.replace(R.id.my_userinfo_replace, fragment)
-				.commit();
+				.commitAllowingStateLoss();
 			}
 		}
 	}

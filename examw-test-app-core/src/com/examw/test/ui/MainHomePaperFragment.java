@@ -35,10 +35,10 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 	private final PaperDao.SubjectTotalModel subject;
 	
 	private RadioGroup titleGroups;
-	private List<String> listTitles;
 	private ViewPager viewPaper;
-	private List<ViewSubFragmentWrapper> listViews;
-	private ViewPagerAdapter adapter;
+	
+	private final List<ViewSubFragmentWrapper> dataSource;
+	private final ViewPagerAdapter adapter;
 	
 	private final int titleNormalColor,titleCheckedColor;
 	private final float titleFontSize;
@@ -53,15 +53,17 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 		Log.d(TAG, "初始化...");
 		this.mainActivity = mainActivity;
 		this.subject = subject;
-		this.listTitles = new ArrayList<String>();
-		this.listViews = new ArrayList<ViewSubFragmentWrapper>();
-		this.adapter = new ViewPagerAdapter(this.mainActivity.getSupportFragmentManager(), this.listViews);
+		
+		//数据源
+		this.dataSource = new ArrayList<ViewSubFragmentWrapper>();
+		//初始化数据适配器
+		this.adapter = new ViewPagerAdapter(this.mainActivity.getSupportFragmentManager(), this.dataSource);
 		//加载配置颜色
 		Resources resources = this.mainActivity.getResources();
-		this.titleNormalColor = resources.getColor(R.color.grey);
+		this.titleNormalColor = resources.getColor(R.color.gray);
 		this.titleCheckedColor = resources.getColor(R.color.white);
 		//标题字体
-		this.titleFontSize = resources.getDimension(R.dimen.fontsize_m);
+		this.titleFontSize = resources.getDimension(R.dimen.fontsize_l);
 	}
 	/*
 	 * 重载UI布局
@@ -78,7 +80,7 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 		//3.试卷列表
 		this.viewPaper = (ViewPager)view.findViewById(R.id.home_paper_viewpaper);
 		//4.添加试卷适配器
-		this.viewPaper.setAdapter(null);
+		this.viewPaper.setAdapter(this.adapter);
 		//5.添加事件处理
 		this.viewPaper.setOnPageChangeListener(this);
 		//返回
@@ -116,7 +118,7 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 					}
 				}
 			}
-			if(index >= 0){
+			if(index > -1){
 				viewPaper.setCurrentItem(index);
 			}
 		}
@@ -165,19 +167,17 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 		@Override
 		protected Void doInBackground(Void... params) {
 			Log.d(TAG, "后台线程加载数据...");
-			//1.清除数据源
-			listTitles.clear();
-			listViews.clear();
-			//2.查询数据
+			//查询数据
 			if(subject != null){
 				PaperDao dao = new PaperDao(mainActivity);
 				List<PaperModel.PaperType> paperTypes = dao.findPaperTypes(subject.getCode());
 				if(paperTypes != null && paperTypes.size() > 0){
+					//清除数据源
+					dataSource.clear();
+					//
 					for(PaperModel.PaperType type : paperTypes){
-						//2-1.添加试卷类型名称
-						listTitles.add(PaperModel.loadPaperTypeName(type.getValue()));
-						//2-2.添加ViewPaperUI
-						listViews.add(new ViewSubFragmentWrapper(subject, type));
+						//添加数据源
+						dataSource.add(new ViewSubFragmentWrapper(subject, type));
 					}
 				}
 			}
@@ -190,27 +190,36 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 		@Override
 		protected void onPostExecute(Void result) {
 			Log.d(TAG, "主线程更新UI...");
-			//1.通知视图适配器更新
-			viewPaper.setAdapter(adapter);
-			//2.指定当前默认视图
-			viewPaper.setCurrentItem(0);
-			//3.清空
-			titleGroups.removeAllViews();
-			//4.标题处理
-			int count = 0;
-			if(listTitles != null && (count = listTitles.size()) > 0){
-				for(int i = 0; i < count; i++){
+			
+			//RadioGroup集合处理
+			if(titleGroups != null && mainActivity != null){
+				//3.通知数据适配器更新
+				adapter.notifyDataSetChanged();
+				//1.清空集合选项
+				titleGroups.removeAllViews();
+				//2.添加标题
+				if(dataSource != null && dataSource.size() > 0){
+					int index = 0,firstBtnId = -1;
 					//
-					RadioButton btn = new RadioButton(mainActivity);
-					btn.setButtonDrawable(android.R.color.transparent);
-					if(i == 0){
-						btn.setTextColor(titleCheckedColor);
-					}else {
+					for(ViewSubFragmentWrapper wrapper : dataSource){
+						if(wrapper == null)continue;
+						//创建选项
+						RadioButton btn = new RadioButton(mainActivity);
+						btn.setButtonDrawable(android.R.color.transparent);
 						btn.setTextColor(titleNormalColor);
+						btn.setTextSize(titleFontSize);
+						btn.setText(wrapper.getType().getName() + "  ");
+						//添加到集合
+						titleGroups.addView(btn,LinearLayout.LayoutParams.WRAP_CONTENT , LinearLayout.LayoutParams.WRAP_CONTENT);
+						if(index == 0){
+							firstBtnId = btn.getId();
+						}
+						index ++;
 					}
-					btn.setTextSize(titleFontSize);
-					btn.setText(listTitles.get(i));
-					titleGroups.addView(btn, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+					//4.设置选中
+					if(firstBtnId > -1){
+						titleGroups.check(firstBtnId);
+					}
 				}
 			}
 			//5.关闭等待动画
@@ -230,7 +239,7 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 		 * @param fm
 		 * @param listFragments
 		 */
-		public ViewPagerAdapter(FragmentManager fm, List<ViewSubFragmentWrapper> listViews) {
+		public ViewPagerAdapter(final FragmentManager fm, final List<ViewSubFragmentWrapper> listViews) {
 			super(fm);
 			this.list = listViews;
 			Log.d(TAG, "初始化ViewPagerAdpter适配器...");
@@ -243,10 +252,7 @@ public class MainHomePaperFragment extends Fragment implements RadioGroup.OnChec
 		public Fragment getItem(int position) {
 			Log.d(TAG, "加载fragment-pos=" + position);
 			ViewSubFragmentWrapper wrapper = this.list.get(position);
-			if(wrapper != null){
-				return new MainHomePaperPagerFragment(mainActivity, wrapper.getSubject(), wrapper.getType());
-			}
-			return null;
+			return new MainHomePaperPagerFragment(mainActivity, wrapper.getSubject(), wrapper.getType());
 		}
 		/*
 		 * 重载。

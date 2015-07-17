@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.dao.DownloadDao;
@@ -43,9 +44,18 @@ public class DownloadActivity extends Activity implements View.OnClickListener{
 		this.waitingViewDialog = new WaitingViewDialog(this);
 		//初始化消息处理
 		this.msgHandler = new MsgHandler(this);
+		
+		//返回按钮
+		final Button btnBack = (Button)this.findViewById(R.id.btn_goback);
+		btnBack.setOnClickListener(this);
+		
+		//标题
+		final TextView tvTitle = (TextView)this.findViewById(R.id.title);
+		tvTitle.setText(this.getResources().getString(R.string.main_more_download_title));
+		
 		//下载按钮
-		final Button btn = (Button)this.findViewById(R.id.more_download_btn);
-		btn.setOnClickListener(this);
+		final Button btnDownload = (Button)this.findViewById(R.id.more_download_btn);
+		btnDownload.setOnClickListener(this);
 	}
 	/*
 	 * 按钮事件处理。
@@ -53,11 +63,23 @@ public class DownloadActivity extends Activity implements View.OnClickListener{
 	 */
 	@Override
 	public void onClick(View v) {
-		Log.d(TAG, "按钮事件处理..." + v);
-		//开启等待动画
-		this.waitingViewDialog.show();
-		//下载试卷数据
-		new DownloadPapersAsyncTask(this).execute();
+		Log.d(TAG, "按钮事件处理...");
+		switch(v.getId()){
+			case R.id.btn_goback:{//返回处理
+				Log.d(TAG, "返回按钮处理...");
+				//关闭
+				this.finish();
+				break;
+			}
+			case R.id.more_download_btn:{//下载处理
+				Log.d(TAG, "下载按钮处理...");
+				//开启等待动画
+				this.waitingViewDialog.show();
+				//下载试卷数据
+				new DownloadPapersAsyncTask(this).execute();
+				break;
+			}
+		}
 	}
 	/**
 	 * 下载试卷异步任务。
