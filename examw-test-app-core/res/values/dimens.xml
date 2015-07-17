@@ -45,6 +45,8 @@
     <dimen name="fontsize_m">14.0sp</dimen>
     <dimen name="fontsize_s">12.0sp</dimen>
     
+    <!-- 意见反馈最大长度 -->
+    <integer name="feedback_max_length">1000</integer>
     
     
     

@@ -60,6 +60,10 @@
         <activity android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
         
+        <!-- 意见反馈 -->
+        <activity android:name=".ui.FeedBackActivity"
+            android:screenOrientation="portrait" />
+        
         <!-- 关于应用 -->
         <activity android:name=".ui.AboutActivity"
             android:screenOrientation="portrait" />
@@ -124,8 +128,7 @@
         <activity android:name=".ui.SyncActivity"
             android:screenOrientation="portrait" />
         意见界面
-        <activity android:name=".ui.FeedBackActivity"
-            android:screenOrientation="portrait" />
+        
         数据导入界面
         <activity android:name=".ui.ImportDataActivity"
             android:screenOrientation="portrait" />

@@ -84,6 +84,12 @@
     <string name="main_more_title">更多</string>
     <string name="main_more_logout">退出</string>
     
+    <!-- 意见反馈 -->
+    <string name="main_more_feedback_title">意见反馈</string>
+    <string name="main_more_feedback_placeholder">请输入您的意见或者建议</string>
+    <string name="main_more_feedback_count">已输入:</string>
+    <string name="main_more_feedback_btn">提交</string>
+    
     <!-- 关于应用 -->
     <string name="main_more_about_title">关于应用</string>
     
