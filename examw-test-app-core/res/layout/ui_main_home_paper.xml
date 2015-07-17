@@ -6,7 +6,7 @@
     android:background="@color/grey"
     android:orientation="vertical" >
     
-    <!-- 试卷类型标题布局 -->
+     <!-- 试卷类型标题布局 -->
     <RadioGroup android:id="@+id/home_paper_titlegroups"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
