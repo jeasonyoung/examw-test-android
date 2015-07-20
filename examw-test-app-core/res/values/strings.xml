@@ -98,6 +98,15 @@
     <!-- 关于应用 -->
     <string name="main_more_about_title">关于应用</string>
     
+    <!-- 试卷详细 -->
+    <string name="main_paperinfo_title">试卷详情</string>
+    <string name="main_paperinfo_btn_start">开始考试</string>
+    <string name="main_paperinfo_btn_continue">继续考试</string>
+    <string name="main_paperinfo_btn_reset">重新开始</string>
+    <string name="main_paperinfo_btn_review">查看成绩</string>
+    
+    
+    
     
     
     <string name="app_name_suffix">(全国版)</string>

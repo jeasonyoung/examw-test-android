@@ -52,6 +52,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         
+        <!-- 试卷信息界面 -->
+        <activity android:name=".ui.PaperInfoActivity"
+           android:screenOrientation="portrait" />
+        
         <!-- 注册界面 -->
         <activity android:name=".ui.RegisterActivity"
             android:screenOrientation="portrait" />
@@ -72,6 +76,8 @@
         <activity android:name=".ui.AboutActivity"
             android:screenOrientation="portrait" />
         
+        
+        
          <!--
         <activity android:name=".ui.GuideActivity" 
             android:screenOrientation="portrait" />
@@ -85,8 +91,7 @@
         <activity android:name=".ui.SimulateActivity"
             android:screenOrientation="portrait" />
          试卷介绍页面 
-        <activity android:name=".ui.PaperInfoActivity"
-            android:screenOrientation="portrait" />
+       
         试卷考试界面
          <activity android:name=".ui.PaperDoPaperActivity"
             android:screenOrientation="portrait" />

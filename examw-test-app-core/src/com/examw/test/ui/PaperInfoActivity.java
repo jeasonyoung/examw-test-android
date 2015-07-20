@@ -1,224 +1,259 @@
 package com.examw.test.ui;
 
-import java.lang.ref.WeakReference;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao;
-import com.examw.test.model.PaperPreview;
+import com.examw.test.model.PaperModel;
 import com.examw.test.model.PaperRecordModel;
-import com.examw.test.model.StructureInfo;
-import com.examw.test.utils.StringUtils;
+import com.examw.test.widget.WaitingViewDialog;
 
 /**
- * 试卷信息页
- * @author fengwei.
- * @since 2014年11月28日 下午5:13:13.
+ * 试卷详情。
+ * 
+ * @author jeasonyoung
+ * @since 2015年7月18日
  */
-public class PaperInfoActivity extends BaseActivity implements OnClickListener {
-	private LinearLayout ruleInfo,loading;
-	private TextView totalNum, ruleSize, paperScore, paperTime;
-	private Button startBtn;
-	private Button restarBtn;
-	private String paperId;
-	private Handler handler;
-	private String username;
-	private PaperRecordModel record;
-	private PaperPreview paper;
-	private AppContext appContext;
-	private List<StructureInfo> ruleList;
+public class PaperInfoActivity extends Activity implements View.OnClickListener {
+	private static final String TAG = "PaperInfoActivity";
+	private WaitingViewDialog waitingViewDialog;
+	
+	private TextView tvTitle,tvSubject,tvArea,tvType,tvYear,tvTotal,tvItems,tvTimes;
+	private Button btnStart,btnContinue,btnRest,btnReview;
+	
+	public static final String INTENT_PAPERID_KEY = "paperId";
+	public static final String INTENT_SUBJECTNAME_KEY = "subjectName";
+	/*
+	 * 重载创建。
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG, "重载创建...");
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.ui_paper_info);
-		initViews();
-		initViewData();
+		//加载布局
+		this.setContentView(R.layout.ui_main_paperinfo);
+		
+		//初始化等待动画
+		this.waitingViewDialog = new WaitingViewDialog(this);
+		
+		//返回按钮
+		final Button btnBack = (Button)this.findViewById(R.id.btn_goback);
+		btnBack.setOnClickListener(this);
+		//标题
+		final TextView tvTitle = (TextView)this.findViewById(R.id.title);
+		tvTitle.setText(this.getResources().getString(R.string.main_paperinfo_title));
+		//加载控件
+		//开始考试按钮
+		this.btnStart = (Button)this.findViewById(R.id.main_paperinfo_btn_start);
+		this.btnStart.setOnClickListener(this);
+		//继续考试按钮
+		this.btnContinue = (Button)this.findViewById(R.id.main_paperinfo_btn_continue);
+		this.btnContinue.setOnClickListener(this);
+		//重新开始按钮
+		this.btnRest = (Button)this.findViewById(R.id.main_paperinfo_btn_rest);
+		this.btnRest.setOnClickListener(this);
+		//查看成绩按钮
+		this.btnReview = (Button)this.findViewById(R.id.main_paperinfo_btn_review);
+		this.btnReview.setOnClickListener(this);
+		
+		//1.试卷标题
+		this.tvTitle = (TextView)this.findViewById(R.id.main_paperinfo_title);
+		//2.所属科目
+		this.tvSubject = (TextView)this.findViewById(R.id.main_paperinfo_subject);
+		//3.所属地区
+		this.tvArea = (TextView)this.findViewById(R.id.main_paperinfo_area);
+		//4.试卷类型
+		this.tvType = (TextView)this.findViewById(R.id.main_paperinfo_type);
+		//5.使用年份
+		this.tvYear = (TextView)this.findViewById(R.id.main_paperinfo_year);
+		//6.总分
+		this.tvTotal = (TextView)this.findViewById(R.id.main_paperinfo_totals);
+		//7.试题数
+		this.tvItems = (TextView)this.findViewById(R.id.main_paperinfo_items);
+		//8.时间
+		this.tvTimes = (TextView)this.findViewById(R.id.main_paperinfo_times);
 	}
-
-	private void initViews() {
-		this.ruleSize = (TextView) this.findViewById(R.id.rulesize);
-		this.totalNum = (TextView) this.findViewById(R.id.questionNumTotal);
-		this.paperScore = (TextView) this.findViewById(R.id.paperscore);
-		this.paperTime = (TextView) this.findViewById(R.id.papertime);
-		this.ruleInfo = (LinearLayout) this.findViewById(R.id.ruleInfoLayout);
-		this.startBtn = (Button) this.findViewById(R.id.btn_pratice);
-		this.restarBtn = (Button) this.findViewById(R.id.btn_restart);
-		this.loading = (LinearLayout) this.findViewById(R.id.loadingLayout);
-		this.findViewById(R.id.btn_goback).setOnClickListener(this);
-		this.startBtn.setOnClickListener(this);
-		this.restarBtn.setOnClickListener(this);
-		((TextView) findViewById(R.id.title)).setText("试卷详情");
-	}
-
-	private void initViewData() {
+	/*
+	 * 加载数据。
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		Log.d(TAG, "加载数据...");
+		super.onStart();
+		//启动等待动画
+		this.waitingViewDialog.show();
+		//加载数据
 		Intent intent = this.getIntent();
-		paperId = intent.getStringExtra("paperId");
-		appContext = (AppContext) getApplication();
-		// //恢复登录的状态，
-//		appContext.recoverLoginStatus();
-		//username = appContext.getUsername();
-		loading.setVisibility(View.VISIBLE);
-		handler = new MyHandler(this);
-		// 开线程 findRuleList
-		new Thread() {
-			public void run() {
-				/**
-				 * 先去数据库中查询
-				 */
-//				String content = PaperDao.findPaperContent(paperId,username);
-//				record = PaperRecordDao.findLastPaperRecord(paperId, username,false);
-//				if(StringUtils.isEmpty(content))
-//				{
-//					try{
-//						//content = ApiClient.loadPaperContent(appContext,paperId);
-//						PaperDao.updatePaperContent(paperId, content,username);
-//					}catch(Exception e)
-//					{
-//						e.printStackTrace();
-//						handler.sendEmptyMessage(-1);
-//					}
-//				}
-				//paper = GsonUtil.getGson().fromJson(content, PaperPreview.class);
-				handler.sendEmptyMessage(1);
-			};
-		}.start();
+		if(intent != null){
+			new LoadPaperAsyncTask(intent.getStringExtra(INTENT_SUBJECTNAME_KEY)).execute(intent.getStringExtra(INTENT_PAPERID_KEY));
+		}
 	}
-
+	/*
+	 * 按钮点击事件处理。
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btn_goback:
-			this.finish();
-			return;
-		case R.id.btn_pratice:	//继续考试,查看成绩,开始考试
-			gotoDoExamActivity();
-			return;
-		case R.id.btn_restart:	//重新开始
-			restart();
-			return;
-		}
-	}
-	
-	/**
-	 * 重新开始
-	 */
-	private void restart() {
-		Intent mIntent = new Intent(this, PaperDoPaperActivity.class);
-		//mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
-		mIntent.putExtra("paperId", record.getPaperId());
-		this.startActivity(mIntent);
-		this.finish();
-	}
-
-	private void gotoDoExamActivity() {
-		Intent intent = null;
-//		if(record!=null && AppConstant.STATUS_DONE.equals(record.getStatus()))	//已经交卷
-//		{
-//			intent = new Intent(this, AnswerCardActivity.class);
-//			intent.putExtra("paperId", paper.getId());
-//			//intent.putExtra("ruleListJson", GsonUtil.objectToJson(ruleList));
-//			intent.putExtra("trueOfFalse", record.getTorf());
-//			intent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
-//			intent.putExtra("paperScore", paper.getScore().doubleValue());
-//			intent.putExtra("paperTime", paper.getTime());
-//			intent.putExtra("paperType", paper.getType());
-//			intent.putExtra("username", username);
-//			intent.putExtra("useTime", record.getUsedTime()%60==0?record.getUsedTime()/60:record.getUsedTime()/60+1);
-//			intent.putExtra("userScore", record.getScore()); // 本次得分
-//		}else{
-//			intent = new Intent(this, PaperDoPaperActivity.class);
-//			intent.putExtra("paperId", paper.getId());
-//			intent.putExtra("action", AppConstant.ACTION_DO_EXAM);
-//		}
-		this.startActivity(intent);
-		this.finish(); // 结束生命
-	}
-
-	static class MyHandler extends Handler {
-		WeakReference<PaperInfoActivity> mActivity;
-
-		MyHandler(PaperInfoActivity activity) {
-			mActivity = new WeakReference<PaperInfoActivity>(activity);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			PaperInfoActivity theActivity = mActivity.get();
-			switch (msg.what) {
-			case 1:
-				theActivity.ruleList = theActivity.paper.getStructures();
-				if (theActivity.ruleList.size() == 0) {
-					Toast.makeText(theActivity, "暂时没有试题数据", Toast.LENGTH_SHORT)
-							.show();
-				} else {
-					theActivity.initTextView(theActivity.ruleList);
-				}
-				theActivity.loading.setVisibility(View.GONE);
+		Log.d(TAG, "按钮点击事件处理...");
+		switch(v.getId()){
+			case R.id.btn_goback:{
+				Log.d(TAG, "返回按钮处理...");
+				this.finish();
 				break;
-			case -2:
-//				Toast.makeText(theActivity,
-//						//((AppException) msg.obj).getMessage(),
-//						Toast.LENGTH_SHORT).show();
-				theActivity.loading.setVisibility(View.GONE);
+			}
+			case R.id.main_paperinfo_btn_start:{//开始
+				Toast.makeText(this, "开始", Toast.LENGTH_SHORT).show();
 				break;
-			case -1:
-				// 连不上,
-				Toast.makeText(theActivity, "连不上服务器", Toast.LENGTH_SHORT)
-						.show();
-				theActivity.loading.setVisibility(View.GONE);
+			}
+			case R.id.main_paperinfo_btn_continue:{//继续
+				Toast.makeText(this, "继续", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			case R.id.main_paperinfo_btn_rest:{//重新开始
+				Toast.makeText(this, "重新开始", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			case R.id.main_paperinfo_btn_review:{//查看成绩
+				Toast.makeText(this, "查看成绩", Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
 	}
-	
-	private void initTextView(List<StructureInfo> rules) {
-		((TextView) this.findViewById(R.id.papertitle)).setText(paper.getName());
-		int length = rules.size();
-		this.ruleSize.setText(length + "");
-		//每日一练,没有总分和时间
-//		if(paper.getType().equals(AppConstant.PAPER_TYPE_DAILY))
-//		{
-//			this.findViewById(R.id.scoreTimeLayout).setVisibility(View.GONE);
-//		}else{
-//			this.paperScore.setText(paper.getScore() + "");
-//			this.paperTime.setText(paper.getTime() + "");
-//		}
-//		if (record != null && AppConstant.STATUS_NONE.equals(record.getStatus())) {
-//			this.startBtn.setText("继续考试");
-//		} else if (record != null && AppConstant.STATUS_DONE.equals(record.getStatus())) {
-//			this.startBtn.setText("查看成绩");
-//		} else {
-//			this.startBtn.setText("开始考试");
-//			this.restarBtn.setVisibility(View.GONE);
-//		}
-		this.totalNum.setText(paper.getTotal()+"");
-		for (int i = 0; i < length; i++) {
-			StructureInfo r = rules.get(i);
-			View v = LayoutInflater.from(this).inflate(R.layout.item_structure_info,null);
-			TextView ruleTitle = (TextView) v.findViewById(R.id.ruleTitle);
-			ruleTitle.setText("第" + (i + 1) + "大题 " + r.getTitle());
-			TextView ruleTitleInfo = (TextView) v.findViewById(R.id.ruleTitleInfo);
-			ruleTitleInfo.setText("说明:" + r.getDescription());
-			r.setItems(null);
-			this.ruleInfo.addView(v, i);
+	/**
+	 * 异步加载数据。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月18日
+	 */
+	private class LoadPaperAsyncTask extends AsyncTask<String, Void, Object[]>{
+		private final String subjectName;
+		/**
+		 * 构造函数。
+		 * @param subjectName
+		 */
+		public LoadPaperAsyncTask(String subjectName){
+			this.subjectName = subjectName;
 		}
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
+		/*
+		 * 后台线程加载数据。
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
+		@Override
+		protected Object[] doInBackground(String... params) {
+			try {
+				Log.d(TAG, "后台线程加载试卷数据..." + params[0]);
+				if(StringUtils.isNotEmpty(params[0])){
+					PaperDao paperDao = new PaperDao(PaperInfoActivity.this);
+					//加载试卷
+					PaperModel paperModel = paperDao.loadPaper(params[0]);
+					//加载试卷记录
+					PaperRecordModel recordModel = paperDao.loadNewsRecord(params[0]);
+					//返回数据
+					return new Object[]{ paperModel, recordModel };
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "加载数据发生异常:" + e.getMessage(), e);
+			}
+			return null;
+		}
+		/*
+		 * 前台主线程处理
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Object[] result) {
+			Log.d(TAG, "前台主线程处理...");
+			if(result != null){
+				PaperRecordModel recordModel = (PaperRecordModel)result[1];
+				//试卷记录
+				if(recordModel == null){//没有做题记录
+					btnStart.setVisibility(View.VISIBLE);
+					ViewGroup.LayoutParams params = btnStart.getLayoutParams();
+					params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+					btnStart.setLayoutParams(params);
+					
+					btnContinue.setVisibility(View.GONE);
+					btnRest.setVisibility(View.GONE);
+					btnReview.setVisibility(View.GONE);
+				}else if(recordModel.isStatus()) {//试卷已做完
+					btnStart.setVisibility(View.VISIBLE);
+					ViewGroup.LayoutParams params = btnStart.getLayoutParams();
+					params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+					btnStart.setLayoutParams(params);
+					btnContinue.setVisibility(View.GONE);
+					btnRest.setVisibility(View.GONE);
+					btnReview.setVisibility(View.VISIBLE);
+				}else {//试卷未做完
+					btnStart.setVisibility(View.GONE);
+					btnContinue.setVisibility(View.VISIBLE);
+					btnRest.setVisibility(View.VISIBLE);
+					btnReview.setVisibility(View.GONE);
+				}
+				//当前试卷信息
+				PaperModel model = (PaperModel)result[0];
+				if(model != null){
+					//1.试卷标题
+					tvTitle.setText(model.getName());
+					//2.所属科目
+					if(StringUtils.isNotBlank(this.subjectName)){
+						tvSubject.setText("所属科目:" + StringUtils.trimToEmpty(this.subjectName));
+					}else {
+						tvSubject.setVisibility(View.GONE);
+					}
+					//3.所属地区
+					if(StringUtils.isNotBlank(model.getAreaName())){
+						tvArea.setText("所属地区:" + model.getAreaName());
+					}else {
+						tvArea.setVisibility(View.GONE);
+					}
+					//4.试卷类型
+					if(model.getType() > 0){
+						tvType.setText("试卷类型:" +PaperModel.loadPaperTypeName(model.getType()));
+					}else {
+						tvType.setVisibility(View.GONE);
+					}
+					//5.使用年份
+					if(model.getYear() != null && model.getYear() > 0){
+						tvYear.setText("使用年份:" + String.valueOf(model.getYear()));
+					}else {
+						tvYear.setVisibility(View.GONE);
+					}
+					//6.总分
+					if(model.getScore() != null && model.getScore() > 0){
+						tvTotal.setText("总分:" + model.getScore() + " 分");
+					}else {
+						tvTotal.setVisibility(View.GONE);
+					}
+					//7.试题数
+					if(model.getTotal() != null){
+						tvItems.setText("总题数:" + model.getTotal() + " 题");
+					}else {
+						tvItems.setVisibility(View.GONE);
+					}
+					//8.时间
+					if(model.getTime() != null){
+						tvTimes.setText("时长:" + String.valueOf(model.getTime()) + " (分钟)");
+					}else {
+						tvTimes.setVisibility(View.GONE);
+					}
+				}
+			}
+			//关闭等待动画
+			waitingViewDialog.cancel();
+		}
 	}
 }

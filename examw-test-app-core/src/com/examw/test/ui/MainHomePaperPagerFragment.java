@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.dao.PaperDao;
@@ -115,8 +115,14 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 		Log.d(TAG, "选中数据行..." + position);
 		if(this.dataSource.size() > position - 1){
 			PaperDao.PaperInfoModel data = this.dataSource.get(position - 1);
-			
-			Toast.makeText(this.mainActivity, "选中行["+position+"]数据:" + data, Toast.LENGTH_SHORT).show();
+			if(data != null){
+				//初始化意图
+				Intent intent = new Intent(this.mainActivity, PaperInfoActivity.class);
+				intent.putExtra(PaperInfoActivity.INTENT_PAPERID_KEY, data.getId());
+				intent.putExtra(PaperInfoActivity.INTENT_SUBJECTNAME_KEY, data.getSubjectName());
+				//开启
+				this.startActivity(intent);
+			}
 		}
 	}
 	/**
@@ -124,20 +130,20 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 	 * @author jeasonyoung
 	 * @since 2015年7月3日
 	 */
-	private class RefreshDataTask extends AsyncTask<Void, Void, Void>{
+	private class RefreshDataTask extends AsyncTask<Void, Void, List<PaperDao.PaperInfoModel>>{
 		/*
 		 * 后台线程加载数据。
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected List<PaperDao.PaperInfoModel> doInBackground(Void... params) {
 			Log.d(TAG, "后台线程加载数据页..." + pageIndex + "-" + subject.getCode() + "-" + type);
 			 try {
 				//查询数据
 				List<PaperDao.PaperInfoModel> list = paperDao.findPaperInfos(subject.getCode(), type, pageIndex);
 				if(list != null && list.size() > 0){
 					Log.d(TAG, "加载数据行数:" + list.size());
-					dataSource.addAll(list);
+					return list;
 				}else if(pageIndex > 0) {
 					Log.d(TAG, "没有加载到数据....");
 					pageIndex -= 1;
@@ -152,13 +158,17 @@ public class MainHomePaperPagerFragment  extends Fragment implements PullToRefre
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(List<PaperDao.PaperInfoModel> result) {
 			try {
 				Log.d(TAG, "前台线程更新UI...");
-				//通知数据适配器
-				adapter.notifyDataSetChanged(); 
-				//刷新
-				pullToRefreshListView.onRefreshComplete();
+				if(result != null){
+					//添加数据
+					dataSource.addAll(result);
+					//通知数据适配器
+					adapter.notifyDataSetChanged(); 
+					//刷新
+					pullToRefreshListView.onRefreshComplete();
+				}
 				//关闭等待动画
 				mainActivity.waitingViewDialog.cancel();
 			} catch (Exception e) {
