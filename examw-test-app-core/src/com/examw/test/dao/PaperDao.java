@@ -1190,7 +1190,18 @@ public class PaperDao {
 	 * @since 2015年7月2日
 	 */
 	public enum ItemStatus{
-		None(0),Right(1),Wrong(2);
+		/**
+		 * 未做。
+		 */
+		None(0),
+		/**
+		 * 做对。
+		 */
+		Right(1),
+		/**
+		 * 做错。
+		 */
+		Wrong(2);
 		private int value;
 		private ItemStatus(int value){
 			this.value = value;

@@ -24,8 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.app.AppConstant;
-import com.examw.test.model.StructureItemInfo;
 import com.examw.test.ui.BaseActivity;
 import com.examw.test.ui.PaperDoPaperActivity;
 import com.examw.test.utils.StringUtils;
@@ -42,7 +40,7 @@ public class QuestionAdapter extends BaseAdapter {
 //	private static final String TAG = "QuestionAdatper";
 	private Context context;
 	private PaperDoPaperActivity activity2;
-	private ArrayList<StructureItemInfo> questionList;
+	private ArrayList<?> questionList;
 	private ContentViewHolder contentHolder;
 	// 图片保存目录
 //	private String imageSavePath;
@@ -52,7 +50,7 @@ public class QuestionAdapter extends BaseAdapter {
 	private static ShowAnswerListener showAnswerLinsener;
 
 	public QuestionAdapter(Context context, BaseActivity activity,
-			ArrayList<StructureItemInfo> questionList, String username,
+			ArrayList<?> questionList, String username,
 			String paperid) {
 		this.context = context;
 		this.pref = context.getSharedPreferences("wdkaoshi", 0);
@@ -95,7 +93,7 @@ public class QuestionAdapter extends BaseAdapter {
 			action = activity2.getAction();
 		}
 		float size = this.pref.getFloat("fontsize", 16.0f);
-		StructureItemInfo currentQuestion = questionList.get(position); // 当前的题目
+		//StructureItemInfo currentQuestion = questionList.get(position); // 当前的题目
 		if (v == null) {
 			v = LayoutInflater.from(context).inflate(R.layout.single_question,parent, false);
 			contentHolder = new ContentViewHolder();
@@ -135,55 +133,55 @@ public class QuestionAdapter extends BaseAdapter {
 		//设置TAG
 		v.setTag(R.id.tag_second, answerHolder);
 		// holder.scrollView.fullScroll(33); //滑动到最开始?
-		String answer = currentQuestion.getUserAnswer(); // 学员的答案
-		Integer type = currentQuestion.getType();
-		contentHolder.modeLayout4.setVisibility(View.GONE);
-		if (currentQuestion.isChoose()) { // 选择题
-			contentHolder.modeLayout.setVisibility(View.VISIBLE);
-			TreeSet<StructureItemInfo> children= new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
-			// 显示图片
-			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
-			if (contentHolder.examOption.getChildCount() > children.size() - 1) {
-				for (int j = children.size() - 1; j < contentHolder.examOption
-						.getChildCount(); j++) {
-					contentHolder.examOption.removeViewAt(j);
-				}
-			}
-			int i = 1;
-			for (StructureItemInfo optionItem:children) {
-				int viewCount = contentHolder.examOption.getChildCount();
-				OptionLayout option;
-				if (i > viewCount) {
-					option = new OptionLayout(context, null);
-					option.setId(i);
-					option.setFontColor(context.getResources().getColor(
-							R.color.black));
-					option.setFontSize(size);
-					contentHolder.examOption.addView(option, i - 1);
-				}
-				option = (OptionLayout) contentHolder.examOption
-						.getChildAt(i - 1);
-				option.resetColor();
-				option.setFontSize(size);
-				if(optionItem.getContent().matches("[A-Z]{1}[.][\\W\\w]*"))
-					option.setText((char) (64 + i) + "．" + optionItem.getContent().substring(2));
-				else
-					option.setText((char) (64 + i) + "．" + optionItem.getContent());
-				option.setValue(optionItem.getId());
-//				if (type.equals(AppConstant.ITEM_TYPE_SINGLE)) {
-//					option.setButtonDrawable(R.drawable.radio_button);
-//					option.setType(OptionLayout.RADIO_BUTTON);
-//				} else {
-//					option.setButtonDrawable(R.drawable.checkbox_button);
-//					option.setType(OptionLayout.CHECK_BOX);
+//		String answer = currentQuestion.getUserAnswer(); // 学员的答案
+//		Integer type = currentQuestion.getType();
+//		contentHolder.modeLayout4.setVisibility(View.GONE);
+//		if (currentQuestion.isChoose()) { // 选择题
+//			contentHolder.modeLayout.setVisibility(View.VISIBLE);
+//			TreeSet<StructureItemInfo> children= new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
+//			// 显示图片
+//			contentHolder.examContent.setText(position + 1 + "、"+currentQuestion.getContent());
+//			if (contentHolder.examOption.getChildCount() > children.size() - 1) {
+//				for (int j = children.size() - 1; j < contentHolder.examOption
+//						.getChildCount(); j++) {
+//					contentHolder.examOption.removeViewAt(j);
 //				}
-				if (answer != null && answer.indexOf(optionItem.getId()) != -1) {
-					option.setChecked(true);
-				}
-				option.setOnClickListener(contentHolder.checkBoxListener);
-				i++;
-			}
-		}
+//			}
+//			int i = 1;
+//			for (StructureItemInfo optionItem:children) {
+//				int viewCount = contentHolder.examOption.getChildCount();
+//				OptionLayout option;
+//				if (i > viewCount) {
+//					option = new OptionLayout(context, null);
+//					option.setId(i);
+//					option.setFontColor(context.getResources().getColor(
+//							R.color.black));
+//					option.setFontSize(size);
+//					contentHolder.examOption.addView(option, i - 1);
+//				}
+//				option = (OptionLayout) contentHolder.examOption
+//						.getChildAt(i - 1);
+//				option.resetColor();
+//				option.setFontSize(size);
+//				if(optionItem.getContent().matches("[A-Z]{1}[.][\\W\\w]*"))
+//					option.setText((char) (64 + i) + "．" + optionItem.getContent().substring(2));
+//				else
+//					option.setText((char) (64 + i) + "．" + optionItem.getContent());
+//				option.setValue(optionItem.getId());
+////				if (type.equals(AppConstant.ITEM_TYPE_SINGLE)) {
+////					option.setButtonDrawable(R.drawable.radio_button);
+////					option.setType(OptionLayout.RADIO_BUTTON);
+////				} else {
+////					option.setButtonDrawable(R.drawable.checkbox_button);
+////					option.setType(OptionLayout.CHECK_BOX);
+////				}
+//				if (answer != null && answer.indexOf(optionItem.getId()) != -1) {
+//					option.setChecked(true);
+//				}
+//				option.setOnClickListener(contentHolder.checkBoxListener);
+//				i++;
+//			}
+	//	}
 //		else if (type.equals(AppConstant.ITEM_TYPE_JUDGE)) { // 判断题
 //			contentHolder.modeLayout.setVisibility(View.VISIBLE);
 //			contentHolder.modeLayout4.setVisibility(View.GONE);
@@ -301,10 +299,10 @@ public class QuestionAdapter extends BaseAdapter {
 //				contentHolder.showAnswerBtn.setVisibility(View.GONE);
 //				// 禁用选择
 	//}
-			showAnswer(answerHolder, currentQuestion, answer);
+			//showAnswer(answerHolder, currentQuestion, answer);
 	//	}
 		//设置字体
-		setFontSize(answerHolder, size, v);
+		//setFontSize(answerHolder, size, v);
 		return v;
 	}
 
@@ -365,72 +363,72 @@ public class QuestionAdapter extends BaseAdapter {
 		answerHolder.answerStr2.setTextSize(size);
 	}
 	// 显示答案
-	public void showAnswer(AnswerViewHolder holder,StructureItemInfo currentQuestion, String userAnswer) {
-		String trueAnswer = currentQuestion.getAnswer();
-		Integer type = currentQuestion.getType();
-		if(currentQuestion.isChoose())
-		{
-			holder.myAnswerTextView.setText(this.calculateUserAnswer(currentQuestion, userAnswer));
-			holder.sysAnswerTextView.setText(this.calculateRightAnswer(currentQuestion));
-		}else
-		{
-			holder.myAnswerTextView.setText(answerToTF(userAnswer));
-			holder.sysAnswerTextView.setText(answerToTF(trueAnswer));
-		}
-		holder.analysisTextView.setText(currentQuestion.getAnalysis());
-//		if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
-//			holder.answerResultImg.setVisibility(View.GONE);
-//		} else {
-//			holder.answerResultImg.setVisibility(View.VISIBLE);
-//			if (trueAnswer.equals(userAnswer)) {
-//				holder.answerResultImg
-//						.setImageResource(R.drawable.answer_correct_pto);
-//			} else if (userAnswer != null && !"".equals(userAnswer)
-//					&& isContain(trueAnswer, userAnswer)) {
-//				holder.answerResultImg
-//						.setImageResource(R.drawable.answer_halfcorrect_pto);
-//			} else {
-//				holder.answerResultImg
-//						.setImageResource(R.drawable.answer_wrong_pto);
+//	public void showAnswer(AnswerViewHolder holder,StructureItemInfo currentQuestion, String userAnswer) {
+//		String trueAnswer = currentQuestion.getAnswer();
+//		Integer type = currentQuestion.getType();
+//		if(currentQuestion.isChoose())
+//		{
+//			holder.myAnswerTextView.setText(this.calculateUserAnswer(currentQuestion, userAnswer));
+//			holder.sysAnswerTextView.setText(this.calculateRightAnswer(currentQuestion));
+//		}else
+//		{
+//			holder.myAnswerTextView.setText(answerToTF(userAnswer));
+//			holder.sysAnswerTextView.setText(answerToTF(trueAnswer));
+//		}
+//		holder.analysisTextView.setText(currentQuestion.getAnalysis());
+////		if (type.equals(AppConstant.ITEM_TYPE_QANDA)) {
+////			holder.answerResultImg.setVisibility(View.GONE);
+////		} else {
+////			holder.answerResultImg.setVisibility(View.VISIBLE);
+////			if (trueAnswer.equals(userAnswer)) {
+////				holder.answerResultImg
+////						.setImageResource(R.drawable.answer_correct_pto);
+////			} else if (userAnswer != null && !"".equals(userAnswer)
+////					&& isContain(trueAnswer, userAnswer)) {
+////				holder.answerResultImg
+////						.setImageResource(R.drawable.answer_halfcorrect_pto);
+////			} else {
+////				holder.answerResultImg
+////						.setImageResource(R.drawable.answer_wrong_pto);
+////			}
+////		}
+//	}
+	//计算用户答案的选项
+//	private String calculateUserAnswer(StructureItemInfo currentQuestion, String userAnswer){
+//		if(StringUtils.isEmpty(userAnswer)) return "";
+//		String option = "";
+//		TreeSet<StructureItemInfo> children = new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
+//		int i = 65;
+//		for(StructureItemInfo child:children)
+//		{
+//			if(userAnswer.contains(child.getId()))
+//			{
+//				option += ((char)(i++)) + " "; 
+//			}else{
+//				i++;
 //			}
 //		}
-	}
-	//计算用户答案的选项
-	private String calculateUserAnswer(StructureItemInfo currentQuestion, String userAnswer){
-		if(StringUtils.isEmpty(userAnswer)) return "";
-		String option = "";
-		TreeSet<StructureItemInfo> children = new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
-		int i = 65;
-		for(StructureItemInfo child:children)
-		{
-			if(userAnswer.contains(child.getId()))
-			{
-				option += ((char)(i++)) + " "; 
-			}else{
-				i++;
-			}
-		}
-		return option;
-	}
+//		return option;
+//	}
 	//计算正确答案的选项
-	private String calculateRightAnswer(StructureItemInfo currentQuestion)
-	{
-		String answer = currentQuestion.getAnswer();
-		if(StringUtils.isEmpty(answer)) return "";
-		String option = "";
-		TreeSet<StructureItemInfo> children = new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
-		int i = 65;
-		for(StructureItemInfo child:children)
-		{
-			if(answer.contains(child.getId()))
-			{
-				option += ((char)(i++)) + " "; 
-			}else{
-				i++;
-			}
-		}
-		return option;
-	}
+//	private String calculateRightAnswer(StructureItemInfo currentQuestion)
+//	{
+//		String answer = currentQuestion.getAnswer();
+//		if(StringUtils.isEmpty(answer)) return "";
+//		String option = "";
+//		TreeSet<StructureItemInfo> children = new TreeSet<StructureItemInfo>(currentQuestion.getChildren());
+//		int i = 65;
+//		for(StructureItemInfo child:children)
+//		{
+//			if(answer.contains(child.getId()))
+//			{
+//				option += ((char)(i++)) + " "; 
+//			}else{
+//				i++;
+//			}
+//		}
+//		return option;
+//	}
 
 	// 改变字体大小
 	public void setFontSize(ContentViewHolder contentHolder,

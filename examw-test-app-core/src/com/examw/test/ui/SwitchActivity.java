@@ -455,7 +455,7 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 				tvTitle.setText(categoryName);
 			}
 			//返回按钮
-			Button btnBack = (Button)view.findViewById(R.id.btn_goback);
+			final View btnBack = view.findViewById(R.id.btn_goback);
 			if(btnBack != null){
 				btnBack.setOnClickListener(new View.OnClickListener() {
 					/*
@@ -581,7 +581,7 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 				tvTitle.setText(examName);
 			}
 			//返回按钮
-			Button btnBack = (Button)view.findViewById(R.id.btn_goback);
+			final View btnBack = view.findViewById(R.id.btn_goback);
 			if(btnBack != null){
 				btnBack.setOnClickListener(new View.OnClickListener() {
 					/*

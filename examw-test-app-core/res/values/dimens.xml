@@ -18,7 +18,7 @@
     <dimen name="main_bottom_menuImgPadding">2dp</dimen>
     
     <!-- 顶部Bar最小高度 -->
-    <dimen name="top_title_minHeight">30.0dp</dimen>
+    <dimen name="top_title_minHeight">40.0dp</dimen>
     
     <!-- 通用图片与文件的间隔 -->
     <dimen name="img_text_padding">2dp</dimen>

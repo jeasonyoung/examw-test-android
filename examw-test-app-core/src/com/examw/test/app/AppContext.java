@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.examw.test.R;
+import com.examw.test.ui.PaperActivity.PaperDataDelegate;
 
 import android.app.Application;
 import android.content.Context;
@@ -42,6 +43,8 @@ public class AppContext extends Application {
 	private PackageInfo packageInfo;
 	//电话管理
 	private TelephonyManager telephonyManager;
+	//试卷数据委托。
+	private static  PaperDataDelegate paperDataDelegate;
 	
 	/**
 	 * 网络类型枚举。
@@ -49,9 +52,22 @@ public class AppContext extends Application {
 	 * @since 2015年6月25日
 	 */
 	public enum NetType { None,Mobile,WiFi,}
-//	
-//	public static final int PAGE_SIZE = 20;//默认分页大小
-//	private static final int CACHE_TIME = 60*60000;//缓存失效时间
+	
+	/**
+	 * 获取试卷数据委托
+	 * @return 试卷数据委托
+	 */
+	public static PaperDataDelegate getPaperDataDelegate() {
+		return paperDataDelegate;
+	}
+	/**
+	 * 设置试卷数据委托
+	 * @param paperDataDelegate 
+	 *	  试卷数据委托
+	 */
+	public static final synchronized void setPaperDataDelegate(PaperDataDelegate paperDataDelegate) {
+		AppContext.paperDataDelegate = paperDataDelegate;
+	}
 	/**
 	 * 获取应用全局上下文。
 	 * @return 全局上下文对象。 
@@ -132,7 +148,6 @@ public class AppContext extends Application {
 			});
 		}
 	}
-	
 	//获取连接管理
 	private ConnectivityManager getConnectivityManager(){
 		if(this.connectivityManager == null){
@@ -321,78 +336,4 @@ public class AppContext extends Application {
 		super.onLowMemory();
 		mContext = getApplicationContext();
 	}
-
-//	
-//	/**
-//	 * 获取内存中保存图片的路径
-//	 * @return
-//	 */
-//	public String getSaveImagePath() {
-//		return saveImagePath;
-//	}
-//	/**
-//	 * 设置内存中保存图片的路径
-//	 * @return
-//	 */
-//	public void setSaveImagePath(String saveImagePath) {
-//		this.saveImagePath = saveImagePath;
-//	}
-	
-//
-////	public AppUpdate getAppUpdate() throws AppException {
-////		AppUpdate update = null;
-////		String key = "appUpdateInfo";
-////		if (!isNetworkConnected()) {
-////			throw AppException.http(0);
-////		}
-////		if (isReadDataCache(key)) // 可读
-////		{
-////			System.out.println("可读..........");
-////			update = (AppUpdate) readObject(key);
-////			if (!update.isNeedUpdate(getVersionCode())) {
-////				update = ApiClient.checkVersion(this);
-////				if (update != null) {
-////					update.setCacheKey(key);
-////					saveObject(update, key);
-////				}
-////			}
-////		} else {
-////			System.out.println("不可读...........");
-////			update = ApiClient.checkVersion(this);
-////			if (update != null) {
-////				update.setCacheKey(key);
-////				saveObject(update, key);
-////			}
-////		}
-////		System.out.println(update);
-////		return update;
-////	}
- 
-//	//初始化数据线程
-//	class InitDataThread extends Thread{
-//		@Override
-//		public void run() {
-//			//初始化数据库
-//			LogUtil.d("初始化数据线程启动");
-//			Long start = System.currentTimeMillis();
-//			SQLiteDatabase db = UserDBUtil.getDatabase();
-//			db.close();
-//			//复制Assets中的数据
-//			String dbPath =AppConfig.DEFAULT_DATA_PATH + AppContext.this.getPackageName() + File.separator +"databases" + File.separator + AppConfig.DATABASE_NAME;
-//			//复制数据
-//			//AssetFileManager.copyDataBase(AppContext.this, "data/"+AppConfig.DATABASE_NAME, dbPath);
-//			//复制图片
-//			//AssetFileManager.copyImages(AppContext.this, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
-//			//解压缩包
-//			AssetFileManager.upZipFile(AppContext.this, "data/examw.zip",AppConfig.DATABASE_NAME,dbPath, AppConfig.DEFAULT_SAVE_IMAGE_PATH);
-//			db = null;
-//			String examName = ExamDao.findExamName(null);
-//			AppContext.this.setProperty("exam_name", examName);
-//			//!!!!!!!!!!!!!!在线获取信息!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//			LogUtil.d("初始化数据线程结束,耗时:"+(System.currentTimeMillis() - start));
-//		}
-//	}
-//
-
-
 }

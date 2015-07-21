@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 倒计时文本背景设置 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- 边框 -->
+    <item>
+        <shape android:shape="rectangle">
+        	<!--背景色  -->
+           	<solid android:color="@color/transparent" />
+           	<!-- 边框色 -->
+           	<stroke android:width="0.5dip" android:color="@color/default_color"/>
+           	<corners android:radius="6dp"/>
+           	<padding android:left="0.5dip" android:bottom="0.5dip" android:right="0.5dip" android:top="0.5dip"/>
+        </shape>
+    </item>
+</layer-list>

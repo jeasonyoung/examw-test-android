@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.examw.test.R;
-import com.examw.test.model.StructureInfo;
 
 /**
  * 大题列表适配器
@@ -18,8 +17,8 @@ import com.examw.test.model.StructureInfo;
  */
 public class PopRuleListAdapter extends BaseAdapter{
 	private Context context;
-	private List<StructureInfo> list;
-	public PopRuleListAdapter(Context context, List<StructureInfo> list) {
+	private List<?> list;
+	public PopRuleListAdapter(Context context, List<?> list) {
 		this.context = context;
 		this.list = list;
 	}
@@ -57,7 +56,7 @@ public class PopRuleListAdapter extends BaseAdapter{
 		else{
 			holder=(ViewHolder) convertView.getTag();
 		}
-		holder.groupItem.setText(list.get(position).getTitle());
+		//holder.groupItem.setText(list.get(position).getTitle());
 		return convertView;
 	}
 

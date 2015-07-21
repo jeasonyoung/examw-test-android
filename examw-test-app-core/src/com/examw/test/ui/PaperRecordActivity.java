@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.adapter.PaperRecordAdapter;
 import com.examw.test.app.AppContext;
-import com.examw.test.model.PaperPreview;
 import com.examw.test.model.PaperRecordModel;
 import com.examw.test.support.ReturnBtnClickListener;
 
@@ -192,26 +191,26 @@ public class PaperRecordActivity extends BaseActivity {
 		}.start();
 	}
 
-	private void startMyActivity(PaperPreview paper) {
-		Intent mIntent = new Intent(this, AnswerCardActivity.class);
-		mIntent.putExtra("paperId", currentRecord.getPaperId());
-		//mIntent.putExtra("trueOfFalse", currentRecord.getTorf());
-		//mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
-		//mIntent.putExtra("paperScore", currentRecord.getScore().doubleValue());
-		mIntent.putExtra("paperType", paper.getType());
-		// findPaper
-		mIntent.putExtra("paperTime", paper.getTime());
-		//mIntent.putExtra("ruleListJson",
-			//	GsonUtil.objectToJson(this.getRuleList(paper)));
-		mIntent.putExtra("username", username);
-//		mIntent.putExtra(
-//				"useTime",
-//				currentRecord.getUsedTime() % 60 == 0 ? currentRecord
-//						.getUsedTime() / 60
-//						: currentRecord.getUsedTime() / 60 + 1);
-//		mIntent.putExtra("userScore", currentRecord.getScore()); // 本次得分
-		this.startActivity(mIntent); // 仍然是要启动这个Activity不带结果返回
-	}
+//	private void startMyActivity(PaperPreview paper) {
+//		Intent mIntent = new Intent(this, AnswerCardActivity.class);
+//		mIntent.putExtra("paperId", currentRecord.getPaperId());
+//		//mIntent.putExtra("trueOfFalse", currentRecord.getTorf());
+//		//mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
+//		//mIntent.putExtra("paperScore", currentRecord.getScore().doubleValue());
+//		mIntent.putExtra("paperType", paper.getType());
+//		// findPaper
+//		mIntent.putExtra("paperTime", paper.getTime());
+//		//mIntent.putExtra("ruleListJson",
+//			//	GsonUtil.objectToJson(this.getRuleList(paper)));
+//		mIntent.putExtra("username", username);
+////		mIntent.putExtra(
+////				"useTime",
+////				currentRecord.getUsedTime() % 60 == 0 ? currentRecord
+////						.getUsedTime() / 60
+////						: currentRecord.getUsedTime() / 60 + 1);
+////		mIntent.putExtra("userScore", currentRecord.getScore()); // 本次得分
+//		this.startActivity(mIntent); // 仍然是要启动这个Activity不带结果返回
+//	}
 	
 //	private List<StructureInfo> getRuleList(PaperPreview paper)
 //	{
@@ -239,7 +238,7 @@ public class PaperRecordActivity extends BaseActivity {
 			theActivity.loadingLayout.setVisibility(View.GONE);
 			switch (msg.what) {
 			case 1:
-				theActivity.startMyActivity((PaperPreview) msg.obj);
+				//theActivity.startMyActivity((PaperPreview) msg.obj);
 				break;
 			case -2:
 //				Toast.makeText(theActivity,

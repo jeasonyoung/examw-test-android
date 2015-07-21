@@ -76,11 +76,12 @@
         <activity android:name=".ui.AboutActivity"
             android:screenOrientation="portrait" />
         
-        
+        <!-- 试卷做题界面 -->
+        <activity android:name=".ui.PaperActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" />
         
          <!--
-        <activity android:name=".ui.GuideActivity" 
-            android:screenOrientation="portrait" />
           
         
        

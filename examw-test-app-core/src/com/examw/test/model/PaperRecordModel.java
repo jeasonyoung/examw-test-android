@@ -1,6 +1,9 @@
 package com.examw.test.model;
 
 import java.io.Serializable;
+import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 试卷记录数据模型。
@@ -14,6 +17,23 @@ public class PaperRecordModel implements Serializable{
 	private boolean status;
 	private float score;
 	private int rights,useTimes;
+	/**
+	 * 构造函数。
+	 */
+	public PaperRecordModel(){
+		
+	}
+	/**
+	 * 构造函数。
+	 * @param paperId
+	 */
+	public PaperRecordModel(String paperId){
+		if(StringUtils.isNotBlank(paperId)){
+			this.paperId = paperId;
+			this.id = UUID.randomUUID().toString();
+		}
+	}
+	
 	/**
 	 * 获取试卷记录ID。
 	 * @return 试卷记录ID。

@@ -1,21 +1,13 @@
 package com.examw.test.support;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
 
 import com.examw.test.domain.FavoriteItem;
-import com.examw.test.model.ItemInfo;
 import com.examw.test.model.ItemRecordModel;
 import com.examw.test.model.PaperRecordModel;
-import com.examw.test.model.StructureInfo;
-import com.examw.test.model.StructureItemInfo;
 import com.examw.test.model.UserItemFavoriteInfo;
 import com.examw.test.model.UserItemRecordInfo;
 import com.examw.test.model.UserPaperRecordInfo;
@@ -30,131 +22,131 @@ public class DataConverter {
 	private static String userName;
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA);
 	private static final SimpleDateFormat formatter_upload = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ",Locale.CHINA);
-	// 查询一个接一个的试题
-	public static ArrayList<StructureItemInfo> findItems(
-			List<StructureInfo> structures, ArrayList<ItemRecordModel> itemRecords,
-			String username) {
-		userName = username;
-		ArrayList<StructureItemInfo> result = new ArrayList<StructureItemInfo>();
-		if (structures == null || structures.size() == 0)
-			return result;
-		for (StructureInfo s : structures) {
-			if (s == null)
-				continue;
-			getStructureItems(result, s, itemRecords);
-			s.setItems(null); // 将大题的items置为空
-		}
-		return result;
-	}
+//	// 查询一个接一个的试题
+//	public static ArrayList<StructureItemInfo> findItems(
+//			List<StructureInfo> structures, ArrayList<ItemRecordModel> itemRecords,
+//			String username) {
+//		userName = username;
+//		ArrayList<StructureItemInfo> result = new ArrayList<StructureItemInfo>();
+//		if (structures == null || structures.size() == 0)
+//			return result;
+//		for (StructureInfo s : structures) {
+//			if (s == null)
+//				continue;
+//			getStructureItems(result, s, itemRecords);
+//			s.setItems(null); // 将大题的items置为空
+//		}
+//		return result;
+//	}
 
-	private static void getStructureItems(ArrayList<StructureItemInfo> result,
-			StructureInfo info, ArrayList<ItemRecordModel> itemRecords) {
-		if (info.getChildren() != null && info.getChildren().size() > 0) {
-			for (StructureInfo child : info.getChildren()) {
-				getStructureItems(result, child, itemRecords);
-			}
-		} else {
-			TreeSet<StructureItemInfo> items = new TreeSet<StructureItemInfo>();
-			if (info.getItems() == null || info.getItems().size() == 0)
-				return;
-			items.addAll(info.getItems());
-			for (StructureItemInfo item : items) {
-//				if (item.getType().equals(AppConstant.ITEM_TYPE_SHARE_TITLE)) {
-//					result.addAll(getShareTitleSortedChildrenList(item,
-//							itemRecords));
-//				} else if (item.getType().equals(
-//						AppConstant.ITEM_TYPE_SHARE_ANSWER)) {
-//					result.addAll(getShareAnswerSortedChildrenList(item,
-//							itemRecords));
-//				} else {
-//					setUserAnswer(item, itemRecords);
-//					result.add(item);
+//	private static void getStructureItems(ArrayList<StructureItemInfo> result,
+//			StructureInfo info, ArrayList<ItemRecordModel> itemRecords) {
+//		if (info.getChildren() != null && info.getChildren().size() > 0) {
+//			for (StructureInfo child : info.getChildren()) {
+//				getStructureItems(result, child, itemRecords);
+//			}
+//		} else {
+//			TreeSet<StructureItemInfo> items = new TreeSet<StructureItemInfo>();
+//			if (info.getItems() == null || info.getItems().size() == 0)
+//				return;
+//			items.addAll(info.getItems());
+//			for (StructureItemInfo item : items) {
+////				if (item.getType().equals(AppConstant.ITEM_TYPE_SHARE_TITLE)) {
+////					result.addAll(getShareTitleSortedChildrenList(item,
+////							itemRecords));
+////				} else if (item.getType().equals(
+////						AppConstant.ITEM_TYPE_SHARE_ANSWER)) {
+////					result.addAll(getShareAnswerSortedChildrenList(item,
+////							itemRecords));
+////				} else {
+////					setUserAnswer(item, itemRecords);
+////					result.add(item);
+////				}
+//			}
+//		}
+//	}
+
+//	// 设置用户答案
+//	private static void setUserAnswer(StructureItemInfo item,
+//			ArrayList<ItemRecordModel> itemRecords) {
+//		if (itemRecords != null && itemRecords.size() > 0) {
+//			for (ItemRecordModel info : itemRecords) {
+//				if (item.getId().equalsIgnoreCase(info.getItemId())) {
+//					item.setUserAnswer(info.getAnswer()); // 设置用户答案
+//					item.setUserScore(info.getScore());
+//					item.setAnswerStatus(info.getStatus());
+//					item.setRecordId(info.getRecordId());
+//					break;
 //				}
-			}
-		}
-	}
+//			}
+//		}
+//		// 判断是否被收藏
+//		isCollected(item);
+//	}
 
-	// 设置用户答案
-	private static void setUserAnswer(StructureItemInfo item,
-			ArrayList<ItemRecordModel> itemRecords) {
-		if (itemRecords != null && itemRecords.size() > 0) {
-			for (ItemRecordModel info : itemRecords) {
-				if (item.getId().equalsIgnoreCase(info.getItemId())) {
-					item.setUserAnswer(info.getAnswer()); // 设置用户答案
-					item.setUserScore(info.getScore());
-					item.setAnswerStatus(info.getStatus());
-					item.setRecordId(info.getRecordId());
-					break;
-				}
-			}
-		}
-		// 判断是否被收藏
-		isCollected(item);
-	}
+//	// 判断是否被收藏
+//	private static void isCollected(StructureItemInfo item) {
+//		if (userName == null)
+//			return;
+//	//	item.setIsCollected((FavoriteDao.isCollected(item.getId(), userName)));
+//	}
 
-	// 判断是否被收藏
-	private static void isCollected(StructureItemInfo item) {
-		if (userName == null)
-			return;
-	//	item.setIsCollected((FavoriteDao.isCollected(item.getId(), userName)));
-	}
+//	/*
+//	 * 获取共享题干题按序子题集合
+//	 */
+//	private static ArrayList<StructureItemInfo> getShareTitleSortedChildrenList(
+//			StructureItemInfo item, ArrayList<ItemRecordModel> records) {
+//		ArrayList<StructureItemInfo> list = new ArrayList<StructureItemInfo>();
+//		TreeSet<StructureItemInfo> set = new TreeSet<StructureItemInfo>();
+//		set.addAll(item.getChildren());
+//		for (StructureItemInfo info : set) {
+//			info.setId(item.getId() + "#" + info.getId()); // 设置ID
+//			info.setStructureId(item.getStructureId()); // 设置大题ID
+//			info.setSubjectId(item.getSubjectId()); // 设置科目ID
+//			info.setParentContent(item.getContent()); // 设置材料题的题干
+//			setUserAnswer(info, records);// 设置用户答案
+//			list.add(info);
+//		}
+//		return list;
+//	}
 
-	/*
-	 * 获取共享题干题按序子题集合
-	 */
-	private static ArrayList<StructureItemInfo> getShareTitleSortedChildrenList(
-			StructureItemInfo item, ArrayList<ItemRecordModel> records) {
-		ArrayList<StructureItemInfo> list = new ArrayList<StructureItemInfo>();
-		TreeSet<StructureItemInfo> set = new TreeSet<StructureItemInfo>();
-		set.addAll(item.getChildren());
-		for (StructureItemInfo info : set) {
-			info.setId(item.getId() + "#" + info.getId()); // 设置ID
-			info.setStructureId(item.getStructureId()); // 设置大题ID
-			info.setSubjectId(item.getSubjectId()); // 设置科目ID
-			info.setParentContent(item.getContent()); // 设置材料题的题干
-			setUserAnswer(info, records);// 设置用户答案
-			list.add(info);
-		}
-		return list;
-	}
+//	/*
+//	 * 获取共享答案题按序子题集合
+//	 */
+//	private static ArrayList<StructureItemInfo> getShareAnswerSortedChildrenList(
+//			StructureItemInfo item, ArrayList<ItemRecordModel> records) {
+//		ArrayList<StructureItemInfo> list = new ArrayList<StructureItemInfo>();
+//		TreeSet<StructureItemInfo> set = new TreeSet<StructureItemInfo>();
+//		set.addAll(item.getChildren());
+//		StructureItemInfo last = set.last(); // 最后一个
+//		String parentContent = getShareAnswerContent(item, set);
+//		set.clear();
+//		set.addAll(last.getChildren());
+//		for (StructureItemInfo info : set) {
+//			info.setPid(last.getPid());
+//			info.setId(item.getId() + "#" + info.getId()); // 设置ID
+//			info.setStructureId(item.getStructureId()); // 设置大题ID
+//			info.setSubjectId(item.getSubjectId()); // 设置科目ID
+//			info.setParentContent(parentContent);
+//			setUserAnswer(info, records);// 设置用户答案
+//			list.add(info);
+//		}
+//		return list;
+//	}
 
-	/*
-	 * 获取共享答案题按序子题集合
-	 */
-	private static ArrayList<StructureItemInfo> getShareAnswerSortedChildrenList(
-			StructureItemInfo item, ArrayList<ItemRecordModel> records) {
-		ArrayList<StructureItemInfo> list = new ArrayList<StructureItemInfo>();
-		TreeSet<StructureItemInfo> set = new TreeSet<StructureItemInfo>();
-		set.addAll(item.getChildren());
-		StructureItemInfo last = set.last(); // 最后一个
-		String parentContent = getShareAnswerContent(item, set);
-		set.clear();
-		set.addAll(last.getChildren());
-		for (StructureItemInfo info : set) {
-			info.setPid(last.getPid());
-			info.setId(item.getId() + "#" + info.getId()); // 设置ID
-			info.setStructureId(item.getStructureId()); // 设置大题ID
-			info.setSubjectId(item.getSubjectId()); // 设置科目ID
-			info.setParentContent(parentContent);
-			setUserAnswer(info, records);// 设置用户答案
-			list.add(info);
-		}
-		return list;
-	}
-
-	// 获取共享答案题的题干
-	private static String getShareAnswerContent(StructureItemInfo item,
-			TreeSet<StructureItemInfo> set) {
-		StringBuffer builder = new StringBuffer();
-		builder.append(item.getContent());
-		set.remove(set.last());
-		int i = 65;
-		for (StructureItemInfo s : set) {
-			builder.append((char) (i++)).append(s.getContent())
-					.append(" <br/>");
-		}
-		return builder.toString();
-	}
+//	// 获取共享答案题的题干
+//	private static String getShareAnswerContent(StructureItemInfo item,
+//			TreeSet<StructureItemInfo> set) {
+//		StringBuffer builder = new StringBuffer();
+//		builder.append(item.getContent());
+//		set.remove(set.last());
+//		int i = 65;
+//		for (StructureItemInfo s : set) {
+//			builder.append((char) (i++)).append(s.getContent())
+//					.append(" <br/>");
+//		}
+//		return builder.toString();
+//	}
 
 	/**
 	 * 获取已经做过的题
@@ -274,29 +266,29 @@ public class DataConverter {
 		return info;
 	}
 
-	public static String getItemMaterial(ItemInfo info) {
-//		switch (info.getType()) {
-//		case AppConstant.ITEM_TYPE_SHARE_ANSWER:
-//			TreeSet<ItemInfo> set = new TreeSet<ItemInfo>();
-//			set.addAll(info.getChildren());
-//			StringBuffer builder = new StringBuffer();
-//			builder.append(info.getContent());
-//			set.remove(set.last());
-//			int i = 65;
-//			for (ItemInfo s : set) {
-//				builder.append((char) (i++)).append(s.getContent())
-//						.append(" <br/>");
-//			}
-//			set.clear();
-//			set = null;
-//			return builder.toString();
-//		case AppConstant.ITEM_TYPE_SHARE_TITLE:
-//			return info.getContent(); 
-//		default:
-//			return null;
-//		}
-		return null;
-	}
+//	public static String getItemMaterial(ItemInfo info) {
+////		switch (info.getType()) {
+////		case AppConstant.ITEM_TYPE_SHARE_ANSWER:
+////			TreeSet<ItemInfo> set = new TreeSet<ItemInfo>();
+////			set.addAll(info.getChildren());
+////			StringBuffer builder = new StringBuffer();
+////			builder.append(info.getContent());
+////			set.remove(set.last());
+////			int i = 65;
+////			for (ItemInfo s : set) {
+////				builder.append((char) (i++)).append(s.getContent())
+////						.append(" <br/>");
+////			}
+////			set.clear();
+////			set = null;
+////			return builder.toString();
+////		case AppConstant.ITEM_TYPE_SHARE_TITLE:
+////			return info.getContent(); 
+////		default:
+////			return null;
+////		}
+//		return null;
+//	}
 	
 	public static ArrayList<UserItemFavoriteInfo> convertFavors(ArrayList<FavoriteItem> list)
 	{

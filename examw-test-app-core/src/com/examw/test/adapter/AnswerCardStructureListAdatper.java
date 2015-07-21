@@ -12,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.examw.test.R;
-import com.examw.test.model.StructureInfo;
 import com.examw.test.ui.AnswerCardActivity;
 import com.examw.test.widget.HomeGrid;
 
@@ -24,21 +23,22 @@ import com.examw.test.widget.HomeGrid;
 public class AnswerCardStructureListAdatper extends BaseAdapter{
 	private Context context;
 	private AnswerCardActivity activity;
-	private List<StructureInfo> ruleList;
+	//private List<StructureInfo> ruleList;
 	private int[] trueOfFalse;
 	private boolean disColor;
-	public AnswerCardStructureListAdatper(Context context,AnswerCardActivity activity,List<StructureInfo> ruleList,int[] trueOfFalse,boolean disColor) {
+	public AnswerCardStructureListAdatper(Context context,AnswerCardActivity activity,List<?> ruleList,int[] trueOfFalse,boolean disColor) {
 		this.context = context;
 		this.activity = activity;
-		this.ruleList = ruleList;
+		//this.ruleList = ruleList;
 		this.trueOfFalse = trueOfFalse;
 		this.disColor = disColor;
 	}
 	@Override
 	public int getCount() {
-		if(ruleList==null)
-			return 1;
-		return ruleList.size();
+//		if(ruleList==null)
+//			return 1;
+//		return ruleList.size();
+		return 0;
 	}
 	@Override
 	public Object getItem(int position) {
@@ -51,7 +51,7 @@ public class AnswerCardStructureListAdatper extends BaseAdapter{
 	@Override
 	public View getView(int position, View v, ViewGroup parent) {
 		ViewHolder holder = null;
-		final StructureInfo r = ruleList.get(position);
+		//final StructureInfo r = ruleList.get(position);
 		if(v == null)
 		{
 			v = LayoutInflater.from(context).inflate(R.layout.answer_card_grid, null);
@@ -61,15 +61,15 @@ public class AnswerCardStructureListAdatper extends BaseAdapter{
 			v.setTag(holder);
 		}
 		holder = (ViewHolder) v.getTag();
-		holder.textView.setText(r.getTitle());
-		int length = r.getTotal();
-		String[] data = new String[length];
-		int t = measureTotal(position);
-		for(int i=0;i<length;i++)
-		{
-			data[i] = String.valueOf((i+1+t));
-		}
-		holder.gridView.setAdapter(new AnswerCardItemGridAdapter(context,data,trueOfFalse,disColor));
+		//holder.textView.setText(r.getTitle());
+		//int length = r.getTotal();
+//		String[] data = new String[length];
+//		int t = measureTotal(position);
+//		for(int i=0;i<length;i++)
+//		{
+//			data[i] = String.valueOf((i+1+t));
+//		}
+		//holder.gridView.setAdapter(new AnswerCardItemGridAdapter(context,data,trueOfFalse,disColor));
 		holder.gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -89,7 +89,7 @@ public class AnswerCardStructureListAdatper extends BaseAdapter{
 		int total = 0;
 		for(int i=position-1;i>=0;i--)
 		{
-			total+= ruleList.get(i).getTotal();
+		//	total+= ruleList.get(i).getTotal();
 		}
 		return total;
 	}

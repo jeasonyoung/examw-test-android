@@ -2,7 +2,6 @@ package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -21,11 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.app.AppConstant;
 import com.examw.test.domain.Chapter;
 import com.examw.test.model.PaperModel;
-import com.examw.test.model.StructureInfo;
-import com.examw.test.model.StructureItemInfo;
 import com.examw.test.widget.NewDataToast;
 
 /**
@@ -44,8 +40,8 @@ public class ChapterDetailActivity extends BaseActivity implements
 	//private PaperRecord record;
 	private ArrayList<Chapter> chapters;
 	private int /*errorNum, */questionCursor;
-	private List<StructureItemInfo> questionList;
-	private List<StructureInfo> ruleList;
+//	private List<StructureItemInfo> questionList;
+//	private List<StructureInfo> ruleList;
 	//private AppContext appContext;
 	private LinearLayout header,/*empty,*/loading;
 
@@ -171,10 +167,10 @@ public class ChapterDetailActivity extends BaseActivity implements
 			return;
 		}
 		// 获取题目数据
-		if (questionList != null) {
-			handler.sendEmptyMessage(4);
-			return;
-		}
+//		if (questionList != null) {
+//			handler.sendEmptyMessage(4);
+//			return;
+//		}
 		loading.setVisibility(View.VISIBLE);
 		new Thread() {
 			public void run() {
@@ -244,10 +240,10 @@ public class ChapterDetailActivity extends BaseActivity implements
 	protected void onDestroy() {
 		if (chapters != null)
 			chapters.clear();
-		if (questionList != null)
-			questionList.clear();
-		if (ruleList != null)
-			ruleList.clear();
+//		if (questionList != null)
+//			questionList.clear();
+//		if (ruleList != null)
+//			ruleList.clear();
 		super.onDestroy();
 	}
 }

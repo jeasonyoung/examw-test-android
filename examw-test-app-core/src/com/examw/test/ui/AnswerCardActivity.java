@@ -1,7 +1,5 @@
 package com.examw.test.ui;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,17 +8,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.examw.test.R;
-import com.examw.test.adapter.AnswerCardStructureListAdatper;
-import com.examw.test.adapter.AnswerScoreGridAdatper;
-import com.examw.test.app.AppConstant;
-import com.examw.test.model.StructureInfo;
-import com.examw.test.support.DataConverter;
 
 /**
  * 答题卡
@@ -33,7 +25,7 @@ public class AnswerCardActivity extends BaseActivity implements OnClickListener{
 	private LinearLayout scoreLayout,loadingLayout,nodataLayout;
 	private GridView scoreGridView;
 	private ListView questionListView;
-	private List<StructureInfo> ruleList;
+	//private List<StructureInfo> ruleList;
 	//private String ruleListJson;
 	private String[] data ;
 	private int[] trueOfFalse;

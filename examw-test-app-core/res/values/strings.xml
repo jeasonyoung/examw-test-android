@@ -9,6 +9,9 @@
     <!-- 查询按钮名称 -->
     <string name="search_examname_btn">搜索</string>
     
+    <!-- 顶部Banner -->
+    <string name="top_head_btn_desc">返回</string>
+    
     <!-- 确认 -->
     <string name="confirm">确认</string>
     <!-- 取消 -->
@@ -104,6 +107,17 @@
     <string name="main_paperinfo_btn_continue">继续考试</string>
     <string name="main_paperinfo_btn_reset">重新开始</string>
     <string name="main_paperinfo_btn_review">查看成绩</string>
+    
+    <!-- 试卷做题 -->
+    <string name="main_paper_back_desc">返回</string>
+    <string name="main_paper_card_desc">答题卡</string>
+    <string name="main_paper_prev_desc">上一题</string>
+    <string name="main_paper_next_desc">下一题</string>
+    <string name="main_paper_fav_desc">收藏</string>
+    <string name="main_paper_submit_desc">提交</string>
+    <string name="main_paper_time_text">00:00:00</string>
+    
+    
     
     
     

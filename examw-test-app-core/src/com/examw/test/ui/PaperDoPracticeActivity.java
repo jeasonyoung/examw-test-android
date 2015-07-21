@@ -39,9 +39,6 @@ import com.examw.test.adapter.PracticeQuestionAdapter;
 import com.examw.test.adapter.PracticeQuestionAdapter.AnswerViewHolder;
 import com.examw.test.adapter.PracticeQuestionAdapter.ContentViewHolder;
 import com.examw.test.domain.FavoriteItem;
-import com.examw.test.model.SimplePaper;
-import com.examw.test.model.StructureInfo;
-import com.examw.test.model.StructureItemInfo;
 import com.examw.test.utils.StringUtils;
 import com.examw.test.widget.AnswerSettingLayout;
 import com.examw.test.widget.AnswerSettingLayout.FontSizeChangeListerner;
@@ -72,9 +69,9 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 	private String username;
 	private String subjectId;
 	private int action;
-	private List<StructureInfo> ruleList;
-	private ArrayList<StructureItemInfo> questionList;
-	private StructureItemInfo currentQuestion;
+//	private List<StructureInfo> ruleList;
+//	private ArrayList<StructureItemInfo> questionList;
+//	private StructureItemInfo currentQuestion;
 	private Integer questionCursor;
 	private FavoriteItem favor;
 
@@ -173,24 +170,24 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 				// 收藏试题
 				if (favor != null && favor.isNeedDelete() != null) {
 					//FavoriteDao.favorOrCancel(favor);
-					if (currentQuestion != null)
-						currentQuestion.setIsCollected(!favor.isNeedDelete());
+//					if (currentQuestion != null)
+//						currentQuestion.setIsCollected(!favor.isNeedDelete());
 					favor = null;
 				}
-				currentQuestion = questionList.get(position);
-				if (!StringUtils.isEmpty(currentQuestion.getParentContent())) {
-					material.setVisibility(View.VISIBLE);
-					material.initData(currentQuestion.getParentContent());
-				} else {
-					material.setVisibility(View.GONE);
-				}
+//				currentQuestion = questionList.get(position);
+//				if (!StringUtils.isEmpty(currentQuestion.getParentContent())) {
+//					material.setVisibility(View.VISIBLE);
+//					material.initData(currentQuestion.getParentContent());
+//				} else {
+//					material.setVisibility(View.GONE);
+//				}
 				//设置大题名称
-				examTypeTextView.setText(currentQuestion.getTypeName());
-				if (Boolean.TRUE.equals(currentQuestion.getIsCollected())) {
-					favoriteBtn.setImageResource(R.drawable.exam_favorited_img);
-				} else {
-					favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
-				}
+//				examTypeTextView.setText(currentQuestion.getTypeName());
+//				if (Boolean.TRUE.equals(currentQuestion.getIsCollected())) {
+//					favoriteBtn.setImageResource(R.drawable.exam_favorited_img);
+//				} else {
+//					favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
+//				}
 			}
 		});
 	}
@@ -210,16 +207,16 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 		new Thread() {
 			public void run() {
 				try {
-					SimplePaper paper = null;
+					//SimplePaper paper = null;
 //					if (action == AppConstant.ACTION_FAVORITE) {
 //						paper = FavoriteDao.loadFavoritePaper(subjectId, username);
 //					}else if(action == AppConstant.ACTION_ERROR)
 //					{
 //						paper = PaperRecordDao.loadErrorPaper(subjectId, username);
 //					}
-					if (paper == null) {
-						handler.sendEmptyMessage(-1);
-					}// else {
+//					if (paper == null) {
+//						handler.sendEmptyMessage(-1);
+//					}// else {
 //						ruleList = paper.getRuleList();
 //						questionList = paper.getItems();
 //						tOrF = new int[questionList.size()];
@@ -250,15 +247,15 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 			switch (msg.what) {
 			case 1: // 初始化完成
 				//LogUtil.d( "数据初始化完成");
-				if (q2.ruleList != null && q2.ruleList.size() > 0) {
-					q2.examTypeTextView.setText(q2.ruleList.get(0).getTitle()); // 大题名字
-				} else {
-					q2.nodataLayout.setVisibility(0);
-					return;
-				}
+//				if (q2.ruleList != null && q2.ruleList.size() > 0) {
+//					q2.examTypeTextView.setText(q2.ruleList.get(0).getTitle()); // 大题名字
+//				} else {
+//					q2.nodataLayout.setVisibility(0);
+//					return;
+//				}
 				// 初始化题目适配器
-				q2.questionAdapter = new PracticeQuestionAdapter(q2, q2,
-						q2.questionList, q2.username);
+//				q2.questionAdapter = new PracticeQuestionAdapter(q2, q2,
+//						q2.questionList, q2.username);
 				q2.viewFlow.setAdapter(q2.questionAdapter);
 				q2.questionCursor = msg.arg1;
 				q2.loadingLayout.setVisibility(View.GONE);
@@ -276,12 +273,12 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	@Override
 	public void onClick(View v) {
-		if (questionList == null || questionList.size() == 0) {
-			if (v.getId() == R.id.btn_goback) {
-				this.finish();
-			}
-			return;
-		}
+//		if (questionList == null || questionList.size() == 0) {
+//			if (v.getId() == R.id.btn_goback) {
+//				this.finish();
+//			}
+//			return;
+//		}
 		switch (v.getId()) {
 		case R.id.btn_more: // 小菜单
 			showMenuPop(v);
@@ -299,9 +296,9 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 			this.finish();
 			break;
 		case R.id.ruleTitleLayout: // 大题切换
-			if (ruleList != null && ruleList.size() > 0) {
-				showStructureWindow(v);
-			}
+//			if (ruleList != null && ruleList.size() > 0) {
+//				showStructureWindow(v);
+//			}
 			break;
 		case R.id.answerBtn: // 答案按钮
 			submitOrSeeAnswer();
@@ -322,10 +319,10 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	// 下一题
 	private void nextQuestion() {
-		if (questionCursor == questionList.size() - 1) {
-			Toast.makeText(this, "已经是最后一题了", Toast.LENGTH_SHORT).show();
-			return;
-		}
+//		if (questionCursor == questionList.size() - 1) {
+//			Toast.makeText(this, "已经是最后一题了", Toast.LENGTH_SHORT).show();
+//			return;
+//		}
 		questionAdapter.clearCheck();
 		questionCursor++;
 		viewFlow.snapToNext();
@@ -333,23 +330,23 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 	// 收藏
 	private void favorQuestion() {
-		currentQuestion = questionList.get(questionCursor);
-		if (favor == null) {
-			if (currentQuestion.getIsCollected() == null) {
-				favor = new FavoriteItem();
-				favor.setItemId(currentQuestion.getId());
-				//favor.setItemContent(GsonUtil.objectToJson(currentQuestion));
-				favor.setSubjectId(currentQuestion.getSubjectId());
-				favor.setItemType(currentQuestion.getType());
-//				favor.setUserAnswer(currentQuestion.getUserAnswer());
-				//favor.setUsername(((AppContext) getApplication()).getUsername());
-			} else {
-				favor = new FavoriteItem();
-				favor.setItemId(currentQuestion.getId());
-				favor.setUsername(username);
-				favor.setNeedDelete(!currentQuestion.getIsCollected());
-			}
-		}
+//		currentQuestion = questionList.get(questionCursor);
+//		if (favor == null) {
+//			if (currentQuestion.getIsCollected() == null) {
+//				favor = new FavoriteItem();
+//				favor.setItemId(currentQuestion.getId());
+//				//favor.setItemContent(GsonUtil.objectToJson(currentQuestion));
+//				favor.setSubjectId(currentQuestion.getSubjectId());
+//				favor.setItemType(currentQuestion.getType());
+////				favor.setUserAnswer(currentQuestion.getUserAnswer());
+//				//favor.setUsername(((AppContext) getApplication()).getUsername());
+//			} else {
+//				favor = new FavoriteItem();
+//				favor.setItemId(currentQuestion.getId());
+//				favor.setUsername(username);
+//				favor.setNeedDelete(!currentQuestion.getIsCollected());
+//			}
+//		}
 		if (favor.isNeedDelete() == null || favor.isNeedDelete()) // 需要删除表示未收藏状态
 		{
 			this.favoriteBtn.setImageResource(R.drawable.exam_favorited_img);
@@ -358,8 +355,8 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 			return;
 		}
 		this.favoriteBtn.setImageResource(R.drawable.exam_favorite_img);
-		favor.setNeedDelete(currentQuestion.getIsCollected() == null ? null
-				: true);
+//		favor.setNeedDelete(currentQuestion.getIsCollected() == null ? null
+//				: true);
 		Toast.makeText(this, "取消收藏", Toast.LENGTH_SHORT).show();
 	}
 
@@ -368,7 +365,7 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 	public void submitOrSeeAnswer() {
 		PracticeQuestionAdapter.AnswerViewHolder holder = (AnswerViewHolder) viewFlow
 				.getSelectedView().getTag(R.id.tag_second);
-		questionAdapter.showAnswer(holder, currentQuestion, currentQuestion.getUserAnswer());
+		//questionAdapter.showAnswer(holder, currentQuestion, currentQuestion.getUserAnswer());
 		if (holder.examAnswerLayout.getVisibility() == View.VISIBLE)
 			holder.examAnswerLayout.setVisibility(View.GONE);
 		else
@@ -378,29 +375,29 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 	// 保存选择题(单选和多选)答案
 	public void saveChoiceAnswer(String abcd) // 1001-A&1002-B&
 	{
-		currentQuestion = questionList.get(questionCursor);
-		currentQuestion.setUserAnswer(abcd);
-		PracticeQuestionAdapter.AnswerViewHolder answerHolder = (com.examw.test.adapter.PracticeQuestionAdapter.AnswerViewHolder) viewFlow
-				.getSelectedView().getTag(R.id.tag_second);
-		if (currentQuestion.isSingle()) {
-			// 显示答案
-			PracticeQuestionAdapter.ContentViewHolder contentHolder = (ContentViewHolder) viewFlow
-					.getSelectedView().getTag(R.id.tag_first);
-			contentHolder.examOption.forbidden(false);
-			contentHolder.examOption.setFontColor(PaperDoPracticeActivity.this
-					.getResources().getColor(R.color.green), currentQuestion
-					.getAnswer(), PaperDoPracticeActivity.this.getResources()
-					.getColor(R.color.red), currentQuestion.getUserAnswer(),
-					currentQuestion.getType());
-			if (!currentQuestion.getAnswer().equals(currentQuestion.getUserAnswer())) {
-				vibrate();
-				tOrF[questionCursor] = -1;
-			} else {
-				tOrF[questionCursor] = 1;
-			}
-			questionAdapter.showAnswer(answerHolder, currentQuestion, abcd);
-			answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
-		}
+//		currentQuestion = questionList.get(questionCursor);
+//		currentQuestion.setUserAnswer(abcd);
+//		PracticeQuestionAdapter.AnswerViewHolder answerHolder = (com.examw.test.adapter.PracticeQuestionAdapter.AnswerViewHolder) viewFlow
+//				.getSelectedView().getTag(R.id.tag_second);
+//		if (currentQuestion.isSingle()) {
+//			// 显示答案
+//			PracticeQuestionAdapter.ContentViewHolder contentHolder = (ContentViewHolder) viewFlow
+//					.getSelectedView().getTag(R.id.tag_first);
+//			contentHolder.examOption.forbidden(false);
+//			contentHolder.examOption.setFontColor(PaperDoPracticeActivity.this
+//					.getResources().getColor(R.color.green), currentQuestion
+//					.getAnswer(), PaperDoPracticeActivity.this.getResources()
+//					.getColor(R.color.red), currentQuestion.getUserAnswer(),
+//					currentQuestion.getType());
+//			if (!currentQuestion.getAnswer().equals(currentQuestion.getUserAnswer())) {
+//				vibrate();
+//				tOrF[questionCursor] = -1;
+//			} else {
+//				tOrF[questionCursor] = 1;
+//			}
+//			questionAdapter.showAnswer(answerHolder, currentQuestion, abcd);
+//			answerHolder.examAnswerLayout.setVisibility(View.VISIBLE);
+//		}
 		
 	}
 
@@ -422,9 +419,9 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 
 			lv_group = (ListView) view.findViewById(R.id.lvGroup);
 			// 加载数据
-			PopRuleListAdapter groupAdapter = new PopRuleListAdapter(this,
-					ruleList);
-			lv_group.setAdapter(groupAdapter);
+//			PopRuleListAdapter groupAdapter = new PopRuleListAdapter(this,
+//					ruleList);
+			//lv_group.setAdapter(groupAdapter);
 			// 创建一个PopuWidow对象
 			WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
 
@@ -446,15 +443,15 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 						int position, long id) {
 					// 切题,改变大题名称,切到该大题第一题
 					// 当前大题
-					StructureInfo rule = PaperDoPracticeActivity.this.ruleList
-							.get(position);
+//					StructureInfo rule = PaperDoPracticeActivity.this.ruleList
+//							.get(position);
 					int questionPosition = 0;
 					for (int i = position - 1; i >= 0; i--) {
-						questionPosition += PaperDoPracticeActivity.this.ruleList
-								.get(i).getTotal();
+//						questionPosition += PaperDoPracticeActivity.this.ruleList
+//								.get(i).getTotal();
 					}
-					PaperDoPracticeActivity.this.examTypeTextView.setText(rule
-							.getTitle());
+//					PaperDoPracticeActivity.this.examTypeTextView.setText(rule
+//							.getTitle());
 					PaperDoPracticeActivity.this.questionAdapter.clearCheck();
 					PaperDoPracticeActivity.this.questionCursor = questionPosition; // cursor从0开始
 					PaperDoPracticeActivity.this.viewFlow
@@ -591,8 +588,8 @@ public class PaperDoPracticeActivity extends BaseActivity implements
 		// 收藏试题
 		if (favor != null && favor.isNeedDelete() != null) {
 			//FavoriteDao.favorOrCancel(favor);
-			if (currentQuestion != null)
-				currentQuestion.setIsCollected(!favor.isNeedDelete());
+//			if (currentQuestion != null)
+//				currentQuestion.setIsCollected(!favor.isNeedDelete());
 			favor = null;
 		}
 		super.onPause();

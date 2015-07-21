@@ -3,8 +3,6 @@ package com.examw.test.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import com.examw.test.app.AppConstant;
-
 /**
  * 做题记录
  * @author fengwei.
