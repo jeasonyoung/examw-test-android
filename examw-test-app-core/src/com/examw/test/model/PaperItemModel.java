@@ -34,7 +34,6 @@ public class PaperItemModel implements Serializable {
 	private Float structureScore,structureMin;
 	private List<String> itemContentImgUrls,itemAnalysisImgUrls;
 	
-	
 	private static final Gson GSON = new Gson();
 	private static final Type ITEM_TypeOfT = new TypeToken<PaperItemModel>(){}.getType();
 	/**
@@ -178,6 +177,21 @@ public class PaperItemModel implements Serializable {
 	 */
 	public void setCount(Integer count) {
 		this.count = count;
+	}
+	/**
+	 * 获取子题集合。
+	 * @return 子题集合。
+	 */
+	public List<PaperItemModel> getChildren() {
+		return children;
+	}
+	/**
+	 * 设置子题集合。
+	 * @param children 
+	 *	  子题集合。
+	 */
+	public void setChildren(List<PaperItemModel> children) {
+		this.children = children;
 	}
 	
 	/**

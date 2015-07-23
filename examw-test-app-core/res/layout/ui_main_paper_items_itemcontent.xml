@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 切换产品－考试行布局 -->
+<!-- 试题内容行 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+   android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/list_top"
     android:layout_marginBottom="@dimen/list_bottom"
@@ -9,16 +9,16 @@
     android:minHeight="@dimen/list_min_cellHeight"
     android:orientation="vertical" >
     
-    <!-- 考试名称 -->
-    <TextView android:id="@+id/exam_item_name"
+    <!-- 内容-->
+    <TextView android:id="@+id/paper_itemcontent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textColor="@color/black"
-        android:textSize="@dimen/list_l_size" 
+        android:textSize="@dimen/list_m_size" 
         android:paddingLeft="@dimen/list_left" 
         android:paddingStart="@dimen/list_left"
         android:paddingRight="@dimen/list_right"
         android:paddingEnd="@dimen/list_right"/>
-
+    
 </LinearLayout>

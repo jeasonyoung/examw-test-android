@@ -6,12 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/white">
     <!-- 顶部菜单区域 -->
-    <RelativeLayout
+  	<RelativeLayout android:id="@+id/main_paper_topMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/top_title_minHeight"
         android:layout_alignParentTop="true"
+        android:minHeight="@dimen/top_title_minHeight"
         android:background="@color/default_color"
+        android:layout_centerVertical="true"
         android:gravity="center_vertical">
         
         <!-- 返回按钮 -->
@@ -33,14 +34,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:paddingLeft="@dimen/list_left"
             android:paddingStart="@dimen/list_left"
             android:paddingRight="@dimen/list_left"
             android:paddingEnd="@dimen/list_left"
-            android:gravity="center_vertical|center_horizontal"
+            android:background="@color/transparent"
             android:textColor="@color/white"
-            android:textSize="@dimen/fontsize_m"/>
-        
+            android:textSize="@dimen/fontsize_l"/>
+         
         <!-- 答题卡按钮 -->
         <ImageButton android:id="@+id/main_paper_card"
             android:layout_width="wrap_content"
@@ -56,15 +59,16 @@
             android:contentDescription="@string/main_paper_card_desc"/>
     </RelativeLayout>
     <!-- 中间试题区域 -->
+   
     <org.taptwo.android.widget.ViewFlow android:id="@+id/main_paper_viewflow"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_paper_topMenu"
         android:paddingLeft="@dimen/list_left"
         android:paddingStart="@dimen/list_left"
         android:paddingRight="@dimen/list_left"
         android:paddingEnd="@dimen/list_left"
-        android:background="@color/transparent"
+        android:background="@color/green"
         app:sidebuffer="2" />
     
     <!-- 底部菜单按钮区域 -->
@@ -96,7 +100,8 @@
             android:text="@string/main_paper_time_text"
             android:textColor="@color/default_color"
             android:textSize="@dimen/fontsize_s"
-            android:background="@drawable/tv_time_bg" />
+            android:background="@drawable/tv_time_bg" 
+            android:visibility="invisible"/>
         
 	    <!-- 收藏按钮 -->
         <ImageButton android:id="@+id/main_paper_fav"
@@ -104,8 +109,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:background="@color/transparent" 
-            android:src="@drawable/paper_btn_fav"
-            android:contentDescription="@string/main_paper_fav_desc"/>
+            android:src="@drawable/paper_btn_fav_normal"
+            android:contentDescription="@string/main_paper_fav_desc"
+            android:visibility="invisible"/>
         
         <!-- 提交按钮 -->
         <ImageButton android:id="@+id/main_paper_submit"
@@ -114,7 +120,8 @@
             android:layout_weight="2"
             android:background="@color/transparent" 
             android:src="@drawable/paper_btn_submit"
-            android:contentDescription="@string/main_paper_submit_desc"/>
+            android:contentDescription="@string/main_paper_submit_desc"
+            android:visibility="invisible"/>
          
         <!-- 下一题按钮 -->
          <ImageButton android:id="@+id/main_paper_next"

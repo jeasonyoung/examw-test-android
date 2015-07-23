@@ -60,8 +60,7 @@ import com.examw.test.widget.viewflow.ViewFlow.ViewSwitchListener;
  * @author fengwei.
  * @since 2014年12月8日 上午9:00:02.
  */
-public class PaperDoPaperActivity extends BaseActivity implements
-		OnClickListener {
+public class PaperDoPaperActivity extends BaseActivity implements OnClickListener {
 	// 组件
 	private ImageButton favoriteBtn, answerBtn;
 	private TextView examTypeTextView;

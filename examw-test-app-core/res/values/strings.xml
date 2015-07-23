@@ -117,6 +117,20 @@
     <string name="main_paper_submit_desc">提交</string>
     <string name="main_paper_time_text">00:00:00</string>
     
+    <!-- 退出对话框 -->
+    <string name="main_paper_exit_alert_title">退出</string>
+    <string name="main_paper_exit_alert_msg">是否退出考试?</string>
+    <string name="main_paper_exit_alert_btnCancel">取消</string>
+    <string name="main_paper_exit_alert_btnSubmit">交卷</string>
+    <string name="main_paper_exit_alert_btnConfirm">下次再做</string>
+    
+    <!-- 交卷对话框 -->
+    <string name="main_paper_submit_alert_title">确认</string>
+    <string name="main_paper_submit_alert_msg">是否确认交卷?</string>
+    <string name="main_paper_submit_alert_btnCancel">否</string>
+    <string name="main_paper_submit_alert_btnSubmit">是</string>
+    <string name="main_paper_submit_process">正在交卷&#8230;&#8230;&#8230;</string>
+    <string name="main_paper_submit_error">交卷失败!</string>
     
     
     

@@ -3,27 +3,39 @@ package com.examw.test.ui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.taptwo.android.widget.ViewFlow;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.adapter.ItemAdapter;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao.ItemStatus;
 import com.examw.test.model.PaperItemModel;
+import com.examw.test.support.CountdownViewSupport;
 import com.examw.test.widget.WaitingViewDialog;
 
 /**
@@ -33,19 +45,23 @@ import com.examw.test.widget.WaitingViewDialog;
  * @since 2015年7月20日
  */
 public class PaperActivity extends Activity implements View.OnClickListener {
-	private static final String TAG = "PaperActivity";
+	static final String TAG = "PaperActivity";
 	private WaitingViewDialog waitingViewDialog;
-	private PaperDataDelegate dataDelegate;
+	PaperDataDelegate dataDelegate;
 	
-	private boolean displayAnswer;
-	private int itemOrder;
+	boolean displayAnswer;
+	private int current_item_order;
 	
-	private TextView titleView, timeView;
+	private TextView titleView;
 	private ImageButton btnFav, btnSubmit, btnPrev, btnNext;
 	private ViewFlow viewFlow;
+	private CountdownViewSupport countdownViewSupport;
 	
 	private final List<PaperItemModel> dataSource = new ArrayList<PaperItemModel>();
 	private PaperAdapter adapter;
+	
+	//线程池定义
+	static ExecutorService pools = Executors.newCachedThreadPool();
 	/**
 	 * 是否显示试题答案。
 	 */
@@ -82,13 +98,14 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		//初始化数据适配器
 		this.adapter = new PaperAdapter(this, this.dataSource);
 		//设置数据适配器
-		//this.viewFlow.setAdapter(this.adapter);
+		this.viewFlow.setAdapter(this.adapter);
 		
 		//上一题按钮
 		this.btnPrev = (ImageButton)this.findViewById(R.id.main_paper_prev);
 		btnPrev.setOnClickListener(this);
 		//倒计时View
-		this.timeView = (TextView)this.findViewById(R.id.main_paper_time);
+		final TextView timeView = (TextView)this.findViewById(R.id.main_paper_time);
+		this.countdownViewSupport = new CountdownViewSupport(timeView);
 		//收藏按钮
 		this.btnFav = (ImageButton)this.findViewById(R.id.main_paper_fav);
 		this.btnFav.setOnClickListener(this);
@@ -121,7 +138,10 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	@Override
 	protected void onResume() {
 		Log.d(TAG, "重载重新开始...");
-		// TODO Auto-generated method stub
+		//倒计时重新开始计算
+		if(countdownViewSupport != null){
+			countdownViewSupport.resume();
+		}
 		super.onResume();
 	}
 	/*
@@ -131,7 +151,10 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	@Override
 	protected void onPause() {
 		Log.d(TAG, "重载暂停...");
-		// TODO Auto-generated method stub
+		//倒计时暂停
+		if(countdownViewSupport != null){
+			countdownViewSupport.pause();
+		}
 		super.onPause();
 	}
 	/*
@@ -141,18 +164,11 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	@Override
 	protected void onStop() {
 		Log.d(TAG, "重载停止...");
-		// TODO Auto-generated method stub
+		//倒计时停止
+		if(countdownViewSupport != null){
+			countdownViewSupport.stop();
+		}
 		super.onStop();
-	}
-	/*
-	 * 重载销毁。
-	 * @see android.app.Activity#onDestroy()
-	 */
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "重载销毁...");
-		// TODO Auto-generated method stub
-		super.onDestroy();
 	}
 	/*
 	 * 处理键盘输入。
@@ -160,7 +176,11 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
+		if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+			Log.d(TAG, "键盘返回退出处理..." + event);
+			this.backExitHandler();
+			return true;
+		}
 		return super.onKeyDown(keyCode, event);
 	}
 	/*
@@ -173,32 +193,224 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		switch(v.getId()){
 			case R.id.main_paper_back:{//返回按钮处理
 				Log.d(TAG, "返回按钮处理...");
+				this.backExitHandler();
 				break;
 			}
 			case R.id.main_paper_card:{//答题卡按钮处理
 				Log.d(TAG, "答题卡按钮处理...");
-				
+				///TODO:
 				break;
 			}
 			case R.id.main_paper_prev:{//上一题按钮处理
 				Log.d(TAG, "上一题按钮处理...");
+				if(this.current_item_order <= 0){
+					Toast.makeText(this, "已经是第一题了", Toast.LENGTH_SHORT).show();
+				}else{
+					this.current_item_order--;
+					this.viewFlow.setSelection(this.current_item_order);
+				}
 				break;
 			}
 			case R.id.main_paper_next:{//下一题按钮处理
 				Log.d(TAG, "下一题按钮处理...");
+				if(this.current_item_order >= this.dataSource.size() - 1){
+					Toast.makeText(this, "已经是最后一题了", Toast.LENGTH_SHORT).show();
+				}else {
+					this.current_item_order++;
+					this.viewFlow.setSelection(this.current_item_order);
+				}
 				break;
 			}
 			case R.id.main_paper_fav:{//收藏按钮处理
 				Log.d(TAG, "收藏按钮处理...");
-				
+				this.favoriteHandler(this.btnFav, this.current_item_order);
 				break;
 			}
 			case R.id.main_paper_submit:{//提交按钮处理
 				Log.d(TAG, "提交按钮处理...");
+				this.submitHandler();
 				break;
 			}
 		}
 	}
+	//收藏处理
+	private void favoriteHandler(final ImageButton favoriteImageButton, final int pos){
+		if(this.dataDelegate == null || this.dataSource.size() < pos){
+			return;
+		}
+		//异步线程处理
+		pools.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Log.d(TAG, "异步开始收藏处理试题:" + (pos + 1));
+					PaperItemModel itemModel = dataSource.get(pos);
+					if(itemModel == null){
+						Log.d(TAG, "试题[" + (pos + 1) + "]不存在!");
+						return;
+					}
+					final boolean result = dataDelegate.updateFavorite(itemModel);
+					//更新收藏夹图片
+					if(favoriteImageButton != null){
+						favoriteImageButton.post(new Runnable() {
+							@SuppressWarnings("deprecation")
+							@Override
+							public void run() {
+								int resId = (result ? R.drawable.paper_btn_fav_highlight : R.drawable.paper_btn_fav_normal); 
+								Log.d(TAG, "更新收藏状态[" + result+ "]图片..." + resId);
+								Drawable drawable = favoriteImageButton.getResources().getDrawable(resId);
+								if(drawable != null){
+									favoriteImageButton.setImageDrawable(drawable);
+								}
+							}
+						});
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "收藏第[" + (pos + 1)+ "]题处理异常:" + e.getMessage(), e);
+				}
+			}
+		});
+	}
+	/**
+	 * 交卷处理
+	 */
+	private void submitHandler(){
+		Log.d(TAG, "交卷处理...");
+		new AlertDialog.Builder(this)
+		.setIcon(android.R.drawable.ic_dialog_info)
+		.setTitle(R.string.main_paper_submit_alert_title)
+		.setMessage(R.string.main_paper_submit_alert_msg)
+		.setNegativeButton(R.string.main_paper_submit_alert_btnCancel, new DialogInterface.OnClickListener() {
+			/*
+			 * 取消按钮点击事件。
+			 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+			 */
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "交卷处理取消...");
+				dialog.dismiss();
+			}
+		})
+		.setPositiveButton(R.string.main_paper_submit_alert_btnSubmit, new DialogInterface.OnClickListener() {
+			/*
+			 * 确定按钮点击事件。
+			 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+			 */
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "确认交卷处理...");
+				dialog.dismiss();
+				//停止倒计时
+				countdownViewSupport.stop();
+				//交卷处理
+				commitPaperHandler(countdownViewSupport.useTimes());
+			}
+		}).show();
+	}
+	//交卷处理。
+	private void commitPaperHandler(final int useTimes) {
+		//获取上下文
+		final Context context = PaperActivity.this;
+		//获取消息内容
+		String msg = context.getResources().getString(R.string.main_paper_submit_process);
+		//初始化进度对话框
+		final ProgressDialog progressDialog = ProgressDialog.show(context, null, msg, true, true);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		//开始异步线程处理交卷
+		new AsyncTask<Void, Void, Boolean>(){
+			private String recordId;
+			/*
+			 * 后台线程进行交卷处理
+			 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+			 */
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				try {
+					Log.d(TAG, "后台线程进行交卷处理...");
+					if(dataDelegate != null){
+						//提交试卷
+						dataDelegate.submitPaper(useTimes, new PaperDataDelegate.SubmitResultHandler(){
+							
+							@Override
+							public void hanlder(String paperRecordId) {
+								recordId = paperRecordId;
+							}
+						});
+						return StringUtils.isNotBlank(this.recordId);
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "后台线程进行交卷处理异常:" + e.getMessage(), e);
+				}
+				return null;
+			}
+			/*
+			 * 前台主线线程处理
+			 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+			 */
+			@Override
+			protected void onPostExecute(Boolean result) {
+				Log.d(TAG, "交卷前台主线处理..." + this.recordId);
+				//关闭等待进度
+				progressDialog.dismiss();
+				//
+				if(!result){
+					Toast.makeText(context, R.string.main_paper_submit_error, Toast.LENGTH_SHORT).show();
+				}else {
+					///TODO:交卷成功，跳转至考试结果Activity
+					finish();
+				}
+			};
+		}.executeOnExecutor(pools, (Void[])null);
+	}
+	/**
+	 * 返回退出处理。
+	 */
+	private void backExitHandler(){
+		Log.d(TAG, "返回退出处理...");
+		new AlertDialog.Builder(this)
+		.setIcon(android.R.drawable.ic_dialog_info)
+		.setTitle(R.string.main_paper_exit_alert_title)
+		.setMessage(R.string.main_paper_exit_alert_msg)
+		.setNegativeButton(R.string.main_paper_exit_alert_btnCancel, new DialogInterface.OnClickListener() {
+			/*
+			 * 取消退出。
+			 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+			 */
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "取消退出处理...");
+				dialog.dismiss();
+			}
+		})
+		.setPositiveButton(R.string.main_paper_exit_alert_btnSubmit, new DialogInterface.OnClickListener() {
+			/*
+			 * 交卷处理。
+			 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+			 */
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "交卷退出处理...");
+				dialog.dismiss();
+				//交卷处理
+				submitHandler();
+			}
+		})
+		.setNeutralButton(R.string.main_paper_exit_alert_btnConfirm, new DialogInterface.OnClickListener() {
+			/*
+			 * 下次再做处理。
+			 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+			 */
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "下次再做处理...");
+				dialog.dismiss();
+				//关闭当前Activity
+				finish();
+			}
+		}).show();
+	}
+
+	
 	/**
 	 * 异步初始化数据。
 	 * 
@@ -206,6 +418,7 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	 * @since 2015年7月20日
 	 */
 	private class InitDataAsyncTask extends AsyncTask<Intent, Void, Boolean>{
+		private int totalTime = 0;
 		/*
 		 *后台线程异步处理。
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
@@ -229,8 +442,8 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 				displayAnswer = params[0].getBooleanExtra(PAPER_ITEM_ISDISPLAY_ANSWER, false);
 				Log.d(TAG, "加载是否显示答案..." + displayAnswer);
 				//3.指定题序
-				itemOrder = params[0].getIntExtra(PAPER_ITEM_ORDER, 0);
-				Log.d(TAG, "加载指定题序..." + itemOrder);
+				current_item_order = params[0].getIntExtra(PAPER_ITEM_ORDER, 0);
+				Log.d(TAG, "加载指定题序..." + current_item_order);
 				//4.加载试题数据
 				Log.d(TAG, "准备加载试题数据...");
 				//4.1清空试卷数据
@@ -241,6 +454,8 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 				if(list != null && (count = list.size()) > 0){
 					dataSource.addAll(list);
 				}
+				//4.3获取考试时长
+				this.totalTime = dataDelegate.timeOfPaperView();
 				Log.d(TAG, "共加载试题数据..." + count);
 			}catch(Exception e){
 				Log.e(TAG, "初始化数据异常:" + e.getMessage(), e);
@@ -256,15 +471,36 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		protected void onPostExecute(Boolean result) {
 			 if(result){
 				 //提醒适配器更新
-				// adapter.notifyDataSetChanged();
+				 adapter.notifyDataSetChanged();
 				 //设置选中的题序
-//				 if(itemOrder > 0){
-//					 viewFlow.setSelection(itemOrder);
-//				 }
+				 if(current_item_order > 0){
+					 viewFlow.setSelection(current_item_order);
+				 }
 			 }
 			 //关闭等待动画
 			 waitingViewDialog.cancel();
-			 ///TODO:
+			 //设置收藏按钮是否可见
+			 if(btnFav != null){
+				 btnFav.setVisibility(displayAnswer ? View.VISIBLE : View.INVISIBLE);
+			 }
+			 //设置提交按钮是否可见
+			 if(btnSubmit != null){
+				 btnSubmit.setVisibility(displayAnswer ? View.INVISIBLE : View.VISIBLE);
+			 }
+			 //初始化倒计时
+			 countdownViewSupport.init(this.totalTime* 60, true);
+			 //启动倒计时
+			 countdownViewSupport.start(new CountdownViewSupport.CompleteHandler() {
+				/*
+				 * 倒计时结束处理。
+				 * @see com.examw.test.support.CountdownViewSupport.CompleteHandler#onComplete(int)
+				 */
+				@Override
+				public void onComplete(int useTimes) {
+					Log.d(TAG, "倒计时结束处理,-自动交卷..");
+					commitPaperHandler(useTimes);
+				}
+			});
 		}
 	}
 	/**
@@ -273,9 +509,9 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	 * @author jeasonyoung
 	 * @since 2015年7月20日
 	 */
-	private class PaperAdapter extends BaseAdapter{
+	class PaperAdapter extends BaseAdapter{
 		private final List<PaperItemModel> list;
-		//private final LayoutInflater mInflater;
+		private final LayoutInflater mInflater;
 		/**
 		 * 构造函数。
 		 * @param context
@@ -283,7 +519,7 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		public PaperAdapter(final Context context, final List<PaperItemModel> list){
 			Log.d(TAG, "初始化数据适配器...");
 			this.list = list;
-			//this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 		/*
 		 * 获取试题数。
@@ -315,8 +551,23 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			return null;
+			Log.d(TAG, "加载试题..." + position);
+			//加载布局文件
+			convertView = this.mInflater.inflate(R.layout.ui_main_paper_items, parent, false);
+			//加载数据列表
+			final ListView listView = (ListView)convertView.findViewById(R.id.list_main_paper);
+			if(listView != null){
+				//加载试题数据
+				final PaperItemModel itemModel = this.list.get(position);
+				if(itemModel != null){
+					//设置试题所属结构名称
+					titleView.setText(itemModel.getStructureTitle());
+					//设置试题列表数据适配器
+					listView.setAdapter(new ItemAdapter(mInflater, itemModel, position, displayAnswer, listView));
+				}
+			}
+			//返回View
+			return convertView;
 		}
 	}
 	/**
