@@ -21,17 +21,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examw.test.R;
-import com.examw.test.adapter.ItemAdapter;
+import com.examw.test.adapter.PaperAdapter;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao.ItemStatus;
 import com.examw.test.model.PaperItemModel;
@@ -44,24 +40,22 @@ import com.examw.test.widget.WaitingViewDialog;
  * @author jeasonyoung
  * @since 2015年7月20日
  */
-public class PaperActivity extends Activity implements View.OnClickListener {
-	static final String TAG = "PaperActivity";
-	private WaitingViewDialog waitingViewDialog;
-	PaperDataDelegate dataDelegate;
+public class PaperActivity extends Activity implements View.OnClickListener,ViewFlow.ViewLazyInitializeListener {
+	private static final String TAG = "PaperActivity";
+	public WaitingViewDialog waitingViewDialog;
 	
-	boolean displayAnswer;
-	private int current_item_order;
-	
+	private boolean displayAnswer;
 	private TextView titleView;
 	private ImageButton btnFav, btnSubmit, btnPrev, btnNext;
 	private ViewFlow viewFlow;
 	private CountdownViewSupport countdownViewSupport;
 	
-	private final List<PaperItemModel> dataSource = new ArrayList<PaperItemModel>();
+	private final List<PaperItemModel> dataSource;
 	private PaperAdapter adapter;
-	
-	//线程池定义
-	static ExecutorService pools = Executors.newCachedThreadPool();
+	/**
+	 * 异步线程池。
+	 */
+	public static ExecutorService pools = Executors.newCachedThreadPool();
 	/**
 	 * 是否显示试题答案。
 	 */
@@ -71,6 +65,27 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	 */
 	public static final String PAPER_ITEM_ORDER = "paper_itemOrder";
 	
+	/**
+	 * 构造函数。
+	 */
+	public PaperActivity(){
+		Log.d(TAG, "初始化...");
+		this.dataSource = new ArrayList<PaperItemModel>();
+	}
+	/**
+	 * 获取是否显示答案。
+	 * @return 是否显示答案。
+	 */
+	public boolean isDisplayAnswer() {
+		return displayAnswer;
+	}
+	/**
+	 * 获取当前试题。
+	 * @return 当前试题。
+	 */
+	public int getCurrentItemOrder() {
+		return this.viewFlow.getSelectedItemPosition();
+	}
 	/*
 	 * 重载创建。
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -96,9 +111,10 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		//试题视图
 		this.viewFlow = (ViewFlow)this.findViewById(R.id.main_paper_viewflow);
 		//初始化数据适配器
-		this.adapter = new PaperAdapter(this, this.dataSource);
+		this.adapter =  new PaperAdapter(this, this.dataSource);
 		//设置数据适配器
 		this.viewFlow.setAdapter(this.adapter);
+		this.viewFlow.setOnViewLazyInitializeListener(this);
 		
 		//上一题按钮
 		this.btnPrev = (ImageButton)this.findViewById(R.id.main_paper_prev);
@@ -117,19 +133,31 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		this.btnNext.setOnClickListener(this);
 	}
 	/*
+	 * 重载切换视图。
+	 * @see org.taptwo.android.widget.ViewFlow.ViewSwitchListener#onSwitched(android.view.View, int)
+	 */
+	@Override
+	public void onViewLazyInitialize(View view, int position) {
+		Log.d(TAG, "ViewFlow惰性加载试题..." + position);
+		if(this.titleView != null && this.dataSource.size() >  position){
+			PaperItemModel itemModel = this.dataSource.get(position);
+			if(itemModel != null){
+				this.titleView.setText(itemModel.getStructureTitle());
+			}
+		}
+	}
+	/*
 	 * 重载开始。
 	 * @see android.app.Activity#onStart()
 	 */
 	@Override
 	protected void onStart() {
 		Log.d(TAG, "重载开始...");
+		super.onStart();
 		//启动等待动画
 		this.waitingViewDialog.show();
-		
 		//初始化数据
 		new InitDataAsyncTask().execute(this.getIntent());
-		
-		super.onStart();
 	}
 	/*
 	 * 重载重新开始。
@@ -203,27 +231,25 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 			}
 			case R.id.main_paper_prev:{//上一题按钮处理
 				Log.d(TAG, "上一题按钮处理...");
-				if(this.current_item_order <= 0){
+				if(this.getCurrentItemOrder() <= 0){
 					Toast.makeText(this, "已经是第一题了", Toast.LENGTH_SHORT).show();
 				}else{
-					this.current_item_order--;
-					this.viewFlow.setSelection(this.current_item_order);
+					this.viewFlow.setSelection(this.getCurrentItemOrder() - 1);
 				}
 				break;
 			}
 			case R.id.main_paper_next:{//下一题按钮处理
 				Log.d(TAG, "下一题按钮处理...");
-				if(this.current_item_order >= this.dataSource.size() - 1){
+				if(this.getCurrentItemOrder() >= this.dataSource.size() - 1){
 					Toast.makeText(this, "已经是最后一题了", Toast.LENGTH_SHORT).show();
 				}else {
-					this.current_item_order++;
-					this.viewFlow.setSelection(this.current_item_order);
+					this.viewFlow.setSelection(this.getCurrentItemOrder() + 1);
 				}
 				break;
 			}
 			case R.id.main_paper_fav:{//收藏按钮处理
 				Log.d(TAG, "收藏按钮处理...");
-				this.favoriteHandler(this.btnFav, this.current_item_order);
+				this.favoriteHandler(this.btnFav, this.getCurrentItemOrder());
 				break;
 			}
 			case R.id.main_paper_submit:{//提交按钮处理
@@ -235,7 +261,8 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	}
 	//收藏处理
 	private void favoriteHandler(final ImageButton favoriteImageButton, final int pos){
-		if(this.dataDelegate == null || this.dataSource.size() < pos){
+		final PaperDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
+		if(dataDelegate == null || this.dataSource.size() < pos){
 			return;
 		}
 		//异步线程处理
@@ -327,6 +354,7 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 			protected Boolean doInBackground(Void... params) {
 				try {
 					Log.d(TAG, "后台线程进行交卷处理...");
+					final PaperDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
 					if(dataDelegate != null){
 						//提交试卷
 						dataDelegate.submitPaper(useTimes, new PaperDataDelegate.SubmitResultHandler(){
@@ -418,7 +446,7 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 	 * @since 2015年7月20日
 	 */
 	private class InitDataAsyncTask extends AsyncTask<Intent, Void, Boolean>{
-		private int totalTime = 0;
+		private int totalTime = 0, order;
 		/*
 		 *后台线程异步处理。
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
@@ -433,17 +461,17 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 					return false;
 				}
 				//1.数据监听者类
-				dataDelegate =  AppContext.getPaperDataDelegate();
+			    final PaperDataDelegate dataDelegate =  AppContext.getPaperDataDelegate();
 				if(dataDelegate == null){
 					Log.d(TAG, "未获取到试卷数据委托!");
 					return false;
 				}
 				//2.是否显示答案
-				displayAnswer = params[0].getBooleanExtra(PAPER_ITEM_ISDISPLAY_ANSWER, false);
+				displayAnswer = true;//params[0].getBooleanExtra(PAPER_ITEM_ISDISPLAY_ANSWER, false);
 				Log.d(TAG, "加载是否显示答案..." + displayAnswer);
 				//3.指定题序
-				current_item_order = params[0].getIntExtra(PAPER_ITEM_ORDER, 0);
-				Log.d(TAG, "加载指定题序..." + current_item_order);
+				this.order = params[0].getIntExtra(PAPER_ITEM_ORDER, 0);
+				Log.d(TAG, "加载指定题序..." + this.order);
 				//4.加载试题数据
 				Log.d(TAG, "准备加载试题数据...");
 				//4.1清空试卷数据
@@ -471,10 +499,12 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 		protected void onPostExecute(Boolean result) {
 			 if(result){
 				 //提醒适配器更新
+				 Log.d(TAG, "试卷数据适配器更新...");
 				 adapter.notifyDataSetChanged();
-				 //设置选中的题序
-				 if(current_item_order > 0){
-					 viewFlow.setSelection(current_item_order);
+				 //设置选中的题序	 
+				 if(this.order > 0){
+					 Log.d(TAG, "设置加载试题...." + this.order);
+					 viewFlow.setSelection(this.order);
 				 }
 			 }
 			 //关闭等待动画
@@ -501,73 +531,6 @@ public class PaperActivity extends Activity implements View.OnClickListener {
 					commitPaperHandler(useTimes);
 				}
 			});
-		}
-	}
-	/**
-	 *试卷数据适配器。
-	 * 
-	 * @author jeasonyoung
-	 * @since 2015年7月20日
-	 */
-	class PaperAdapter extends BaseAdapter{
-		private final List<PaperItemModel> list;
-		private final LayoutInflater mInflater;
-		/**
-		 * 构造函数。
-		 * @param context
-		 */
-		public PaperAdapter(final Context context, final List<PaperItemModel> list){
-			Log.d(TAG, "初始化数据适配器...");
-			this.list = list;
-			this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		}
-		/*
-		 * 获取试题数。
-		 * @see android.widget.Adapter#getCount()
-		 */
-		@Override
-		public int getCount() {
-			return this.list.size();
-		}
-		/*
-		 * 获取试题对象。
-		 * @see android.widget.Adapter#getItem(int)
-		 */
-		@Override
-		public Object getItem(int position) {
-			return this.list.get(position);
-		}
-		/*
-		 * 获取试题默认ID。
-		 * @see android.widget.Adapter#getItemId(int)
-		 */
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-		/*
-		 * 创建试题
-		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-		 */
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Log.d(TAG, "加载试题..." + position);
-			//加载布局文件
-			convertView = this.mInflater.inflate(R.layout.ui_main_paper_items, parent, false);
-			//加载数据列表
-			final ListView listView = (ListView)convertView.findViewById(R.id.list_main_paper);
-			if(listView != null){
-				//加载试题数据
-				final PaperItemModel itemModel = this.list.get(position);
-				if(itemModel != null){
-					//设置试题所属结构名称
-					titleView.setText(itemModel.getStructureTitle());
-					//设置试题列表数据适配器
-					listView.setAdapter(new ItemAdapter(mInflater, itemModel, position, displayAnswer, listView));
-				}
-			}
-			//返回View
-			return convertView;
 		}
 	}
 	/**

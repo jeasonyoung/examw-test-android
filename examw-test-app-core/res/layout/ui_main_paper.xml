@@ -68,7 +68,7 @@
         android:paddingStart="@dimen/list_left"
         android:paddingRight="@dimen/list_left"
         android:paddingEnd="@dimen/list_left"
-        android:background="@color/green"
+        android:background="@color/transparent"
         app:sidebuffer="2" />
     
     <!-- 底部菜单按钮区域 -->

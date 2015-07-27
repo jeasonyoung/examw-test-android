@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试题标题 -->
+<com.examw.test.widget.ItemTitleView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/list_top"
+    android:gravity="center_vertical"
+    android:orientation="vertical" >
+    
+     <!-- 选项内容-->
+    <TextView android:id="@+id/paper_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:singleLine="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/list_l_size"/>
+
+</com.examw.test.widget.ItemTitleView>

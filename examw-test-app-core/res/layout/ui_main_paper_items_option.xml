@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试题选项 -->
+<com.examw.test.widget.ItemOptionView xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/list_top"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/list_min_cellHeight"
+    android:orientation="vertical" >
+    
+    <!-- 选项内容-->
+    <TextView android:id="@+id/paper_item_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/list_left"
+        android:layout_marginStart="@dimen/list_left"
+        android:drawablePadding="@dimen/img_text_padding"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:singleLine="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/list_l_size"/>
+    
+     <!-- 分隔符 -->
+   <!--  <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:drawableBottom="@drawable/topic_driver"
+        android:drawablePadding="0.5dp"/> -->
+    
+</com.examw.test.widget.ItemOptionView>
