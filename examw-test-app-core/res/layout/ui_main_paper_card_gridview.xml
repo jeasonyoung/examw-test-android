@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/list_top"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:textColor="@color/black"
         android:textSize="@dimen/fontsize_l"/>
     

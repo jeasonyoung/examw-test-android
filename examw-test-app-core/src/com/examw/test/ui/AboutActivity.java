@@ -6,12 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.examw.test.R;
-import com.examw.test.app.AppContext;
-import com.examw.test.app.AppSettings;
-import com.examw.test.app.UserAccount;
-import com.examw.test.widget.WaitingViewDialog;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -21,9 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.examw.test.R;
+import com.examw.test.app.AppContext;
+import com.examw.test.app.AppSettings;
+import com.examw.test.app.UserAccount;
+import com.examw.test.widget.WaitingViewDialog;
 
 /**
  * 关于应用。
@@ -60,7 +59,7 @@ public class AboutActivity extends Activity implements View.OnClickListener{
 		final TextView tvTitle = (TextView)this.findViewById(R.id.title);
 		tvTitle.setText(this.getResources().getString(R.string.main_more_about_title));
 		//返回按钮
-		final Button btnBack = (Button)this.findViewById(R.id.btn_goback);
+		final View btnBack = this.findViewById(R.id.btn_goback);
 		//设置点击事件监听
 		btnBack.setOnClickListener(this);
 		//列表

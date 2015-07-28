@@ -16,7 +16,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -62,8 +61,8 @@ public class RegisterActivity  extends Activity implements View.OnClickListener{
 			tvTitle.setText(getResources().getString(R.string.main_my_nologin_btnReg));
 		}
 		//返回按钮
-		final Button btn = (Button)this.findViewById(R.id.btn_goback);
-		btn.setOnClickListener(this);
+		final View btnBack = this.findViewById(R.id.btn_goback);
+		btnBack.setOnClickListener(this);
 		//0.初始化
 		this.dataInputViews = new DataInputViews(this);
 		//1.用户名
@@ -80,7 +79,7 @@ public class RegisterActivity  extends Activity implements View.OnClickListener{
 		this.dataInputViews.setPhone((EditText)this.findViewById(R.id.register_tel));
 		
 		//注册按钮
-		final Button btnSubmit = (Button)this.findViewById(R.id.register_btnSubmit);
+		final View btnSubmit = this.findViewById(R.id.register_btnSubmit);
 		btnSubmit.setOnClickListener(this);
 	}
 	/*

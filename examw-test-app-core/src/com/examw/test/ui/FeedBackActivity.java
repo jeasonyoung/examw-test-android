@@ -7,7 +7,6 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +37,7 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
 		this.setContentView(R.layout.ui_main_more_feedback);
 		
 		//返回按钮处理
-		final Button btnBack = (Button)this.findViewById(R.id.btn_goback);
+		final View btnBack = this.findViewById(R.id.btn_goback);
 		btnBack.setOnClickListener(this);
 		
 		//加载标题
@@ -62,7 +61,7 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
 		this.tvCount.setText(this.countPrefix + " 0/" + this.maxLength);
 		
 		//提交按钮
-		final Button btnSubmit = (Button)this.findViewById(R.id.more_feedback_btnSubmit);
+		final View btnSubmit = this.findViewById(R.id.more_feedback_btnSubmit);
 		btnSubmit.setOnClickListener(this);
 	}
 	/*

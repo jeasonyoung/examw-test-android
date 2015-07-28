@@ -6,6 +6,20 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
+
 import com.examw.test.R;
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
@@ -17,21 +31,6 @@ import com.examw.test.utils.DigestClientUtil;
 import com.examw.test.widget.WaitingViewDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * 登录界面
@@ -63,7 +62,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 			tvTitle.setText(this.getResources().getString(R.string.main_my_nologin_btnLogin));
 		}
 		//加载返回按钮
-		final Button btnBack = (Button)this.findViewById(R.id.btn_goback);
+		final View btnBack = this.findViewById(R.id.btn_goback);
 		btnBack.setOnClickListener(this);
 		//输入处理
 		this.dataInputViews = new DataInputViews(this);
@@ -73,10 +72,10 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 		this.dataInputViews.setPassword((EditText)this.findViewById(R.id.login_password));
 		
 		//登录按钮
-		final Button btnSubmit = (Button)this.findViewById(R.id.login_btnSubmit);
+		final View btnSubmit = this.findViewById(R.id.login_btnSubmit);
 		btnSubmit.setOnClickListener(this);
 		//注册按钮
-		final Button btnRegister = (Button)this.findViewById(R.id.login_btnRegister);
+		final View btnRegister = this.findViewById(R.id.login_btnRegister);
 		btnRegister.setOnClickListener(this);
 	}
 	/*

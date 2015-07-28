@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.examw.test.R;
@@ -46,7 +45,7 @@ public class DownloadActivity extends Activity implements View.OnClickListener{
 		this.msgHandler = new MsgHandler(this);
 		
 		//返回按钮
-		final Button btnBack = (Button)this.findViewById(R.id.btn_goback);
+		final View btnBack = this.findViewById(R.id.btn_goback);
 		btnBack.setOnClickListener(this);
 		
 		//标题
@@ -54,7 +53,7 @@ public class DownloadActivity extends Activity implements View.OnClickListener{
 		tvTitle.setText(this.getResources().getString(R.string.main_more_download_title));
 		
 		//下载按钮
-		final Button btnDownload = (Button)this.findViewById(R.id.more_download_btn);
+		final View btnDownload = this.findViewById(R.id.more_download_btn);
 		btnDownload.setOnClickListener(this);
 	}
 	/*
