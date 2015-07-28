@@ -48,6 +48,11 @@
     <!-- 意见反馈最大长度 -->
     <integer name="feedback_max_length">1000</integer>
     
+    <!-- 答题卡 -->
+    <dimen name="card_column_width">38dp</dimen>
+    <dimen name="card_column_height">35dp</dimen>
+    
+    
     
     
     <!-- Default screen margins, per the Android Design guidelines. -->

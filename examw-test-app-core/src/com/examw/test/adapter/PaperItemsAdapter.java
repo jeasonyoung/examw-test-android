@@ -44,7 +44,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 	public PaperItemsAdapter(Context context){
 		Log.d(TAG, "初始化...");
 		this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.itemModels =  new PaperItemTitleModel[0];
+		this.itemModels = new PaperItemTitleModel[0];
 	}
 	//加载试题缓存数据模型
 	private void loadItemCacheModel(int itemOrder){

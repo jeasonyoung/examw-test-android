@@ -132,6 +132,9 @@
     <string name="main_paper_submit_process">正在交卷&#8230;&#8230;&#8230;</string>
     <string name="main_paper_submit_error">交卷失败!</string>
     
+    <!-- 答题卡 -->
+    <string name="main_paper_card_title">答题卡</string>
+    
     
     
     

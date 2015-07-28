@@ -81,6 +81,11 @@
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
             android:screenOrientation="portrait" />
         
+        <!-- 答题卡 -->
+        <activity android:name=".ui.PaperCardActivity" 
+            android:screenOrientation="portrait" />
+        
+        
          <!--
           
         

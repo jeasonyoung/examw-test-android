@@ -16,6 +16,18 @@
     <!-- 灰白色 -->
     <color name="grey">#fff8f8f8</color>
     
+    <!-- 答题卡 -->
+    <color name="card_item_hascolor_normal">#FF1E90FF</color><!-- 已做 -->
+    <color name="card_item_hascolor_highlight">#001E90FF</color><!-- 已做 -->
+    <color name="card_item_noncolor_normal">#FF696969</color><!-- 未做 -->
+    <color name="card_item_noncolor_highlight">#00696969</color><!-- 未做 -->
+    <color name="card_item_rightcolor_normal">#FF008B00</color><!--做对 -->
+    <color name="card_item_rightcolor_highlight">#00008B00</color><!--做对 -->
+    <color name="card_item_wrongcolor_normal">#FFFF0000</color><!--做错 -->
+    <color name="card_item_wrongcolor_highlight">#00FF0000</color><!--做错 -->
+    
+    
+    
 
     <color name="transparent">#00000000</color>
     <color name="translucent">#80000000</color>

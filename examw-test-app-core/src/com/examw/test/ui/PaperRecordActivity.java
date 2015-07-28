@@ -3,6 +3,7 @@ package com.examw.test.ui;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +30,7 @@ import com.examw.test.support.ReturnBtnClickListener;
  * @author fengwei.
  * @since 2014年12月11日 下午5:03:03.
  */
-public class PaperRecordActivity extends BaseActivity {
+public class PaperRecordActivity extends Activity {
 	private LinearLayout contentLayout, nodataLayout, loadingLayout;
 	private ListView paperListView;
 	private String username;

@@ -89,6 +89,12 @@ public final class PaperAdapter extends BaseAdapter{
 		}
 		//加载数据
 		itemViewHolder.itemsAdapter.loadItemModel(position, this.list.get(position), this.activity.isDisplayAnswer());
+		//添加切换动画
+//		if(position > this.activity.getCurrentItemOrder()){//下一题动画
+//			convertView.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.paper_item_next));
+//		}else {//上一题动画
+//			convertView.startAnimation(AnimationUtils.loadAnimation(this.activity, R.anim.paper_item_prev));
+//		}
 		//返回View
 		return convertView;
 	}

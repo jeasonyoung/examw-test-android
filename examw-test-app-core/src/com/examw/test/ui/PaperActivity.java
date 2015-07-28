@@ -52,6 +52,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	
 	private final List<PaperItemModel> dataSource;
 	private PaperAdapter adapter;
+	
 	/**
 	 * 异步线程池。
 	 */
@@ -83,7 +84,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	 * 获取当前试题。
 	 * @return 当前试题。
 	 */
-	public int getCurrentItemOrder() {
+	private int getCurrentItemOrder() {
 		return this.viewFlow.getSelectedItemPosition();
 	}
 	/*
@@ -226,7 +227,10 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 			}
 			case R.id.main_paper_card:{//答题卡按钮处理
 				Log.d(TAG, "答题卡按钮处理...");
-				///TODO:
+				//开启模块模式打开答题卡Activity。
+				Intent intent = new Intent(this, PaperCardActivity.class);
+				intent.putExtra(PAPER_ITEM_ISDISPLAY_ANSWER, this.isDisplayAnswer());
+				this.startActivityForResult(intent, 0);
 				break;
 			}
 			case R.id.main_paper_prev:{//上一题按钮处理
@@ -259,6 +263,23 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 			}
 		}
 	}
+	
+	/*
+	 * 回调方式来Activity获取返回的结果。
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(TAG, "Activity返回结果处理..." + resultCode);
+		if(resultCode == Activity.RESULT_OK && data != null){
+			int order = data.getIntExtra(PAPER_ITEM_ORDER, -1);
+			if(order > -1){
+				Log.d(TAG, "跳转到试题..." + (order + 1));
+				this.viewFlow.setSelection(order);
+			}
+		}
+	}
+	
 	//收藏处理
 	private void favoriteHandler(final ImageButton favoriteImageButton, final int pos){
 		final PaperDataDelegate dataDelegate = AppContext.getPaperDataDelegate();

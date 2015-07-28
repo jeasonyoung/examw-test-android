@@ -1,5 +1,6 @@
 package com.examw.test.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +20,7 @@ import com.examw.test.R;
  * @author fengwei.
  * @since 2014年12月6日 下午3:42:19.
  */
-public class AnswerCardActivity extends BaseActivity implements OnClickListener{
+public class AnswerCardActivity extends Activity implements OnClickListener{
 	private static final String TAG = "AnswerCardActivity";
 	private Button scoreFlexImg;
 	private LinearLayout scoreLayout,loadingLayout,nodataLayout;
