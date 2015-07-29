@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textColor="@color/red"
+        android:textColor="@color/default_color"
         android:textSize="@dimen/list_m_size" 
         android:paddingLeft="@dimen/list_left" 
         android:paddingStart="@dimen/list_left"
@@ -67,5 +67,4 @@
         android:paddingEnd="@dimen/list_right"/>
        
    </LinearLayout>
-   
 </LinearLayout>
