@@ -1,8 +1,5 @@
 package com.examw.test.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 
 import android.app.Activity;
@@ -10,7 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,12 +17,9 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao;
-import com.examw.test.dao.PaperDao.ItemStatus;
-import com.examw.test.model.PaperItemModel;
+import com.examw.test.dao.PaperItemData;
 import com.examw.test.model.PaperModel;
 import com.examw.test.model.PaperRecordModel;
-import com.examw.test.model.PaperStructureModel;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate;
 import com.examw.test.widget.WaitingViewDialog;
 
 /**
@@ -42,13 +35,14 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 	private TextView tvTitle,tvSubject,tvArea,tvType,tvYear,tvTotal,tvItems,tvTimes;
 	private Button btnStart,btnContinue,btnRest,btnReview;
 	
-	public static final String INTENT_PAPERID_KEY = "paperId";
-	public static final String INTENT_SUBJECTNAME_KEY = "subjectName";
-	
 	private PaperDao paperDao;
 	private PaperModel paperModel;
 	private PaperRecordModel recordModel;
 	private StartType paperStartType = StartType.None;
+	
+	public static final String INTENT_PAPERID_KEY = "paperId";
+	public static final String INTENT_SUBJECTNAME_KEY = "subjectName";
+	
 	/*
 	 * 重载创建。
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -58,7 +52,7 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 		Log.d(TAG, "重载创建...");
 		super.onCreate(savedInstanceState);
 		//加载布局
-		this.setContentView(R.layout.ui_main_paperinfo);
+		this.setContentView(R.layout.ui_main_paper_info);
 		
 		//初始化等待动画
 		this.waitingViewDialog = new WaitingViewDialog(this);
@@ -165,7 +159,7 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 		}
 	}
 	//做题开始类型
-	private enum StartType{None, Start, Continue, Rest, Review };
+	public enum StartType{None, Start, Continue, Rest, Review };
 	/**
 	 * 异步加载数据。
 	 * 
@@ -326,7 +320,7 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 					}
 				}
 				//设置试卷数据委托
-				AppContext.setPaperDataDelegate(new PaperItemData());
+				AppContext.setPaperDataDelegate(new PaperItemData(PaperInfoActivity.this, paperModel, recordModel, this.type));
 				return true;
 			}catch(Exception e){
 				Log.d(TAG, "跳转后台线程处理异常:"+ e.getMessage(), e);
@@ -347,7 +341,8 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 			if(result){
 				Intent intent = new Intent();
 				if(this.type == StartType.Review){//查看成绩
-					///TODO:查看成绩
+					intent.setClass(PaperInfoActivity.this, PaperResultActivity.class);
+					intent.putExtra(PaperResultActivity.PAPER_RECORD_ID, recordModel.getId());
 				}else{
 					intent.setClass(PaperInfoActivity.this, PaperActivity.class);
 				}
@@ -358,210 +353,6 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 				finish();
 			}else {
 				Toast.makeText(PaperInfoActivity.this, "发生未知异常!", Toast.LENGTH_LONG).show();
-			}
-		}
-	}
-	/**
-	 * 试卷接口。
-	 * 
-	 * @author jeasonyoung
-	 * @since 2015年7月21日
-	 */
-	public class PaperItemData extends PaperDataDelegate{
-		private static final long serialVersionUID = 1L;
-		private List<PaperItemModel> items;
-		private List<AnswerCardSectionModel> cardSections;
-		private SparseArray<AnswerCardItemModel[]> cardItemsMap;
-		/*
-		 * 试题数据集合。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#dataSourceOfPaperViews()
-		 */
-		@Override
-		public List<PaperItemModel> dataSourceOfPaperViews() throws Exception{
-			Log.d(TAG, "加载试题数据集合...");
-			int total = 0;
-			if(paperModel != null && (total = paperModel.getTotal()) > 0 && paperModel.getStructures() != null){
-				//初始化
-				this.items = new ArrayList<PaperItemModel>(total);
-				total = paperModel.getStructures().size();
-				if(total > 0){
-					this.cardSections = new ArrayList<PaperDataDelegate.AnswerCardSectionModel>(total);
-					this.cardItemsMap = new SparseArray<PaperDataDelegate.AnswerCardItemModel[]>(total);
-				}
-				//装载数据
-				int section = 0, order = 0;
-				for(PaperStructureModel s : paperModel.getStructures()){
-					if(s == null || s.getItems() == null) continue;
-					//创建答题卡分组数据模型
-					this.cardSections.add(new AnswerCardSectionModel(s.getTitle(), s.getDescription()));
-					//初始化分组下的试题集合
-					List<PaperDataDelegate.AnswerCardItemModel> cardItemModels = new ArrayList<PaperDataDelegate.AnswerCardItemModel>(s.getItems().size());
-					//循环试题集合
-					for(PaperItemModel item : s.getItems()){
-						if(item == null || StringUtils.isBlank(item.getId())) continue;
-						//设置所属试卷结构ID
-						item.setStructureId(s.getId());
-						//设置所属试卷结构名称
-						item.setStructureTitle(s.getTitle());
-						//每题得分
-						item.setStructureScore(s.getScore());
-						//最小得分
-						item.setStructureMin(s.getMin());
-						//
-						for(int index = 0; index < item.getCount(); index++){
-							//添加试题索引
-							item.setIndex(index);
-							//添加试题集合
-							this.items.add(item);
-							//添加到分组下的试题集合
-							cardItemModels.add(new AnswerCardItemModel(order, ItemStatus.None));
-							//
-							order += 1;
-						}
-					}
-					//添加答题卡试题集合
-					this.cardItemsMap.append(section, cardItemModels.toArray(new AnswerCardItemModel[0]));
-					//
-					section += 1;
-				}
-				//返回试题集合
-				return this.items;
-			}
-			return null;
-		}
-		/*
-		 * 重载加载当前试题题序。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#currentOrderOfPaperView()
-		 */
-		@Override
-		public int currentOrderOfPaperView() throws Exception {
-			if(paperStartType == StartType.Continue && recordModel != null && items != null && items.size() > 0){
-				Log.d(TAG, "重载加载当前试卷题序...");
-				if(paperDao == null){
-					paperDao = new PaperDao(PaperInfoActivity.this);
-				}
-				//加载试卷记录的最新试题
-				String lastItemId = paperDao.loadNewItemAndIndex(recordModel.getId());
-				if(StringUtils.isNotBlank(lastItemId)){
-					//循环试题集合查找
-					for(int i = 0; i < this.items.size(); i++){
-						if(StringUtils.equals(lastItemId, this.createItemId(this.items.get(i)))){
-							return i;
-						}
-					}
-				}
-			}
-			return super.currentOrderOfPaperView();
-		}
-		/*
-		 * 加载考试时长。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#timeOfPaperView()
-		 */
-		@Override
-		public int timeOfPaperView() throws Exception {
-			Log.d(TAG, "重载加载考试时长...");
-			if(paperModel != null){
-				return paperModel.getTime();
-			}
-			return super.timeOfPaperView();
-		}
-		/*
-		 * 加载试题记录中的答案。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#loadMyAnswer(com.examw.test.model.PaperItemModel)
-		 */
-		@Override
-		public String loadMyAnswer(PaperItemModel itemModel) throws Exception{
-			Log.d(TAG, "加载试题答案:" + this.createItemId(itemModel));
-			if(itemModel != null && recordModel != null){
-				if(paperDao == null){
-					paperDao = new PaperDao(PaperInfoActivity.this);
-				}
-				return paperDao.loadRecodAnswers(recordModel.getId(), itemModel);
-			}
-			return null;
-		}
-		/*
-		 * 更新做题记录到数据库。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#updateRecordAnswer(com.examw.test.model.PaperItemModel, java.lang.String, int)
-		 */
-		@Override
-		public void updateRecordAnswer(PaperItemModel itemModel, String myAnswers, int useTimes) throws Exception{
-			Log.d(TAG, "更新做题记录...");
-			if(recordModel != null && itemModel != null && StringUtils.isNotBlank(myAnswers)){
-				if(paperDao == null){
-					paperDao = new PaperDao(PaperInfoActivity.this);
-				}
-				paperDao.addItemRecord(recordModel.getId(), itemModel, myAnswers, useTimes);
-			}
-		}
-		/*
-		 * 更新收藏记录。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#updateFavorite(com.examw.test.model.PaperItemModel)
-		 */
-		@Override
-		public boolean updateFavorite(PaperItemModel itemModel) throws Exception {
-			Log.d(TAG, "更新试题收藏:" + this.createItemId(itemModel));
-			if(paperModel != null && itemModel != null){
-				if(paperDao == null){
-					paperDao = new PaperDao(PaperInfoActivity.this);
-				}
-				return paperDao.updateFavoriteWithPaper(paperModel.getId(), itemModel);
-			}
-			return false;
-		}
-		/*
-		 * 交卷处理。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#submitPaper(int, com.examw.test.ui.PaperActivity.PaperDataListener.SubmitResultHandler)
-		 */
-		@Override
-		public void submitPaper(int useTimes, SubmitResultHandler handler) throws Exception {
-			Log.d(TAG, "交卷处理...");
-			if(recordModel != null){
-				if(paperDao == null){
-					paperDao = new PaperDao(PaperInfoActivity.this);
-				}
-				paperDao.submit(recordModel.getId(), useTimes);
-				if(handler != null){
-					handler.hanlder(recordModel.getId());
-				}
-			}
-		}
-		/*
-		 * 加载答题卡数据。
-		 * @see com.examw.test.ui.PaperActivity.PaperDataListener#loadAnswerCardData(java.util.List, android.util.SparseArray)
-		 */
-		@Override
-		public void loadAnswerCardData(final List<AnswerCardSectionModel> cardSections,final SparseArray<AnswerCardItemModel[]> cardSectionItems) throws Exception {
-			Log.d(TAG, "加载答题卡数据...");
-			if(this.cardSections != null && this.cardItemsMap != null){
-				//答题卡分组
-				if(cardSections != null){
-					cardSections.clear();
-					cardSections.addAll(this.cardSections);
-				}
-				//分组试题数据
-				if(cardSectionItems != null){
-					cardSectionItems.clear();
-					//
-					if(paperDao == null){
-						paperDao = new PaperDao(PaperInfoActivity.this);
-					}
-					//循环
-					for(int i = 0; i < this.cardItemsMap.size(); i++){
-						int key = this.cardItemsMap.keyAt(i);
-						AnswerCardItemModel[] models = this.cardItemsMap.get(key);
-						if(models != null && models.length > 0 && recordModel != null && this.items != null){
-							 for(int k = 0; k < models.length; k++){
-								 if(this.items.size() > models[k].getOrder()){
-									 PaperItemModel itemModel = this.items.get(models[k].getOrder());
-									 if(itemModel == null) continue;
-									 models[k].status = paperDao.exitRecord(recordModel.getId(), itemModel);
-								 }
-							 }
-						}
-						cardSectionItems.put(key, models);
-					}
-				}
 			}
 		}
 	}

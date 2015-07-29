@@ -23,6 +23,11 @@
     <!-- 通用图片与文件的间隔 -->
     <dimen name="img_text_padding">2dp</dimen>
     
+    <!-- 圆角曲度 -->
+    <dimen name="corners_radius">5dp</dimen>
+    <!-- 边框宽度 -->
+    <dimen name="border_width">0.5dp</dimen>
+    
     <!-- 行字体 -->
     <!-- 大字体尺寸 -->  
     <dimen name="list_l_size">16.0sp</dimen>

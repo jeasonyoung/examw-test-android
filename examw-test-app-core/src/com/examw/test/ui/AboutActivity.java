@@ -11,14 +11,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.examw.test.R;
+import com.examw.test.adapter.AboutAdapter;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.AppSettings;
 import com.examw.test.app.UserAccount;
@@ -89,81 +87,6 @@ public class AboutActivity extends Activity implements View.OnClickListener{
 		Log.d(TAG, "返回按钮处理..." + v);
 		this.finish();
 	}
-	/**
-	 * 数据适配器。
-	 * 
-	 * @author jeasonyoung
-	 * @since 2015年7月16日
-	 */
-	private class AboutAdapter extends BaseAdapter{
-		private final Context context;
-		private final List<String> list;
-		/**
-		 * 构造函数。
-		 * @param context
-		 * 上下文。
-		 * @param list
-		 * 数据源。
-		 */
-		public AboutAdapter(Context context, List<String> list){
-			this.context = context;
-			this.list = list;
-		}
-		/*
-		 * 获取数据量。
-		 * @see android.widget.Adapter#getCount()
-		 */
-		@Override
-		public int getCount() {
-			return this.list.size();
-		}
-		/*
-		 * 获取行数据。
-		 * @see android.widget.Adapter#getItem(int)
-		 */
-		@Override
-		public Object getItem(int position) {
-			return this.list.get(position);
-		}
-		/*
-		 * 获取行ID。
-		 * @see android.widget.Adapter#getItemId(int)
-		 */
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-		/*
-		 * 创建数据行。
-		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-		 */
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Log.d(TAG, "创建行..." + position);
-			String data = (String)this.getItem(position);
-			if(StringUtils.isBlank(data)){
-				Log.d(TAG, "创建行分隔..." + position);
-				return LayoutInflater.from(this.context).inflate(R.layout.ui_main_more_section, parent, false);
-			}else {
-				TextView itemView = null;
-				if(convertView != null){
-					Log.d(TAG, "复用数据行.." + position);
-					itemView = (TextView)convertView.getTag();
-				}
-				if(itemView == null){
-					Log.d(TAG, "创建数据行.." + position);
-					convertView = LayoutInflater.from(this.context).inflate(R.layout.ui_main_more_item, parent, false);
-					itemView = (TextView)convertView.findViewById(R.id.more_item);
-					convertView.setTag(itemView);
-				}
-				//加载数据
-				//内容
-				itemView.setText(data);
-				return convertView;
-			}
-		}
-	}
-
 	/**
 	 * 加载异步数据。
 	 * 

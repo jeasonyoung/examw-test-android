@@ -64,7 +64,7 @@
         <activity android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
         
-        <!-- 下载界面 -->
+        <!-- 下载试卷 -->
         <activity android:name=".ui.DownloadActivity"
             android:screenOrientation="portrait" />
         
@@ -85,92 +85,9 @@
         <activity android:name=".ui.PaperCardActivity" 
             android:screenOrientation="portrait" />
         
-        
-         <!--
-          
-        
-       
-        选择科目界面
-        <activity android:name=".ui.ChooseSubjectActivity"
+        <!-- 试卷提交结果 -->
+        <activity android:name=".ui.PaperResultActivity"
             android:screenOrientation="portrait" />
-        模拟考试界面 
-        <activity android:name=".ui.SimulateActivity"
-            android:screenOrientation="portrait" />
-         试卷介绍页面 
-       
-        试卷考试界面
-         <activity android:name=".ui.PaperDoPaperActivity"
-            android:screenOrientation="portrait" />
-        答题卡界面 
-         <activity android:name=".ui.AnswerCardActivity"
-            android:screenOrientation="portrait" />
-        章节练习界面 
-        <activity android:name=".ui.ChapterActivity"
-            android:screenOrientation="portrait" />
-        章节练习界面 
-        <activity android:name=".ui.ChapterDetailActivity"
-            android:screenOrientation="portrait" />
-        每日一练界面 
-        <activity android:name=".ui.DailyActivity"
-            android:screenOrientation="portrait" />
-        错题,收藏的练习界面
-        <activity android:name=".ui.PaperDoPracticeActivity"
-            android:screenOrientation="portrait" />
-        知识点界面
-        <activity android:name=".ui.KnowledgeActivity"
-            android:screenOrientation="portrait" />
-         知识点详细界面
-        <activity android:name=".ui.KnowledgeDetailActivity"
-            android:screenOrientation="portrait" />
-        论坛界面
-        <activity android:name=".ui.ForumActivity"
-            android:screenOrientation="portrait" />
-        考试指南界面
-        <activity android:name=".ui.ExamInfoActivity"
-            android:screenOrientation="portrait" />
-        考试记录界面 
-        <activity android:name=".ui.PaperRecordActivity"
-            android:screenOrientation="portrait" />
-        关于应用界面 
-        
-        隐私协议界面
-        <activity android:name=".ui.PrivacyAgreementActivity"
-            android:screenOrientation="portrait" />
-        时间设置界面
-        <activity android:name=".ui.SetTimeActivity"
-            android:screenOrientation="portrait" />
-        同步界面
-        <activity android:name=".ui.SyncActivity"
-            android:screenOrientation="portrait" />
-        意见界面
-        
-        数据导入界面
-        <activity android:name=".ui.ImportDataActivity"
-            android:screenOrientation="portrait" />
-        图片缩放界面
-        <activity android:name=".ui.ImageZoomActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ui.ImageTextViewActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ui.WebViewActivity"
-            android:screenOrientation="portrait" />
-        注册码激活 
-         <activity android:name=".ui.RegisterCodeActivity"
-            android:screenOrientation="portrait" /> -->
          
-        <!-- 校验用户 -->
-        <!-- <meta-data android:value="digest" android:name="username" />
-        <meta-data android:value="7F522E56248B559B2F443C8EC310F0E7" android:name="password" /> -->
-        <!-- 终端号  终端号为数字, 前面要加\0才能转成字符串-->
-       <!--  <meta-data android:value="\04" android:name="terminalId" /> -->
-        <!-- CLIENTKEY -->
-        <!-- <meta-data android:value="U8z2D0O5s7Li1Q3y4k6g" android:name="clientKey" /> -->
-        <!-- 产品ID -->
-       <!--  <meta-data android:value="c36f8985-544b-4524-909f-fef638f710b6" android:name="productId" /> -->
-        <!-- 论坛地址  -->
-       <!--  <meta-data android:value="http://bbs.examw.com/forum-47-1.html" android:name="bbsUrl" /> -->
-        <!-- 报考指南地址 -->
-        <!-- <meta-data android:value="http://m.examw.com/jzs1/zhinan/" android:name="infoUrl" /> -->
     </application>
 </manifest>

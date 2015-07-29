@@ -53,6 +53,8 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	private final List<PaperItemModel> dataSource;
 	private PaperAdapter adapter;
 	
+	private String title;
+	
 	/**
 	 * 异步线程池。
 	 */
@@ -65,6 +67,10 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	 * 加载到指定的题序。
 	 */
 	public static final String PAPER_ITEM_ORDER = "paper_itemOrder";
+	/**
+	 * 加载指定的标题。
+	 */
+	public static final String PAPER_ITEM_TITLE = "paper_title";
 	
 	/**
 	 * 构造函数。
@@ -140,7 +146,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	@Override
 	public void onViewLazyInitialize(View view, int position) {
 		Log.d(TAG, "ViewFlow惰性加载试题..." + position);
-		if(this.titleView != null && this.dataSource.size() >  position){
+		if(StringUtils.isBlank(this.title) &&  this.titleView != null && this.dataSource.size() >  position){
 			PaperItemModel itemModel = this.dataSource.get(position);
 			if(itemModel != null){
 				this.titleView.setText(itemModel.getStructureTitle());
@@ -157,8 +163,17 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 		super.onStart();
 		//启动等待动画
 		this.waitingViewDialog.show();
+		//获取意图
+		final Intent intent = this.getIntent();
+		if(intent != null){
+			//获取标题
+			this.title = intent.getStringExtra(PAPER_ITEM_TITLE);
+			if(StringUtils.isNotBlank(this.title) && this.titleView != null){
+				this.titleView.setText(this.title);
+			}
+		}
 		//初始化数据
-		new InitDataAsyncTask().execute(this.getIntent());
+		new InitDataAsyncTask().execute(intent);
 	}
 	/*
 	 * 重载重新开始。
@@ -405,7 +420,11 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 				if(!result){
 					Toast.makeText(context, R.string.main_paper_submit_error, Toast.LENGTH_SHORT).show();
 				}else {
-					///TODO:交卷成功，跳转至考试结果Activity
+					//跳转至试卷结果Activity
+					Intent intent = new Intent(PaperActivity.this, PaperResultActivity.class);
+					intent.putExtra(PaperResultActivity.PAPER_RECORD_ID, this.recordId);
+					startActivity(intent);
+					//关闭当前Activity
 					finish();
 				}
 			};
@@ -488,7 +507,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 					return false;
 				}
 				//2.是否显示答案
-				displayAnswer = true;//params[0].getBooleanExtra(PAPER_ITEM_ISDISPLAY_ANSWER, false);
+				displayAnswer = params[0].getBooleanExtra(PAPER_ITEM_ISDISPLAY_ANSWER, false);
 				Log.d(TAG, "加载是否显示答案..." + displayAnswer);
 				//3.指定题序
 				this.order = params[0].getIntExtra(PAPER_ITEM_ORDER, 0);

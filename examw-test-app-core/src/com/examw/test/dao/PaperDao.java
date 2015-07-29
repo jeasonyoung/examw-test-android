@@ -936,10 +936,11 @@ public class PaperDao {
 			db = this.getDbHelpers().getReadableDatabase();
 			//SQL
 			final String sql = "SELECT a.code,a.name,COUNT(d.itemId) AS total FROM tbl_subjects a "
-					+ "LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code "
-					+ "LEFT OUTER JOIN tbl_paperRecords c ON c.paperId = b.id "
-					+ "LEFT OUTER JOIN tbl_itemRecords d ON d.paperRecordId = c.id "
-					+ "WHERE ((d.status IS NULL) OR (d.status = 0)) GROUP BY a.code,a.name";		
+					+ " LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code "
+					+ " LEFT OUTER JOIN tbl_paperRecords c ON c.paperId = b.id "
+					+ " LEFT OUTER JOIN tbl_itemRecords d ON d.paperRecordId = c.id  AND ((d.status IS NULL) OR (d.status = 0)) "
+					+ " GROUP BY a.code,a.name";
+			Log.d(TAG, "exec-sql:" + sql);
 			Cursor cursor = db.rawQuery(sql, null);
 			while(cursor.moveToNext()){
 				//0.初始化
@@ -974,9 +975,11 @@ public class PaperDao {
 			db = this.getDbHelpers().getReadableDatabase();
 			//SQL
 			final String sql = "SELECT a.code,a.name,COUNT(b.itemId) AS total FROM tbl_subjects a "
-					+ "LEFT OUTER JOIN tbl_favorites b ON b.subjectCode = a.code "
-					+ "WHERE ((b.status IS NULL) OR (b.status = 1)) GROUP BY a.code,a.name";
+					+ " LEFT OUTER JOIN tbl_favorites b "
+					+ " ON b.subjectCode = a.code  AND ((b.status IS NULL) OR (b.status = 1)) "
+					+ " GROUP BY a.code,a.name";
 			//
+			Log.d(TAG, "exec-sql:" + sql);
 			Cursor cursor = db.rawQuery(sql, null);
 			while(cursor.moveToNext()){
 				//0.初始化

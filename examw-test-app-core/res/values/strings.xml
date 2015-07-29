@@ -135,4 +135,8 @@
     <!-- 答题卡 -->
     <string name="main_paper_card_title">答题卡</string>
     
+    <!-- 答题情况 -->
+    <string name="main_paper_result_title">答题情况</string>
+    <string name="main_paper_result_btn">查看试题</string>
+    
 </resources>
