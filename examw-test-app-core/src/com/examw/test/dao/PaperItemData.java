@@ -60,6 +60,9 @@ public class PaperItemData extends PaperActivity.PaperDataDelegate{
 	@Override
 	public List<PaperItemModel> dataSourceOfPaperViews() throws Exception{
 		Log.d(TAG, "加载试题数据集合...");
+		//返回缓存
+		if(this.items != null && this.items.size() > 0) return this.items; 
+		//第一次加载数据
 		int total = 0;
 		if(this.paperModel != null && (total = this.paperModel.getTotal()) > 0 && this.paperModel.getStructures() != null){
 			//初始化
@@ -223,7 +226,7 @@ public class PaperItemData extends PaperActivity.PaperDataDelegate{
 			//分组试题数据
 			if(cardSectionItems != null){
 				cardSectionItems.clear();
-				//
+				//惰性加载
 				if(this.dao == null){
 					this.dao = new PaperDao(this.refContext.get());
 				}

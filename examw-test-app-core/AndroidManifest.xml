@@ -88,6 +88,10 @@
         <!-- 试卷提交结果 -->
         <activity android:name=".ui.PaperResultActivity"
             android:screenOrientation="portrait" />
+        
+        <!-- 做题记录 -->
+        <activity android:name=".ui.PaperRecordActivity"
+            android:screenOrientation="portrait" />
          
     </application>
 </manifest>

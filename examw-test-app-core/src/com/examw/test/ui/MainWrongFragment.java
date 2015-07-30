@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.examw.test.R;
+import com.examw.test.adapter.WrongAdapter;
+import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao;
+import com.examw.test.dao.WrongItemData;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,11 +19,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -39,7 +42,7 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 	 * 构造函数。
 	 * @param mainActivity
 	 */
-	public MainWrongFragment(final MainActivity mainActivity){
+	public MainWrongFragment(MainActivity mainActivity){
 		Log.d(TAG, "初始化...");
 		this.mainActivity = mainActivity;
 		this.dataSource = new ArrayList<PaperDao.SubjectTotalModel>();
@@ -111,13 +114,38 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 		Log.d(TAG, "选中行..." + position);
 		if(this.dataSource.size() > position){
 			PaperDao.SubjectTotalModel data = this.dataSource.get(position);
-			if(data != null){
-				Toast.makeText(this.mainActivity, this.option + ":" + data.toString(), Toast.LENGTH_SHORT).show();
+			if(data != null && data.getTotal() > 0){
+				try{
+					//开启等待动画
+					this.mainActivity.waitingViewDialog.show();
+					//生成数据源
+					AppContext.setPaperDataDelegate(new WrongItemData(this.mainActivity, data.getCode(), this.option));
+					//资源
+					String title = null;
+					final Resources resources = this.getResources();
+					if(resources != null){
+						title = (this.option == WrongOption.Wrong) ? resources.getString(R.string.main_wrong_options_wrong)
+								: resources.getString(R.string.main_wrong_options_favorite);
+					}
+					//试题查看意图
+					Intent intent = new Intent(this.mainActivity, PaperActivity.class);
+					intent.putExtra(PaperActivity.PAPER_ITEM_ISDISPLAY_ANSWER, true);
+					intent.putExtra(PaperActivity.PAPER_ITEM_TITLE, title);
+					//发送意图
+					this.startActivity(intent);
+					
+				}catch(Exception e){
+					Log.e(TAG, "查看科目["+ data.getName() +"]下数据["+this.option+"]异常:" + e.getMessage(), e);
+					Toast.makeText(this.mainActivity, "发生异常:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+				}finally{
+					//关闭等待动画
+					this.mainActivity.waitingViewDialog.cancel();
+				}
 			}
 		}
 	}
 	//选项枚举
-	private enum WrongOption { Wrong, Favorite };
+	public enum WrongOption { Wrong, Favorite };
 	/**
 	 * 异步线程加载数据。
 	 * 
@@ -173,126 +201,5 @@ public class MainWrongFragment extends Fragment implements RadioGroup.OnCheckedC
 			//关闭等待动画
 			mainActivity.waitingViewDialog.cancel();
 		};
-	}
-	/**
-	 * 错题数据适配器。
-	 * 
-	 * @author jeasonyoung
-	 * @since 2015年7月6日
-	 */
-	private class WrongAdapter extends BaseAdapter{
-		private final Context context;
-		private final List<PaperDao.SubjectTotalModel> list;
-		/**
-		 * 构造函数。
-		 * @param context
-		 * 上下文。
-		 * @param list
-		 * 列表数据源。
-		 */
-		public WrongAdapter(final Context context,final List<PaperDao.SubjectTotalModel> list){
-			this.context = context;
-			this.list = list;
-		}
-		/*
-		 * 获取数据行数。
-		 * @see android.widget.Adapter#getCount()
-		 */
-		@Override
-		public int getCount() {
-			return this.list.size();
-		}
-		/*
-		 * 获取行数据对象。
-		 * @see android.widget.Adapter#getItem(int)
-		 */
-		@Override
-		public Object getItem(int position) {
-			if(this.list.size() > position){
-				return this.list.get(position);
-			}
-			return null;
-		}
-		/*
-		 * 获取行ID。
-		 * @see android.widget.Adapter#getItemId(int)
-		 */
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-		/*
-		 * 创建行。
-		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-		 */
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Log.d(TAG, "创建行..." + position);
-			ItemViewWrapper wrapper = null;
-			if(convertView == null){
-				Log.d(TAG, "新建行..." + position);
-				//0.加载列表布局
-				convertView = LayoutInflater.from(this.context).inflate(R.layout.ui_main_wrong_item, parent, false);
-				wrapper = new ItemViewWrapper();
-				//1.科目
-				wrapper.setSubject((TextView)convertView.findViewById(R.id.wrong_item_subjectname));
-				//2.试题数
-				wrapper.setTotals((TextView)convertView.findViewById(R.id.wrong_item_totals));
-				//保存
-				convertView.setTag(wrapper);
-			}else {
-				Log.d(TAG, "重用行..." + position);
-				//加载ui 
-				wrapper = (ItemViewWrapper)convertView.getTag();
-			}
-			//加载数据
-			PaperDao.SubjectTotalModel data = (PaperDao.SubjectTotalModel)this.getItem(position);
-			if(data != null && wrapper != null){
-				//科目
-				wrapper.getSubject().setText(data.getName());
-				//试题数
-				wrapper.getTotals().setText("("+data.getTotal()+")");
-			}
-			return convertView;
-		}
-		/**
-		 * 行视图包装器。
-		 * 
-		 * @author jeasonyoung
-		 * @since 2015年7月6日
-		 */
-		private class ItemViewWrapper{
-			private TextView subject,totals;
-			/**
-			 * 获取科目名称。
-			 * @return 科目名称。
-			 */
-			public TextView getSubject() {
-				return subject;
-			}
-			/**
-			 * 设置科目名称。
-			 * @param subject 
-			 *	  科目名称。
-			 */
-			public void setSubject(TextView subject) {
-				this.subject = subject;
-			}
-			/**
-			 * 获取试题数。
-			 * @return 试题数。
-			 */
-			public TextView getTotals() {
-				return totals;
-			}
-			/**
-			 * 设置试题数。
-			 * @param totals 
-			 *	  试题数。
-			 */
-			public void setTotals(TextView totals) {
-				this.totals = totals;
-			}
-		}
 	}
 }

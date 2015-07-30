@@ -2,6 +2,7 @@ package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,12 +19,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.adapter.MyRecordTotalAdapter;
 import com.examw.test.app.AppContext;
 import com.examw.test.app.UserAccount;
 import com.examw.test.dao.PaperDao;
@@ -38,10 +37,12 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 	private static final String TAG = "MainMyFragment";
 	private final MainActivity mainActivity;
 	private final List<PaperDao.SubjectTotalModel> dataSource;
-	private final RecordAdapter adapter;
+	private final MyRecordTotalAdapter adapter;
 	private ListView listView;
 	private ReceiveBroadCast receiveBroadCast;
-	
+	/**
+	 * 广播ACTION
+	 */
 	public static final String BROADCAST_LOGIN_ACTION = "com.examw.test.login_success";
 	/**
 	 * 构造函数。
@@ -51,7 +52,7 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		Log.d(TAG, "初始化...");
 		this.mainActivity = mainActivity;
 		this.dataSource = new ArrayList<PaperDao.SubjectTotalModel>();
-		this.adapter = new RecordAdapter(this.mainActivity, this.dataSource);
+		this.adapter = new MyRecordTotalAdapter(this.mainActivity, this.dataSource);
 	}
 	/*
 	 * 加载布局。
@@ -72,7 +73,7 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		this.listView.setOnItemClickListener(this);
 		Log.d(TAG, "注册广播...");
 		//初始化广播接收器
-		this.receiveBroadCast = new ReceiveBroadCast();
+		this.receiveBroadCast = new ReceiveBroadCast(this.mainActivity);
 		//注册广播
 		this.mainActivity.registerReceiver(this.receiveBroadCast, new IntentFilter(BROADCAST_LOGIN_ACTION));
 		//返回
@@ -90,7 +91,10 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		//加载数据
 		new AsyncLoadTask(this.mainActivity).execute();
 	}
-	
+	/*
+	 * 重载销毁。
+	 * @see android.support.v4.app.Fragment#onDestroyView()
+	 */
 	@Override
 	public void onDestroyView() {
 		if(this.receiveBroadCast != null){
@@ -107,8 +111,14 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		if(this.dataSource.size() > position){
 			PaperDao.SubjectTotalModel data = this.dataSource.get(position);
-			Toast.makeText(this.mainActivity, data.toString(), Toast.LENGTH_SHORT).show();
-			///TODO:
+			if(data != null && data.getTotal() > 0){
+				//意图
+				Intent intent = new Intent(this.mainActivity, PaperRecordActivity.class);
+				intent.putExtra(PaperRecordActivity.PAPER_SUBJECT_CODE, data.getCode());
+				intent.putExtra(PaperRecordActivity.PAPER_SUBJECT_TITLE, String.format("%1$s(%2$d)", data.getName(), data.getTotal()));
+				//
+				this.startActivity(intent);
+			}
 		}
 	}
 	/**
@@ -118,17 +128,25 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 	 * @since 2015年7月14日
 	 */
 	private class ReceiveBroadCast extends BroadcastReceiver{
+		private final WeakReference<MainActivity> refActivity;
+		/**
+		 * 构造函数。
+		 * @param activity
+		 */
+		public ReceiveBroadCast(MainActivity activity){
+			Log.d(TAG, "初始化广播处理...");
+			this.refActivity = new WeakReference<MainActivity>(activity);
+		}
 		/*
 		 * 接收广播处理。
 		 * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
 		 */
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d(TAG, "接收广播处理...");
-			String action = intent.getAction();
-			if( StringUtils.equals(action, BROADCAST_LOGIN_ACTION) && mainActivity != null){
+			if(this.refActivity.get() != null && StringUtils.equals(intent.getAction(), BROADCAST_LOGIN_ACTION)){
+				Log.d(TAG, "接收广播处理...");
 				//加载用户信息
-				new AsyncLoadUserTask(mainActivity).execute();
+				new AsyncLoadUserTask(this.refActivity.get()).execute();
 			}
 		}
 	}
@@ -145,7 +163,7 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		 * @param activity
 		 */
 		public AsyncLoadUserTask(final MainActivity activity){
-			Log.d(TAG, "初始化");
+			Log.d(TAG, "初始化加载用户...");
 			this.refMainActivity = new WeakReference<MainActivity>(activity);
 		}
 		/*
@@ -155,7 +173,7 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		@Override
 		protected UserAccount doInBackground(Void... params) {
 			Log.d(TAG, "后台线程加载当前用户数据...");
-			MainActivity  activity = this.refMainActivity.get();
+			final MainActivity  activity = this.refMainActivity.get();
 			if(activity != null){
 				AppContext app = (AppContext)activity.getApplication();
 				if(app != null){
@@ -172,7 +190,7 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		protected void onPostExecute(UserAccount result) {
 			Log.d(TAG, "当前用户前台UI处理..." + result);
 			//加载fragment
-			MainActivity  activity = this.refMainActivity.get();
+			final MainActivity  activity = this.refMainActivity.get();
 			if(activity != null){
 				Fragment fragment = (result == null ? new MainMyNoLoginViewFragment(activity) : 
 					new MainMyUserViewFragment(result));
@@ -189,29 +207,31 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 	 * @author jeasonyoung
 	 * @since 2015年7月6日
 	 */
-	private class AsyncLoadTask extends AsyncTask<Void, Void, Void>{
-		private final PaperDao dao;
+	private class AsyncLoadTask extends AsyncTask<Void, Void, Object>{
+		private final WeakReference<Context> refContext;
 		/**
 		 * 构造函数。
 		 * @param context
 		 */
-		public AsyncLoadTask(final Context context){
+		public AsyncLoadTask(Context context){
 			Log.d(TAG, "初始化异步加载数据...");
-			this.dao = new PaperDao(context);
+			this.refContext = new WeakReference<Context>(context);
 		}
 		/*
 		 * 后台线程加载数据。
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
 		@Override
-		protected Void doInBackground(Void... params) {
-			Log.d(TAG, "后台线程加载数据...");
-			//1.清空数据源
-			dataSource.clear();
-			//2.查询数据
-			List<PaperDao.SubjectTotalModel> list = dao.totalPaperRecords();
-			if(list != null && list.size() > 0){
-				dataSource.addAll(list);
+		protected Object doInBackground(Void... params) {
+			try{
+				Log.d(TAG, "后台线程加载数据...");
+				if(this.refContext.get() != null){
+					final PaperDao dao = new PaperDao(this.refContext.get());
+					List<PaperDao.SubjectTotalModel> result = dao.totalPaperRecords();
+					return (result == null || result.size() == 0) ? null : result.toArray(new PaperDao.SubjectTotalModel[0]);
+				}
+			}catch(Throwable e){
+				Log.e(TAG, "后台线程加载数据异常:" + e.getMessage(), e);
 			}
 			return null;
 		}
@@ -220,125 +240,18 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(Object result) {
 			Log.d(TAG, "主线程UI处理...");
-			//1.更新数据适配器
-			adapter.notifyDataSetChanged();
-			//2.关闭等待
+			if(result != null){
+				//1.清空数据源
+				dataSource.clear();
+				//2.添加数据
+				dataSource.addAll(Arrays.asList((PaperDao.SubjectTotalModel[])result));
+				//3.更新数据适配器
+				adapter.notifyDataSetChanged();
+			}
+			//4.关闭等待
 			mainActivity.waitingViewDialog.cancel();
-		}
-	}
-	/**
-	 * 做题记录数据适配器。
-	 * 
-	 * @author jeasonyoung
-	 * @since 2015年7月6日
-	 */
-	private class RecordAdapter extends BaseAdapter{
-		private final Context context;
-		private final List<PaperDao.SubjectTotalModel> list;
-		/**
-		 * 构造函数。
-		 * @param context
-		 * 上下文。
-		 * @param list
-		 * 列表数据源。
-		 */
-		public RecordAdapter(final Context context, final List<PaperDao.SubjectTotalModel> list){
-			Log.d(TAG, "初始化数据适配器...");
-			this.context = context;
-			this.list = list;
-		}
-		/*
-		 * 获取行数据.
-		 * @see android.widget.Adapter#getCount()
-		 */
-		@Override
-		public int getCount() {
-			return this.list.size();
-		}
-		/*
-		 * 获取行数据对象。
-		 * @see android.widget.Adapter#getItem(int)
-		 */
-		@Override
-		public Object getItem(int position) {
-			return this.list.get(position);
-		}
-		/*
-		 * 获取行ID。
-		 * @see android.widget.Adapter#getItemId(int)
-		 */
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-		/*
-		 * 创建行。
-		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-		 */
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Log.d(TAG, "创建行..." + position);
-			ItemViewWrapper wrapper = null;
-			if(convertView == null){
-				Log.d(TAG, "新建行..." + position);
-				wrapper = new ItemViewWrapper();
-				//0.加载行布局
-				convertView = LayoutInflater.from(this.context).inflate(R.layout.ui_main_my_item, parent, false);
-				//1.科目
-				wrapper.setSubject((TextView)convertView.findViewById(R.id.my_item_subjectname));
-				//2.试题数
-				wrapper.setTotals((TextView)convertView.findViewById(R.id.my_item_totals));
-				//保存
-				convertView.setTag(wrapper);
-			}else {
-				Log.d(TAG, "复用行..." + position);
-				wrapper = (ItemViewWrapper)convertView.getTag();
-			}
-			//加载数据
-			PaperDao.SubjectTotalModel data = (PaperDao.SubjectTotalModel)this.getItem(position);
-			if(data != null && wrapper != null){
-				//1.科目
-				wrapper.getSubject().setText(data.getName());
-				//2.试题数
-				wrapper.getTotals().setText(String.valueOf(data.getTotal()));
-			}
-			return convertView;
-		}
-		//行视图包装类。
-		private class ItemViewWrapper{
-			private TextView subject,totals;
-			/**
-			 * 获取科目。
-			 * @return 科目。
-			 */
-			public TextView getSubject() {
-				return subject;
-			}
-			/**
-			 * 设置科目。
-			 * @param subject 
-			 *	  科目。
-			 */
-			public void setSubject(TextView subject) {
-				this.subject = subject;
-			}
-			/**
-			 * 获取试题数。
-			 * @return totals
-			 */
-			public TextView getTotals() {
-				return totals;
-			}
-			/**
-			 * 设置 totals
-			 * @param totals 
-			 *	  totals
-			 */
-			public void setTotals(TextView totals) {
-				this.totals = totals;
-			}
 		}
 	}
 }

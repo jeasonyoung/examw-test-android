@@ -142,6 +142,7 @@ public class PaperDao {
 		List<PaperInfoModel> list = new ArrayList<PaperDao.PaperInfoModel>();
 		SQLiteDatabase db = null;
 		try {
+			pageIndex = Math.max(pageIndex, 0);
 			//1.拼装查询字符串
 			StringBuilder sqlBuilder = new StringBuilder()
 			.append(" SELECT a.id, a.title, a.total, a.createTime, b.name AS subjectName FROM tbl_papers a ")

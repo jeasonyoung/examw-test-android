@@ -139,4 +139,9 @@
     <string name="main_paper_result_title">答题情况</string>
     <string name="main_paper_result_btn">查看试题</string>
     
+    <!-- 做题记录 -->
+    <string name="main_paper_record_desc">做题记录</string>
+    <string name="main_paper_record_yes">已交卷</string>
+    <string name="main_paper_record_no">未交卷</string>
+    
 </resources>

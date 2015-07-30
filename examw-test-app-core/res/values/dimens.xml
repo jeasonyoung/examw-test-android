@@ -57,4 +57,9 @@
     <dimen name="card_column_width">38dp</dimen>
     <dimen name="card_column_height">35dp</dimen>
     
+    <!-- 做题记录 -->
+    <dimen name="record_img_width">60dp</dimen>
+    <dimen name="record_img_height">60dp</dimen>
+    
+    
 </resources>

@@ -28,7 +28,6 @@
     <ListView android:id="@+id/list_more_menus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_top"
         android:layout_marginBottom="@dimen/list_bottom"
         android:background="@color/white" 
         android:cacheColorHint="@android:color/transparent"
