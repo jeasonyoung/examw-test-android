@@ -144,4 +144,9 @@
     <string name="main_paper_record_yes">已交卷</string>
     <string name="main_paper_record_no">未交卷</string>
     
+    <string name="main_paper_record_delete_title">确认</string>
+    <string name="main_paper_record_delete_msg">确认删除?</string>
+    <string name="main_paper_record_delete_btnSubmit">删除</string>
+    <string name="main_paper_record_delete_btnCancel">取消</string>
+    
 </resources>

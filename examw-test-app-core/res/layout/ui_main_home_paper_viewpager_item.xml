@@ -3,17 +3,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
    	android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/list_top"
-    android:layout_marginBottom="@dimen/list_bottom"
     android:gravity="center_vertical"
-    android:minHeight="@dimen/list_min_cellHeight"
-    android:background="@color/white"
     android:orientation="vertical" >
     
     <!-- 试卷名称 -->
     <TextView android:id="@+id/home_paper_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
         android:gravity="center_vertical"
         android:textColor="@color/black"
         android:textSize="@dimen/list_l_size" 

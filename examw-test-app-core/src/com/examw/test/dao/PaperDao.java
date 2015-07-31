@@ -339,6 +339,7 @@ public class PaperDao {
 		List<PaperRecordModel> list = new ArrayList<PaperRecordModel>();
 		SQLiteDatabase db = null;
 		try {
+			pageIndex = Math.max(pageIndex, 0);
 			//初始化SQL
 			StringBuilder sqlBuilder = new StringBuilder()
 			.append(" SELECT a.id,a.paperId,b.title,a.status,a.score,a.rights,a.useTimes,a.lastTime ")

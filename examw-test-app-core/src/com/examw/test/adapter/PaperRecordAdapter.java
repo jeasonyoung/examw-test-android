@@ -2,9 +2,6 @@ package com.examw.test.adapter;
 
 import java.util.List;
 
-import com.examw.test.R;
-import com.examw.test.model.PaperRecordModel;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.examw.test.R;
+import com.examw.test.model.PaperRecordModel;
 
 /**
  * 试卷记录数据适配器。
@@ -23,7 +23,6 @@ public class PaperRecordAdapter extends BaseAdapter{
 	private static final String TAG = "PaperRecordAdapter";
 	private final LayoutInflater mInflater;
 	private final List<PaperRecordModel> list;
-	
 	/**
 	 * 构造函数。
 	 * @param context
@@ -128,22 +127,26 @@ public class PaperRecordAdapter extends BaseAdapter{
 				}
 				//5.用时
 				if(this.useTimeView != null){
-					final int h = ((PaperRecordModel)data).getUseTimes() / 60 / 60;
-					final int m = ((PaperRecordModel)data).getUseTimes() / 60 % 60;
-					final int s = ((PaperRecordModel)data).getUseTimes() % 60;
-					
+					final int times = ((PaperRecordModel)data).getUseTimes();
 					StringBuilder sbBuilder = new StringBuilder();
-					if(h > 0){
-						sbBuilder.append(h + "h");
+					if(times > 0){
+						final int h = times / 60 / 60;
+						final int m = times / 60 % 60;
+						final int s = times % 60;
+						
+						if(h > 0){
+							sbBuilder.append(h + "h");
+						}
+						if(m > 0){
+							sbBuilder.append(m + "'");
+						}
+						if(s > 0){
+							sbBuilder.append(s + "''");
+						}
+						this.useTimeView.setText(String.format("共用时:%s", sbBuilder));
+					}else {
+						this.useTimeView.setText("");
 					}
-					if(m > 0){
-						sbBuilder.append(m + "'");
-					}
-					if(s > 0){
-						sbBuilder.append(s + "''");
-					}
-					
-					this.useTimeView.setText(String.format("共用时:%s''", sbBuilder));
 				}
 				//6.时间
 				if(this.timeView != null){

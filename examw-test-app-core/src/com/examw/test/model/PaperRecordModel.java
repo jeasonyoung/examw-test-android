@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
+
 /**
  * 试卷记录数据模型。
  * 
@@ -153,5 +155,14 @@ public class PaperRecordModel implements Serializable{
 	 */
 	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
+	}
+	/*
+	 * 重载。
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 }

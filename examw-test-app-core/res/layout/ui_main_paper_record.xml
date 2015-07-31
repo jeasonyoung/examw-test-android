@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/grey"
     android:orientation="vertical" >
     
     <!-- banner -->
@@ -13,22 +13,16 @@
         layout="@layout/top_head" />
     
     <!-- 记录列表 -->
-     <com.handmark.pulltorefresh.library.PullToRefreshListView  
-        android:id="@+id/list_main_paper_record"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/list_bottom"
-        android:background="@color/gray"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@drawable/topic_driver"
-        android:dividerPadding="2dp"
-        android:drawSelectorOnTop="false"
-        android:fadingEdge="none"
-        android:fastScrollEnabled="false" 
-        android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
-        android:smoothScrollbar="true"
-        android:scrollbars="none"
-        android:visibility="visible"/>
+     <com.handmark.pulltorefresh.library.PullToRefreshListView  android:id="@+id/list_main_paper_record"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginBottom="@dimen/list_bottom"
+         android:background="@color/white"
+         android:cacheColorHint="@android:color/transparent"
+         android:divider="@drawable/topic_driver"
+         android:drawSelectorOnTop="false"
+         android:fadingEdge="none"
+         android:scrollbars="none"
+         android:visibility="visible"/>
     
 </LinearLayout>

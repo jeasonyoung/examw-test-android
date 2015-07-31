@@ -120,7 +120,7 @@ public class PaperListAdapter extends BaseAdapter{
 				}
 				//3.试题数
 				if(this.totalView != null){
-					this.totalView.setText("科目:" + ((PaperInfoModel)data).getTotal());
+					this.totalView.setText("试题数:" + ((PaperInfoModel)data).getTotal());
 				}
 				//4.发布时间
 				if(this.timeView != null){

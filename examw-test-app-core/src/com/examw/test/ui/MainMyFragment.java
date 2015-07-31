@@ -115,7 +115,8 @@ public class MainMyFragment extends Fragment implements AdapterView.OnItemClickL
 				//意图
 				Intent intent = new Intent(this.mainActivity, PaperRecordActivity.class);
 				intent.putExtra(PaperRecordActivity.PAPER_SUBJECT_CODE, data.getCode());
-				intent.putExtra(PaperRecordActivity.PAPER_SUBJECT_TITLE, String.format("%1$s(%2$d)", data.getName(), data.getTotal()));
+				intent.putExtra(PaperRecordActivity.PAPER_SUBJECT_NAME, data.getName());
+				intent.putExtra(PaperRecordActivity.PAPER_SUBJECT_TOTALS, data.getTotal());
 				//
 				this.startActivity(intent);
 			}

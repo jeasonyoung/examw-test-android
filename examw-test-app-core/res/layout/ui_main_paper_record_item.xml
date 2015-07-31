@@ -4,12 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/list_top"
-    android:background="@color/white"
-    android:gravity="center_vertical|center_horizontal"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
     
     <!--  左边图片 -->
-    <ImageView 
+    <ImageView
         android:layout_width="@dimen/record_img_width"
         android:layout_height="@dimen/record_img_height"
         android:layout_marginLeft="@dimen/list_left"
@@ -24,9 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/img_text_padding"
         android:layout_marginStart="@dimen/img_text_padding"
-        android:layout_marginRight="@dimen/list_left"
-        android:layout_marginEnd="@dimen/list_left"
-        android:background="@color/transparent"
         android:orientation="vertical">
         
         <!-- 1.标题 -->
@@ -40,14 +35,14 @@
         <TextView android:id="@+id/paper_record_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_top"
+            android:paddingTop="@dimen/padding_top"
             android:textColor="@color/black"
             android:textSize="@dimen/list_m_size"/>
         
         <LinearLayout 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_top"
+            android:layout_marginTop="@dimen/padding_top"
             android:background="@color/transparent"
             android:orientation="horizontal">
             
@@ -82,9 +77,8 @@
         <TextView android:id="@+id/paper_record_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_top"
+            android:paddingTop="@dimen/padding_top"
             android:textColor="@color/black"
             android:textSize="@dimen/list_m_size"/>
-        
     </LinearLayout>
 </LinearLayout>
