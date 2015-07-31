@@ -437,6 +437,17 @@ public class PaperItemModel implements Serializable {
 		public int getValue() {
 			return value;
 		}
+		/**
+		 * 类型转换
+		 * @param value
+		 * @return
+		 */
+		public static ItemType parse(int value){
+			for(ItemType type : ItemType.values()){
+				if(type.getValue() == value) return type;
+			}
+			return null;
+		}
 		/*
 		 * 重载。
 		 * @see java.lang.Enum#toString()
@@ -486,6 +497,17 @@ public class PaperItemModel implements Serializable {
 		 */
 		public int getValue() {
 			return value;
+		}
+		/**
+		 * 类型转换
+		 * @param value
+		 * @return
+		 */
+		public static ItemJudgeAnswer parse(int value){
+			for(ItemJudgeAnswer type : ItemJudgeAnswer.values()){
+				if(type.getValue() == value) return type; 
+			}
+			return null;
 		}
 		/*
 		 * 重载。

@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.examw.test.R;
-import com.examw.test.adapter.PaperItemsAdapter.PaperItemOptModel;
+import com.examw.test.support.ItemModelSupport.PaperItemOptModel;
 
 /**
  * 试题选项。

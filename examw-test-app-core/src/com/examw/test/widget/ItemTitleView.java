@@ -1,14 +1,14 @@
 package com.examw.test.widget;
 
-import com.examw.test.R;
-import com.examw.test.adapter.PaperItemsAdapter.PaperItemTitleModel;
-
 import android.content.Context;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.examw.test.R;
+import com.examw.test.support.ItemModelSupport.PaperItemTitleModel;
 
 /**
  *  试题标题。
