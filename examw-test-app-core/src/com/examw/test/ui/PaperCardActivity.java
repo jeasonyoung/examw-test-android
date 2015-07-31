@@ -17,9 +17,9 @@ import com.examw.test.R;
 import com.examw.test.adapter.CardSectionAdapter;
 import com.examw.test.adapter.CardSectionItemAdapter;
 import com.examw.test.app.AppContext;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate.AnswerCardItemModel;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate.AnswerCardSectionModel;
+import com.examw.test.dao.IPaperItemDataDelegate;
+import com.examw.test.dao.IPaperItemDataDelegate.AnswerCardItemModel;
+import com.examw.test.dao.IPaperItemDataDelegate.AnswerCardSectionModel;
 import com.examw.test.widget.WaitingViewDialog;
 /**
  * 试卷答题卡Activity。
@@ -140,9 +140,8 @@ public class PaperCardActivity extends Activity implements View.OnClickListener,
 		protected Object[] doInBackground(Void... params) {
 			try{
 				Log.d(TAG, "异步线程加载答题卡数据...");
-				//boolean display = (Boolean)params[0];
 				//数据接口
-				final PaperDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
+				final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
 				if(dataDelegate != null){
 					//初始化分组
 					final List<AnswerCardSectionModel> sectionModels = new ArrayList<AnswerCardSectionModel>();

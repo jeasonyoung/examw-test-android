@@ -5,9 +5,6 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.examw.test.R;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -19,6 +16,9 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import com.examw.test.R;
+import com.examw.test.dao.IPaperItemDataDelegate;
 
 /**
  * 全局应用程序类：用于保存和调用全局应用配置及访问网络数据
@@ -44,20 +44,18 @@ public class AppContext extends Application {
 	//电话管理
 	private TelephonyManager telephonyManager;
 	//试卷数据委托。
-	private static  PaperDataDelegate paperDataDelegate;
-	
+	private static IPaperItemDataDelegate paperDataDelegate;
 	/**
 	 * 网络类型枚举。
 	 * @author jeasonyoung
 	 * @since 2015年6月25日
 	 */
 	public enum NetType { None,Mobile,WiFi,}
-	
 	/**
 	 * 获取试卷数据委托
 	 * @return 试卷数据委托
 	 */
-	public static PaperDataDelegate getPaperDataDelegate() {
+	public static IPaperItemDataDelegate getPaperDataDelegate() {
 		return paperDataDelegate;
 	}
 	/**
@@ -65,7 +63,7 @@ public class AppContext extends Application {
 	 * @param paperDataDelegate 
 	 *	  试卷数据委托
 	 */
-	public static final synchronized void setPaperDataDelegate(PaperDataDelegate paperDataDelegate) {
+	public static final synchronized void setPaperDataDelegate(IPaperItemDataDelegate paperDataDelegate) {
 		AppContext.paperDataDelegate = paperDataDelegate;
 	}
 	/**

@@ -149,4 +149,8 @@
     <string name="main_paper_record_delete_btnSubmit">删除</string>
     <string name="main_paper_record_delete_btnCancel">取消</string>
     
+    <string name="main_paper_record_alert_title">提示</string>
+    <string name="main_paper_record_alert_msg">是否继续考试?</string>
+    <string name="main_paper_record_alert_btnCancel">否</string>
+    <string name="main_paper_record_alert_btnSubmit">是</string>
 </resources>

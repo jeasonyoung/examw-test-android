@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +20,9 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.adapter.PaperRecordAdapter;
+import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao;
+import com.examw.test.dao.RecordItemData;
 import com.examw.test.model.PaperRecordModel;
 import com.examw.test.widget.WaitingViewDialog;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -234,13 +237,49 @@ public class PaperRecordActivity extends Activity implements View.OnClickListene
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Log.d(TAG, "选中行事件处理..." + position);
-		if(this.dataSource.size() > position){
-			final PaperRecordModel model = this.dataSource.get(position);
+		final int pos = position - 1;
+		Log.d(TAG, "选中行事件处理..." + pos);
+		if(this.dataSource.size() > pos){
+			final PaperRecordModel model = this.dataSource.get(pos);
 			if(model == null)return;
-			///TODO:
-			
+			if(model.isStatus()){//试卷已做完
+				this.goViewPaper(model.getPaperId(), model.getId(), false);
+				return;
+			}
+			//未做完
+			new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_info)
+			.setTitle(R.string.main_paper_record_alert_title)
+			.setMessage(R.string.main_paper_record_alert_msg)
+			.setNegativeButton(R.string.main_paper_record_alert_btnCancel, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Log.d(TAG, "不继续考试...");
+					dialog.dismiss();
+					goViewPaper(model.getPaperId(), model.getId(), false);
+				}
+			})
+			.setPositiveButton(R.string.main_paper_record_alert_btnSubmit, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Log.d(TAG, "不继续考试...");
+					dialog.dismiss();
+					goViewPaper(model.getPaperId(), model.getId(), true);
+				}
+			}).show();
 		}
+	}
+	//查看试题
+	private void goViewPaper(String paperId, String paperRecordId, boolean isContinue){
+		Log.d(TAG, "查看试题[paperId="+paperId+"][paperRecordId="+paperRecordId+"]" + isContinue + "....");
+		//设置共享数据源
+		AppContext.setPaperDataDelegate(new RecordItemData(this, paperId, paperRecordId, isContinue));
+		//意图
+		Intent intent = new Intent(this, PaperActivity.class);
+		intent.putExtra(PaperActivity.PAPER_ITEM_ISDISPLAY_ANSWER, !isContinue);
+		this.startActivity(intent);
+		//关闭当前activity
+		this.finish();
 	}
 	/**
 	 * 异步加载数据。

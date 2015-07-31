@@ -1,6 +1,5 @@
 package com.examw.test.ui;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +19,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -30,7 +28,8 @@ import android.widget.Toast;
 import com.examw.test.R;
 import com.examw.test.adapter.PaperAdapter;
 import com.examw.test.app.AppContext;
-import com.examw.test.dao.PaperDao.ItemStatus;
+import com.examw.test.dao.IPaperItemDataDelegate;
+import com.examw.test.dao.IPaperItemDataDelegate.SubmitResultHandler;
 import com.examw.test.model.PaperItemModel;
 import com.examw.test.support.CountdownViewSupport;
 import com.examw.test.widget.WaitingViewDialog;
@@ -330,7 +329,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 						return;
 					}
 					//
-					final PaperDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
+					final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
 					if(dataDelegate == null){
 						Log.d(TAG, "数据委托不存在!");
 						return;
@@ -413,11 +412,10 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 			protected Boolean doInBackground(Void... params) {
 				try {
 					Log.d(TAG, "后台线程进行交卷处理...");
-					final PaperDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
+					final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
 					if(dataDelegate != null){
 						//提交试卷
-						dataDelegate.submitPaper(useTimes, new PaperDataDelegate.SubmitResultHandler(){
-							
+						dataDelegate.submitPaper(useTimes, new SubmitResultHandler(){
 							@Override
 							public void hanlder(String paperRecordId) {
 								recordId = paperRecordId;
@@ -508,7 +506,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	 */
 	private class LoadDataAsyncTask extends AsyncTask<Void, Void, Object>{
 		private int totalTime = 0;
-		private final int order;
+		private int order;
 		/**
 		 * 构造函数。
 		 * @param order
@@ -526,7 +524,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 			try{
 				Log.d(TAG, "后台线程异步加载处理...");
 				//2.数据监听者类
-			    final PaperDataDelegate dataDelegate =  AppContext.getPaperDataDelegate();
+			    final IPaperItemDataDelegate dataDelegate =  AppContext.getPaperDataDelegate();
 				if(dataDelegate == null){
 					Log.d(TAG, "未获取到试卷数据委托!");
 					return null;
@@ -537,6 +535,9 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 				Log.d(TAG, "准备加载试题数据...");
 				//4.2添加数据
 				List<PaperItemModel> list = dataDelegate.dataSourceOfPaperViews();
+				//获取当前试题
+				this.order = Math.max(this.order, dataDelegate.currentOrderOfPaperView());
+				//返回数据
 				return (list == null || list.size() == 0) ? null : list.toArray(new PaperItemModel[0]);
 			}catch(Exception e){
 				Log.e(TAG, "后台线程异步加载异常:" + e.getMessage(), e);
@@ -578,181 +579,6 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 					}
 				});
 			 }
-		}
-	}
-	/**
-	 * 试卷数据监听者。
-	 * 
-	 * @author jeasonyoung
-	 * @since 2015年7月20日
-	 */
-	public static abstract class PaperDataDelegate implements Serializable{
-		private static final long serialVersionUID = 1L;
-		/**
-		 * 计算试题记录ID。
-		 * @param itemModel
-		 * 试题模型。
-		 * @return
-		 * 试题记录ID(id + "$" + index)
-		 */
-		protected final String createItemId(PaperItemModel itemModel){
-			if(itemModel != null){
-				return itemModel.getId() + "$" + itemModel.getIndex();
-			}
-			return null;
-		}
-		/**
-		 * 加载数据源(异步线程调用)。
-		 * @return
-		 * 试题集合。
-		 */
-	    public abstract	List<PaperItemModel> dataSourceOfPaperViews() throws Exception;
-		/**
-		 * 加载试题答案(异步线程调用)。
-		 * @param itemModel
-		 * 试题。
-		 * @return 记录的答案
-		 */
-	    public abstract String loadMyAnswer(PaperItemModel itemModel) throws Exception;
-		/**
-		 * 加载答题卡数据(异步线程调用)
-		 * @param cardSections
-		 * @param cardSectionItems
-		 * @throws Exception
-		 */
-	    public abstract void loadAnswerCardData(final List<AnswerCardSectionModel> cardSections, final SparseArray<AnswerCardItemModel[]> cardSectionItems) throws Exception;
-		/**
-		 *加载当前试题题序。
-		 * @return
-		 * 题序。
-		 */
-		public int currentOrderOfPaperView() throws Exception {
-			return 0;
-		}
-		/**
-		 * 获取考试时长(分钟)。
-		 * @return
-		 * 考试时长(分钟)。
-		 */
-		public int timeOfPaperView() throws Exception {
-			return -1;
-		}
-		/**
-		 * 更新做题记录到SQL(异步线程中调用)
-		 * @param itemModel
-		 * 试题。
-		 * @param myAnswers
-		 * 答案。
-		 * @param useTimes
-		 * 用时。
-		 */
-		public void updateRecordAnswer(PaperItemModel itemModel, String myAnswers, int useTimes) throws Exception {
-			
-		}
-		/**
-		 * 更新收藏记录(异步线程中被调用)。
-		 * @param itemModel
-		 * 试题。
-		 * @return
-		 * true - 已收藏, false - 未收藏。
-		 */
-		public boolean updateFavorite(PaperItemModel itemModel) throws Exception {
-			return false;
-		}
-		/**
-		 * 交卷处理。
-		 * @param useTimes
-		 * 用时。
-		 * @param handler
-		 * 交卷结果处理。
-		 */
-		public void submitPaper(int useTimes, SubmitResultHandler handler) throws Exception {
-			
-		}
-		/**
-		 * 交卷结果处理。
-		 * 
-		 * @author jeasonyoung
-		 * @since 2015年7月20日
-		 */
-		public interface SubmitResultHandler{
-			/**
-			 * 处理。
-			 * @param paperRecordId
-			 * 试卷记录ID。
-			 */
-			void hanlder(String paperRecordId);
-		}
-		/**
-		 * 答题卡分组数据模型。
-		 * 
-		 * @author jeasonyoung
-		 * @since 2015年7月21日
-		 */
-		public final class AnswerCardSectionModel implements Serializable{
-			private static final long serialVersionUID = 1L;
-			private String title,desc;
-			/**
-			 * 构造函数。
-			 * @param title
-			 * 结构名称。
-			 * @param desc
-			 * 结构描述。
-			 */
-			public AnswerCardSectionModel(String title,String desc){
-				this.title = title;
-				this.desc = desc;
-			}
-			/**
-			 * 获取结构名称。
-			 * @return 结构名称。
-			 */
-			public String getTitle() {
-				return title;
-			}
-			/**
-			 * 获取结构描述。
-			 * @return 结构描述。
-			 */
-			public String getDesc() {
-				return desc;
-			}
-		}
-		/**
-		 * 答案卡试题数据模型。
-		 * 
-		 * @author jeasonyoung
-		 * @since 2015年7月21日
-		 */
-		public final class AnswerCardItemModel implements Serializable{
-			private static final long serialVersionUID = 1L;
-			private int order;
-			/**
-			 * 构造函数。
-			 * @param order
-			 * 题序。
-			 * @param status
-			 * 状态。
-			 */
-			public AnswerCardItemModel(int order, ItemStatus status){
-				this.order = order;
-				this.status = status;
-			}
-			/**
-			 * 是否显示答案。
-			 */
-			public boolean displayAnswer;
-			/**
-			 * 试题状态。
-			 */
-			public ItemStatus status;
-			/**
-			 * 获取题序。
-			 * @return 题序。
-			 */
-			public int getOrder() {
-				return order;
-			}
 		}
 	}
 }

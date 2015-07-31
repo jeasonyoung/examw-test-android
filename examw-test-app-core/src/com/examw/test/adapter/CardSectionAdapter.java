@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.examw.test.R;
 import com.examw.test.adapter.CardSectionItemAdapter.CardItemClickListener;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate.AnswerCardItemModel;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate.AnswerCardSectionModel;
+import com.examw.test.dao.IPaperItemDataDelegate.AnswerCardItemModel;
+import com.examw.test.dao.IPaperItemDataDelegate.AnswerCardSectionModel;
 import com.examw.test.widget.ListGridView;
 
 /**

@@ -1,6 +1,5 @@
 package com.examw.test.dao;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +13,6 @@ import android.util.SparseArray;
 import com.examw.test.dao.PaperDao.ItemStatus;
 import com.examw.test.model.PaperItemModel;
 import com.examw.test.ui.MainWrongFragment.WrongOption;
-import com.examw.test.ui.PaperActivity;
 
 /**
  * 错题模块试题数据接口实现。
@@ -22,18 +20,12 @@ import com.examw.test.ui.PaperActivity;
  * @author jeasonyoung
  * @since 2015年7月30日
  */
-public class WrongItemData extends PaperActivity.PaperDataDelegate {
+public class WrongItemData extends PaperItemDataDelegate {
 	private static final long serialVersionUID = 1L;
 	private static final String TAG = "WrongItemData";
 	
-	private final WeakReference<Context> refContext;
 	private final String subjectCode;
 	private final WrongOption option;
-	
-	private List<PaperItemModel> items;
-	private List<AnswerCardSectionModel> cardSections;
-	private SparseArray<AnswerCardItemModel[]> cardItemsMap;
-	private PaperDao dao;
 	
 	/**
 	 * 构造函数。
@@ -42,8 +34,8 @@ public class WrongItemData extends PaperActivity.PaperDataDelegate {
 	 * @param option
 	 */
 	public WrongItemData(Context context,String subjectCode, WrongOption option){
+		super(context, null);
 		Log.d(TAG, "初始化...");
-		this.refContext = new WeakReference<Context>(context);
 		this.subjectCode = subjectCode;
 		this.option = option;
 	}
@@ -57,20 +49,16 @@ public class WrongItemData extends PaperActivity.PaperDataDelegate {
 		if(this.items != null && this.items.size() > 0) return this.items;
 		//加载数据
 		this.items = new ArrayList<PaperItemModel>();
-		//惰性加载
-		if(this.dao == null){
-			this.dao = new PaperDao(this.refContext.get());
-		}
 		//
 		switch(this.option){
 			case Wrong:{//错题
 				Log.d(TAG, "加载错题...");
-				this.items = this.dao.loadWrongItems(this.subjectCode);
+				this.items = this.getDao().loadWrongItems(this.subjectCode);
 				break;
 			}
 			case Favorite:{//收藏
 				Log.d(TAG, "加载收藏...");
-				this.items = this.dao.loadFavoriteItems(this.subjectCode);
+				this.items = this.getDao().loadFavoriteItems(this.subjectCode);
 				break;
 			}
 		}
@@ -125,12 +113,8 @@ public class WrongItemData extends PaperActivity.PaperDataDelegate {
 	public String loadMyAnswer(PaperItemModel itemModel) throws Exception {
 		Log.d(TAG, "加载["+this.option+"]试题答案..."  + this.createItemId(itemModel));
 		if(itemModel != null && StringUtils.isNotBlank(itemModel.getPaperRecordId())){
-			//惰性加载
-			if(this.dao == null){
-				this.dao = new PaperDao(this.refContext.get());
-			}
 			//加载试题答案
-			return this.dao.loadRecodAnswers(itemModel.getPaperRecordId(), itemModel);
+			return this.getDao().loadRecodAnswers(itemModel.getPaperRecordId(), itemModel);
 		}
 		return null;
 	}
@@ -142,12 +126,8 @@ public class WrongItemData extends PaperActivity.PaperDataDelegate {
 	public void updateRecordAnswer(PaperItemModel itemModel, String myAnswers, int useTimes) throws Exception {
 		Log.d(TAG, "更新["+this.option+"]做题记录..." + this.createItemId(itemModel));
 		if(itemModel != null && StringUtils.isNotBlank(itemModel.getPaperRecordId())){
-			//惰性加载
-			if(this.dao == null){
-				this.dao = new PaperDao(this.refContext.get());
-			}
 			//更新做题记录
-			this.dao.addItemRecord(itemModel.getPaperRecordId(), itemModel, myAnswers, useTimes);
+			this.getDao().addItemRecord(itemModel.getPaperRecordId(), itemModel, myAnswers, useTimes);
 		}
 	}
 	/*
@@ -158,14 +138,10 @@ public class WrongItemData extends PaperActivity.PaperDataDelegate {
 	public boolean updateFavorite(PaperItemModel itemModel) throws Exception {
 		Log.d(TAG, "更新["+this.option+"]收藏..." + this.createItemId(itemModel));
 		if(StringUtils.isNotBlank(this.subjectCode) && itemModel != null){
-			//惰性加载
-			if(this.dao == null){
-				this.dao = new PaperDao(this.refContext.get());
-			}
 			//更新收藏
-			return this.dao.updateFavoriteWithSubject(this.subjectCode, itemModel);
+			return this.getDao().updateFavoriteWithSubject(this.subjectCode, itemModel);
 		}
-		return super.updateFavorite(itemModel);
+		return false;
 	}
 	/*
 	 * 加载答题卡数据(异步线程中被调用)
@@ -194,11 +170,7 @@ public class WrongItemData extends PaperActivity.PaperDataDelegate {
 								 if(itemModel == null || StringUtils.isBlank(itemModel.getPaperRecordId())){
 									 continue;
 								 }
-								//惰性加载
-								if(this.dao == null){
-									this.dao = new PaperDao(this.refContext.get());
-								}
-								 models[k].status = this.dao.exitRecord(itemModel.getPaperRecordId(), itemModel);
+								 models[k].status = this.getDao().exitRecord(itemModel.getPaperRecordId(), itemModel);
 							 }
 						 }
 					}

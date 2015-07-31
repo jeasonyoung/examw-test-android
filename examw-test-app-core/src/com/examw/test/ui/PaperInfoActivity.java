@@ -320,7 +320,7 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 					}
 				}
 				//设置试卷数据委托
-				AppContext.setPaperDataDelegate(new PaperItemData(PaperInfoActivity.this, paperModel, recordModel, this.type));
+				AppContext.setPaperDataDelegate(new PaperItemData(PaperInfoActivity.this, paperModel, recordModel.getId(), this.type));
 				return true;
 			}catch(Exception e){
 				Log.d(TAG, "跳转后台线程处理异常:"+ e.getMessage(), e);

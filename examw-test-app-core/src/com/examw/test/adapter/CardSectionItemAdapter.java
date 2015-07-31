@@ -12,7 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.examw.test.R;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate.AnswerCardItemModel;
+import com.examw.test.dao.IPaperItemDataDelegate.AnswerCardItemModel;
 
 /**
  * 答题卡分组内容数据适配器。

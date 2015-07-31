@@ -18,9 +18,9 @@ import android.widget.BaseAdapter;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
+import com.examw.test.dao.IPaperItemDataDelegate;
 import com.examw.test.model.PaperItemModel;
 import com.examw.test.model.PaperItemModel.ItemType;
-import com.examw.test.ui.PaperActivity.PaperDataDelegate;
 import com.examw.test.widget.ItemAnalysisView;
 import com.examw.test.widget.ItemOptionView;
 import com.examw.test.widget.ItemTitleView;
@@ -93,7 +93,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 						Log.d(TAG, "异步线程加载试题数据..." + this.pos);
 						//加载我的答案
 						String myAnswers =  null;
-						final PaperDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
+						final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
 						if(this.display && this.model != null && dataDelegate != null){
 							myAnswers = dataDelegate.loadMyAnswer(this.model);
 						}
