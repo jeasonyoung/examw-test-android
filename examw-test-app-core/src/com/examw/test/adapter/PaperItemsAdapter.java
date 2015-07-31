@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.lang3.StringUtils;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +34,12 @@ import com.examw.test.widget.ItemTitleView;
  */
 public class PaperItemsAdapter extends BaseAdapter {
 	private static final String TAG = "PaperItemsAdapter";
-	private static final SparseArray<PaperItemTitleModel[]> itemCache = new SparseArray<PaperItemTitleModel[]>();
+	private static final ConcurrentMap<Integer,PaperItemTitleModel[]> itemCache = new ConcurrentHashMap<Integer, PaperItemTitleModel[]>();
 	private final LayoutInflater mInflater;
 	private PaperItemTitleModel [] itemModels;
 	private boolean displayAnswer;
 	/**
-	 * 构造函数。
+	 * 构造函数，
 	 * @param context
 	 */
 	public PaperItemsAdapter(Context context){
@@ -47,7 +48,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		this.itemModels = new PaperItemTitleModel[0];
 	}
 	//加载试题缓存数据模型
-	private void loadItemCacheModel(int itemOrder){
+	private synchronized void loadItemCacheModel(int itemOrder){
 		final PaperItemTitleModel [] models = itemCache.get(itemOrder);
 		if(models != null && models.length > 0){
 			Log.d(TAG, "从缓存中加载试题数据[" +itemOrder+ "]...");
@@ -65,44 +66,48 @@ public class PaperItemsAdapter extends BaseAdapter {
 	 */
 	public void loadItemModel(int itemOrder, PaperItemModel itemModel,boolean displayAnswer) {
 		Log.d(TAG, "加载试题["+itemOrder+"]数据...");
-		if((this.displayAnswer == displayAnswer) && itemCache.indexOfKey(itemOrder) > -1){
+		if((this.displayAnswer == displayAnswer) && itemCache.containsKey(itemOrder)){
 			this.loadItemCacheModel(itemOrder);
 			return;
 		}
 		//设置是否显示答案
 		this.displayAnswer = displayAnswer;
+		//清空缓存数据
+		if(itemCache.size() > 0) itemCache.clear();
 		//异步线程构造试题数据集合
-		new AsyncTask<Object, Void, Object>() {
-			private int pos;
-			private PaperItemModel model;
-			private boolean display;
+		new AsyncTask<Object, Void, Integer>() {
 			/*
 			 * 异步线程后台处理数据。
 			 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 			 */
 			@Override
-			protected Object doInBackground(Object... params) {
+			protected Integer doInBackground(Object... params) {
 				try{
 					//题序
-					this.pos = Math.max((Integer)params[0], 0);
+					final int pos = Math.max((Integer)params[0], 0);
 					//试题数据
-					this.model = (PaperItemModel)params[1];
+					final PaperItemModel model = (PaperItemModel)params[1];
 					//是否显示
-					this.display = (Boolean)params[2];
-					if(this.model != null){
-						Log.d(TAG, "异步线程加载试题数据..." + this.pos);
+					final boolean display = (Boolean)params[2];
+					if(model != null){
+						Log.d(TAG, "异步线程加载试题数据..." + pos);
 						//加载我的答案
 						String myAnswers =  null;
 						final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
-						if(this.display && this.model != null && dataDelegate != null){
-							myAnswers = dataDelegate.loadMyAnswer(this.model);
+						if(display && model != null && dataDelegate != null){
+							myAnswers = dataDelegate.loadMyAnswer(model);
 						}
 						//创建试题数据模型
-						List<PaperItemTitleModel> models = createItemModels(this.pos, this.model, this.display, myAnswers);
-						return (models == null || models.size() == 0) ? null : models.toArray(new PaperItemTitleModel[0]);
+						final List<PaperItemTitleModel> modelArrays = createItemModels(pos, model, display, myAnswers);
+						if(modelArrays != null && modelArrays.size() > 0){
+							//储存缓存
+							itemCache.put(pos, modelArrays.toArray(new PaperItemTitleModel[0]));
+							//
+							return pos;
+						}
 					}
 				}catch(Throwable e){
-					Log.e(TAG, "异步线程加载试题["+this.pos+"]数据异常:" + e.getMessage() , e);
+					Log.e(TAG, "异步线程加载试题数据异常:" + e.getMessage() , e);
 				}
 				return null;
 			}
@@ -111,14 +116,12 @@ public class PaperItemsAdapter extends BaseAdapter {
 			 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 			 */
 			@Override
-			protected void onPostExecute(Object result) {
-				Log.d(TAG, "完成试题["+ this.pos +"]数据模型创建..." + (result != null));
+			protected void onPostExecute(Integer result) {
+				Log.d(TAG, "完成试题数据模型创建..." + (result != null));
 				//更新数据
 				if(result != null){
-					//储存缓存
-					itemCache.put(this.pos, (PaperItemTitleModel[])result);
 					//刷新显示
-					loadItemCacheModel(this.pos);
+					loadItemCacheModel(result);
 				}
 			}
 		}.execute(itemOrder, itemModel, displayAnswer);
@@ -129,7 +132,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getCount() {
-		return (this.itemModels == null) ? 0 : this.itemModels.length;
+		return (this.itemModels == null) ? -1 : this.itemModels.length;
 	}
 	/*
 	 * 获取试题数据模型。
@@ -137,7 +140,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 	 */
 	@Override
 	public Object getItem(int position) {
-		return (this.itemModels == null) ? null : this.itemModels[position];
+		return  this.getCount() > position ? this.itemModels[position] :  null;
 	}
 	/*
 	 * 获取试题行ID。
@@ -148,7 +151,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		return position;
 	}
 	//创建试题数据模型
-	private synchronized List<PaperItemTitleModel> createItemModels(int order, PaperItemModel itemModel, boolean displayAnswer, String myAnswers){
+	private static synchronized List<PaperItemTitleModel> createItemModels(int order, PaperItemModel itemModel, boolean displayAnswer, String myAnswers){
 		Log.d(TAG, "创建试题数据模型");
 		if(itemModel != null  && itemModel.getType() != null && itemModel.getType() >= 0){
 			//选项集合
@@ -158,19 +161,19 @@ public class PaperItemsAdapter extends BaseAdapter {
 				case Multy://多选
 				case Uncertain://不定向选
 				{
-					 return this.createChoiceItem(order, type, itemModel, displayAnswer, myAnswers);
+					 return createChoiceItem(order, type, itemModel, displayAnswer, myAnswers);
 				}
 				case Judge:{//判断题
-					return this.createJudgeItem(order, type, itemModel, displayAnswer, myAnswers);
+					return createJudgeItem(order, type, itemModel, displayAnswer, myAnswers);
 				}
 				case Qanda:{//问答题
-					return this.createQandaItem(order, type, itemModel, displayAnswer);
+					return createQandaItem(order, type, itemModel, displayAnswer);
 				}
 				case ShareTitle:{//共享题干题
-					return this.createShareTitle(order, type, itemModel, displayAnswer, myAnswers);
+					return createShareTitle(order, type, itemModel, displayAnswer, myAnswers);
 				}
 				case ShareAnswer:{//共享答案题
-					return this.createShareAnswerItem(order, type, itemModel, displayAnswer, myAnswers);
+					return createShareAnswerItem(order, type, itemModel, displayAnswer, myAnswers);
 				}
 				default:break;
 			}
@@ -178,7 +181,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		return null;
 	}
 	//创建试题选项数据集合。
-	private List<PaperItemOptModel> createOptions(List<PaperItemModel> options, ItemType type, boolean displayAnswer, String rightAnswers, String myAnswers){
+	private static List<PaperItemOptModel> createOptions(List<PaperItemModel> options, ItemType type, boolean displayAnswer, String rightAnswers, String myAnswers){
 		int len = 0;
 		if(options != null && (len = options.size()) > 0){
 			List<PaperItemOptModel> opts = new ArrayList<PaperItemOptModel>(len);
@@ -200,7 +203,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		return null;
 	}
 	//创建选择题。
-	private List<PaperItemTitleModel> createChoiceItem(int order, ItemType type,  PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createChoiceItem(int order, ItemType type,  PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
 		Log.d(TAG, "创建选择题...");
 		//创建结果集合
 		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
@@ -210,7 +213,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		//添加到数据源
 		list.add(titleModel);
 		//选项
-		List<PaperItemOptModel>  optModels = this.createOptions(itemModel.getChildren(), type, displayAnswer, itemModel.getAnswer(), myAnswers);
+		List<PaperItemOptModel>  optModels = createOptions(itemModel.getChildren(), type, displayAnswer, itemModel.getAnswer(), myAnswers);
 		if(optModels != null && optModels.size() > 0){
 			//添加到数据源
 			list.addAll(optModels);
@@ -226,7 +229,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		return list;
 	}
 	//创建判断题。
-	private List<PaperItemTitleModel> createJudgeItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createJudgeItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
 		Log.d(TAG, "创建判断题...");
 		//创建结果集合
 		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
@@ -248,7 +251,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		optWrongModel.setContent(PaperItemModel.ItemJudgeAnswer.Wrong.getName());
 		
 		//选项
-		List<PaperItemOptModel> optModels = this.createOptions(Arrays.asList(new PaperItemModel[] {optRightModel, optWrongModel}), 
+		List<PaperItemOptModel> optModels = createOptions(Arrays.asList(new PaperItemModel[] {optRightModel, optWrongModel}), 
 				type, displayAnswer, itemModel.getAnswer(), myAnswers);
 		if(optModels != null && optModels.size() > 0){
 			//添加到数据源
@@ -265,7 +268,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		return list;
 	}
 	//创建问答题
-	private List<PaperItemTitleModel> createQandaItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer) {
+	private static List<PaperItemTitleModel> createQandaItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer) {
 		Log.d(TAG, "创建问答题...");
 		//创建结果集合
 		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
@@ -287,7 +290,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		return list;
 	}
 	//创建共享题干
-	private List<PaperItemTitleModel> createShareTitle(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createShareTitle(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
 		Log.d(TAG, "创建共享题干...");
 		//创建结果集合
 		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
@@ -307,7 +310,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 				//添加到数据源
 				list.add(subTitleModel);
 				//选项
-				List<PaperItemOptModel> optModels = this.createOptions(child.getChildren(), type, displayAnswer, child.getAnswer(), myAnswers);
+				List<PaperItemOptModel> optModels = createOptions(child.getChildren(), type, displayAnswer, child.getAnswer(), myAnswers);
 				if(optModels != null && optModels.size() > 0){
 					//添加到数据源
 					list.addAll(optModels);
@@ -325,7 +328,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 		return list;
 	}
 	//创建共享答案题
-	private List<PaperItemTitleModel> createShareAnswerItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createShareAnswerItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
 		Log.d(TAG, "创建共享题干...");
 		//创建结果集合
 		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
@@ -365,7 +368,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 					//添加到数据源
 					list.add(titleModel);
 					//选项
-					List<PaperItemOptModel> optModels = this.createOptions(optItemModels, ItemType.values()[subItemModel.getType() - 1], displayAnswer, subItemModel.getAnswer(), myAnswers);
+					List<PaperItemOptModel> optModels = createOptions(optItemModels, ItemType.values()[subItemModel.getType() - 1], displayAnswer, subItemModel.getAnswer(), myAnswers);
 					if(optModels != null && optModels.size() > 0){
 						//添加到数据源
 						list.addAll(optModels);
@@ -383,7 +386,6 @@ public class PaperItemsAdapter extends BaseAdapter {
 		}
 		return list;
 	}
-	
 	/*
 	 * 试题内容模型类型总数。
 	 * @see android.widget.BaseAdapter#getViewTypeCount()

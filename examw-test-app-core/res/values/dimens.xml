@@ -2,13 +2,13 @@
 
     <!-- 列表行通用设置 -->
     <!-- 顶部间距 -->
-    <dimen name="list_top">10.0dp</dimen>
+    <dimen name="list_top">10dp</dimen>
     <!-- 左边间距 -->
-    <dimen name="list_left">10.0dp</dimen>
+    <dimen name="list_left">10dp</dimen>
     <!-- 底部间距 -->
-    <dimen name="list_bottom">10.0dp</dimen>
+    <dimen name="list_bottom">10dp</dimen>
     <!-- 右边间距 -->
-    <dimen name="list_right">0.0dp</dimen>
+    <dimen name="list_right">5dp</dimen>
     <!-- 最小行高 -->
     <dimen name="list_min_cellHeight">35.0dp</dimen>
     

@@ -3,28 +3,29 @@ package com.examw.test.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.GridView;
+import android.widget.ListView;
 
 /**
- * 列表下GridView的扩展。
+ * ViewFlow内嵌的ListView.
  * 
+ * 解决滚动条的问题
  * @author jeasonyoung
- * @since 2015年7月27日
+ * @since 2015年7月31日
  */
-public class ListGridView extends GridView{
-	private static final String TAG = "ListGridView";
+public class ViewFlowInListView extends ListView {
+	private static final String TAG = "ViewFlowInListView";
 	/**
 	 * 构造函数。
 	 * @param context
 	 * @param attrs
 	 */
-	public ListGridView(Context context, AttributeSet attrs) {
+	public ViewFlowInListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		Log.d(TAG, "初始化...");
 	}
 	/*
 	 * 重载。
-	 * @see android.widget.GridView#onMeasure(int, int)
+	 * @see android.widget.ListView#onMeasure(int, int)
 	 */
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
