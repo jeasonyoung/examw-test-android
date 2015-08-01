@@ -1,5 +1,7 @@
 package com.examw.test.adapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -8,6 +10,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.AdapterView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -30,11 +33,11 @@ import com.examw.test.widget.ItemTitleView;
  * @author jeasonyoung
  * @since 2015年7月26日
  */
-public class PaperItemsAdapter extends BaseAdapter {
+public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
 	private static final String TAG = "PaperItemsAdapter";
 	private static final ConcurrentMap<Integer,PaperItemTitleModel[]> itemCache = new ConcurrentHashMap<Integer, PaperItemTitleModel[]>();
 	private final LayoutInflater mInflater;
-	private PaperItemTitleModel [] itemModels;
+	private final List<PaperItemTitleModel> dataSource;
 	private boolean displayAnswer;
 	/**
 	 * 构造函数，
@@ -42,19 +45,22 @@ public class PaperItemsAdapter extends BaseAdapter {
 	 */
 	public PaperItemsAdapter(Context context){
 		Log.d(TAG, "初始化...");
+		this.dataSource = new ArrayList<PaperItemTitleModel>();
 		this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.itemModels = new PaperItemTitleModel[0];
 	}
 	//加载试题缓存数据模型
-	private synchronized void loadItemCacheModel(int itemOrder){
+	private void loadItemCacheModel(int itemOrder){
+		//清空数据
+		this.dataSource.clear();
+		//加载缓存数据。
 		final PaperItemTitleModel [] models = itemCache.get(itemOrder);
 		if(models != null && models.length > 0){
 			Log.d(TAG, "从缓存中加载试题数据[" +itemOrder+ "]...");
 			//数据赋值
-			this.itemModels = models;
-			//刷新数据源
-			this.notifyDataSetChanged();
+			this.dataSource.addAll(Arrays.asList(models));
 		}
+		//刷新数据源
+		this.notifyDataSetChanged();
 	}
 	/**
 	 * 加载试题数据。
@@ -125,12 +131,25 @@ public class PaperItemsAdapter extends BaseAdapter {
 		}.execute(itemOrder, itemModel, displayAnswer);
 	}
 	/*
+	 * 选项点击处理。
+	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		if(this.displayAnswer)return;
+		Log.d(TAG, "选项点击选项["+position+"]事件处理..." + view);
+		final ViewOptionHolder optHolder = (ViewOptionHolder)view.getTag();
+		if(optHolder != null){
+			optHolder.setSelected(!optHolder.isSelected());
+		}
+	};
+	/*
 	 * 获取试题数据行数。
 	 * @see android.widget.Adapter#getCount()
 	 */
 	@Override
 	public int getCount() {
-		return (this.itemModels == null) ? -1 : this.itemModels.length;
+		return this.dataSource.size();
 	}
 	/*
 	 * 获取试题数据模型。
@@ -138,7 +157,7 @@ public class PaperItemsAdapter extends BaseAdapter {
 	 */
 	@Override
 	public Object getItem(int position) {
-		return  this.getCount() > position ? this.itemModels[position] :  null;
+		return  this.getCount() > position ? this.dataSource.get(position) :  null;
 	}
 	/*
 	 * 获取试题行ID。
@@ -162,8 +181,8 @@ public class PaperItemsAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getItemViewType(int position) {
-		if(this.itemModels.length > position){
-			final PaperItemTitleModel model = this.itemModels[position];
+		if(this.getCount() > position){
+			final PaperItemTitleModel model = (PaperItemTitleModel)this.getItem(position);
 			if(model instanceof PaperItemAnalysisModel){
 				return ItemModelType.ANALYSIS.value;
 			}else if(model instanceof PaperItemOptModel){
@@ -284,8 +303,24 @@ public class PaperItemsAdapter extends BaseAdapter {
 		@Override
 		public void loadModelData(Object data) {
 			 if(this.itemView != null){
-				 this.itemView.loadModelData((PaperItemOptModel)data);
+				 this.itemView.loadModelData((PaperItemOptModel)data, displayAnswer);
 			 }
+		}
+		/**
+		 * 获取是否选中。
+		 * @return
+		 */
+		public boolean isSelected(){
+			return this.itemView == null ? false : this.itemView.isSelected();
+		}
+		/**
+		 * 设置是否选中。
+		 * @param selected
+		 */
+		public void setSelected(boolean selected){
+			if(this.itemView != null){
+				this.itemView.setSelected(selected);
+			}
 		}
 	}
 	/**
@@ -343,5 +378,5 @@ public class PaperItemsAdapter extends BaseAdapter {
 			}
 			return NONE;
 		}
-	};
+	}
 }

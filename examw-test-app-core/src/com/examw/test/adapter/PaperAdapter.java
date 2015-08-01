@@ -98,6 +98,8 @@ public final class PaperAdapter extends BaseAdapter{
  			this.itemsAdapter = new PaperItemsAdapter(context);
  			//3.设置列表数据适配器
  			this.itemsView.setAdapter(this.itemsAdapter);
+ 			//4.设置数据项点击事件监听
+ 			this.itemsView.setOnItemClickListener(this.itemsAdapter);
  		}
  		/**
  		 * 加载数据。
