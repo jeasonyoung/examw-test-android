@@ -6,19 +6,22 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.widget.AdapterView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
 import com.examw.test.R;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.IPaperItemDataDelegate;
 import com.examw.test.model.PaperItemModel;
+import com.examw.test.model.PaperItemModel.ItemType;
 import com.examw.test.support.ItemModelSupport;
 import com.examw.test.support.ItemModelSupport.PaperItemAnalysisModel;
 import com.examw.test.support.ItemModelSupport.PaperItemOptModel;
@@ -38,7 +41,11 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 	private static final ConcurrentMap<Integer,PaperItemTitleModel[]> itemCache = new ConcurrentHashMap<Integer, PaperItemTitleModel[]>();
 	private final LayoutInflater mInflater;
 	private final List<PaperItemTitleModel> dataSource;
+	private final List<String> result;
+	
+	private int itemOrder;
 	private boolean displayAnswer;
+	private ItemClickListener itemClickListener;
 	/**
 	 * 构造函数，
 	 * @param context
@@ -46,12 +53,24 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 	public PaperItemsAdapter(Context context){
 		Log.d(TAG, "初始化...");
 		this.dataSource = new ArrayList<PaperItemTitleModel>();
+		this.result = new ArrayList<String>();
 		this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
+	/**
+	 * 设置试题点击事件监听器。
+	 * @param itemClickListener 
+	 *	  itemClickListener
+	 */
+	public void setItemClickListener(ItemClickListener itemClickListener) {
+		this.itemClickListener = itemClickListener;
 	}
 	//加载试题缓存数据模型
 	private void loadItemCacheModel(int itemOrder){
-		//清空数据
+		this.itemOrder = itemOrder;
+		//清除数据源
 		this.dataSource.clear();
+		//清空结果数据
+		this.result.clear();
 		//加载缓存数据。
 		final PaperItemTitleModel [] models = itemCache.get(itemOrder);
 		if(models != null && models.length > 0){
@@ -76,8 +95,6 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 		}
 		//设置是否显示答案
 		this.displayAnswer = displayAnswer;
-		//清空缓存数据
-		if(itemCache.size() > 0) itemCache.clear();
 		//异步线程构造试题数据集合
 		new AsyncTask<Object, Void, Integer>() {
 			/*
@@ -136,11 +153,38 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		if(this.displayAnswer)return;
+		if(this.displayAnswer || this.getCount() == 0)return;
 		Log.d(TAG, "选项点击选项["+position+"]事件处理..." + view);
-		final ViewOptionHolder optHolder = (ViewOptionHolder)view.getTag();
-		if(optHolder != null){
-			optHolder.setSelected(!optHolder.isSelected());
+		final PaperItemOptModel optModel = (PaperItemOptModel)this.getItem(position);
+		if(optModel == null) return;
+		//获取是否多选
+		final boolean isMulty = (optModel.getItemType() == null ? false : optModel.getItemType() == ItemType.Multy);
+		final String optId = optModel.getId();
+		if(isMulty){//多选
+			if(this.result.contains(optId)){
+				result.remove(optId);
+			}else {
+				result.add(optId);
+			}
+		}else {//单选
+			result.clear();
+			result.add(optId);
+		}
+		//获取选中结果
+		final String result = StringUtils.join(this.result.toArray(), ",");
+		//循环
+		for(PaperItemTitleModel model : this.dataSource){
+			if(model == null) continue;
+			if(model instanceof PaperItemOptModel){
+				((PaperItemOptModel)model).setMyAnswers(result);
+			}
+		}
+		//刷新数据源
+		this.notifyDataSetChanged();
+		//点击事件监听器处理
+		if(this.itemClickListener != null && this.itemOrder >= 0){
+			Log.d(TAG, "试题["+(this.itemOrder + 1)+"]选中选项.." + result);
+			this.itemClickListener.onItemClick(this.itemOrder,  result);
 		}
 	};
 	/*
@@ -149,7 +193,7 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 	 */
 	@Override
 	public int getCount() {
-		return this.dataSource.size();
+		return this.dataSource == null ? 0 : this.dataSource.size();
 	}
 	/*
 	 * 获取试题数据模型。
@@ -157,7 +201,7 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 	 */
 	@Override
 	public Object getItem(int position) {
-		return  this.getCount() > position ? this.dataSource.get(position) :  null;
+		return  this.getCount() > position ? this.dataSource.get(position):  null;
 	}
 	/*
 	 * 获取试题行ID。
@@ -306,22 +350,6 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 				 this.itemView.loadModelData((PaperItemOptModel)data, displayAnswer);
 			 }
 		}
-		/**
-		 * 获取是否选中。
-		 * @return
-		 */
-		public boolean isSelected(){
-			return this.itemView == null ? false : this.itemView.isSelected();
-		}
-		/**
-		 * 设置是否选中。
-		 * @param selected
-		 */
-		public void setSelected(boolean selected){
-			if(this.itemView != null){
-				this.itemView.setSelected(selected);
-			}
-		}
 	}
 	/**
 	 * 答题解析ViewHolder。
@@ -378,5 +406,20 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 			}
 			return NONE;
 		}
+	}
+
+	/**
+	 * 试题点击事件监听器。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年8月1日
+	 */
+	public interface ItemClickListener{
+		/**
+		 * 试题点击事件处理。
+		 * @param pos
+		 * @param result
+		 */
+		void onItemClick(int pos, String myAnswer);
 	}
 }

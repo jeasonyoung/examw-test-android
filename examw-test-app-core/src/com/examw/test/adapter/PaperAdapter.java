@@ -3,16 +3,19 @@ package com.examw.test.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 
 import com.examw.test.R;
+import com.examw.test.app.AppContext;
+import com.examw.test.dao.IPaperItemDataDelegate;
 import com.examw.test.model.PaperItemModel;
 import com.examw.test.ui.PaperActivity;
-import com.examw.test.widget.ViewFlowInListView;
 
 /**
  *试卷数据适配器。
@@ -20,7 +23,7 @@ import com.examw.test.widget.ViewFlowInListView;
  * @author jeasonyoung
  * @since 2015年7月20日
  */
-public final class PaperAdapter extends BaseAdapter{
+public final class PaperAdapter extends BaseAdapter implements PaperItemsAdapter.ItemClickListener{
 	private static final String TAG = "PaperAdapter";
 	private final List<PaperItemModel> list;
 	private final PaperActivity activity;
@@ -82,9 +85,61 @@ public final class PaperAdapter extends BaseAdapter{
 		//返回View
 		return convertView;
 	}
+	/*
+	 * 试题选中事件处理。
+	 * @see com.examw.test.adapter.PaperItemsAdapter.ItemClickListener#onItemClick(int, java.lang.String)
+	 */
+	@Override
+	public void onItemClick(final int pos, final String myAnswers) {
+		Log.d(TAG, "试题[" + (pos + 1) +"]选中...");
+		final PaperItemModel itemModel = (PaperItemModel)this.getItem(pos);
+		if(itemModel == null) return;
+		
+		final int waitTime = this.activity.getResources().getInteger(R.integer.paper_item_update_time);
+		final long useTimes = (System.currentTimeMillis() - this.activity.getStartTime()) / 1000;
+		
+		 new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					Log.d(TAG, "开始线程等待...");
+					//更新做题记录 
+					updateItemRecord(pos, itemModel, myAnswers, useTimes);
+					//线程等待时间
+					Thread.sleep(waitTime * 1000);
+				} catch (InterruptedException e) {
+					Log.e(TAG, "线程等待异常:" + e.getMessage(), e);
+				}
+				return null;
+			}
+			@Override
+			protected void onPostExecute(Void result) {
+				Log.d(TAG, "跳转到下一题...");
+				activity.nextItem();
+			}
+		}.executeOnExecutor(PaperActivity.pools, (Void[])null);
+	}
+	//更新做题记录
+	private void updateItemRecord(final  int pos, final PaperItemModel itemModel,final String myAnswers, final long useTimes){
+		//异步线程保存做题记录
+		PaperActivity.pools.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Log.d(TAG, "后台线程保存做题["+pos+"]记录...");
+					final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
+					if(dataDelegate != null){	
+						dataDelegate.updateRecordAnswer(itemModel, myAnswers, (int)useTimes);
+					}
+				} catch (Throwable e) {
+					Log.e(TAG, "保存做题["+pos+"]记录异常:" + e.getMessage(), e);
+				}
+			}
+		});
+	}
 	//
  	private class ViewHolder{
- 		private ViewFlowInListView itemsView;
+ 		private ListView itemsView;
  		private PaperItemsAdapter itemsAdapter;
  		/**
  		 * 构造函数。
@@ -93,9 +148,11 @@ public final class PaperAdapter extends BaseAdapter{
  		 */
  		public ViewHolder(Context context, View convertView){
  			//1.加载列表布局
- 			this.itemsView = (ViewFlowInListView)convertView.findViewById(R.id.list_paper_item);
+ 			this.itemsView = (ListView)convertView.findViewById(R.id.list_paper_item);
  			//2.初始化数据适配器
  			this.itemsAdapter = new PaperItemsAdapter(context);
+ 			//2.设置点击事件监听器
+ 			this.itemsAdapter.setItemClickListener(PaperAdapter.this);
  			//3.设置列表数据适配器
  			this.itemsView.setAdapter(this.itemsAdapter);
  			//4.设置数据项点击事件监听

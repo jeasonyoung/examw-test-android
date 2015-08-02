@@ -6,7 +6,7 @@
     android:orientation="vertical" >
     
     <!-- 试题列表数据 -->
-    <com.examw.test.widget.ViewFlowInListView android:id="@+id/list_paper_item"
+    <ListView android:id="@+id/list_paper_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/list_top"

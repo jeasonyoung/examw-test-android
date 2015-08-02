@@ -60,13 +60,13 @@
     </RelativeLayout>
     
     <!-- 中间试题区域 -->
-    <org.taptwo.android.widget.ViewFlow 
+    <com.examw.test.widget.ViewFlow 
             android:id="@+id/main_paper_viewflow"
         	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
+        	android:layout_height="match_parent"
         	android:layout_below="@id/main_paper_topMenu"
         	android:layout_marginBottom="@dimen/list_bottom"
-        	android:background="@color/default_pressed_color"
+        	android:background="@color/white"
         	app:sidebuffer="2" />
    
     <!-- 底部菜单按钮区域 -->

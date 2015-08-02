@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.taptwo.android.widget.ViewFlow;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,6 +31,7 @@ import com.examw.test.dao.IPaperItemDataDelegate;
 import com.examw.test.dao.IPaperItemDataDelegate.SubmitResultHandler;
 import com.examw.test.model.PaperItemModel;
 import com.examw.test.support.CountdownViewSupport;
+import com.examw.test.widget.ViewFlow;
 import com.examw.test.widget.WaitingViewDialog;
 
 /**
@@ -48,6 +48,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	private TextView titleView;
 	private ViewFlow viewFlow;
 	private CountdownViewSupport countdownViewSupport;
+	private  long startTime;
 	
 	private final List<PaperItemModel> dataSource;
 	private PaperAdapter adapter;
@@ -88,6 +89,13 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	 */
 	private int getCurrentItemOrder() {
 		return this.viewFlow.getSelectedItemPosition();
+	}
+	/**
+	 * 获取做题开始时间。
+	 * @return 做题开始时间。
+	 */
+	public long getStartTime() {
+		return startTime;
 	}
 	/*
 	 * 重载创建。
@@ -177,9 +185,9 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 		//启动等待动画
 		this.waitingViewDialog.show();
 		
-		int order = -1;
+		int order = this.getCurrentItemOrder();
 		if(this.getIntent() != null){
-			order = this.getIntent().getIntExtra(PAPER_ITEM_ORDER, order);
+			order = Math.max(order, this.getIntent().getIntExtra(PAPER_ITEM_ORDER, order));
 		}
 		//异步加载数据
 		new LoadDataAsyncTask(order).execute();
@@ -263,20 +271,12 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 			}
 			case R.id.main_paper_prev:{//上一题按钮处理
 				Log.d(TAG, "上一题按钮处理...");
-				if(this.getCurrentItemOrder() <= 0){
-					Toast.makeText(this, "已经是第一题了", Toast.LENGTH_SHORT).show();
-				}else{
-					this.viewFlow.setSelection(this.getCurrentItemOrder() - 1);
-				}
+				this.prevItem();
 				break;
 			}
 			case R.id.main_paper_next:{//下一题按钮处理
 				Log.d(TAG, "下一题按钮处理...");
-				if(this.getCurrentItemOrder() >= this.dataSource.size() - 1){
-					Toast.makeText(this, "已经是最后一题了", Toast.LENGTH_SHORT).show();
-				}else {
-					this.viewFlow.setSelection(this.getCurrentItemOrder() + 1);
-				}
+				this.nextItem();
 				break;
 			}
 			case R.id.main_paper_fav:{//收藏按钮处理
@@ -295,6 +295,30 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 			}
 		}
 	}
+	/**
+	 * 上一题。
+	 */
+	public void prevItem() {
+		Log.d(TAG, "上一题..");
+		this.startTime = System.currentTimeMillis();
+		if(this.getCurrentItemOrder() <= 0){
+			Toast.makeText(this, "已经是第一题了", Toast.LENGTH_SHORT).show();
+		}else{
+			this.viewFlow.setSelection(this.getCurrentItemOrder() - 1);
+		}
+	}
+	/**
+	 * 下一题。
+	 */
+	public void nextItem(){
+		Log.d(TAG, "下一题...");
+		this.startTime = System.currentTimeMillis();
+		if(this.getCurrentItemOrder() >= this.dataSource.size() - 1){
+			Toast.makeText(this, "已经是最后一题了", Toast.LENGTH_SHORT).show();
+		}else {
+			this.viewFlow.setSelection(this.getCurrentItemOrder() + 1);
+		}
+	}
 	/*
 	 * 回调方式来Activity获取返回的结果。
 	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
@@ -303,7 +327,7 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG, "Activity返回结果处理..." + resultCode);
 		if(resultCode == Activity.RESULT_OK && data != null){
-			int order = data.getIntExtra(PAPER_ITEM_ORDER, -1);
+			final int order = data.getIntExtra(PAPER_ITEM_ORDER, -1);
 			if(order > -1){
 				Log.d(TAG, "跳转到试题..." + (order + 1));
 				this.viewFlow.setSelection(order);
