@@ -1,5 +1,10 @@
 package com.examw.test.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import android.content.Context;
 import android.text.Html;
 import android.util.AttributeSet;
@@ -8,8 +13,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.examw.test.R;
 import com.examw.test.support.ItemModelSupport.PaperItemAnalysisModel;
+import com.examw.test.support.ItemModelSupport.PaperItemOptModel;
 
 /**
  * 答案解析View
@@ -20,6 +29,7 @@ import com.examw.test.support.ItemModelSupport.PaperItemAnalysisModel;
 public class ItemAnalysisView extends LinearLayout{
 	private static final String TAG = "ItemAnalysisView";
 	private TextView rightView, resultView, analysisView;
+	private final Pattern regex;
 	/**
 	 * 构造函数。
 	 * @param context
@@ -28,6 +38,7 @@ public class ItemAnalysisView extends LinearLayout{
 	public ItemAnalysisView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		Log.d(TAG, "初始化...");
+		this.regex = Pattern.compile(context.getString(R.string.main_paper_answer_regex));
 	}
 	/**
 	 * 加载解析数据模型。
@@ -36,28 +47,59 @@ public class ItemAnalysisView extends LinearLayout{
 	 */
 	public void loadModelData(PaperItemAnalysisModel analysisModel){
 		 Log.d(TAG, "加载解析数据模型... "  + analysisModel);
+		//加载参考答案输入
 		 if(this.rightView == null){
-			//加载参考答案输入
 			this.rightView = (TextView)this.findViewById(R.id.paper_item_right);
 		 }		
+		//加载答案结果
 		 if(this.resultView == null){
-			//加载答案结果
 			this.resultView = (TextView)this.findViewById(R.id.paper_item_result);
-		 }		
+		 }
+		//加载答案解析
 		if(this.analysisView == null){
-			//加载答案解析
 			this.analysisView = (TextView)this.findViewById(R.id.paper_item_analysis_content);
 		}
 		 //设置是否显示
 		 this.setVisibility((analysisModel == null) ? View.GONE :  View.VISIBLE);
 		 //设置数据
 		 if(analysisModel != null){
+			 //参考答案/我的答案
+			 final List<String> listRights = new ArrayList<String>(), listMyAnswer = new ArrayList<String>();
+			 if(analysisModel.getOptions() != null){
+				final List<PaperItemOptModel> optModels = analysisModel.getOptions();
+				for(PaperItemOptModel optModel : optModels){
+					if(optModel == null || StringUtils.isBlank(optModel.getId()) || StringUtils.isBlank(optModel.getContent())) continue;
+					final String optId = optModel.getId();
+					final String itemOrder = this.findItemOrder(optModel.getContent());
+					if(StringUtils.isBlank(itemOrder)) continue;
+					//参考答案
+					if(StringUtils.isNotBlank(analysisModel.getRightAnswers()) && analysisModel.getRightAnswers().indexOf(optId) > -1){
+						listRights.add(itemOrder);
+					}
+					//我的答案
+					if(StringUtils.isNotBlank(analysisModel.getMyAnswers()) && analysisModel.getMyAnswers().indexOf(optId) > -1){
+						listMyAnswer.add(itemOrder);
+					}
+				}
+			 }
 			 //设置参考答案
-			 ///TODO:数据处理
-			 this.rightView.setText("参考答案");
-			 this.resultView.setText("判断对错.");
+			 final String rightAnswer = StringUtils.join(listRights.toArray(new String[0]), ",");
+			 final String myAnswer = StringUtils.join(listMyAnswer.toArray(new String[0]),",");
+			 this.rightView.setText(String.format(getContext().getString(R.string.main_paper_answer_right), rightAnswer));
+			 //判断对错
+			 this.resultView.setText(getContext().getString(StringUtils.equals(rightAnswer, myAnswer) ? R.string.main_paper_answer_my_right : R.string.main_paper_answer_my_wrong));
 			 //设置解析
-			 this.analysisView.setText(Html.fromHtml(analysisModel.getContent()));
+			 this.analysisView.setText(Html.fromHtml(String.format(getContext().getString(R.string.main_paper_answer_analysis), analysisModel.getContent())));
 		 }
+	}
+	//查找题号
+	private String findItemOrder(String content){
+		if(StringUtils.isNotBlank(content)){
+			Matcher matcher = this.regex.matcher(content);
+			if(matcher.find()){
+				return matcher.group(0);
+			}
+		}
+		return null;
 	}
 }

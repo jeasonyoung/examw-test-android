@@ -28,4 +28,8 @@
     <color name="card_item_wrongcolor_normal">#FFFF0000</color><!--做错 -->
     <color name="card_item_wrongcolor_highlight">#00FF0000</color><!--做错 -->
     
+    <!-- 做对背景 -->
+    <color name="item_right_bgcolor">#008B00</color>
+    <!-- 做错背景 -->
+    <color name="item_wrong_bgcolor">#FF0000</color>
 </resources>

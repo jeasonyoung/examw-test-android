@@ -33,7 +33,8 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/list_left"
             android:layout_marginEnd="@dimen/list_left"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
+            android:background="@color/item_right_bgcolor"
             android:textSize="@dimen/list_l_size"/>
         
     </RelativeLayout>
@@ -50,10 +51,4 @@
             android:textColor="@color/black"
             android:textSize="@dimen/list_l_size"/>
      
-     <!-- 间隔占位 -->
-	<View 
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:minHeight="@dimen/list_top"
-	    android:background="@color/transparent"/>
 </com.examw.test.widget.ItemAnalysisView>

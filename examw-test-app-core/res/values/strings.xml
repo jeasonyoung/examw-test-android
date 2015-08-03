@@ -153,4 +153,11 @@
     <string name="main_paper_record_alert_msg">是否继续考试?</string>
     <string name="main_paper_record_alert_btnCancel">否</string>
     <string name="main_paper_record_alert_btnSubmit">是</string>
+    
+    <!-- 显示答案 -->
+    <string name="main_paper_answer_regex">([A-Z]\\.)</string>
+    <string name="main_paper_answer_right">参考答案:%s</string>
+    <string name="main_paper_answer_my_right"> √ 答对了</string>
+    <string name="main_paper_answer_my_wrong">× 答错了</string>
+    <string name="main_paper_answer_analysis">题目解析:%s</string>
 </resources>
