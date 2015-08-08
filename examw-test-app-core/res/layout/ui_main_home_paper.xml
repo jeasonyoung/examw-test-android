@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 首页 科目下试卷列表 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.examw.test"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+     <!-- 试卷类型标题布局 -->
+     <com.examw.test.widget.TitleFlowIndicator 
+         android:id="@+id/home_paper_titlegroups"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:paddingTop="@dimen/padding_top"
+         android:padding="@dimen/padding_normal"
+         android:background="@color/default_color"
+         android:gravity="center_vertical"
+         app:clipPadding="5dp"
+         app:footerColor="@color/white"
+         app:footerLineHeight="2dp"
+         app:footerTriangleHeight="10dp"
+         app:selectedColor="@color/white"
+         app:selectedSize="@dimen/fontsize_l"
+         app:textColor="@color/gray"
+         app:textSize="@dimen/fontsize_m"
+         app:titlePadding="15dp"/>
+    
+    <!-- 试卷列表 -->
+    <com.examw.test.widget.ViewFlow 
+        android:id="@+id/home_paper_viewpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:duplicateParentState="true"/>
+    
+    <!-- <android.support.v4.view.ViewPager android:id="@+id/home_paper_viewpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:flipInterval="30" 
+        android:persistentDrawingCache="animation" /> -->
+        
+    
+</LinearLayout>

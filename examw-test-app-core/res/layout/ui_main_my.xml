@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我的模块布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+    <!-- 标题 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/top_title_minHeight"
+        android:paddingTop="@dimen/list_top"
+        android:paddingBottom="@dimen/list_bottom"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:paddingLeft="@dimen/list_left"
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_right"
+        android:paddingEnd="@dimen/list_right"
+        android:background="@color/default_color" 
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/main_my_title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontsize_l"/>
+    
+    <!-- 账户信息 -->
+    <FrameLayout android:id="@+id/my_userinfo_replace"
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content"
+        android:minHeight="40dip" 
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:background="@color/white"/>
+    
+    <!-- 做题记录标题 -->
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginLeft="@dimen/list_left"
+        android:layout_marginStart="@dimen/list_left"
+        android:gravity="center_vertical"
+        android:text="@string/main_my_record_title"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/fontsize_m"/>
+    
+    <!-- 做题记录-->
+    <ListView android:id="@+id/list_my_records"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_top"
+        android:layout_marginBottom="@dimen/list_bottom" 
+        android:background="@color/white"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/topic_driver"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:visibility="visible" />
+
+</LinearLayout>

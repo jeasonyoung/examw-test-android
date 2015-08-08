@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试卷 下一题 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- 按下 -->
+    <item android:state_pressed="true" android:drawable="@drawable/btn_next_normal"/>
+    <!-- 启用 -->
+    <item android:state_enabled="true" android:drawable="@drawable/btn_next_highlight"/>
+    <!-- normal -->
+    <item android:drawable="@drawable/btn_next_normal" />
+</selector><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/drawable/paper_btn_next.xml -->

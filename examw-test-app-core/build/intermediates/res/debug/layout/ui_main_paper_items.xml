@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试卷－试题 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <!-- 试题列表数据 -->
+    <ListView android:id="@+id/list_paper_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/list_top"
+        android:paddingLeft="@dimen/list_left"
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_right"
+        android:paddingEnd="@dimen/list_right"
+        android:background="@color/white" 
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/topic_driver"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:visibility="visible" />
+    
+</LinearLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_paper_items.xml -->

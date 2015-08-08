@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试题答案解析 -->
+<com.examw.test.widget.ItemAnalysisView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:background="@color/transparent">
+        
+        <!-- 参考答案 -->
+        <TextView android:id="@+id/paper_item_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/list_left"
+            android:layout_marginStart="@dimen/list_left"
+            android:textColor="@color/black"
+            android:textSize="@dimen/list_l_size"/>
+        
+        <!-- 结果 -->
+        <TextView android:id="@+id/paper_item_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/list_left"
+            android:layout_marginEnd="@dimen/list_left"
+            android:textColor="@color/white"
+            android:background="@color/item_right_bgcolor"
+            android:textSize="@dimen/list_l_size"/>
+        
+    </RelativeLayout>
+    
+    <!-- 解析内容 -->
+     <TextView android:id="@+id/paper_item_analysis_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_top"
+            android:layout_marginLeft="@dimen/list_left"
+            android:layout_marginStart="@dimen/list_left"
+            android:layout_marginRight="@dimen/list_left"
+            android:layout_marginEnd="@dimen/list_left"
+            android:textColor="@color/black"
+            android:textSize="@dimen/list_l_size"/>
+     
+</com.examw.test.widget.ItemAnalysisView>

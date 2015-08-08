@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 用户注册布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+    <!-- Banner -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/top_head" />
+    
+    <!-- 注册内容滚动  -->
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:gravity="center_horizontal"
+            android:layout_margin="@dimen/list_left"
+            android:orientation="vertical">
+            
+            <!-- 用户名标签 -->
+            <TextView 
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="@dimen/list_left"
+                 android:layout_marginStart="@dimen/list_left"
+                 android:gravity="center_vertical"
+                 android:text="@string/main_my_nologin_reg_username"
+                 android:textColor="@color/black"
+                 android:textSize="@dimen/fontsize_m"/>
+            <!-- 用户名输入框 -->
+            <EditText android:id="@+id/register_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_left"
+                android:layout_marginStart="@dimen/list_left"
+                android:layout_marginRight="@dimen/list_left"
+                android:layout_marginEnd="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:hint="@string/main_my_nologin_reg_username_placeholder"
+                android:singleLine="true"
+                android:imeOptions="actionNext"/>
+            
+            <!-- 密码标签 -->
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_left"
+                android:layout_marginStart="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:text="@string/main_my_nologin_reg_password"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fontsize_m"/>
+            <!-- 密码输入框 -->
+            <EditText android:id="@+id/register_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_left"
+                android:layout_marginStart="@dimen/list_left"
+                android:layout_marginRight="@dimen/list_left"
+                android:layout_marginEnd="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:hint="@string/main_my_nologin_reg_password_placeholder"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:imeOptions="actionNext"/>
+            
+            <!-- 重复密码 标签 -->
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_left"
+                android:layout_marginStart="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:text="@string/main_my_nologin_reg_repassword"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fontsize_m"/>
+            <!-- 输入框 -->
+            <EditText android:id="@+id/register_repwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_left"
+                android:layout_marginStart="@dimen/list_left"
+                android:layout_marginRight="@dimen/list_left"
+                android:layout_marginEnd="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:hint="@string/main_my_nologin_reg_repassword_placeholder"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:imeOptions="actionNext"/>
+            
+            <!-- 姓名标签 -->
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_left"
+                android:layout_marginStart="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:text="@string/main_my_nologin_reg_name"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fontsize_m"/>
+             <!-- 姓名输入框 -->
+             <EditText android:id="@+id/register_name"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="@dimen/list_left"
+                 android:layout_marginStart="@dimen/list_left"
+                 android:layout_marginRight="@dimen/list_left"
+                 android:layout_marginEnd="@dimen/list_left"
+                 android:gravity="center_vertical"
+                 android:hint="@string/main_my_nologin_reg_name_placeholder"
+                 android:singleLine="true"
+                 android:imeOptions="actionNext"/>
+             
+             <!-- 电子邮箱标签 -->
+              <TextView 
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/list_left"
+                  android:layout_marginStart="@dimen/list_left"
+                  android:gravity="center_vertical"
+                  android:text="@string/main_my_nologin_reg_email"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m"/>
+              <!-- 电子邮箱输入框 -->
+              <EditText android:id="@+id/register_e_mail"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/list_left"
+                  android:layout_marginStart="@dimen/list_left"
+                  android:layout_marginRight="@dimen/list_left"
+                  android:layout_marginEnd="@dimen/list_left"
+                  android:gravity="center_vertical"
+                  android:hint="@string/main_my_nologin_reg_email_placeholder"
+                  android:singleLine="true"
+                  android:inputType="textEmailAddress"
+                  android:imeOptions="actionNext"/>
+              
+              <!-- 手机号码标签 -->
+              <TextView 
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/list_left"
+                    android:layout_marginStart="@dimen/list_left"
+                    android:gravity="center_vertical"
+                    android:text="@string/main_my_nologin_reg_phone"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontsize_m"/>
+               <!-- 手机号码输入框 -->
+                <EditText android:id="@+id/register_tel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                   	android:layout_marginLeft="@dimen/list_left"
+                    android:layout_marginStart="@dimen/list_left"
+                    android:layout_marginRight="@dimen/list_left"
+                    android:layout_marginEnd="@dimen/list_left"
+                    android:layout_marginBottom="@dimen/list_bottom"
+                    android:gravity="center_vertical"
+                    android:hint="@string/main_my_nologin_reg_phone_placeholder"
+                    android:singleLine="true"
+                    android:inputType="phone"
+                    android:imeOptions="actionDone"/>
+                
+                <!-- 注册按钮 -->
+                <Button android:id="@+id/register_btnSubmit" 
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/list_left"
+                    android:layout_marginStart="@dimen/list_left"
+                    android:layout_marginRight="@dimen/list_left"
+                    android:layout_marginEnd="@dimen/list_left"
+                    android:paddingTop="@dimen/list_top"
+                    android:paddingBottom="@dimen/list_bottom"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/main_my_nologin_btnReg"
+                    android:textColor="@color/btn_pressed_normal_textcolor"
+                    android:textSize="@dimen/fontsize_m"
+                    android:background="@drawable/btn_normal_bg"/>
+                
+                <!-- 占位空隙 -->
+                <View android:layout_width="match_parent"
+                    android:layout_height="20dip"/>
+            
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_my_nologin_register.xml -->

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 菜单列表数据行 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_min_cellHeight"
+    android:background="@color/transparent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+    
+    <TextView android:id="@+id/more_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/list_left"
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_right"
+        android:paddingEnd="@dimen/list_right"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontsize_m" />
+
+</LinearLayout>

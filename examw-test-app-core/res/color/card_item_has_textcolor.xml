@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 答题卡－已做 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 按下 -->
+    <item android:state_pressed="true" android:color="@color/card_item_hascolor_highlight"/>
+    <!--  -->
+    <item android:color="@color/card_item_hascolor_normal"/>
+</selector>

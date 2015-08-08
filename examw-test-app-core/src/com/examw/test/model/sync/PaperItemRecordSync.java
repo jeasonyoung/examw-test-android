@@ -2,8 +2,6 @@ package com.examw.test.model.sync;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 做题记录同步
@@ -16,7 +14,7 @@ public class PaperItemRecordSync implements Serializable {
 	private String id,paperRecordId,structureId,itemId,content,answer;
 	private Integer status,useTimes;
 	private BigDecimal score;
-	private Date createTime,lastTime;
+	private String createTime,lastTime;
 	/**
 	 * 获取做题记录ID。
 	 * @return 做题记录ID。
@@ -156,7 +154,7 @@ public class PaperItemRecordSync implements Serializable {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -164,14 +162,14 @@ public class PaperItemRecordSync implements Serializable {
 	 * @param createTime 
 	 *	  创建时间。
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 	/**
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
-	public Date getLastTime() {
+	public String getLastTime() {
 		return lastTime;
 	}
 	/**
@@ -179,24 +177,7 @@ public class PaperItemRecordSync implements Serializable {
 	 * @param lastTime 
 	 *	  最后修改时间。
 	 */
-	public void setLastTime(Date lastTime) {
+	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
-	}
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder(); 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		builder.append("id").append(":").append(this.getId())
-				   .append("paperRecordId").append(":").append(this.getPaperRecordId())
-				   .append("structureId").append(":").append(this.getStructureId())
-				   .append("itemId").append(":").append(this.getItemId())
-				   .append("content").append(":").append(this.getContent())
-				   .append("answer").append(":").append(this.getAnswer())
-				   .append("status").append(":").append(this.getStatus())
-				   .append("useTimes").append(":").append(this.getUseTimes())
-				   .append("score").append(":").append(this.getScore())
-				   .append("createTime").append(":").append(sdf.format(this.getCreateTime()))
-				   .append("lastTime").append(":").append(sdf.format(this.lastTime));
-		return builder.toString();
 	}
 }

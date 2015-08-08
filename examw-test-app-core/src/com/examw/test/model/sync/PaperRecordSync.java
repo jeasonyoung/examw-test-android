@@ -2,8 +2,6 @@ package com.examw.test.model.sync;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 /**
  * 试题记录同步
  * 
@@ -15,7 +13,7 @@ public class PaperRecordSync implements Serializable {
 	private String id,paperId;
 	private Integer status,rights,useTimes;
 	private BigDecimal score;
-	private Date createTime,lastTime;
+	private String createTime,lastTime;
 	/**
 	 * 获取试卷记录ID。
 	 * @return 试卷记录ID。
@@ -110,7 +108,7 @@ public class PaperRecordSync implements Serializable {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 	/**
@@ -118,14 +116,14 @@ public class PaperRecordSync implements Serializable {
 	 * @param createTime 
 	 *	  创建时间。
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 	/**
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
-	public Date getLastTime() {
+	public String getLastTime() {
 		return lastTime;
 	}
 	/**
@@ -133,21 +131,7 @@ public class PaperRecordSync implements Serializable {
 	 * @param lastTime 
 	 *	  最后修改时间。
 	 */
-	public void setLastTime(Date lastTime) {
+	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
-	}
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		builder.append("id").append(":").append(this.getId()).append(",")
-				   .append("paperId").append(":").append(this.getPaperId()).append(",")
-				   .append("status").append(":").append(this.getStatus()).append(",")
-				   .append("rights").append(":").append(this.getRights()).append(",")
-				   .append("useTimes").append(":").append(this.getUseTimes()).append(",")
-				   .append("score").append(":").append(this.getScore()).append(",")
-				   .append("createTime").append(":").append(sdf.format(this.getCreateTime())).append(",")
-				   .append("lastTime").append(":").append(sdf.format(this.getLastTime()));
-		return builder.toString();
 	}
 }

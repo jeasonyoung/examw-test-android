@@ -1,5 +1,9 @@
 package com.examw.test.model.sync;
 
+import com.google.gson.Gson;
+
+import android.content.Context;
+
 
 /**
  * 注册用户信息。
@@ -10,6 +14,13 @@ package com.examw.test.model.sync;
 public class RegisterUser extends AppClient {
 	private static final long serialVersionUID = 1L;
 	private String account,password,username,email,phone,channel;
+	/**
+	 * 构造函数。
+	 * @param context
+	 */
+	public RegisterUser(Context context) {
+		super(context);
+	}
 	/**
 	 * 获取用户名。
 	 * @return 用户名。
@@ -99,5 +110,14 @@ public class RegisterUser extends AppClient {
 	 */
 	public void setChannel(String channel) {
 		this.channel = channel;
+	}
+	/*
+	 * JSON序列化。
+	 * @see com.examw.test.model.sync.AppClient#toString()
+	 */
+	@Override
+	public String toString() {
+		Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 }

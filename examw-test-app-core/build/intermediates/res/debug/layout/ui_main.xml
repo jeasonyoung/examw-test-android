@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    
+    <!-- 工作区 -->
+    <FrameLayout android:id="@+id/main_fragment_replace"
+        android:layout_width="match_parent" 
+        android:layout_height="match_parent" 
+        android:background="@color/default_color"/>
+    
+    <!-- 底部菜单 -->
+	<RadioGroup android:id="@+id/main_bottom_groups"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:minHeight="@dimen/main_bottom_menuHeight"
+	    android:layout_alignParentBottom="true"
+	    android:background="@color/main_bottom_bgcolor"
+	    android:gravity="center_vertical|center_horizontal"
+	    android:orientation="horizontal">
+	    
+	    <!--1.首页 -->
+	    <RadioButton android:id="@+id/main_bottom_btn_home"
+	        style="@style/main_bottom_radio"
+	        android:drawableTop="@drawable/weight_home"
+	        android:drawablePadding="@dimen/main_bottom_menuImgPadding"
+	        android:text="@string/main_bottom_home"
+	        android:textColor="@color/main_bottom_textcolor"
+	        android:textSize="@dimen/fontsize_s"
+	        android:checked="true"/>
+	    
+	    <!-- 2.错题 -->
+	    <RadioButton android:id="@+id/main_bottom_btn_favorites"
+	        style="@style/main_bottom_radio"
+	        android:drawableTop="@drawable/weight_favorites"
+	        android:drawablePadding="@dimen/main_bottom_menuImgPadding"
+	        android:text="@string/main_bottom_favorites"
+	        android:textColor="@color/main_bottom_textcolor"
+	        android:textSize="@dimen/fontsize_s"/>
+	    
+	    <!-- 3.我的 -->
+	    <RadioButton android:id="@+id/main_bottom_btn_my"
+	        style="@style/main_bottom_radio"
+	        android:drawableTop="@drawable/weight_my"
+	        android:drawablePadding="@dimen/main_bottom_menuImgPadding"
+	        android:text="@string/main_bottom_my"
+	        android:textColor="@color/main_bottom_textcolor"
+	        android:textSize="@dimen/fontsize_s"/>
+	    
+	    <!-- 4.更多 -->
+	    <RadioButton android:id="@+id/main_bottom_btn_more"
+	        style="@style/main_bottom_radio"
+	        android:drawableTop="@drawable/weight_more"
+	        android:drawablePadding="@dimen/main_bottom_menuImgPadding"
+	        android:text="@string/main_bottom_more"
+	        android:textColor="@color/main_bottom_textcolor"
+	        android:textSize="@dimen/fontsize_s"/>
+	    
+	</RadioGroup>
+</RelativeLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main.xml -->

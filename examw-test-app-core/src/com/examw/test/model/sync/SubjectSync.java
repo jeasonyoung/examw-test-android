@@ -41,4 +41,12 @@ public class SubjectSync implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	/*
+	 * 重载。
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.getCode() + "-" + this.getName();
+	}
 }

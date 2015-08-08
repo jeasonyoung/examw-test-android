@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/weight_more_hov" />
-    <item android:state_focused="true" android:drawable="@drawable/weight_more_hov" />
-    <item android:drawable="@drawable/weight_more_no" />
+<!--主页底部菜单-4.更多  -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/icon_more_highlight" />
+    <item android:state_checked="true" android:drawable="@drawable/icon_more_highlight" />
+    <item android:drawable="@drawable/icon_more_normal" />
 </selector>

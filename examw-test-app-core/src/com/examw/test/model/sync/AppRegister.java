@@ -1,5 +1,9 @@
 package com.examw.test.model.sync;
 
+import com.google.gson.Gson;
+
+import android.content.Context;
+
 
 /**
  * 应用注册。
@@ -8,8 +12,12 @@ package com.examw.test.model.sync;
  * @since 2015年2月14日
  */
 public class AppRegister extends AppClient {
+	
 	private static final long serialVersionUID = 1L;
 	private String userId,code;
+	public AppRegister(Context context) {
+		super(context);
+	}
 	/**
 	 * 获取用户ID。
 	 * @return 用户ID。
@@ -46,10 +54,7 @@ public class AppRegister extends AppClient {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(super.toString()).append(",")
-		.append("userId").append("=").append(this.userId).append(",")
-		.append("code").append("=").append(this.code);
-		return builder.toString();
+		Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试卷记录列表项 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/list_top"
+    android:orientation="horizontal">
+    
+    <!--  左边图片 -->
+    <ImageView
+        android:layout_width="@dimen/record_img_width"
+        android:layout_height="@dimen/record_img_height"
+        android:layout_marginLeft="@dimen/list_left"
+        android:layout_marginStart="@dimen/list_left"
+        android:src="@drawable/icon_record"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/main_paper_record_desc"/>
+    
+    <!-- 右边内容 -->
+    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/img_text_padding"
+        android:layout_marginStart="@dimen/img_text_padding"
+        android:orientation="vertical">
+        
+        <!-- 1.标题 -->
+        <TextView android:id="@+id/paper_record_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/list_l_size"/>
+        
+        <!-- 2.状态 -->
+        <TextView android:id="@+id/paper_record_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_top"
+            android:textColor="@color/black"
+            android:textSize="@dimen/list_m_size"/>
+        
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_top"
+            android:background="@color/transparent"
+            android:orientation="horizontal">
+            
+            <!-- 3.得分 -->
+            <TextView android:id="@+id/paper_record_score"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textColor="@color/black"
+	            android:textSize="@dimen/list_m_size"/>
+            
+            <!-- 4.正确数 -->
+             <TextView android:id="@+id/paper_record_rights"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="@dimen/list_left"
+	            android:layout_marginStart="@dimen/list_left"
+	            android:textColor="@color/black"
+	            android:textSize="@dimen/list_m_size"/>
+             
+             <!-- 5.用时 -->
+             <TextView android:id="@+id/paper_record_usetimes"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="@dimen/list_left"
+	            android:layout_marginStart="@dimen/list_left"
+	            android:textColor="@color/black"
+	            android:textSize="@dimen/list_m_size"/>
+            
+        </LinearLayout>
+        
+        <!-- 6.时间 -->
+        <TextView android:id="@+id/paper_record_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_top"
+            android:textColor="@color/black"
+            android:textSize="@dimen/list_m_size"/>
+    </LinearLayout>
+</LinearLayout>

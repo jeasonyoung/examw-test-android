@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="black">#ff000000</color>
+    <color name="card_item_hascolor_highlight">#001E90FF</color>
+    <color name="card_item_hascolor_normal">#FF1E90FF</color>
+    <color name="card_item_noncolor_highlight">#00696969</color>
+    <color name="card_item_noncolor_normal">#FF696969</color>
+    <color name="card_item_rightcolor_highlight">#00008B00</color>
+    <color name="card_item_rightcolor_normal">#FF008B00</color>
+    <color name="card_item_wrongcolor_highlight">#00FF0000</color>
+    <color name="card_item_wrongcolor_normal">#FFFF0000</color>
+    <color name="default_color">#FFBA2121</color>
+    <color name="default_pressed_color">#77BA2121</color>
+    <color name="gray">#ff888888</color>
+    <color name="grey">#fff8f8f8</color>
+    <color name="item_right_bgcolor">#008B00</color>
+    <color name="item_wrong_bgcolor">#FF0000</color>
+    <color name="main_bottom_bgcolor">#FFBEBEBE</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffffff</color>
+    <declare-styleable name="CircleFlowIndicator"><attr format="color" name="activeColor"/><attr format="color" name="inactiveColor"/><attr format="dimension" name="radius"/><attr format="dimension" name="spacing"/><attr format="boolean" name="centered"/><attr format="integer" name="fadeOut"/><attr name="inactiveType"><flag name="stroke" value="0"/><flag name="fill" value="1"/></attr><attr name="activeType"><flag name="stroke" value="0"/><flag name="fill" value="1"/></attr></declare-styleable>
+    <declare-styleable name="PullToRefresh"><attr format="reference|color" name="ptrRefreshableViewBackground"/><attr format="reference|color" name="ptrHeaderBackground"/><attr format="reference|color" name="ptrHeaderTextColor"/><attr format="reference|color" name="ptrHeaderSubTextColor"/><attr name="ptrMode"><flag name="disabled" value="0x0"/><flag name="pullFromStart" value="0x1"/><flag name="pullFromEnd" value="0x2"/><flag name="both" value="0x3"/><flag name="manualOnly" value="0x4"/><flag name="pullDownFromTop" value="0x1"/><flag name="pullUpFromBottom" value="0x2"/></attr><attr format="reference|boolean" name="ptrShowIndicator"/><attr format="reference" name="ptrDrawable"/><attr format="reference" name="ptrDrawableStart"/><attr format="reference" name="ptrDrawableEnd"/><attr format="reference|boolean" name="ptrOverScroll"/><attr format="reference" name="ptrHeaderTextAppearance"/><attr format="reference" name="ptrSubHeaderTextAppearance"/><attr name="ptrAnimationStyle"><flag name="rotate" value="0x0"/><flag name="flip" value="0x1"/></attr><attr format="reference|boolean" name="ptrScrollingWhileRefreshingEnabled"/><attr format="reference|boolean" name="ptrListViewExtrasEnabled"/><attr format="reference|boolean" name="ptrRotateDrawableWhilePulling"/><attr format="reference|color" name="ptrAdapterViewBackground"/><attr format="reference" name="ptrDrawableTop"/><attr format="reference" name="ptrDrawableBottom"/></declare-styleable>
+    <declare-styleable name="TitleFlowIndicator"><attr format="dimension" name="titlePadding"/><attr format="dimension" name="clipPadding"/><attr format="color" name="selectedColor"/><attr format="boolean" name="selectedBold"/><attr format="dimension" name="selectedSize"/><attr format="color" name="textColor"/><attr format="dimension" name="textSize"/><attr format="dimension" name="footerLineHeight"/><attr format="color" name="footerColor"/><attr format="dimension" name="footerTriangleHeight"/><attr format="string" name="customTypeface"/></declare-styleable>
+    <declare-styleable name="ViewFlow"><attr format="integer" name="sidebuffer"/></declare-styleable>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="border_width">0.5dp</dimen>
+    <dimen name="card_column_height">35dp</dimen>
+    <dimen name="card_column_width">38dp</dimen>
+    <dimen name="corners_radius">5dp</dimen>
+    <dimen name="fontsize_l">16.0sp</dimen>
+    <dimen name="fontsize_m">14.0sp</dimen>
+    <dimen name="fontsize_s">12.0sp</dimen>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/exploded-aar/examw-test-android/pulltorefreshlibrary/unspecified/res/values/values.xml -->
+    <eat-comment/>
+    <dimen name="header_footer_left_right_padding">24dp</dimen>
+    <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="height_min">40.0dp</dimen>
+    <dimen name="img_text_padding">2dp</dimen>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/exploded-aar/examw-test-android/pulltorefreshlibrary/unspecified/res/values/values.xml -->
+    <eat-comment/>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="list_bottom">10dp</dimen>
+    <dimen name="list_l_size">16.0sp</dimen>
+    <dimen name="list_left">10dp</dimen>
+    <dimen name="list_m_size">14.0sp</dimen>
+    <dimen name="list_min_cellHeight">35.0dp</dimen>
+    <dimen name="list_right">5dp</dimen>
+    <dimen name="list_s_size">12.0sp</dimen>
+    <dimen name="list_top">10dp</dimen>
+    <dimen name="main_bottom_menuHeight">44.0dp</dimen>
+    <dimen name="main_bottom_menuImgPadding">2dp</dimen>
+    <dimen name="padding_bottom">2.0dp</dimen>
+    <dimen name="padding_normal">10.0dp</dimen>
+    <dimen name="padding_top">2.0dp</dimen>
+    <dimen name="record_img_height">60dp</dimen>
+    <dimen name="record_img_width">60dp</dimen>
+    <dimen name="top_title_minHeight">40.0dp</dimen>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/exploded-aar/examw-test-android/pulltorefreshlibrary/unspecified/res/values/values.xml -->
+    <eat-comment/>
+    <item name="gridview" type="id"/>
+    <item name="scrollview" type="id"/>
+    <item name="webview" type="id"/>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/dimens.xml -->
+    <eat-comment/>
+    <integer name="feedback_max_length">1000</integer>
+    <integer name="paper_item_update_time">2</integer>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="app_name">中华网校题库</string>
+    <string name="cancle">取消</string>
+    <string name="confirm">确认</string>
+    <string name="main_bottom_favorites">错题</string>
+    <string name="main_bottom_home">首页</string>
+    <string name="main_bottom_more">更多</string>
+    <string name="main_bottom_my">我的</string>
+    <string name="main_more_about_title">关于应用</string>
+    <string name="main_more_download_btn">下载最新试卷</string>
+    <string name="main_more_download_desc"><![CDATA[提示:\n \t下载最新发布的试卷...]]> </string>
+    <string name="main_more_download_title">下载试卷</string>
+    <string name="main_more_feedback_btn">提交</string>
+    <string name="main_more_feedback_count">已输入:</string>
+    <string name="main_more_feedback_placeholder">请输入您的意见或者建议</string>
+    <string name="main_more_feedback_title">意见反馈</string>
+    <string name="main_more_logout">退出</string>
+    <string name="main_more_title">更多</string>
+    <string name="main_my_nologin_btnLogin">登录</string>
+    <string name="main_my_nologin_btnReg">注册</string>
+    <string name="main_my_nologin_login_account">用户名:</string>
+    <string name="main_my_nologin_login_account_placeholder">请输入用户名</string>
+    <string name="main_my_nologin_login_password">密码:</string>
+    <string name="main_my_nologin_login_password_placeholder">请输入密码</string>
+    <string name="main_my_nologin_reg_email">电子邮箱:</string>
+    <string name="main_my_nologin_reg_email_error_blank">电子邮箱为空!</string>
+    <string name="main_my_nologin_reg_email_error_formatter">格式错误!</string>
+    <string name="main_my_nologin_reg_email_placeholder">请输入电子邮箱</string>
+    <string name="main_my_nologin_reg_email_regex"><![CDATA[^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$]]></string>
+    <string name="main_my_nologin_reg_name">姓名:</string>
+    <string name="main_my_nologin_reg_name_error_blank">姓名为空!</string>
+    <string name="main_my_nologin_reg_name_error_formatter">姓名只能使用2–6位汉字!</string>
+    <string name="main_my_nologin_reg_name_placeholder">请输入姓名</string>
+    <string name="main_my_nologin_reg_name_regex"><![CDATA[^[\\u4e00-\\u9fa5]{2,6}$]]></string>
+    <string name="main_my_nologin_reg_password">密码:</string>
+    <string name="main_my_nologin_reg_password_error_blank">密码为空!</string>
+    <string name="main_my_nologin_reg_password_error_formatter">密码只能使用字母,数字组成!</string>
+    <string name="main_my_nologin_reg_password_placeholder">请输入密码</string>
+    <string name="main_my_nologin_reg_password_regex"><![CDATA[^[0-9,a-z,A-Z]+$]]></string>
+    <string name="main_my_nologin_reg_phone">手机号码:</string>
+    <string name="main_my_nologin_reg_phone_error_blank">手机号码为空!</string>
+    <string name="main_my_nologin_reg_phone_error_formatter">手机号格式错误!</string>
+    <string name="main_my_nologin_reg_phone_placeholder">请输入手机号码</string>
+    <string name="main_my_nologin_reg_phone_regex"><![CDATA[^[1][3,4,5,6,8]\\d{9}$]]></string>
+    <string name="main_my_nologin_reg_repassword">重复密码:</string>
+    <string name="main_my_nologin_reg_repassword_error_blank">重复密码为空!</string>
+    <string name="main_my_nologin_reg_repassword_error_equals">两次密码不一致!</string>
+    <string name="main_my_nologin_reg_repassword_placeholder">请输入重复密码</string>
+    <string name="main_my_nologin_reg_username">用户名:</string>
+    <string name="main_my_nologin_reg_username_error_blank">用户名为空!</string>
+    <string name="main_my_nologin_reg_username_error_formatter">用户名只能使用字母,数字,下划线"_"组成!</string>
+    <string name="main_my_nologin_reg_username_placeholder">请输入用户名</string>
+    <string name="main_my_nologin_reg_username_regex"><![CDATA[^[_,0-9,a-z,A-Z]+$]]></string>
+    <string name="main_my_nologin_title">您还没有登录</string>
+    <string name="main_my_record_title">做题记录:</string>
+    <string name="main_my_title">我的</string>
+    <string name="main_my_userinfo_head_desc">用户图标</string>
+    <string name="main_my_userinfo_regcode">产品未注册</string>
+    <string name="main_paper_answer_analysis">题目解析:%s</string>
+    <string name="main_paper_answer_my_right"> √ 答对了</string>
+    <string name="main_paper_answer_my_wrong">× 答错了</string>
+    <string name="main_paper_answer_regex">([A-Z]\\.)</string>
+    <string name="main_paper_answer_right">参考答案:%s</string>
+    <string name="main_paper_back_desc">返回</string>
+    <string name="main_paper_card_desc">答题卡</string>
+    <string name="main_paper_card_title">答题卡</string>
+    <string name="main_paper_exit_alert_btnCancel">取消</string>
+    <string name="main_paper_exit_alert_btnConfirm">下次再做</string>
+    <string name="main_paper_exit_alert_btnSubmit">交卷</string>
+    <string name="main_paper_exit_alert_msg">是否退出考试?</string>
+    <string name="main_paper_exit_alert_title">退出</string>
+    <string name="main_paper_fav_desc">收藏</string>
+    <string name="main_paper_next_desc">下一题</string>
+    <string name="main_paper_prev_desc">上一题</string>
+    <string name="main_paper_record_alert_btnCancel">否</string>
+    <string name="main_paper_record_alert_btnSubmit">是</string>
+    <string name="main_paper_record_alert_msg">是否继续考试?</string>
+    <string name="main_paper_record_alert_title">提示</string>
+    <string name="main_paper_record_delete_btnCancel">取消</string>
+    <string name="main_paper_record_delete_btnSubmit">删除</string>
+    <string name="main_paper_record_delete_msg">确认删除?</string>
+    <string name="main_paper_record_delete_title">确认</string>
+    <string name="main_paper_record_desc">做题记录</string>
+    <string name="main_paper_record_no">未交卷</string>
+    <string name="main_paper_record_yes">已交卷</string>
+    <string name="main_paper_result_btn">查看试题</string>
+    <string name="main_paper_result_title">答题情况</string>
+    <string name="main_paper_submit_alert_btnCancel">否</string>
+    <string name="main_paper_submit_alert_btnSubmit">是</string>
+    <string name="main_paper_submit_alert_msg">是否确认交卷?</string>
+    <string name="main_paper_submit_alert_title">确认</string>
+    <string name="main_paper_submit_desc">提交</string>
+    <string name="main_paper_submit_error">交卷失败!</string>
+    <string name="main_paper_submit_process">正在交卷………</string>
+    <string name="main_paper_time_text">00:00:00</string>
+    <string name="main_paperinfo_btn_continue">继续考试</string>
+    <string name="main_paperinfo_btn_reset">重新开始</string>
+    <string name="main_paperinfo_btn_review">查看成绩</string>
+    <string name="main_paperinfo_btn_start">开始考试</string>
+    <string name="main_paperinfo_title">试卷详情</string>
+    <string name="main_switch_main_title">切换产品</string>
+    <string name="main_wrong_options_favorite">收藏</string>
+    <string name="main_wrong_options_wrong">错题</string>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/exploded-aar/examw-test-android/pulltorefreshlibrary/unspecified/res/values/values.xml -->
+    <eat-comment/>
+    <string name="pull_to_refresh_from_bottom_pull_label">@string/pull_to_refresh_pull_label</string>
+    <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
+    <string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
+    <string name="pull_to_refresh_pull_label">Pull to refresh…</string>
+    <string name="pull_to_refresh_refreshing_label">Loading…</string>
+    <string name="pull_to_refresh_release_label">Release to refresh…</string>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="search_examname_btn">搜索</string>
+    <string name="search_examname_placeholder">请输入考试名称</string>
+    <string name="top_head_btn_desc">返回</string>
+    <string name="wating_img_load">LOADING</string>
+    <!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AnimationFade">
+    	<item name="android:windowEnterAnimation">@anim/fade_in</item>
+    	<item name="android:windowExitAnimation">@anim/fade_out</item>
+	</style>
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+    <style name="AppTheme" parent="@android:style/Theme.NoTitleBar"/>
+    <style name="DialogTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    <style name="EditText" parent="@android:style/Widget.EditText">
+        <item name="android:textSize">@dimen/fontsize_s</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:singleLine">false</item>
+    </style>
+    <style name="WaitingViewDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>  
+        <item name="android:windowContentOverlay">@null</item>  
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>  
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:windowBackground">@android:color/transparent</item>  
+        <item name="android:windowNoTitle">true</item>    
+    </style>
+    <style name="main_bottom_radio">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>  
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/main_bottom_radio_bg</item>
+        <item name="android:padding">5.0dip</item>
+    </style>
+</resources>

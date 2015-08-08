@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 意见反馈 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+    <!-- Banner -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/top_head" />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/list_top"
+        android:background="@color/transparent"
+        android:orientation="vertical">
+    
+	    <!-- 意见反馈输入框 -->
+	    <EditText android:id="@+id/more_feedback"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/list_top"
+	        android:layout_marginLeft="@dimen/list_left"
+	        android:layout_marginStart="@dimen/list_left"
+	        android:layout_marginRight="@dimen/list_left"
+	        android:layout_marginEnd="@dimen/list_left"
+	        android:enabled="true"
+	        android:gravity="top"
+	        android:inputType="textMultiLine"
+	        android:imeOptions="actionNext"
+	        android:minLines="8"
+	        android:maxLines="20"
+	        android:scrollbars="vertical"
+	        android:background="@android:drawable/edit_text"
+	        android:textSize="@dimen/fontsize_m"
+	        android:hint="@string/main_more_feedback_placeholder" />
+	    
+	    <!-- 字数统计 -->
+	    <TextView android:id="@+id/more_feedback_count"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="@dimen/list_left"
+	        android:layout_marginStart="@dimen/list_left"
+	        android:textColor="@color/gray"
+	        android:textSize="@dimen/fontsize_s"/>
+	    
+	    <!-- 提交按钮 -->
+	     <Button android:id="@+id/more_feedback_btnSubmit"
+	         android:layout_width="match_parent"
+	         android:layout_height="wrap_content"
+	         android:minHeight="@dimen/list_min_cellHeight" 
+	         android:layout_marginTop="@dimen/list_top"
+	         android:layout_marginLeft="@dimen/list_left"
+	         android:layout_marginStart="@dimen/list_left"
+	         android:layout_marginRight="@dimen/list_left"
+	         android:layout_marginEnd="@dimen/list_left"
+	         android:paddingTop="@dimen/list_top"
+	         android:paddingBottom="@dimen/list_bottom"
+	         android:gravity="center_vertical|center_horizontal"
+	         android:text="@string/main_more_feedback_btn"
+	         android:textColor="@color/btn_pressed_normal_textcolor"
+	         android:textSize="@dimen/fontsize_l"
+	         android:background="@drawable/btn_normal_bg"
+	         android:visibility="visible"/>
+	</LinearLayout>
+</LinearLayout>

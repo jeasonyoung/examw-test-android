@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 用户信息 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   	android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/list_top"
+    android:layout_marginBottom="@dimen/list_bottom"
+    android:paddingTop="@dimen/list_top"
+    android:background="@color/transparent"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="horizontal" >
+    
+    <!-- 用户图标 -->
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginLeft="@dimen/list_left"
+        android:layout_marginStart="@dimen/list_left"
+        android:layout_marginRight="@dimen/img_text_padding"
+        android:layout_marginEnd="@dimen/img_text_padding"
+        android:src="@drawable/head"
+        android:contentDescription="@string/main_my_userinfo_head_desc"/>
+    
+    <!-- 用户信息 -->
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+        
+        <!-- 用户账号 -->
+        <TextView android:id="@+id/my_userinfo_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/fontsize_l"/>
+        
+        <!-- 产品注册码 -->
+        <TextView android:id="@+id/my_userinfo_regcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_top"
+            android:clickable="true"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/fontsize_s"/>
+        
+    </LinearLayout>
+</LinearLayout>

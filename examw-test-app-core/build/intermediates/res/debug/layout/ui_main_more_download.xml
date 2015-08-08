@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 下载试卷布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+     <!-- Banner -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/top_head" />
+    
+    <!-- 提示信息 -->
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:paddingTop="@dimen/list_top"
+        android:paddingBottom="@dimen/list_bottom"
+        android:paddingLeft="@dimen/list_left"
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_left"
+        android:paddingEnd="@dimen/list_left"
+        android:background="@color/white"
+        android:text="@string/main_more_download_desc"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontsize_m"/>
+    
+    <!-- 下载按钮 -->
+     <Button android:id="@+id/more_download_btn"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:minHeight="@dimen/list_min_cellHeight"
+         android:gravity="center_vertical|center_horizontal"
+         android:layout_marginTop="@dimen/list_top"
+         android:layout_marginLeft="@dimen/list_left"
+         android:layout_marginStart="@dimen/list_left"
+         android:layout_marginRight="@dimen/list_left"
+         android:layout_marginEnd="@dimen/list_left" 
+         android:text="@string/main_more_download_btn"
+         android:textColor="@color/btn_pressed_normal_textcolor"
+         android:textSize="@dimen/fontsize_m"
+         android:background="@drawable/btn_normal_bg"
+         android:visibility="visible"/>
+
+</LinearLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_more_download.xml -->
