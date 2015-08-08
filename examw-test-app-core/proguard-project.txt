@@ -19,5 +19,6 @@
 #   public *;
 #}
 -keep class com.google.gson.** {*;}
+-keep class com.examw.test.widget.** {*;}
 -dontobfuscate
 -dontoptimize
