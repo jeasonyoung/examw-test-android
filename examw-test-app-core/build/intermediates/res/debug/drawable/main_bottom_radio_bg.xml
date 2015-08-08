@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 主界面－底部背景颜色 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_checked="true" android:drawable="@color/main_bottom_bgcolor" />
+    <item android:state_enabled="false" android:drawable="@color/main_bottom_bgcolor" />
+	<item android:drawable="@color/main_bottom_bgcolor" />
+</selector><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/drawable/main_bottom_radio_bg.xml -->

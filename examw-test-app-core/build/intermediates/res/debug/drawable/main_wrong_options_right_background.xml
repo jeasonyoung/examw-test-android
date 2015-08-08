@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 错题模版选项背景-右边 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 选中时背景颜色 -->
+    <item android:state_checked="true">
+        <shape>
+            	<!--背景色  -->
+	            <solid android:color="@color/default_color" />
+	            <!-- 边框色 -->
+	            <stroke android:width="@dimen/border_width" android:color="@color/default_color"/>
+	            <!-- 右边圆角 -->
+	            <corners android:topRightRadius="@dimen/corners_radius" android:bottomRightRadius="@dimen/corners_radius"/>
+	            <!-- 距离 -->
+	            <padding android:left="@dimen/border_width" android:bottom="@dimen/border_width" android:right="@dimen/border_width" android:top="@dimen/border_width"/>
+	       </shape>
+    </item>
+    <!-- 未选中时背景颜色 -->
+    <item android:state_checked="false">
+        <shape>
+            	<!--背景色  -->
+	            <solid android:color="@color/white" />
+	            <!-- 边框色 -->
+	            <stroke android:width="@dimen/border_width" android:color="@color/default_color"/>
+	            <!-- 右边圆角 -->
+	            <corners android:topRightRadius="@dimen/corners_radius" android:bottomRightRadius="@dimen/corners_radius"/>
+	            <!-- 距离 -->
+	            <padding android:left="@dimen/border_width" android:bottom="@dimen/border_width" android:right="@dimen/border_width" android:top="@dimen/border_width"/>
+	       </shape>
+    </item>
+</selector><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/drawable/main_wrong_options_right_background.xml -->

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 登陆UI布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+    <!-- Banner -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/top_head" />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:paddingTop="@dimen/list_top"
+        android:paddingBottom="@dimen/list_bottom"
+        android:background="@color/white"
+        android:orientation="vertical">
+        <!-- 第一行(用户名) -->
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:orientation="horizontal"
+            android:background="@color/transparent">
+            <!-- 用户名标签 -->
+            <TextView 
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:gravity="center_vertical|end"
+                android:text="@string/main_my_nologin_login_account"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fontsize_m"/>
+            <!-- 用户名输入框 -->
+            <EditText android:id="@+id/login_account"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginRight="@dimen/list_left"
+                android:layout_marginEnd="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fontsize_m"
+                android:hint="@string/main_my_nologin_login_account_placeholder"
+                android:singleLine="true"
+                android:imeOptions="actionNext"/>
+        </LinearLayout>
+        <!-- 第二行(密码) -->
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_top"
+            android:orientation="horizontal"
+            android:background="@color/transparent">
+            <!-- 密码标签 -->
+            <TextView 
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:gravity="center_vertical|end"
+                android:text="@string/main_my_nologin_login_password"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fontsize_m" />
+            <!-- 密码输入框 -->
+            <EditText android:id="@+id/login_password"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginRight="@dimen/list_left"
+                android:layout_marginEnd="@dimen/list_left"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fontsize_m"
+                android:hint="@string/main_my_nologin_login_password_placeholder"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:imeOptions="actionNext"/>
+        </LinearLayout>
+        <!-- 第三行(按钮) -->
+        <LinearLayout 
+             android:layout_width="match_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_marginTop="@dimen/list_top"
+	         android:minHeight="@dimen/list_min_cellHeight"
+	    	 android:background="@color/transparent"
+	    	 android:gravity="center_vertical|center_horizontal"
+	    	 android:weightSum="3"
+	    	 android:orientation="horizontal">
+            
+         <!-- 登录按钮 -->
+         <Button android:id="@+id/login_btnSubmit"
+             style="?android:attr/buttonBarButtonStyle"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:minHeight="@dimen/list_min_cellHeight"
+             android:text="@string/main_my_nologin_btnLogin"
+             android:textColor="@color/btn_pressed_selected_textcolor"
+             android:textSize="@dimen/fontsize_l"
+             android:background="@drawable/btn_selected_bg"
+             android:layout_weight="1"/>
+            
+         <!-- 注册按钮 -->
+         <Button android:id="@+id/login_btnRegister"
+             style="?android:attr/buttonBarButtonStyle"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:minHeight="@dimen/list_min_cellHeight"
+              android:layout_marginLeft="@dimen/list_left"
+             android:layout_marginStart="@dimen/list_left"
+            
+             android:text="@string/main_my_nologin_btnReg"
+             android:textColor="@color/btn_pressed_normal_textcolor"
+             android:textSize="@dimen/fontsize_l"
+             android:background="@drawable/btn_normal_bg"
+             android:layout_weight="1"/>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+</LinearLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_my_nologin_login.xml -->

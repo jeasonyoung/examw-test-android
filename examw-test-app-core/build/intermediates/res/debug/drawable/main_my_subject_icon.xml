@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 做题记录行图标 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- 图标 -->
+    <item android:drawable="@drawable/icon_my_subject" />
+</selector>
+<!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/drawable/main_my_subject_icon.xml -->

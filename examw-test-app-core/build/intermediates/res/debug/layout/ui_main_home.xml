@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 首页 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" 
+    android:animateLayoutChanges="true">
+    
+    <!-- 标题 -->
+    <TextView android:id="@+id/main_home_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/top_title_minHeight"
+        android:paddingTop="@dimen/list_top"
+        android:paddingBottom="@dimen/list_bottom"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:paddingLeft="@dimen/list_left"
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_right"
+        android:paddingEnd="@dimen/list_right"
+        android:background="@color/default_color" 
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontsize_l"/>
+
+    <!-- 列表数据 -->
+    <ListView android:id="@+id/list_main_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:background="@color/white"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/topic_driver"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:visibility="visible" />
+    
+</LinearLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_home.xml -->

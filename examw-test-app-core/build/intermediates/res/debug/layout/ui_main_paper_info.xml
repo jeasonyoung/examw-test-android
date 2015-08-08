@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试卷详情布局xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical" >
+    
+    <!-- Banner -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/top_head" />
+    
+    <!-- 内容 -->
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:scrollbars="vertical">
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:orientation="vertical">
+            
+             <!-- 试卷名称 -->
+             <TextView android:id="@+id/main_paperinfo_title"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="@dimen/list_top"
+                 android:paddingLeft="@dimen/list_left"
+                 android:paddingStart="@dimen/list_left"
+                 android:paddingRight="@dimen/list_left"
+                 android:paddingEnd="@dimen/list_left"
+                 android:background="@color/white"
+                 android:textColor="@color/black"
+                 android:textSize="@dimen/fontsize_l"/>
+             
+             <!-- 按钮布局-->
+             <LinearLayout 
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:minHeight="@dimen/list_min_cellHeight"
+                 android:layout_marginTop="@dimen/list_top"
+                 android:gravity="center_vertical|center_horizontal"
+                 android:background="@color/transparent"
+                 android:orientation="horizontal">
+                 
+                 <!-- 开始考试 -->
+                 <Button android:id="@+id/main_paperinfo_btn_start"
+                     style="?android:attr/buttonBarButtonStyle"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:minHeight="@dimen/list_min_cellHeight"
+                     android:layout_marginLeft="@dimen/list_left"
+                     android:layout_marginStart="@dimen/list_left"
+                     android:layout_marginRight="@dimen/list_left"
+                     android:layout_marginEnd="@dimen/list_left"
+                     android:paddingLeft="@dimen/list_left"
+                     android:paddingStart="@dimen/list_left"
+                     android:paddingRight="@dimen/list_left"
+                     android:paddingEnd="@dimen/list_left"
+                     android:text="@string/main_paperinfo_btn_start"
+                     android:textColor="@color/btn_pressed_normal_textcolor"
+                     android:textSize="@dimen/fontsize_l"
+                     android:background="@drawable/btn_normal_bg"
+                     android:visibility="gone"/>
+                 
+                 <!-- 继续考试 -->
+                  <Button android:id="@+id/main_paperinfo_btn_continue"
+                     style="?android:attr/buttonBarButtonStyle"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:minHeight="@dimen/list_min_cellHeight"
+                     android:layout_marginLeft="@dimen/list_left"
+                     android:layout_marginStart="@dimen/list_left"
+                     android:layout_marginRight="@dimen/list_left"
+                     android:layout_marginEnd="@dimen/list_left"
+                     android:paddingLeft="@dimen/list_left"
+                     android:paddingStart="@dimen/list_left"
+                     android:paddingRight="@dimen/list_left"
+                     android:paddingEnd="@dimen/list_left"
+                     android:text="@string/main_paperinfo_btn_continue"
+                     android:textColor="@color/btn_pressed_normal_textcolor"
+                     android:textSize="@dimen/fontsize_l"
+                     android:background="@drawable/btn_normal_bg"
+                     android:visibility="gone"/>
+                  
+                  <!-- 重新开始 -->
+                  <Button android:id="@+id/main_paperinfo_btn_rest"
+                     style="?android:attr/buttonBarButtonStyle"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:minHeight="@dimen/list_min_cellHeight"
+                     android:layout_marginLeft="@dimen/list_left"
+                     android:layout_marginStart="@dimen/list_left"
+                     android:layout_marginRight="@dimen/list_left"
+                     android:layout_marginEnd="@dimen/list_left"
+                     android:paddingLeft="@dimen/list_left"
+                     android:paddingStart="@dimen/list_left"
+                     android:paddingRight="@dimen/list_left"
+                     android:paddingEnd="@dimen/list_left"
+                     android:text="@string/main_paperinfo_btn_reset"
+                      android:textColor="@color/btn_pressed_normal_textcolor"
+                     android:textSize="@dimen/fontsize_l"
+                     android:background="@drawable/btn_normal_bg"
+                     android:visibility="gone"/>
+                  
+                  <!-- 查看成绩 -->
+                  <Button android:id="@+id/main_paperinfo_btn_review"
+                     style="?android:attr/buttonBarButtonStyle"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:minHeight="@dimen/list_min_cellHeight"
+                     android:layout_marginLeft="@dimen/list_left"
+                     android:layout_marginStart="@dimen/list_left"
+                     android:layout_marginRight="@dimen/list_left"
+                     android:layout_marginEnd="@dimen/list_left"
+                     android:paddingLeft="@dimen/list_left"
+                     android:paddingStart="@dimen/list_left"
+                     android:paddingRight="@dimen/list_left"
+                     android:paddingEnd="@dimen/list_left"
+                     android:text="@string/main_paperinfo_btn_review"
+                     android:textColor="@color/btn_pressed_normal_textcolor"
+                     android:textSize="@dimen/fontsize_l"
+                     android:background="@drawable/btn_normal_bg"
+                     android:visibility="gone"/>
+                 
+             </LinearLayout>
+              
+              <!-- 所属科目 -->
+              <TextView android:id="@+id/main_paperinfo_subject"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/list_top"
+                  android:paddingLeft="@dimen/list_left"
+                  android:paddingStart="@dimen/list_left"
+                  android:paddingRight="@dimen/list_right"
+                  android:paddingEnd="@dimen/list_right"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m" />
+              
+              <!-- 所属地区 -->
+              <TextView android:id="@+id/main_paperinfo_area"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/padding_top"
+                  android:paddingLeft="@dimen/list_left"
+                  android:paddingStart="@dimen/list_left"
+                  android:paddingRight="@dimen/list_right"
+                  android:paddingEnd="@dimen/list_right"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m" />
+            
+              <!-- 所属类型 -->
+              <TextView android:id="@+id/main_paperinfo_type"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/padding_top"
+                  android:paddingLeft="@dimen/list_left"
+                  android:paddingStart="@dimen/list_left"
+                  android:paddingRight="@dimen/list_right"
+                  android:paddingEnd="@dimen/list_right"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m" />
+              
+              <!-- 所属年份 -->
+              <TextView android:id="@+id/main_paperinfo_year"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/padding_top"
+                  android:paddingLeft="@dimen/list_left"
+                  android:paddingStart="@dimen/list_left"
+                  android:paddingRight="@dimen/list_right"
+                  android:paddingEnd="@dimen/list_right"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m" />
+            
+              <!-- 所属总分 -->
+              <TextView android:id="@+id/main_paperinfo_totals"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/padding_top"
+                  android:paddingLeft="@dimen/list_left"
+                  android:paddingStart="@dimen/list_left"
+                  android:paddingRight="@dimen/list_right"
+                  android:paddingEnd="@dimen/list_right"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m" />
+              
+              <!-- 所属试题数 -->
+              <TextView android:id="@+id/main_paperinfo_items"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/padding_top"
+                  android:paddingLeft="@dimen/list_left"
+                  android:paddingStart="@dimen/list_left"
+                  android:paddingRight="@dimen/list_right"
+                  android:paddingEnd="@dimen/list_right"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m" />
+              
+              <!-- 所属试时长 -->
+              <TextView android:id="@+id/main_paperinfo_times"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/padding_top"
+                  android:paddingLeft="@dimen/list_left"
+                  android:paddingStart="@dimen/list_left"
+                  android:paddingRight="@dimen/list_right"
+                  android:paddingEnd="@dimen/list_right"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/fontsize_m" />
+              
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+<!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_paper_info.xml -->

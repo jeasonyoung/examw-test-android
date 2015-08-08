@@ -8,7 +8,7 @@ public final class AppConstant {
 	/**
 	 * 客户端标示(用于考试网用户登陆验证)。
 	 */
-	public static final String APP_ID = "3570700053271860";
+	public static final String APP_ID = "357070005327186";
 	/**
 	 * 客户端类型代码。
 	 */
@@ -16,11 +16,11 @@ public final class AppConstant {
 	/**
 	 * 服务器认证用户名。
 	 */
-	public static final String APP_API_USERNAME = "";
+	public static final String APP_API_USERNAME = "__iap-apk_accessUser";
 	/**
 	 * 服务器认证密码。
 	 */
-	public static final String APP_API_PASSWORD = "";
+	public static final String APP_API_PASSWORD = "__iap-apk_accessUser";
 	/**
 	 * 频道(用户登录/注册)。
 	 */
@@ -34,7 +34,7 @@ public final class AppConstant {
 	/**
 	 * 服务器数据API。
 	 */
-	public static final String APP_API_HOST = "http://127.0.0.1";
+	public static final String APP_API_HOST = "http://tiku.examw.com";
 	/**
 	 * 注册API。
 	 */

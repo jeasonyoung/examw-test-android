@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--主页底部菜单-2.错题  -->
+<selector  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/icon_favorites_highlight" />
+    <item android:state_checked="true" android:drawable="@drawable/icon_favorites_highlight" />
+    <item android:drawable="@drawable/icon_favorites_normal" />
+</selector><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/drawable/weight_favorites.xml -->

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/workspace/examw-test-android/examw-test-app-core/libs/gson-2.3.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
+        <dex dex="/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/pre-dexed/debug/gson-2.3.1-12400b7bbed14937cf6a4bb583ab177a5319bdce.jar" />
+    </item>
+    <item
+        jar="/Users/workspace/examw-test-android/examw-test-app-core/libs/commons-lang3-3.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5fe28b9518e58819180a43a850fbc0dd24b7c050">
+        <dex dex="/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/pre-dexed/debug/commons-lang3-3.4-e64d86944e3ffb4aa6709c7579996548a2b6bc38.jar" />
+    </item>
+    <item
+        jar="/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/exploded-aar/examw-test-android/pulltorefreshlibrary/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="28352652c2aed83ed9f055d3c6d9fed92590f030">
+        <dex dex="/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/pre-dexed/debug/classes-f61b30c4bd5eca9b5f38afc5486af8d3455ebf36.jar" />
+    </item>
+    <item
+        jar="/Users/workspace/examw-test-android/examw-test-app-core/libs/android-support-v4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="605c447c20ca216b5556af9f215af5d4bba1b117">
+        <dex dex="/Users/workspace/examw-test-android/examw-test-app-core/build/intermediates/pre-dexed/debug/android-support-v4-1946a4ad616702eefad2957e323fbf8315c7d38f.jar" />
+    </item>
+
+</items>

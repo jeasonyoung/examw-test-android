@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试卷结果－行布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_min_cellHeight"
+    android:background="@color/transparent"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical" >
+    
+    <TextView android:id="@+id/paper_result_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingLeft="@dimen/list_left"
+        android:paddingStart="@dimen/list_left"
+        android:paddingRight="@dimen/list_right"
+        android:paddingEnd="@dimen/list_right"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontsize_m" />
+   
+</LinearLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_paper_result_item.xml -->

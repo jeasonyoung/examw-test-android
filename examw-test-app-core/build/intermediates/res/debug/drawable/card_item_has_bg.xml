@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 答题卡－已做－背景 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- 边框 -->
+    <item>
+        <shape android:shape="rectangle">
+        	<!--背景色  -->
+           	<solid android:color="@color/white" />
+           	<!-- 边框色 -->
+           	<stroke android:width="0.5dip" android:color="@color/card_item_hascolor_normal"/>
+           	<corners android:radius="6dp"/>
+           	<padding android:left="0.5dip" android:bottom="0.5dip" android:right="0.5dip" android:top="0.5dip"/>
+        </shape>
+    </item>
+</layer-list><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/drawable/card_item_has_bg.xml -->

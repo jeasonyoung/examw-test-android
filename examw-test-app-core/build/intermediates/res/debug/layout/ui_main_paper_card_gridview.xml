@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 答题卡 - 分组内容GridView -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical" >
+    
+    <!-- 标题 -->
+    <TextView android:id="@+id/paper_card_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontsize_l"/>
+    
+    <!-- 描述 -->
+    <TextView android:id="@+id/paper_card_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_top"
+        android:layout_marginLeft="@dimen/list_left"
+        android:layout_marginStart="@dimen/list_left"
+        android:layout_marginRight="@dimen/list_left"
+        android:layout_marginEnd="@dimen/list_left"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontsize_m"/>
+    
+    <!-- gridview -->
+    <com.examw.test.widget.ListGridView android:id="@+id/paper_card_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_top"
+        android:layout_marginBottom="@dimen/list_bottom"
+        android:layout_marginLeft="@dimen/list_left"
+        android:layout_marginStart="@dimen/list_left"
+        android:layout_marginRight="@dimen/list_left"
+        android:layout_marginEnd="@dimen/list_left"
+        android:numColumns="auto_fit"
+        android:columnWidth="@dimen/card_column_width" 
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="@dimen/list_top"
+        android:horizontalSpacing="@dimen/list_left"/>
+    
+</LinearLayout><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_paper_card_gridview.xml -->

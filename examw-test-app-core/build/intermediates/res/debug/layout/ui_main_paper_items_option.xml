@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 试题选项 -->
+<com.examw.test.widget.ItemOptionView xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content"
+   android:gravity="center_vertical"
+   android:descendantFocusability="blocksDescendants"
+   android:minHeight="@dimen/list_min_cellHeight"
+   android:orientation="horizontal" >
+    
+    <!-- 选项内容-->
+    <TextView android:id="@+id/paper_item_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/list_left"
+        android:layout_marginStart="@dimen/list_left"
+        android:drawableLeft="@drawable/option_single_normal"
+        android:drawableStart="@drawable/option_single_normal"
+        android:drawablePadding="@dimen/img_text_padding"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/list_l_size"/>
+    
+</com.examw.test.widget.ItemOptionView><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/layout/ui_main_paper_items_option.xml -->
