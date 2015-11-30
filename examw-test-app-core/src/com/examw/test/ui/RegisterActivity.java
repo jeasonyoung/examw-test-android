@@ -1,467 +1,478 @@
 package com.examw.test.ui;
 
-import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
 import java.util.regex.Pattern;
 
-import android.app.ProgressDialog;
+import org.apache.commons.lang3.StringUtils;
+
+import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 import com.examw.test.R;
+import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
-import com.examw.test.domain.User;
-import com.examw.test.exception.AppException;
-import com.examw.test.model.Json;
-import com.examw.test.support.ApiClient;
-import com.examw.test.support.LoginTips;
-import com.examw.test.util.StringUtils;
-import com.examw.test.widget.ImgRightEditText;
+import com.examw.test.model.sync.JSONCallback;
+import com.examw.test.model.sync.RegisterUser;
+import com.examw.test.support.MsgHandler;
+import com.examw.test.utils.DigestClientUtil;
+import com.examw.test.widget.WaitingViewDialog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
- * 注册
- * @author fengwei.
- * @since 2014年12月1日 上午11:52:53.
+ * 用户注册。
+ * 
+ * @author jeasonyoung
+ * @since 2015年7月8日
  */
-public class RegisterActivity  extends BaseActivity implements OnClickListener{
-	private TextView usernameInfo,nameInfo, pwdInfo, pwd2Info, emailInfo, phoneInfo;
-	private ImgRightEditText usernameView,nameView, pwdView, pwd2View, emailView, phoneView;
-	private ProgressDialog dialog;
-	private Handler handler;
-	private SharedPreferences abfile;
-	private AppContext appContext;
-	private String username,pwd,name,phone,email;
-	private InputMethodManager imm;
+public class RegisterActivity  extends Activity implements View.OnClickListener{
+	private static final String TAG = "RegisterActivity";
+	private DataInputViews dataInputViews;
+	private MsgHandler handler;
+	private WaitingViewDialog waitingViewDialog;
+	/*
+	 * 重载。
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.ui_register);
-		appContext = (AppContext) getApplication();
-		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-		initViews();
+		Log.d(TAG, "初始化创建Activity...");
+		//加载数据文件
+		this.setContentView(R.layout.ui_main_my_nologin_register);
+		//初始化等待动画
+		this.waitingViewDialog = new WaitingViewDialog(this);
+		//初始化消息处理
+		this.handler = new MsgHandler(this);
+		//标题
+		final TextView tvTitle = (TextView)this.findViewById(R.id.title);
+		if(tvTitle != null){
+			tvTitle.setText(getResources().getString(R.string.main_my_nologin_btnReg));
+		}
+		//返回按钮
+		final View btnBack = this.findViewById(R.id.btn_goback);
+		btnBack.setOnClickListener(this);
+		//0.初始化
+		this.dataInputViews = new DataInputViews(this);
+		//1.用户名
+		this.dataInputViews.setUsername((EditText)this.findViewById(R.id.register_username));
+		//2.密码
+		this.dataInputViews.setPassword((EditText)this.findViewById(R.id.register_pwd));
+		//3.重复密码
+		this.dataInputViews.setRepassword((EditText)this.findViewById(R.id.register_repwd));
+		//4.姓名
+		this.dataInputViews.setName((EditText)this.findViewById(R.id.register_name));
+		//5.电子邮箱
+		this.dataInputViews.setEmail((EditText)this.findViewById(R.id.register_e_mail));
+		//6.手机号码
+		this.dataInputViews.setPhone((EditText)this.findViewById(R.id.register_tel));
+		
+		//注册按钮
+		final View btnSubmit = this.findViewById(R.id.register_btnSubmit);
+		btnSubmit.setOnClickListener(this);
 	}
-
-	private void initViews() {
-		this.nameInfo = (TextView) this.findViewById(R.id.regist_tvName);
-		this.usernameInfo = (TextView) this.findViewById(R.id.regist_tvUserName);
-		this.pwdInfo = (TextView) this.findViewById(R.id.regist_tvPassword);
-		this.pwd2Info = (TextView) this
-				.findViewById(R.id.regist_tvConfirimPass);
-		this.emailInfo = (TextView) this.findViewById(R.id.regist_tvEmail);
-		this.phoneInfo = (TextView) this.findViewById(R.id.regist_tvPhone);
-
-		this.nameView = (ImgRightEditText) this
-				.findViewById(R.id.regist_name);
-		this.usernameView = (ImgRightEditText) this
-				.findViewById(R.id.regist_etUserName);
-		this.pwdView = (ImgRightEditText) this
-				.findViewById(R.id.regist_etPassword);
-		this.pwd2View = (ImgRightEditText) this
-				.findViewById(R.id.regist_etConfirimPass);
-		this.emailView = (ImgRightEditText) this
-				.findViewById(R.id.regist_email);
-		this.phoneView = (ImgRightEditText) this.findViewById(R.id.regist_tel);
-		this.findViewById(R.id.btn_goback).setOnClickListener(this);
-		this.findViewById(R.id.regist_btnSubmit).setOnClickListener(this);
-		handler = new MyHandler(this);
-		abfile = getSharedPreferences("abfile", 0);
-		usernameView.setOnFocusChangeListener(new OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if(!hasFocus)
-				{
-					final String str1 = usernameView.getText().toString().trim();
-					boolean bool6 = Pattern.compile("^[_,0-9,a-z,A-Z]+$").matcher(str1)
-							.matches();
-					if (str1.equals("")) {
-						showInfo("用户名不能为空!",usernameInfo,usernameView,0);
-						return;
-					}
-					if (!bool6) {
-						showInfo("用户名只能使用字母,数字,下划线'_'组成!",usernameInfo,usernameView,0);
-						return;
-					}
-					if ((str1.length() < 4) || (str1.length()> 20))
-				    {
-						showInfo("用户名应在4-20位之间！",usernameInfo,usernameView,0);
-						return;
-				    }
-					showInfo("*用户名",usernameInfo,usernameView,1);
-					//开线程去验证用户名是否被占用
-				}
-			}
-		});
-		pwdView.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// TODO Auto-generated method stub
-				String str3 = pwdView.getText().toString().trim();
-				String str4 = pwd2View.getText().toString().trim();
-				if(!str4.equals(str3))
-				{
-					showInfo("*确认密码:两次输入不一致",pwd2Info,pwd2View,0);
-				}else
-				{
-					showInfo("*确认密码:",pwd2Info,pwd2View,1);
-				}
-				boolean bool7 = Pattern.compile("^[0-9,a-z,A-Z]+$").matcher(str3).matches();
-				if (str3.equals("")) {
-					showInfo("密码不能为空!",pwdInfo,pwdView,0);
-					return ;
-				}
-				if (!bool7) {
-					showInfo("密码只能使用字母,数字组成!",pwdInfo,pwdView,0);
-					return ;
-				}
-				if ((str3.length() < 4) || (str3.length()> 20)) {
-					showInfo("密码4-20位字符!",pwdInfo,pwdView,0);
-					return ;
-				}
-				showInfo("*密码:",pwdInfo,pwdView,1);
-			}
-		});
-		pwd2View.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				String str3 = pwdView.getText().toString().trim();
-				String str4 = pwd2View.getText().toString().trim();
-				if(!str4.equals(str3))
-				{
-					showInfo("*确认密码:两次输入不一致",pwd2Info,pwd2View,0);
-					return;
-				}else
-				{
-					showInfo("*确认密码:",pwd2Info,pwd2View,1);
-					return;
-				}
-			}
-		});
-		nameView.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				String str2 = nameView.getText().toString().trim();
-//				boolean bool1 = Pattern
-//						.compile(
-//								"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")
-//						.matcher(str2).matches();
-				boolean bool1 = Pattern.compile("^[\\u4e00-\\u9fa5]{2,6}$").matcher(str2).matches();
-				if (str2.equals("")) {
-					showInfo("姓名不能为空!",nameInfo,nameView,0);
-					return ;
-				}
-				if (!bool1) {
-					showInfo("姓名格式错误!",nameInfo,nameView,0);
-					return ;
-				}
-				showInfo("*真实姓名:",nameInfo,nameView,1);
-			}
-		});
-		emailView.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				String str2 = emailView.getText().toString().trim();
-				if (str2.equals("")) {
-					showInfo("email不能为空!",emailInfo,emailView,0);
-					return ;
-				}
-				if (!StringUtils.isEmail(str2)) {
-					showInfo("email格式错误!",emailInfo,emailView,0);
-					return ;
-				}
-				showInfo("*Email:",emailInfo,emailView,1);
-			}
-		});
-		phoneView.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				String str5 = phoneView.getText().toString().trim();
-				boolean bool3 = Pattern.compile("^[1][3,4,5,6,8]\\d{9}$")
-						.matcher(str5).matches();
-				if("".equals(str5))
-				{
-					showInfo("手机号不能为空!",phoneInfo,phoneView,0);
-					return ;
-				}
-				if(!bool3)
-				{
-					showInfo("手机号格式错误!",phoneInfo,phoneView,0);
-					return ;
-				}
-				showInfo("手机号码",phoneInfo,phoneView,1);
-			}
-		});
-		phoneView.setOnEditorActionListener(new OnEditorActionListener() {
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				// TODO Auto-generated method stub
-				if(actionId == EditorInfo.IME_ACTION_GO)
-				{
-					register();
-				}
-				return true;
-			}
-		});
-	}
+	/*
+	 * 按钮事件处理。
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch(v.getId())
-		{
-		case R.id.btn_goback:
-			this.finish();
-			break;
-		case R.id.regist_btnSubmit:
-			register();
-			break;
-		}
-	}
-	private void register()
-	{
-		//隐藏软键盘
-		imm.hideSoftInputFromWindow(phoneView.getWindowToken(), 0);
-		//检查登录
-		if(checkInput())
-		{
-			//开线程去登陆
-			//检查网络
-			if(!checkNetWork())
-			{
-				return;
+		Log.d(TAG, "按钮事件处理..." + v);
+		switch(v.getId()){
+			case R.id.btn_goback:{//返回按钮处理
+				Log.d(TAG, "返回按钮事件处理...");
+				this.finish();
+				break;
 			}
-			dialog = ProgressDialog.show(RegisterActivity.this, null, "注册中请稍候",
-					true, true);
-			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			new Thread(){
-				public void run() {
-					Json result = null;
-					Message msg = handler.obtainMessage();
-					try
-					{
-						//改为代理模式
-						result = ApiClient.register_proxy(appContext, username, pwd, phone,name,email);
-						msg.what = 1;
-						msg.obj = result;
-						handler.sendMessage(msg);
-					}catch(Exception e)
-					{
-						e.printStackTrace();
-						msg.what = -1;
-						msg.obj = e;
-						handler.sendMessage(msg);
-					}
-				};
-			}.start();
+			case R.id.register_btnSubmit:{//注册按钮处理
+				//开启等待动画
+				this.waitingViewDialog.show();
+				//校验输入
+				if(!this.dataInputViews.verification()){
+					Log.d(TAG, "输入数据校验未通过...");
+					this.waitingViewDialog.cancel();
+					return;
+				}
+				//异步提交数据
+				new RegisterUserDataAsyncTask().execute(this.dataInputViews.getRegisterUser());
+				break;
+			}
 		}
 	}
-	private boolean checkInput() {
-		username = this.usernameView.getText().toString().trim();
-		name = this.nameView.getText().toString().trim();
-		pwd = this.pwdView.getText().toString().trim();
-		String str4 = this.pwd2View.getText().toString().trim();
-		phone = this.phoneView.getText().toString().trim();
-		email = this.emailView.getText().toString().trim();
-		boolean bool6 = Pattern.compile("^[_,0-9,a-z,A-Z]+$").matcher(username)
-				.matches();
-		if (username.equals("")) {
-			showMsg("用户名不能为空!");
+	/**
+	 * 注册数据输入UI处理。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月9日
+	 */
+	private class DataInputViews implements TextView.OnEditorActionListener{
+		private EditText username,password,repassword,name,email,phone;
+		private final RegisterUser regUser;
+		private final Resources resources;
+		/**
+		 * 构造函数。
+		 * @param context
+		 */
+		public DataInputViews(Context context){
+			Log.d(TAG, "初始化注册数据...");
+			this.regUser = new RegisterUser(context);
+			this.resources =context.getResources();
+		}
+		/**
+		 * 设置用户名。
+		 * @param username 
+		 *	  用户名。
+		 */
+		public void setUsername(EditText username) {
+			this.username = username;
+			this.username.setOnEditorActionListener(this);
+		}
+		/**
+		 * 设置密码。
+		 * @param password 
+		 *	  密码。
+		 */
+		public void setPassword(EditText password) {
+			this.password = password;
+			this.password.setOnEditorActionListener(this);
+		}
+		/**
+		 * 设置重复密码。
+		 * @param repassword 
+		 *	  重复密码。
+		 */
+		public void setRepassword(EditText repassword) {
+			this.repassword = repassword;
+			this.repassword.setOnEditorActionListener(this);
+		}
+		/**
+		 * 设置姓名。
+		 * @param name 
+		 *	  姓名。
+		 */
+		public void setName(EditText name) {
+			this.name = name;
+			this.name.setOnEditorActionListener(this);
+		}
+		/**
+		 * 设置电子邮箱。
+		 * @param email 
+		 *	  电子邮箱。
+		 */
+		public void setEmail(EditText email) {
+			this.email = email;
+			this.email.setOnEditorActionListener(this);
+		}
+		/**
+		 * 设置电话号码。
+		 * @param phone 
+		 *	  电话号码。
+		 */
+		public void setPhone(EditText phone) {
+			this.phone = phone;
+			this.phone.setOnEditorActionListener(this);
+		}
+		//正则表达式验证
+		private boolean validateRegex(final String input, final String regex){
+			if(StringUtils.isBlank(regex)){
+				return true;
+			}
+			if(StringUtils.isNotBlank(input)){
+				return Pattern.compile(regex).matcher(input).matches();
+			}
 			return false;
 		}
-		if (!bool6) {
-			showMsg("用户名只能使用字母,数字,下划线'_'组成!");
-			return false;
-		}
-		if ((username.length() < 4) || (username.length()> 20))
-	    {
-			showMsg("会员名应在4-18位之间！");
-			return false;
-	    }
-		boolean bool7 = Pattern.compile("^[0-9,a-z,A-Z]+$").matcher(pwd).matches();
-		if (pwd.equals("")) {
-			showMsg("密码不能为空!");
-			return false;
-		}
-		if (!bool7) {
-			showMsg("密码只能使用字母,数字组成!");
-			return false;
-		}
-		if ((pwd.length() < 4) || (pwd.length()> 15)) {
-			showMsg("密码4-15位字符!");
-			return false;
-		}
-		if(!pwd.equals(str4))
-		{
-			showMsg("两次密码输入不一致!");
-			return false;
-		}
-		boolean bool1 = Pattern
-				.compile(
-						"^([\\u4e00-\\u9fa5]+|([a-z]+\\s?)+)$")
-				.matcher(name).matches();
-		if (name.equals("")) {
-			showMsg("姓名不能为空!");
-			return false;
-		}
-		if (!bool1) {
-			showMsg("姓名格式错误!");
-			return false;
-		}
-		boolean bool3 = Pattern.compile("^[1][3,4,5,6,7,8]\\d{9}$")
-				.matcher(phone).matches();
-		if("".equals(phone))
-		{
-			showMsg("手机号不能为空!");
-			return false;
-		}
-		if(!bool3)
-		{
-			showMsg("手机号格式错误!");
-			return false;
-		}
-		if("".equals(email))
-		{
-			showMsg("Email不能为空!");
-			return false;
-		}
-		if(!StringUtils.isEmail(email))
-		{
-			showMsg("Email格式错误!");
-			return false;
-		}
-		return true;
-	}
-	// 检查网络
-		private boolean checkNetWork() {
-			ConnectivityManager manager = (ConnectivityManager) this
-					.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo info = manager.getActiveNetworkInfo();
-			if (info == null || !info.isConnected()) {
-				showMsg("请检查网络");
+		//1.验证用户账号
+		private boolean validateAccount(){
+			Log.d(TAG, "验证用户账号...");
+			//1.用户名
+			this.regUser.setAccount(StringUtils.trimToEmpty(this.username.getText().toString()));
+			//1.0验证为空
+			if(StringUtils.isBlank(this.regUser.getAccount())){
+				Log.d(TAG, "用户名为空!");
+				this.username.setError(this.resources.getString(R.string.main_my_nologin_reg_username_error_blank));
+				return false;
+			}
+			//1.1验证格式
+			if(!this.validateRegex(this.regUser.getAccount(), this.resources.getString(R.string.main_my_nologin_reg_username_regex))){
+				Log.d(TAG, "用户名格式不正确!");
+				this.username.setError(this.resources.getString(R.string.main_my_nologin_reg_username_error_formatter));
 				return false;
 			}
 			return true;
 		}
-	private void showMsg(String msg) {
-		Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
-	}
-	private void showInfo(String msg,TextView info,ImgRightEditText view,int i)
-	{
-		if(1==i)	//对的
-		{
-			info.setText(msg);
-			info.setTextColor(getResources().getColor(R.color.black));
-			view.setRightImg(R.drawable.can_regeist);
-		}else
-		{
-			info.setText(msg);
-			info.setTextColor(getResources().getColor(R.color.red));
-			view.setRightImg(0);
-		}
-	}
-	static class MyHandler extends Handler
-	{
-		WeakReference<RegisterActivity> mActivity;
-		public MyHandler(RegisterActivity activity) {
-			mActivity = new WeakReference<RegisterActivity>(activity);
-		 }
-		public MyHandler() {
-			// TODO Auto-generated constructor stub
-		}
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			RegisterActivity r = mActivity.get();
-			if(r.dialog!=null)
-			{
-				r.dialog.dismiss();
+		//2.验证密码
+		private boolean validatePassword(){
+			Log.d(TAG, "验证用户密码...");
+			//2.密码
+			this.regUser.setPassword(StringUtils.trimToEmpty(this.password.getText().toString()));
+			//2.0验证为空
+			if(StringUtils.isBlank(this.regUser.getPassword())){
+				Log.d(TAG, "密码为空!");
+				this.password.setError(this.resources.getString(R.string.main_my_nologin_reg_password_error_blank));
+				return false;
 			}
-			switch(msg.what)
-			{
-			case 1:
-				//
-				Json result = (Json)msg.obj;
-				if(result.isSuccess())	//注册成功
-				{
-					User u = (User) (result.getData());
-					Toast.makeText(r, "注册成功,请登录", Toast.LENGTH_SHORT).show();
-					r.abfile.edit().putString("n",u.getUsername()).commit();
-					r.abfile.edit().putString("p","").commit();
-//					Intent intent = new Intent(r,LoginActivity.class);
-//					r.startActivity(intent);
-					//本来就是从登陆过来的,直接finish
-					r.finish();
-				}else
-				{
-					String wrongMsg = "";
-					try{
-						wrongMsg = ","+LoginTips.getRegisterTip((Integer) result.getData());
-					}catch(Exception e){
-						wrongMsg = ","+result.getMsg();
+			//2.1验证格式
+			if(!this.validateRegex(this.regUser.getPassword(), this.resources.getString(R.string.main_my_nologin_reg_password_regex))){
+				Log.d(TAG, "密码格式错误!");
+				this.password.setError(this.resources.getString(R.string.main_my_nologin_reg_password_error_formatter));
+				return false;
+			}
+			return true;
+		}
+		//3.重复密码
+		private boolean validateRePassword(){
+			Log.d(TAG, "验证用户重复密码...");
+			//3.重复密码
+			String repwd = StringUtils.trimToEmpty(this.repassword.getText().toString());
+			//3.0验证为空
+			if(StringUtils.isBlank(repwd)){
+				Log.d(TAG, "重复密码为空!");
+				this.repassword.setError(this.resources.getString(R.string.main_my_nologin_reg_repassword_error_blank));
+				return false;
+			}
+			//3.1比较密码是否一致
+			if(!StringUtils.equals(this.regUser.getPassword(), repwd)){
+				Log.d(TAG, "密码不一致!");
+				this.repassword.setError(this.resources.getString(R.string.main_my_nologin_reg_repassword_error_equals));
+				return false;
+			}
+			return true;
+		}
+		//4.验证用户姓名
+		private boolean validateName(){
+			Log.d(TAG, "验证用户姓名...");
+			this.regUser.setUsername(StringUtils.trimToEmpty(this.name.getText().toString()));
+			//4.0验证为空
+			if(StringUtils.isBlank(this.regUser.getUsername())){
+				Log.d(TAG, "真实姓名为空!");
+				this.name.setError(this.resources.getString(R.string.main_my_nologin_reg_name_error_blank));
+				return false;
+			}
+			//4.1验证格式
+			if(!this.validateRegex(this.regUser.getUsername(), this.resources.getString(R.string.main_my_nologin_reg_name_regex))){
+				Log.d(TAG, "姓名应为汉字!");
+				this.name.setError(this.resources.getString(R.string.main_my_nologin_reg_name_error_formatter));
+				return false;
+			}
+			return true;
+		}
+		//5.验证电子邮箱
+		private boolean validateEmail(){
+			Log.d(TAG, "验证电子邮箱...");
+			this.regUser.setEmail(StringUtils.trimToEmpty(this.email.getText().toString()));
+			//5.0验证为空
+			if(StringUtils.isBlank(this.regUser.getEmail())){
+				Log.d(TAG, "电子邮箱为空!");
+				this.email.setError(this.resources.getString(R.string.main_my_nologin_reg_email_error_blank));
+				return false;
+			}
+			//5.1验证格式
+			if(!this.validateRegex(this.regUser.getEmail(), this.resources.getString(R.string.main_my_nologin_reg_email_regex))){
+				Log.d(TAG, "电子邮箱格式不正确!");
+				this.email.setError(this.resources.getString(R.string.main_my_nologin_reg_email_error_formatter));
+				return false;
+			}
+			return true;
+		}
+		//6.验证电话号码
+		private boolean validatePhone(){
+			Log.d(TAG, "验证电话号码...");
+			this.regUser.setPhone(StringUtils.trimToEmpty(this.phone.getText().toString()));
+			//6.0验证为空
+			if(StringUtils.isBlank(this.regUser.getPhone())){	
+				Log.d(TAG, "电话号码为空!");
+				this.phone.setError(this.resources.getString(R.string.main_my_nologin_reg_phone_error_blank));
+				return false;
+			}
+			//6.1验证格式
+			if(!this.validateRegex(this.regUser.getPhone(), this.resources.getString(R.string.main_my_nologin_reg_phone_regex))){
+				Log.d(TAG, "电话号码格式不正确!");
+				this.phone.setError(this.resources.getString(R.string.main_my_nologin_reg_phone_error_formatter));
+				return false;
+			}
+			return true;
+		}
+		/**
+		 * 校验输入。
+		 * @return
+		 */
+		public boolean verification(){
+			Log.d(TAG, "验证注册输入..");
+			boolean result = true;
+			//1.验证用户账号
+			if(!(result = this.validateAccount())){
+				return result;
+			}
+			//2.验证密码
+			if(!(result = this.validatePassword())){
+				return result;
+			}
+			//3.重复密码
+			if(!(result = this.validateRePassword())){
+				return result;
+			}
+			//4.验证用户姓名
+			if(!(result = this.validateName())){
+				return result;
+			}
+			//5.验证电子邮箱
+			if(!(result = this.validateEmail())){
+				return result;
+			}
+			//6.验证电话号码
+			if(!(result = this.validatePhone())){
+				return result;
+			}
+			//关闭键盘
+			this.closeSoftInputFromView(this.phone);
+			return true;
+		}
+		//关闭键盘
+		private void closeSoftInputFromView(View v){
+			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+		}
+		/*
+		 * 文本编辑器处理。
+		 * @see android.widget.TextView.OnEditorActionListener#onEditorAction(android.widget.TextView, int, android.view.KeyEvent)
+		 */
+		@Override
+		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			if(actionId == EditorInfo.IME_ACTION_GO){
+				this.closeSoftInputFromView(v);
+				return true;
+			}
+			if(actionId == EditorInfo.IME_ACTION_NEXT){
+				boolean result = true;
+				switch(v.getId()){
+					case R.id.register_username:{//1.用户名
+						if(result = this.validateAccount()){
+							this.closeSoftInputFromView(v);
+						}
+						break;
 					}
-					Toast.makeText(r, "注册失败"+wrongMsg, Toast.LENGTH_SHORT).show();
+					case R.id.register_pwd:{//2.密码
+						if(result = this.validatePassword()){
+							this.closeSoftInputFromView(v);
+						}
+						break;
+					}
+					case R.id.register_repwd:{//3.重复密码
+						if(result = this.validateRePassword()){
+							this.closeSoftInputFromView(v);
+						}
+						break;
+					}
+					case R.id.register_name:{//4.姓名
+						if(result = this.validateName()){
+							this.closeSoftInputFromView(v);
+						}
+						break;
+					}
+					case R.id.register_e_mail:{//5.电子邮箱
+						if(result = this.validateEmail()){
+							this.closeSoftInputFromView(v);
+						}
+						break;
+					}
+					case R.id.register_tel:{//6.手机号码
+						if(result = this.validatePhone()){
+							this.closeSoftInputFromView(v);
+						}
+						break;
+					}
 				}
-				break;
-			case -1:
-				((AppException)msg.obj).makeToast(r);
-				break;
+				return result;
+			}
+			return false;
+		}
+		
+		/**
+		 * 获取注册数据。
+		 * @return
+		 */
+		public RegisterUser getRegisterUser(){
+			Log.d(TAG, "获取注册数据...");
+			return this.regUser;
+		}
+	}
+	/**
+	 * 异步用户注册。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月13日
+	 */
+	private class RegisterUserDataAsyncTask extends AsyncTask<RegisterUser, Void, Boolean>{
+		/*
+		 * 重载后台数据加载。
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
+		@Override
+		protected Boolean doInBackground(RegisterUser... params) {
+			try {
+				//0.初始化应用
+				AppContext app = (AppContext)getApplicationContext();
+				if(app == null){
+					Log.d(TAG, "获取全局应用上下文失败!");
+					return false;
+				}
+				//1.检查网络
+				if(!app.hasNetworkConnected()){
+					Log.d(TAG, "网络不存在!");
+					handler.sendMessage("请检查网络!");
+					return false;
+				}
+				//2.提交注册数据
+				String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, AppConstant.APP_API_PASSWORD, "POST",
+						AppConstant.APP_API_REGISTER_URL, params[0].toString());
+				if(StringUtils.isBlank(result)){
+					Log.d(TAG, "反馈数据为空!");
+					return false;
+				}
+				//3.反序列化反馈数据
+				Gson gson = new Gson();
+				Type type = new TypeToken<JSONCallback<Object>>(){}.getType();
+				JSONCallback<Object> callback = gson.fromJson(result, type);
+				if(callback.getSuccess()){
+					Log.d(TAG, "注册成功!");
+					handler.sendMessage("注册成功!");
+					return true;
+				}else {
+					Log.d(TAG, "注册失败:" + callback.getMsg());
+					handler.sendMessage(callback.getMsg());
+					return false;
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "提交注册数据异常:" + e.getMessage(), e);
+			}
+			return false;
+		}
+		/*
+		 * 重载主线程UI更新。
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Boolean result) {
+			//0.关闭等待动画
+			waitingViewDialog.cancel();
+			//1.注册成功,activity跳转
+			if(result){
+				//跳转到登陆界面
+				startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+				//关闭当前activity
+				finish();
 			}
 		}
 	}

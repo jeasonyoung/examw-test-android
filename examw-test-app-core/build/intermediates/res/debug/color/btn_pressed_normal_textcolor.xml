@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--普通按钮文字颜色 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 按下时颜色 -->
-    <item android:state_pressed="true" android:color="@color/default_pressed_color" />
-    <!-- 未按下颜色 -->
-    <item android:state_pressed="false" android:color="@color/default_color"/>
-</selector><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/color/btn_pressed_normal_textcolor.xml -->

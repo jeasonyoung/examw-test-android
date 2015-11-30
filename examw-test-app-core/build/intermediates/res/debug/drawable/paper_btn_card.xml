@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 试卷 答题卡 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <!-- 按下 -->
-    <item android:state_pressed="true" android:drawable="@drawable/btn_card_highlight"/>
-    <!-- normal -->
-    <item android:drawable="@drawable/btn_card_normal" />
-</selector><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/drawable/paper_btn_card.xml -->

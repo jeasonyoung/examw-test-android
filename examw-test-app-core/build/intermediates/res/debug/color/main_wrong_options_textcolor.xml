@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 错题模块选项卡文字颜色 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 选中时字体颜色 -->
-    <item android:state_checked="true" android:color="@color/white"/>
-    <!-- 未选中时字体颜色 -->
-    <item android:state_checked="false" android:color="@color/default_color"/>
-</selector><!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/color/main_wrong_options_textcolor.xml -->

@@ -57,8 +57,8 @@ public class RotateLoadingLayout extends LoadingLayout {
 
 	public void onLoadingDrawableSet(Drawable imageDrawable) {
 		if (null != imageDrawable) {
-			mRotationPivotX = Math.round(imageDrawable.getIntrinsicWidth() / 2f);
-			mRotationPivotY = Math.round(imageDrawable.getIntrinsicHeight() / 2f);
+			mRotationPivotX = imageDrawable.getIntrinsicWidth() / 2f;
+			mRotationPivotY = imageDrawable.getIntrinsicHeight() / 2f;
 		}
 	}
 

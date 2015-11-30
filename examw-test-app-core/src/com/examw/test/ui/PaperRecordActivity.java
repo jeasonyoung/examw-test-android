@@ -2,313 +2,345 @@ package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.examw.test.R;
 import com.examw.test.adapter.PaperRecordAdapter;
-import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 import com.examw.test.dao.PaperDao;
-import com.examw.test.dao.PaperRecordDao;
-import com.examw.test.domain.PaperRecord;
-import com.examw.test.exception.AppException;
-import com.examw.test.model.PaperPreview;
-import com.examw.test.support.ReturnBtnClickListener;
-import com.examw.test.util.GsonUtil;
-import com.examw.test.util.LogUtil;
+import com.examw.test.dao.RecordItemData;
+import com.examw.test.model.PaperRecordModel;
+import com.examw.test.widget.WaitingViewDialog;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /**
- * 考试记录
+ * 做题记录Activity。
  * 
- * @author fengwei.
- * @since 2014年12月11日 下午5:03:03.
+ * @author jeasonyoung
+ * @since 2015年7月30日
  */
-public class PaperRecordActivity extends BaseActivity {
-	private LinearLayout contentLayout, nodataLayout, loadingLayout;
-	private ListView paperListView;
-	private String username;
-	private ArrayList<PaperRecord> recordList;
-	private PaperRecord currentRecord;
-	private PaperRecordAdapter mAdapter;
-	private Handler handler;
-	private AppContext appContext;
-
-	// 分页
-	private View lvPapers_footer;
-	private ProgressBar lvPapers_foot_progress;
-	private TextView lvPapers_foot_more;
-	private int total, currentPage;
-
+public class PaperRecordActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener,
+	AdapterView.OnItemLongClickListener,PullToRefreshListView.OnRefreshListener<ListView> {
+	private static final String TAG = "PaperRecordActivity";
+	private WaitingViewDialog waitingViewDialog;
+	private TextView titleView;
+	private PullToRefreshListView pullToRefreshListView;
+	private String subjectCode,subjectName;
+	private int pageIndex, paperTotals;
+	
+	private final List<PaperRecordModel> dataSource;
+	private PaperRecordAdapter adapter;
+	private PaperDao paperDao;
+	/**
+	 * 科目代码。
+	 */
+	public static final String PAPER_SUBJECT_CODE = "subject_code";
+	/**
+	 * 科目名称。
+	 */
+	public static final String PAPER_SUBJECT_NAME = "subject_name";
+	/**
+	 * 科目试卷统计
+	 */
+	public static final String PAPER_SUBJECT_TOTALS = "subject_totals";
+	
+	/**
+	 * 构造函数。
+	 */
+	public PaperRecordActivity(){
+		Log.d(TAG, "初始化...");
+		this.pageIndex = 0;
+		this.dataSource = new ArrayList<PaperRecordModel>();
+	}
+	/*
+	 * 重载创建。
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG, "重载创建...");
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.ui_paper_record);
-		findViews();
-		appContext = (AppContext) getApplication();
-		// appContext.recoverLoginStatus();
-		username = appContext.getUsername();
-		handler = new MyHandler(this);
-		this.paperListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				currentRecord = recordList.get(arg2);
-				itemClickMethod();
-			}
-		});
-		// this.paperListView
-		// .setOnItemLongClickListener(new OnItemLongClickListener() {
-		// @Override
-		// public boolean onItemLongClick(AdapterView<?> arg0,
-		// View arg1, int arg2, long arg3) {
-		// showDeleteWindow(arg2);
-		// return true;
-		// }
-		// });
-	}
-
-	private void findViews() {
-		this.nodataLayout = (LinearLayout) this.findViewById(R.id.nodataLayout);
-		this.contentLayout = (LinearLayout) this
-				.findViewById(R.id.recordListLayout);
-		this.loadingLayout = (LinearLayout) this
-				.findViewById(R.id.loadingLayout);
-		this.paperListView = (ListView) this.findViewById(R.id.contentListView);
-
-		// 分页
-		this.lvPapers_footer = this.getLayoutInflater().inflate(
-				R.layout.listview_footer, null);
-		this.lvPapers_foot_more = (TextView) lvPapers_footer
-				.findViewById(R.id.listview_foot_more);
-		this.lvPapers_foot_progress = (ProgressBar) lvPapers_footer
-				.findViewById(R.id.listview_foot_progress);
-		this.paperListView.addFooterView(lvPapers_footer); // 在setAdapter之前addFooter
+		//设置布局
+		this.setContentView(R.layout.ui_main_paper_record);
+		//初始化等待动画
+		this.waitingViewDialog = new WaitingViewDialog(this);
 		
-		this.lvPapers_footer.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				footerClick();
-			}
-		});
-
-		this.findViewById(R.id.btn_goback).setOnClickListener(
-				new ReturnBtnClickListener(this));
-		((TextView) (findViewById(R.id.title))).setText("学习记录");
+		//加载返回按钮
+		final View btnBack = this.findViewById(R.id.btn_goback);
+		btnBack.setOnClickListener(this);
+		//加载标题
+		this.titleView = (TextView)this.findViewById(R.id.title);
+		
+		//加载列表
+		this.pullToRefreshListView = (PullToRefreshListView)this.findViewById(R.id.list_main_paper_record);
+		//设置刷新方向
+		this.pullToRefreshListView.setMode(PullToRefreshListView.Mode.PULL_FROM_END);
+		//设置刷新监听器
+		this.pullToRefreshListView.setOnRefreshListener(this);
+		//设置数据行监听器
+		this.pullToRefreshListView.setOnItemClickListener(this);
+		//初始化数据适配器
+		this.adapter = new PaperRecordAdapter(this, this.dataSource);
+		//获取listview
+		final ListView listView = this.pullToRefreshListView.getRefreshableView();
+		//设置数据适配器
+		listView.setAdapter(this.adapter);
+		//设置数据行长按监听器
+		listView.setOnItemLongClickListener(this);
 	}
-
+	//设置标题
+	private void setActivityTitle(String subjectName, int subjectTotals){
+		if(this.titleView != null){
+			this.titleView.setText(String.format("%1$s(%2$d)", subjectName, Math.max(subjectTotals,0)));
+		}
+	}
+	/*
+	 * 重载加载数据。
+	 * @see android.app.Activity#onStart()
+	 */
 	@Override
 	protected void onStart() {
-		LogUtil.d("Record onStart");
-		this.loadingLayout.setVisibility(View.GONE);
+		Log.d(TAG, "重载加载数据...");
 		super.onStart();
-		initData();
-	}
-
-	private void initData() {
-		LogUtil.d("初始化数据");
-		loadingLayout.setVisibility(View.VISIBLE);
-		new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(1000);
-					total = PaperRecordDao.findRecordTotalOfUser(username);// 查询总数
-					if (total > 0) {
-						currentPage = 0;
-						if(recordList == null)
-						{
-							recordList = new ArrayList<PaperRecord>();
-						}else
-						{
-							recordList.clear();
-						}
-						recordList.addAll(PaperRecordDao.findRecordsByUsername(
-								username, currentPage));
-					}
-					handler.sendEmptyMessage(11);
-				} catch (Exception e) {
-					e.printStackTrace();
-					handler.sendEmptyMessage(-11);
-				}
-			};
-		}.start();
-	}
-	
-	private void footerClick()
-	{
-		lvPapers_foot_progress.setVisibility(View.VISIBLE);
-		lvPapers_foot_more.setText("玩命加载中");
-		currentPage++;
-		new Thread(){
-			public void run() {
-				try {
-					ArrayList<PaperRecord> records = PaperRecordDao.findRecordsByUsername(username,
-							currentPage);
-					Message msg = handler.obtainMessage();
-					msg.what = 14;
-					msg.obj = records;
-					handler.sendMessage(msg);
-				} catch (Exception e) {
-					e.printStackTrace();
-					handler.sendEmptyMessage(-11);
-				}
-			};
-		}.start();
-	}
-
-	private void itemClickMethod() {
-		Intent mIntent = null;
-		if (AppConstant.STATUS_NONE.equals(currentRecord.getStatus())) {
-			mIntent = new Intent(this, PaperDoPaperActivity.class);
-			mIntent.putExtra("action", AppConstant.ACTION_DO_EXAM);
-			mIntent.putExtra("paperId", currentRecord.getPaperId());
-			mIntent.putExtra("recordId", currentRecord.getRecordId());
-			this.startActivity(mIntent);
-			return;
+		//1.开始等待动画
+		this.waitingViewDialog.show();
+		//2.设置页码
+		this.pageIndex = 0;
+		//3.加载科目代码
+		if(this.getIntent() != null){
+			this.subjectCode = this.getIntent().getStringExtra(PAPER_SUBJECT_CODE);
+			this.subjectName = this.getIntent().getStringExtra(PAPER_SUBJECT_NAME);
+			this.paperTotals = this.getIntent().getIntExtra(PAPER_SUBJECT_TOTALS, 0);
+			this.setActivityTitle(this.subjectName, this.paperTotals);
 		}
-		loadingLayout.setVisibility(View.VISIBLE);
-		final String paperId = currentRecord.getPaperId();
-		// 没有交卷的
-		new Thread() {
-			public void run() {
-				try {
-					String content = PaperDao
-							.findPaperStructureContent(paperId);
-					PaperPreview paper = GsonUtil.jsonToBean(content,
-							PaperPreview.class);
-					Message msg = handler.obtainMessage();
-					msg.what = 1;
-					msg.obj = paper;
-					handler.sendMessage(msg);
-				} catch (Exception e) {
-					e.printStackTrace();
-					handler.sendEmptyMessage(-1);
-				}
-			};
-		}.start();
+		//3清空数据
+		this.dataSource.clear();
+		//4.异步加载数据
+		new RefreshDataAsyncTask(this).execute(this.subjectCode, this.pageIndex);
 	}
-
-	private void startMyActivity(PaperPreview paper) {
-		Intent mIntent = new Intent(this, AnswerCardActivity.class);
-		mIntent.putExtra("paperId", currentRecord.getPaperId());
-		mIntent.putExtra("trueOfFalse", currentRecord.getTorf());
-		mIntent.putExtra("action", AppConstant.ACTION_SHOW_ANSWER);
-		mIntent.putExtra("paperScore", currentRecord.getScore().doubleValue());
-		mIntent.putExtra("paperType", paper.getType());
-		// findPaper
-		mIntent.putExtra("paperTime", paper.getTime());
-		mIntent.putExtra("ruleListJson",
-				GsonUtil.objectToJson(paper.getStructures()));
-		mIntent.putExtra("username", username);
-		mIntent.putExtra(
-				"useTime",
-				currentRecord.getUsedTime() % 60 == 0 ? currentRecord
-						.getUsedTime() / 60
-						: currentRecord.getUsedTime() / 60 + 1);
-		mIntent.putExtra("userScore", currentRecord.getScore()); // 本次得分
-		this.startActivity(mIntent); // 仍然是要启动这个Activity不带结果返回
-	}
-
-	static class MyHandler extends Handler {
-		WeakReference<PaperRecordActivity> mActivity;
-
-		MyHandler(PaperRecordActivity activity) {
-			mActivity = new WeakReference<PaperRecordActivity>(activity);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public void handleMessage(Message msg) {
-			PaperRecordActivity theActivity = mActivity.get();
-			theActivity.loadingLayout.setVisibility(View.GONE);
-			switch (msg.what) {
-			case 1:
-				theActivity.startMyActivity((PaperPreview) msg.obj);
-				break;
-			case -2:
-				Toast.makeText(theActivity,
-						((AppException) msg.obj).getMessage(),
-						Toast.LENGTH_SHORT).show();
-				break;
-			case -1:
-				Toast.makeText(theActivity, "找不到试卷信息", Toast.LENGTH_SHORT).show();
-				break;
-			case 11:
-				LogUtil.d("初始化数据完成");
-				if (theActivity.recordList == null || theActivity.recordList.size() == 0) {
-					//没有数据
-					theActivity.contentLayout.setVisibility(View.GONE);
-					theActivity.nodataLayout.setVisibility(View.VISIBLE);
-				} else {
-					if (theActivity.mAdapter == null) {
-						theActivity.mAdapter = new PaperRecordAdapter(theActivity, theActivity.recordList);
-						theActivity.paperListView.setAdapter(theActivity.mAdapter);
-						if(theActivity.total<=PaperRecordDao.PAGESIZE)
-                    	{
-							theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
-                    		theActivity.lvPapers_foot_more.setText("已经加载全部");
-                    	}else{
-                    		theActivity.lvPapers_footer.setVisibility(View.VISIBLE);
-                    		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
-                    		theActivity.lvPapers_foot_more.setText("更多");
-                    	}
-					} else {
-						theActivity.mAdapter.notifyDataSetChanged();
-					}
-				}
-				break;
-			 case 14:
-             	theActivity.recordList.addAll((ArrayList<PaperRecord>) msg.obj);
-             	theActivity.mAdapter.notifyDataSetChanged();
-             	//判断剩余加载量
-             	if(theActivity.total > theActivity.recordList.size())
-             	{
-             		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
-             		theActivity.lvPapers_foot_more.setText("更多");
-             	}else
-             	{
-             		theActivity.lvPapers_foot_progress.setVisibility(View.GONE);
-            		theActivity.lvPapers_foot_more.setText("已经加载全部");
-             	}
-             	break;
-			case -11:
-				Toast.makeText(theActivity, "加载错误",
-						Toast.LENGTH_SHORT).show();
+	/*
+	 * 按钮事件处理。
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
+	@Override
+	public void onClick(View v) {
+		Log.d(TAG, "按钮事件处理..." + v);
+		switch(v.getId()){
+			case R.id.btn_goback:{//返回事件处理
+				Log.d(TAG, "返回事件处理...");
+				this.finish();
 				break;
 			}
 		}
 	}
-
+	/*
+	 * 刷新数据处理
+	 * @see com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener#onRefresh(com.handmark.pulltorefresh.library.PullToRefreshBase)
+	 */
 	@Override
-	protected void onPause() {
-		super.onPause();
-	};
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
+	public void onRefresh(PullToRefreshBase<ListView> arg0) {
+		Log.d(TAG, "刷新数据处理...");
+		//1.开始等待动画
+		this.waitingViewDialog.show();
+		//2.刷新数据
+		this.pageIndex += 1;
+		Log.d(TAG, "刷新数据页..." + this.pageIndex);
+		//3.异步加载数据
+		new RefreshDataAsyncTask(this).execute(this.subjectCode, this.pageIndex);
 	}
-
+	/*
+	 * 长按事件处理。
+	 * @see android.widget.AdapterView.OnItemLongClickListener#onItemLongClick(android.widget.AdapterView, android.view.View, int, long)
+	 */
 	@Override
-	protected void onStop() {
-		super.onStop();
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+		final int pos = position - 1;
+		if(dataSource.size() < pos)return false;
+		Log.d(TAG, "长按数据行处理..." + position);
+		new AlertDialog.Builder(this)
+		.setIcon(android.R.drawable.ic_dialog_alert)
+		.setTitle(R.string.main_paper_record_delete_title)
+		.setMessage(R.string.main_paper_record_delete_msg)
+		.setNegativeButton(R.string.main_paper_record_delete_btnCancel, new DialogInterface.OnClickListener() {
+			/*
+			 * 取消退出。
+			 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+			 */
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "取消删除...");
+				dialog.dismiss();
+			}
+		})
+		.setPositiveButton(R.string.main_paper_record_delete_btnSubmit, new DialogInterface.OnClickListener() {
+			/*
+			 * 交卷处理。
+			 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+			 */
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "确认删除处理...");
+				dialog.dismiss();
+				//开启等待动画
+				waitingViewDialog.show();
+				//从数据源取出数据
+				final PaperRecordModel recordModel = dataSource.get(pos);
+				if(recordModel != null){
+					//异步线程处理从数据库中删除。
+					PaperActivity.pools.execute(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								Log.d(TAG, "异步线程删除做题记录..." + pos);
+								//惰性初始化
+								if(paperDao == null){
+									paperDao = new PaperDao(PaperRecordActivity.this);
+								}
+								//删除数据
+								paperDao.deletePaperRecord(recordModel.getId());
+							} catch (Exception e) {
+								Log.e(TAG, "删除做题记录数据[" +recordModel+"]异常:" + e.getMessage(), e);
+							}
+						}
+					});
+				}
+				//删除数据源中的记录
+				dataSource.remove(pos);
+				//设置标题
+				setActivityTitle(subjectName, --paperTotals);
+				//通知数据适配器刷新数据
+				adapter.notifyDataSetChanged();
+				//关闭等待动画
+				waitingViewDialog.cancel();
+			}
+		}).show();
+		return true;
 	}
-
+	/*
+	 * 选中行事件处理。
+	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	 */
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		final int pos = position - 1;
+		Log.d(TAG, "选中行事件处理..." + pos);
+		if(this.dataSource.size() > pos){
+			final PaperRecordModel model = this.dataSource.get(pos);
+			if(model == null)return;
+			if(model.isStatus()){//试卷已做完
+				this.goViewPaper(model.getPaperId(), model.getId(), false);
+				return;
+			}
+			//未做完
+			new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_info)
+			.setTitle(R.string.main_paper_record_alert_title)
+			.setMessage(R.string.main_paper_record_alert_msg)
+			.setNegativeButton(R.string.main_paper_record_alert_btnCancel, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Log.d(TAG, "不继续考试...");
+					dialog.dismiss();
+					goViewPaper(model.getPaperId(), model.getId(), false);
+				}
+			})
+			.setPositiveButton(R.string.main_paper_record_alert_btnSubmit, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Log.d(TAG, "不继续考试...");
+					dialog.dismiss();
+					goViewPaper(model.getPaperId(), model.getId(), true);
+				}
+			}).show();
+		}
+	}
+	//查看试题
+	private void goViewPaper(String paperId, String paperRecordId, boolean isContinue){
+		Log.d(TAG, "查看试题[paperId="+paperId+"][paperRecordId="+paperRecordId+"]" + isContinue + "....");
+		//设置共享数据源
+		AppContext.setPaperDataDelegate(new RecordItemData(this, paperId, paperRecordId, isContinue));
+		//意图
+		Intent intent = new Intent(this, PaperActivity.class);
+		intent.putExtra(PaperActivity.PAPER_ITEM_ISDISPLAY_ANSWER, !isContinue);
+		this.startActivity(intent);
+		//关闭当前activity
+		this.finish();
+	}
+	/**
+	 * 异步加载数据。
+	 * 
+	 * @author jeasonyoung
+	 * @since 2015年7月30日
+	 */
+	private class RefreshDataAsyncTask extends AsyncTask<Object, Void, Object>{
+		private final WeakReference<Context> refContext;
+		/**
+		 * 构造函数。
+		 * @param context
+		 */
+		public RefreshDataAsyncTask(Context context){
+			Log.d(TAG, "初始化异步加载数据...");
+			this.refContext = new WeakReference<Context>(context);
+		}
+		/*
+		 * 后台线程数据处理。
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
+		@Override
+		protected Object doInBackground(Object... params) {
+			try {
+				Log.d(TAG, "后台线程数据处理...");
+				//加载参数
+				final String subjectCode = (String)params[0];
+				final int index = (Integer)params[1];
+				//惰性加载
+				if(paperDao == null){
+					paperDao = new PaperDao(this.refContext.get());
+				}
+				//查询数据
+				final List<PaperRecordModel> list = paperDao.loadPaperRecords(subjectCode, index);
+				if(list != null && list.size() > 0){
+					return list.toArray(new PaperRecordModel[0]);
+				}
+			} catch (Throwable e) {
+				Log.e(TAG, "后台线程数据处理异常:" + e.getMessage(), e);
+			}
+			return null;
+		}
+		/*
+		 * 前端主线程处理。
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Object result) {
+			Log.d(TAG, "前端主线程处理...");
+			if(result != null){
+				//添加数据
+				dataSource.addAll(Arrays.asList((PaperRecordModel[])result));
+				//通知数据适配器
+				adapter.notifyDataSetChanged(); 
+			}else if(pageIndex > 0){
+				pageIndex -= 1;
+			}
+			//刷新
+			pullToRefreshListView.onRefreshComplete();
+			//关闭等待动画
+			waitingViewDialog.cancel();
+		}
 	}
 }

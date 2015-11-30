@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 底部菜单字体颜色 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 选中时字体颜色 -->
-    <item android:state_checked="true" android:color="@color/default_color"/>
-    <!-- 未选中时字体颜色 -->
-    <item android:state_checked="false" android:color="@color/gray"/>
-</selector>
-<!-- From: file:/Users/workspace/examw-test-android/examw-test-app-core/res/color/main_bottom_textcolor.xml -->
