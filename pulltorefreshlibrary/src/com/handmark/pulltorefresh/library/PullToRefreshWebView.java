@@ -25,7 +25,6 @@ import android.util.FloatMath;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-@SuppressWarnings("deprecation")
 public class PullToRefreshWebView extends PullToRefreshBase<WebView> {
 
 	private static final OnRefreshListener<WebView> defaultOnRefreshListener = new OnRefreshListener<WebView>() {
