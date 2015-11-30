@@ -1,17 +1,9 @@
 package com.examw.test.dao;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
@@ -23,8 +15,12 @@ import com.examw.test.model.sync.PaperSync;
 import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.utils.DigestClientUtil;
 import com.examw.test.utils.PaperUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * 下载服务器数据。
@@ -100,40 +96,30 @@ public class DownloadDao{
 		});
 	}
 	
-	/**
-	 * POST请求数据。
-	 * @param url
-	 * @param reqParameter
-	 * @return
-	 * @throws Exception
-	 */
-	private static String postReqData(String url, AppClientSync reqParameter) throws Exception{
-		Log.d(TAG, "POST请求数据:" + url);
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Content-type","application/json;charset=UTF-8");
-		
-		String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, AppConstant.APP_API_PASSWORD, headers,
-				"POST", url, reqParameter.toString());
-		Log.d(TAG, "服务器反馈数据:" + result);
-		return StringUtils.isBlank(result) ? null : result;
-	}
+//	/**
+//	 * POST请求数据。
+//	 * @param url
+//	 * @param reqParameter
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	private static String postReqData(String url, AppClientSync reqParameter) throws Exception{
+//		Log.d(TAG, "POST请求数据:" + url);
+//		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("Content-type","application/json;charset=UTF-8");
+//		
+//		String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, AppConstant.APP_API_PASSWORD, headers,
+//				"POST", url, reqParameter.toString());
+//		Log.d(TAG, "服务器反馈数据:" + result);
+//		return StringUtils.isBlank(result) ? null : result;
+//	}
 	
 	//下载考试科目数据。
 	private void downloadSubject(AppClientSync reqParameter, DownloadResultListener handler){
 		try {
 			Log.d(TAG, "开始下载考试科目数据...");
-			String result = postReqData(AppConstant.APP_API_SUBJECTS_URL, reqParameter);
-			if(StringUtils.isBlank(result)){
-				Log.d(TAG, "反馈数据为空!");
-				if(handler != null){
-					handler.onComplete(false, "服务器未响应!");
-				}
-				return;
-			}
-			//初始化反馈数据模型
-			Gson gson = new Gson();
-			Type type = new TypeToken<JSONCallback<ExamSync>>(){}.getType();
-			JSONCallback<ExamSync> callback = gson.fromJson(result, type);
+			final JSONCallback<ExamSync> callback = new DigestClientUtil.CallbackJSON<ExamSync>(ExamSync.class)
+																					.sendPOSTRequest(AppConstant.APP_API_SUBJECTS_URL, reqParameter);
 			if(!callback.getSuccess()){
 				Log.d(TAG, "服务器发生异常:" + callback.getMsg());
 				if(handler != null){
@@ -141,7 +127,8 @@ public class DownloadDao{
 				}
 				return;
 			}
-			ExamSync data = callback.getData();
+			//
+			final ExamSync data = callback.getData();
 			if(data == null || data.getSubjects() == null || data.getSubjects().length == 0){
 				Log.d(TAG, "未获取考试科目数据!");
 				if(handler != null){
@@ -261,27 +248,21 @@ public class DownloadDao{
 			final String tableName = "tbl_papers";
 			//查询试卷中最新的试卷发布时间
 			String lastTime = null;
-			SQLiteDatabase  db = this.dbHelpers.getReadableDatabase();
-			Cursor cursor =	db.query(tableName, new String[]{"createTime"}, null, null, null, null, "createTime desc", "0,1");
-			while(cursor.moveToNext()){
-				lastTime = cursor.getString(0);
+			final SQLiteDatabase  db = this.dbHelpers.getReadableDatabase();
+			if(db != null){
+				final Cursor cursor =	db.query(tableName, new String[]{"createTime"}, null, null, null, null, "createTime desc", "0,1");
+				while(cursor.moveToNext()){
+					lastTime = cursor.getString(0);
+					break;
+				}
+				cursor.close();
+				db.close();
 			}
-			db.close();
 			//设置下载试卷的开始时间
 			reqParameter.setStartTime(StringUtils.trimToEmpty(lastTime));
 			//下载试卷数据
-			String result = postReqData(AppConstant.APP_API_PAPERS_URL, reqParameter);
-			if(StringUtils.isBlank(result)){
-				Log.d(TAG, "下载试卷反馈数据为空!");
-				if(handler != null){
-					handler.onComplete(false, "服务器未响应!");
-				}
-				return;
-			}
-			//反馈数据模型反序列化
-			Gson gson = new Gson();
-			Type type = new TypeToken<JSONCallback<List<PaperSync>>>(){}.getType();
-			JSONCallback<List<PaperSync>> callback  = gson.fromJson(result, type);
+			final JSONCallback<PaperSync[]> callback = new DigestClientUtil.CallbackJSON<PaperSync[]>(PaperSync[].class)
+																						.downloadZipPOST(AppConstant.APP_API_PAPERS_URL, reqParameter);
 			if(!callback.getSuccess()){
 				Log.d(TAG, "下载试卷失败:" + callback.getMsg());
 				if(handler != null){
@@ -290,7 +271,7 @@ public class DownloadDao{
 				return;
 			}
 			//试卷数据集合
-			List<PaperSync> papers = callback.getData();
+			final List<PaperSync> papers = Arrays.asList(callback.getData());
 			if(papers == null || papers.size() == 0){
 				Log.d(TAG, "未下载到试卷数据!");
 				if(handler != null){

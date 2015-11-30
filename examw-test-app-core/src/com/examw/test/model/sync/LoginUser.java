@@ -1,7 +1,5 @@
 package com.examw.test.model.sync;
 
-import com.google.gson.Gson;
-
 import android.content.Context;
 import android.util.Log;
 
@@ -55,14 +53,14 @@ public class LoginUser extends AppClient {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	/*
-	 * 生成JSON字符串
-	 * @see com.examw.test.model.sync.AppClient#toString()
-	 */
-	@Override
-	public String toString() {
-		Log.d(TAG, "生成JSON字符串...");
-		Gson gson = new Gson();
-		return gson.toJson(this);
-	}
+//	/*
+//	 * 生成JSON字符串
+//	 * @see com.examw.test.model.sync.AppClient#toString()
+//	 */
+//	@Override
+//	public String toString() {
+//		Log.d(TAG, "生成JSON字符串...");
+//		Gson gson = new Gson();
+//		return gson.toJson(this);
+//	}
 }

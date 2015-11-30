@@ -58,7 +58,8 @@ public final class AppConstant {
 	/**
 	 * 试卷数据API。
 	 */
-	public static final String APP_API_PAPERS_URL = APP_API_HOST + "/examw-test/api/m/sync/papers";
+	//public static final String APP_API_PAPERS_URL = APP_API_HOST + "/examw-test/api/m/sync/papers";
+	public static final String APP_API_PAPERS_URL = APP_API_HOST + "/examw-test/api/m/download/papers";
 	/**
 	 * 上传试题收藏API。
 	 */

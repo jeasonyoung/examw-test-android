@@ -13,6 +13,24 @@ public class JSONCallback<T> implements Serializable {
 	private Boolean success;
 	private T data;
 	private String msg;
+	
+	/**
+	 * 构造函数。
+	 */
+	public JSONCallback(){}
+	
+	/**
+	 * 构造函数。
+	 * @param success
+	 * 是否成功。
+	 * @param msg
+	 * 错误消息。
+	 */
+	public JSONCallback(Boolean success, String msg){
+		this.setSuccess(success);
+		this.setMsg(msg);
+	}
+	
 	/**
 	 * 获取是否成功。
 	 * @return 是否成功。

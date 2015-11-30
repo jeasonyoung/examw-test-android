@@ -1,9 +1,17 @@
 package com.examw.test.ui;
 
-import java.lang.reflect.Type;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.examw.test.R;
+import com.examw.test.app.AppConstant;
+import com.examw.test.app.AppContext;
+import com.examw.test.model.sync.JSONCallback;
+import com.examw.test.model.sync.RegisterUser;
+import com.examw.test.support.MsgHandler;
+import com.examw.test.utils.DigestClientUtil;
+import com.examw.test.widget.WaitingViewDialog;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,17 +26,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.examw.test.R;
-import com.examw.test.app.AppConstant;
-import com.examw.test.app.AppContext;
-import com.examw.test.model.sync.JSONCallback;
-import com.examw.test.model.sync.RegisterUser;
-import com.examw.test.support.MsgHandler;
-import com.examw.test.utils.DigestClientUtil;
-import com.examw.test.widget.WaitingViewDialog;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * 用户注册。
@@ -435,16 +432,8 @@ public class RegisterActivity  extends Activity implements View.OnClickListener{
 					return false;
 				}
 				//2.提交注册数据
-				String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, AppConstant.APP_API_PASSWORD, "POST",
-						AppConstant.APP_API_REGISTER_URL, params[0].toString());
-				if(StringUtils.isBlank(result)){
-					Log.d(TAG, "反馈数据为空!");
-					return false;
-				}
-				//3.反序列化反馈数据
-				Gson gson = new Gson();
-				Type type = new TypeToken<JSONCallback<Object>>(){}.getType();
-				JSONCallback<Object> callback = gson.fromJson(result, type);
+				final JSONCallback<Object> callback = new DigestClientUtil.CallbackJSON<Object>(Object.class)
+																						  .sendPOSTRequest(AppConstant.APP_API_REGISTER_URL, params[0]);
 				if(callback.getSuccess()){
 					Log.d(TAG, "注册成功!");
 					handler.sendMessage("注册成功!");

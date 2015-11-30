@@ -1,16 +1,13 @@
 package com.examw.test.dao;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
-
-import android.content.Context;
-import android.util.Log;
 
 import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
@@ -19,8 +16,9 @@ import com.examw.test.model.sync.ExamModel;
 import com.examw.test.model.sync.JSONCallback;
 import com.examw.test.model.sync.ProductModel;
 import com.examw.test.utils.DigestClientUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+
+import android.content.Context;
+import android.util.Log;
 
 /**
  * 切换产品数据Dao.
@@ -92,19 +90,8 @@ public class SwitchProductDao implements Serializable {
 				return;
 			}
 			//准备开始下载
-			String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, AppConstant.APP_API_PASSWORD, 
-					"GET",AppConstant.APP_API_CATEGORY_URL, null);
-			if(StringUtils.isBlank(result)){
-				Log.d(TAG, "下载反馈数据为空!");
-				if(handler != null){
-					handler.onComplete(false, "服务器未响应!");
-				}
-				return;
-			}
-			//反馈数据模型反序列化
-			Gson gson = new Gson();
-			Type type = new TypeToken<JSONCallback<List<CategoryModel>>>(){}.getType();
-			JSONCallback<List<CategoryModel>> callback = gson.fromJson(result, type);
+			final JSONCallback<CategoryModel[]> callback = new DigestClientUtil.CallbackJSON<CategoryModel[]>(CategoryModel[].class)
+																									    .sendGETRequest(AppConstant.APP_API_CATEGORY_URL, null);
 			if(!callback.getSuccess()){
 				Log.d(TAG, callback.getMsg());
 				if(handler != null){
@@ -113,7 +100,7 @@ public class SwitchProductDao implements Serializable {
 				return;
 			}
 			//保存到本地文件中
-			boolean saveResult = CategoryModel.saveLocal(callback.getData());
+			boolean saveResult = CategoryModel.saveLocal(Arrays.asList(callback.getData()));
 			Log.d(TAG, "保存到本地文件：" + saveResult);
 			//下载保存完毕
 			if(handler != null){

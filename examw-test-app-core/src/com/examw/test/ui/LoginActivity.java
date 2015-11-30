@@ -1,10 +1,19 @@
 package com.examw.test.ui;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Type;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.examw.test.R;
+import com.examw.test.app.AppConstant;
+import com.examw.test.app.AppContext;
+import com.examw.test.app.UserAccount;
+import com.examw.test.model.sync.JSONCallback;
+import com.examw.test.model.sync.LoginUser;
+import com.examw.test.support.MsgHandler;
+import com.examw.test.utils.DigestClientUtil;
+import com.examw.test.widget.WaitingViewDialog;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,18 +28,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.examw.test.R;
-import com.examw.test.app.AppConstant;
-import com.examw.test.app.AppContext;
-import com.examw.test.app.UserAccount;
-import com.examw.test.model.sync.JSONCallback;
-import com.examw.test.model.sync.LoginUser;
-import com.examw.test.support.MsgHandler;
-import com.examw.test.utils.DigestClientUtil;
-import com.examw.test.widget.WaitingViewDialog;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * 登录界面
@@ -312,21 +309,12 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 					return true;
 				}else {//网络验证用户登录
 					//提交用户登录数据
-					String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, 
-							AppConstant.APP_API_PASSWORD, "POST", AppConstant.APP_API_LOGIN_URL, params[0].toString());
-					if(StringUtils.isBlank(result)){
-						Log.d(TAG, "反馈数据为空!");
-						handler.sendMessage("服务器未响应!");
-						return false;
-					}
-					//反序列化反馈数据
-					Gson gson = new Gson();
-					Type type = new TypeToken<JSONCallback<String>>(){}.getType();
-					JSONCallback<String> callback = gson.fromJson(result, type);
+					final JSONCallback<String> callback = new DigestClientUtil.CallbackJSON<String>(String.class)
+																							 .sendPOSTRequest(AppConstant.APP_API_LOGIN_URL, params[0]);
 					if(callback.getSuccess()){
 						Log.d(TAG, "验证成功!");
 						//初始化用户信息
-						UserAccount account = new UserAccount(callback.getData(), params[0].getAccount());
+						final UserAccount account = new UserAccount(callback.getData(), params[0].getAccount());
 						account.updatePassword(params[0].getPassword());
 						//设置为当前用户
 						app.changedCurrentUser(account);
