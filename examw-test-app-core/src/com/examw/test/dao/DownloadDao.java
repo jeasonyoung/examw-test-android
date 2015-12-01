@@ -15,6 +15,7 @@ import com.examw.test.model.sync.PaperSync;
 import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.utils.DigestClientUtil;
 import com.examw.test.utils.PaperUtils;
+import com.google.gson.reflect.TypeToken;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -95,24 +96,6 @@ public class DownloadDao{
 			}
 		});
 	}
-	
-//	/**
-//	 * POST请求数据。
-//	 * @param url
-//	 * @param reqParameter
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	private static String postReqData(String url, AppClientSync reqParameter) throws Exception{
-//		Log.d(TAG, "POST请求数据:" + url);
-//		Map<String, String> headers = new HashMap<String, String>();
-//		headers.put("Content-type","application/json;charset=UTF-8");
-//		
-//		String result = DigestClientUtil.sendDigestRequest(AppConstant.APP_API_USERNAME, AppConstant.APP_API_PASSWORD, headers,
-//				"POST", url, reqParameter.toString());
-//		Log.d(TAG, "服务器反馈数据:" + result);
-//		return StringUtils.isBlank(result) ? null : result;
-//	}
 	
 	//下载考试科目数据。
 	private void downloadSubject(AppClientSync reqParameter, DownloadResultListener handler){
@@ -247,7 +230,8 @@ public class DownloadDao{
 			//表名称
 			final String tableName = "tbl_papers";
 			//查询试卷中最新的试卷发布时间
-			String lastTime = null;
+			String lastTime = null; 
+			//
 			final SQLiteDatabase  db = this.dbHelpers.getReadableDatabase();
 			if(db != null){
 				final Cursor cursor =	db.query(tableName, new String[]{"createTime"}, null, null, null, null, "createTime desc", "0,1");
@@ -261,26 +245,19 @@ public class DownloadDao{
 			//设置下载试卷的开始时间
 			reqParameter.setStartTime(StringUtils.trimToEmpty(lastTime));
 			//下载试卷数据
-			final JSONCallback<PaperSync[]> callback = new DigestClientUtil.CallbackJSON<PaperSync[]>(PaperSync[].class)
+			final PaperSync[] papers = new DigestClientUtil.CallbackJSON<PaperSync[]>(new TypeToken<PaperSync[]>(){}.getType())
 																						.downloadZipPOST(AppConstant.APP_API_PAPERS_URL, reqParameter);
-			if(!callback.getSuccess()){
-				Log.d(TAG, "下载试卷失败:" + callback.getMsg());
-				if(handler != null){
-					handler.onComplete(false, callback.getMsg());
-				}
-				return;
-			}
 			//试卷数据集合
-			final List<PaperSync> papers = Arrays.asList(callback.getData());
-			if(papers == null || papers.size() == 0){
+			if(papers == null || papers.length == 0){
 				Log.d(TAG, "未下载到试卷数据!");
-				if(handler != null){
+				if(handler != null){ 
 					handler.onComplete(false, "未有新试卷数据更新!");
 				}
 				return;
 			}
+			Log.d(TAG, "下载试卷数=>" + papers.length);
 			//更新试卷数据库
-			this.updatePapersToDb(tableName, papers);
+			this.updatePapersToDb(tableName, Arrays.asList(papers));
 			//更新完成
 			if(handler != null){
 				handler.onComplete(true, null);

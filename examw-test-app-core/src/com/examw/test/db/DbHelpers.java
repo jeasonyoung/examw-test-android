@@ -61,7 +61,7 @@ public class DbHelpers implements Serializable {
 	 * @since 2015年6月25日
 	 */
 	private class DatabaseContext extends ContextWrapper{
-		private Context mContext;
+		private final Context mContext;
 		private String username,productId;
 		
 		private static final String no_login = "_nologin_";//未登录用户名
@@ -74,7 +74,7 @@ public class DbHelpers implements Serializable {
 			super(base);
 			Log.d(TAG, "初始化数据库上下文包装类....");
 			this.mContext = base;
-			AppContext appContext = (AppContext)this.mContext.getApplicationContext();
+			final AppContext appContext = (AppContext)this.mContext.getApplicationContext();
 			if(appContext != null){
 				Log.d(TAG, "加载当前数据...");
 				//当前产品
