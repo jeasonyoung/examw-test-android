@@ -22,7 +22,9 @@
             android:layout_marginLeft="@dimen/list_left"
             android:layout_marginStart="@dimen/list_left"
             android:textColor="@color/black"
-            android:textSize="@dimen/list_l_size"/>
+            android:textSize="@dimen/list_l_size"
+            android:lineSpacingExtra="@dimen/paper_item_line_spacing"
+        	android:lineSpacingMultiplier="@integer/paper_item_line_spacing_multiplier"/>
         
         <!-- 结果 -->
         <TextView android:id="@+id/paper_item_result"
@@ -35,7 +37,9 @@
             android:layout_marginEnd="@dimen/list_left"
             android:textColor="@color/white"
             android:background="@color/item_right_bgcolor"
-            android:textSize="@dimen/list_l_size"/>
+            android:textSize="@dimen/list_l_size"
+            android:lineSpacingExtra="@dimen/paper_item_line_spacing"
+        	android:lineSpacingMultiplier="@integer/paper_item_line_spacing_multiplier"/>
         
     </RelativeLayout>
     
@@ -49,6 +53,8 @@
             android:layout_marginRight="@dimen/list_left"
             android:layout_marginEnd="@dimen/list_left"
             android:textColor="@color/black"
-            android:textSize="@dimen/list_l_size"/>
+            android:textSize="@dimen/list_l_size"
+            android:lineSpacingExtra="@dimen/paper_item_line_spacing"
+        	android:lineSpacingMultiplier="@integer/paper_item_line_spacing_multiplier"/>
      
 </com.examw.test.widget.ItemAnalysisView>

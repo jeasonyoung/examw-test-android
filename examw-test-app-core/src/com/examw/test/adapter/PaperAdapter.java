@@ -71,7 +71,7 @@ public final class PaperAdapter extends BaseAdapter implements PaperItemsAdapter
 		if(convertView == null){
 			Log.d(TAG, "新建试卷试题..." + position);
 			//1.加载布局文件
-			convertView = LayoutInflater.from(this.activity).inflate(R.layout.ui_main_paper_items, null, false);
+			convertView = LayoutInflater.from(this.activity).inflate(R.layout.ui_main_paper_items, parent, false);
 			//2.初始化
 			itemViewHolder = new ViewHolder(this.activity, convertView);
 			//3.缓存
@@ -114,8 +114,11 @@ public final class PaperAdapter extends BaseAdapter implements PaperItemsAdapter
 			}
 			@Override
 			protected void onPostExecute(Void result) {
-				Log.d(TAG, "跳转到下一题...");
-				activity.nextItem();
+				//单选题下一题
+				if(itemModel.getType() == PaperItemModel.ItemType.Single.getValue()){
+					Log.d(TAG, "跳转到下一题...");
+					activity.nextItem();
+				}
 			}
 		}.executeOnExecutor(PaperActivity.pools, (Void[])null);
 	}

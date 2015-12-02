@@ -30,11 +30,11 @@
     
     <!-- 行字体 -->
     <!-- 大字体尺寸 -->  
-    <dimen name="list_l_size">16.0sp</dimen>
+    <dimen name="list_l_size">18.0sp</dimen>
     <!-- 普通字体尺寸 -->
-    <dimen name="list_m_size">14.0sp</dimen>
+    <dimen name="list_m_size">16.0sp</dimen>
     <!-- 小字体尺寸 -->
-    <dimen name="list_s_size">12.0sp</dimen>
+    <dimen name="list_s_size">14.0sp</dimen>
     
     <!-- 通用间距 -->
     <dimen name="padding_normal">10.0dp</dimen>
@@ -63,5 +63,11 @@
     
     <!-- 答题跳转等待时间 -->
     <integer name="paper_item_update_time">2</integer>
+    
+    <!-- 试题相关 -->
+    <!-- 行间距 -->
+    <dimen name="paper_item_line_spacing">5dp</dimen>
+    <!-- 行间距倍数 -->
+    <integer name="paper_item_line_spacing_multiplier">1</integer>
     
 </resources>

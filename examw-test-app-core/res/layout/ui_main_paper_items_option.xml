@@ -19,6 +19,8 @@
         android:drawablePadding="@dimen/img_text_padding"
         android:gravity="center_vertical"
         android:textColor="@color/black"
-        android:textSize="@dimen/list_l_size"/>
+        android:textSize="@dimen/list_l_size"
+        android:lineSpacingExtra="@dimen/paper_item_line_spacing"
+        android:lineSpacingMultiplier="@integer/paper_item_line_spacing_multiplier"/>
     
 </com.examw.test.widget.ItemOptionView>
