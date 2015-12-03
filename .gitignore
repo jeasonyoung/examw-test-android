@@ -16,3 +16,7 @@ bin
 .settings
 gen
 libs
+
+.idea/workspace.xml
+
+local.properties
