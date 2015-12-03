@@ -25,7 +25,6 @@ import com.examw.test.model.PaperModel;
 import com.examw.test.model.PaperRecordModel;
 import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.utils.PaperUtils;
-import com.google.gson.Gson;
 
 /**
  * 试卷数据Dao
@@ -194,7 +193,7 @@ public class PaperDao {
 					final String sql = "SELECT content FROM tbl_papers WHERE id = ? limit 0,1";
 					db = this.getDbHelpers().getReadableDatabase();
 					String hex = null;
-					Cursor cursor = db.rawQuery(sql, new String[]{ paperId });
+					final Cursor cursor = db.rawQuery(sql, new String[]{ paperId });
 					while (cursor.moveToNext()) {
 						hex = cursor.getString(0);
 						break;
@@ -203,9 +202,8 @@ public class PaperDao {
 					//1.检查密文试卷数据
 					if(StringUtils.isNotBlank(hex)){
 						//2.解密试卷数据
-						String json = PaperUtils.decryptContent(hex, paperId);
 						//3.JSON反序列化
-						model = PaperModel.fromJSON(json);
+						model = PaperModel.fromJSON(PaperUtils.decryptContent(hex, paperId));
 						//4.放入缓存
 						if(model != null){
 							PapersCache.put(paperId, model);
@@ -237,14 +235,14 @@ public class PaperDao {
 		}
 		SQLiteDatabase db = null;
 		try {
-			StringBuilder sqlBuilder = new StringBuilder()
+			final StringBuilder sqlBuilder = new StringBuilder()
 			.append(" SELECT a.id,a.status,a.score,a.rights,a.useTimes,b.title ")
 			.append(" FROM tbl_paperRecords a ")
 			.append(" LEFT OUTER JOIN tbl_papers b  on b.id = a.paperId ")
 			.append(" WHERE a.paperId = ? ORDER BY a.lastTime DESC,a.createTime DESC limit 0,1 ");
 			
 			db = this.getDbHelpers().getReadableDatabase();
-			Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ paperId });
+			final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ paperId });
 			while(cursor.moveToNext()){
 				//0.初始化
 				model = new PaperRecordModel();
@@ -1310,8 +1308,7 @@ public class PaperDao {
 			 */
 			@Override
 			public String toString() {
-				 Gson gson = new Gson();
-				 return gson.toJson(this);
+				return PaperUtils.<PaperInfoModel>toJSON(this);
 			}
 		}
 		/**
@@ -1343,8 +1340,7 @@ public class PaperDao {
 			 */
 			@Override
 			public String toString() {
-				Gson gson = new Gson();
-				return gson.toJson(this);
+				return PaperUtils.<SubjectTotalModel>toJSON(this);
 			}
 		}
 	}

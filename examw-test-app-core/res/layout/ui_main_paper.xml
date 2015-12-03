@@ -65,12 +65,12 @@
         	android:layout_width="match_parent"
         	android:layout_height="match_parent"
         	android:layout_below="@id/main_paper_topMenu"
-        	android:layout_marginBottom="@dimen/list_bottom"
+        	android:layout_above="@+id/main_paper_footer"
         	android:background="@color/white"
         	app:sidebuffer="2" />
    
     <!-- 底部菜单按钮区域 -->
-    <LinearLayout
+    <LinearLayout android:id="@+id/main_paper_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/main_bottom_menuHeight"

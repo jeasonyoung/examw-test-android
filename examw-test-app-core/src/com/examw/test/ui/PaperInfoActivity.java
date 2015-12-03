@@ -107,7 +107,8 @@ public class PaperInfoActivity extends Activity implements View.OnClickListener 
 		//加载数据
 		Intent intent = this.getIntent();
 		if(intent != null){
-			new LoadPaperAsyncTask(intent.getStringExtra(INTENT_SUBJECTNAME_KEY)).execute(intent.getStringExtra(INTENT_PAPERID_KEY));
+			new LoadPaperAsyncTask(intent.getStringExtra(INTENT_SUBJECTNAME_KEY))
+			.execute(intent.getStringExtra(INTENT_PAPERID_KEY));
 		}
 	}
 	/*

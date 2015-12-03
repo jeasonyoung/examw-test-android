@@ -1,19 +1,12 @@
 package com.examw.test.model;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.examw.test.utils.PaperUtils;
+import com.examw.test.utils.TextImgUtil;
 import com.google.gson.annotations.Expose;
-import com.google.gson.reflect.TypeToken;
 /**
  * 试题数据模型。
  * 
@@ -32,20 +25,13 @@ public class PaperItemModel implements Serializable {
 	private String structureId,structureTitle,itemRecordId,paperRecordId;
 	private Integer index;
 	private Float structureScore,structureMin;
-	private List<String> itemContentImgUrls,itemAnalysisImgUrls;
-	
-	private static final Gson GSON = new Gson();
-	private static final Type ITEM_TypeOfT = new TypeToken<PaperItemModel>(){}.getType();
 	/**
 	 * JSON反序列化对象。
 	 * @param json
 	 * @return
 	 */
 	public static PaperItemModel fromJSON(String json){
-		if(StringUtils.isNotBlank(json)){
-			return (PaperItemModel)GSON.fromJson(json, ITEM_TypeOfT);
-		}
-		return null;
+		return PaperUtils.<PaperItemModel>fromJSON(PaperItemModel.class, json);
 	}
 	
 	/**
@@ -91,12 +77,7 @@ public class PaperItemModel implements Serializable {
 	 *	  试题内容。
 	 */
 	public void setContent(String content) {
-		if(StringUtils.isNotBlank(content)){
-			//图片处理
-			this.itemContentImgUrls = new ArrayList<String>();
-			content = findAndReplaceImgPaths(content, this.itemContentImgUrls);
-		}
-		this.content = content;
+		this.content = TextImgUtil.findImgReplaceLocal(content);
 	}
 	/**
 	 * 获取试题答案。
@@ -111,11 +92,6 @@ public class PaperItemModel implements Serializable {
 	 *	  试题答案。
 	 */
 	public void setAnswer(String answer) {
-		if(StringUtils.isNotBlank(analysis)){
-			//图片处理
-			this.itemAnalysisImgUrls = new ArrayList<String>();
-			analysis = findAndReplaceImgPaths(analysis, this.itemAnalysisImgUrls);
-		}
 		this.answer = answer;
 	}
 	/**
@@ -131,7 +107,7 @@ public class PaperItemModel implements Serializable {
 	 *	  试题解析。
 	 */
 	public void setAnalysis(String analysis) {
-		this.analysis = analysis;
+		this.analysis = TextImgUtil.findImgReplaceLocal(analysis);
 	}
 	/**
 	 * 获取难度值。
@@ -285,20 +261,6 @@ public class PaperItemModel implements Serializable {
 		this.paperRecordId = paperRecordId;
 	}
 	/**
-	 * 获取试题内容图片Urls。
-	 * @return 试题内容图片Urls。
-	 */
-	public List<String> getItemContentImgUrls() {
-		return itemContentImgUrls;
-	}
-	/**
-	 * 获取试题解析图片集合。
-	 * @return 试题解析图片集合。
-	 */
-	public List<String> getItemAnalysisImgUrls() {
-		return itemAnalysisImgUrls;
-	}
-	/**
 	 * 获取试题索引。
 	 * @return 试题索引。
 	 */
@@ -319,34 +281,7 @@ public class PaperItemModel implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-				.serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").setPrettyPrinting().create();
-		return gson.toJson(this);
-	}
-	
-	//查找并替换图片路径
-	private static String findAndReplaceImgPaths(String content, List<String> outList){
-		if(StringUtils.isNotBlank(content)){ 
-			Pattern regex = Pattern.compile("(<[img|IMG].+?[/]?>)");
-			Matcher m = regex.matcher(content);
-			if(m.find()){
-				String img = m.group(1);
-				content = m.replaceFirst("");
-				if(StringUtils.isBlank(img)){
-					return content;
-				}
-				Pattern urlRegex = Pattern.compile("[src|SRC]=\"(.+?)\"");
-				m = urlRegex.matcher(img);
-				if(m.find()){
-					String imgUrl = m.group(1);
-					if(StringUtils.isNotBlank(imgUrl) && outList != null){
-						outList.add(imgUrl);
-					}
-					return content;
-				}
-			}
-		}
-		return content;
+		return PaperUtils.<PaperItemModel>toJSONWithoutExposeAnnotation(this);
 	}
 	
 	/**

@@ -1,14 +1,10 @@
 package com.examw.test.model;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.examw.test.utils.PaperUtils;
 
 import android.util.Log;
 
@@ -31,12 +27,7 @@ public class PaperModel implements Serializable {
 	 */
 	public static PaperModel fromJSON(String json){
 		Log.d(TAG, "JSON反序列化试卷对象...");
-		if(StringUtils.isNotBlank(json)){
-			Type type = new TypeToken<PaperModel>(){}.getType();
-			Gson gson = new Gson();
-			return  (PaperModel)gson.fromJson(json, type);
-		}
-		return null;
+		return PaperUtils.<PaperModel>fromJSON(PaperModel.class, json);
 	}
 	
 	/**

@@ -6,6 +6,10 @@ package com.examw.test.app;
  */
 public final class AppConstant {
 	/**
+	 * 试题图片存储目录。
+	 */
+	public static final String APP_ITEM_IMG_DIR = "examw_imgs";
+	/**
 	 * 客户端标示(用于考试网用户登陆验证)。
 	 */
 	public static final String APP_ID = "357070005327186";
@@ -35,6 +39,11 @@ public final class AppConstant {
 	 * 服务器数据API。
 	 */
 	public static final String APP_API_HOST = "http://tiku.examw.com";
+
+	/**
+	 * 试题图片下载地址根路径
+	 */
+	public static final String APP_ITEM_IMG_HOST = APP_API_HOST;
 	/**
 	 * 注册API。
 	 */

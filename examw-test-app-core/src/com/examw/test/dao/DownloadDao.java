@@ -15,7 +15,6 @@ import com.examw.test.model.sync.PaperSync;
 import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.utils.DigestClientUtil;
 import com.examw.test.utils.PaperUtils;
-import com.google.gson.reflect.TypeToken;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -245,7 +244,7 @@ public class DownloadDao{
 			//设置下载试卷的开始时间
 			reqParameter.setStartTime(StringUtils.trimToEmpty(lastTime));
 			//下载试卷数据
-			final PaperSync[] papers = new DigestClientUtil.CallbackJSON<PaperSync[]>(new TypeToken<PaperSync[]>(){}.getType())
+			final PaperSync[] papers = new DigestClientUtil.CallbackJSON<PaperSync[]>(PaperSync[].class)
 																						.downloadZipPOST(AppConstant.APP_API_PAPERS_URL, reqParameter);
 			//试卷数据集合
 			if(papers == null || papers.length == 0){

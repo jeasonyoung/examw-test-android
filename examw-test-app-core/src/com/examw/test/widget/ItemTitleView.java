@@ -1,14 +1,14 @@
 package com.examw.test.widget;
 
+import com.examw.test.R;
+import com.examw.test.support.ItemModelSupport.PaperItemTitleModel;
+import com.examw.test.utils.TextImgUtil;
+
 import android.content.Context;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.examw.test.R;
-import com.examw.test.support.ItemModelSupport.PaperItemTitleModel;
 
 /**
  *  试题标题。
@@ -40,7 +40,8 @@ public class ItemTitleView extends LinearLayout {
 		}
 		//加载数据。
 		if(model != null){
-			 this.titleView.setText(Html.fromHtml(model.getOrder() > 0 ? model.getOrder() + "." + model.getContent() :  model.getContent()));
+			final String content = model.getOrder() > 0 ? model.getOrder() + "." + model.getContent() :  model.getContent();
+			TextImgUtil.textImageView(this.titleView, content);
 		}else{
 			this.titleView.setText("");
 		}

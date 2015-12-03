@@ -101,18 +101,17 @@ public class DbHelpers implements Serializable {
 			//db文件名
 			String dbName = String.format(dbName_format, userKey, StringUtils.trimToEmpty(this.productId))  + "_" + name;
 			//root
-			String root = this.mContext.getFilesDir().getAbsolutePath();
+			File root = this.mContext.getFilesDir();
 			if(AppContext.hasExistSDCard()){
 				//存在SD卡上
-				root = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + this.mContext.getPackageName();
+				root = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), this.mContext.getPackageName());
 			}
 			//判断目录是否存在，不存在则创建目录
-			File dirFile = new File(root);
-			if(!dirFile.exists()){
-				dirFile.mkdirs();
+			if(!root.exists()){
+				root.mkdirs();
 			}
 			//数据库文件全路径
-			File path = new File(root, dbName);
+			final File path = new File(root, dbName);
 			//判断数据库文件是否存在
 			if(!path.exists()){
 				//数据库文件不存在

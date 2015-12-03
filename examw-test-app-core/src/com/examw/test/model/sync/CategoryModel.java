@@ -4,21 +4,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.examw.test.app.AppContext;
+import com.examw.test.utils.PaperUtils;
+
 import android.content.Context;
 import android.util.Log;
-
-import com.examw.test.app.AppContext;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 /**
  * 考试分类数据模型。
  * 
@@ -122,7 +120,7 @@ public class CategoryModel implements Serializable {
 	//创建本地存储文件名。
 	private static String createLocalFileName(){
 		//日期格式化
-		SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMddHH", Locale.getDefault());
+		final SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMddHH", Locale.getDefault());
 		//本地文件名
 		return String.format("CategoriesLocalData_%s.json", dtFormat.format(new Date()));
 	}
@@ -134,17 +132,15 @@ public class CategoryModel implements Serializable {
 		try {
 			Log.d(TAG, "从本地文件中加载考试分类数据集合...");
 			//获取应用上下文
-			Context context = AppContext.getContext();
+			final Context context = AppContext.getContext();
 			//本地存储文件
-			File localFile = new File(context.getFilesDir(), createLocalFileName());
+			final File localFile = new File(context.getFilesDir(), createLocalFileName());
 			Log.d(TAG, "加载本地存储路径:" + localFile.getAbsolutePath());
 			//文件是否存在
 			if(localFile.exists()){
-				Gson gson = new Gson();
-				Type objType =   new TypeToken<ArrayList<CategoryModel>>(){}.getType();
-				List<CategoryModel> list = gson.fromJson(new FileReader(localFile), objType);
-				if(list != null && list.size() > 0){
-					return list;
+				final CategoryModel[] categories = PaperUtils.<CategoryModel[]>fromJSON(CategoryModel[].class, new FileReader(localFile));
+				if(categories != null && categories.length > 0){
+					return Arrays.<CategoryModel>asList(categories);
 				}
 			}
 		} catch (Exception e) {
@@ -162,17 +158,13 @@ public class CategoryModel implements Serializable {
 			Log.d(TAG, "准备将数据保存到本地...");
 			if(categories != null && categories.size() > 0){
 				//获取应用上下文
-				Context context = AppContext.getContext();
+				final Context context = AppContext.getContext();
 				//本地存储文件
-				File localFile = new File(context.getFilesDir(), createLocalFileName());
+				final File localFile = new File(context.getFilesDir(), createLocalFileName());
 				Log.d(TAG, "本地存储路径:" + localFile.getAbsolutePath());
-
-				Gson gson = new Gson();
-				Type objType =   new TypeToken<ArrayList<CategoryModel>>(){}.getType();
-				FileWriter writer =  new FileWriter(localFile,false);
-				gson.toJson(categories, objType,  writer);
+				final FileWriter writer =  new FileWriter(localFile,false);
+				PaperUtils.<CategoryModel[]>toJSON(categories.toArray(new CategoryModel[0]), writer);
 				writer.close();
-				
 				return true;
 			}
 		} catch (Exception e) {

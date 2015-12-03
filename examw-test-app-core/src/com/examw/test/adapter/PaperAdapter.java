@@ -152,6 +152,8 @@ public final class PaperAdapter extends BaseAdapter implements PaperItemsAdapter
  		public ViewHolder(Context context, View convertView){
  			//1.加载列表布局
  			this.itemsView = (ListView)convertView.findViewById(R.id.list_paper_item);
+ 			//1.1设置纵向滚动条启用
+ 			this.itemsView.setVerticalScrollBarEnabled(true);
  			//2.初始化数据适配器
  			this.itemsAdapter = new PaperItemsAdapter(context);
  			//2.设置点击事件监听器

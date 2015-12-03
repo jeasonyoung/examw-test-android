@@ -2,23 +2,23 @@ package com.examw.test.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.examw.test.R;
+import com.examw.test.support.ItemModelSupport.PaperItemAnalysisModel;
+import com.examw.test.support.ItemModelSupport.PaperItemOptModel;
+import com.examw.test.utils.TextImgUtil;
+
 import android.content.Context;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.examw.test.R;
-import com.examw.test.support.ItemModelSupport.PaperItemAnalysisModel;
-import com.examw.test.support.ItemModelSupport.PaperItemOptModel;
 
 /**
  * 答案解析View
@@ -83,23 +83,28 @@ public class ItemAnalysisView extends LinearLayout{
 				}
 			 }
 			 //设置参考答案
-			 final String rightAnswer = StringUtils.join(listRights.toArray(new String[0]), ",");
-			 final String myAnswer = StringUtils.join(listMyAnswer.toArray(new String[0]),",");
+			 final String rightAnswer = StringUtils.join(listRights.toArray(new String[0])).toUpperCase(Locale.getDefault());
+			 final String myAnswer = StringUtils.join(listMyAnswer.toArray(new String[0])).toUpperCase(Locale.getDefault());
 			 this.rightView.setText(String.format(getContext().getString(R.string.main_paper_answer_right), rightAnswer));
 			 //判断对错
-			 this.resultView.setText(getContext().getString(StringUtils.equals(rightAnswer, myAnswer) ? R.string.main_paper_answer_my_right : R.string.main_paper_answer_my_wrong));
+			 this.resultView.setText(getContext().getString((StringUtils.isNotBlank(rightAnswer) &&  StringUtils.equalsIgnoreCase(rightAnswer, myAnswer)) ? R.string.main_paper_answer_my_right : R.string.main_paper_answer_my_wrong));
 			 //设置解析
-			 this.analysisView.setText(Html.fromHtml(String.format(getContext().getString(R.string.main_paper_answer_analysis), analysisModel.getContent())));
+			 final String content = getContext().getString(R.string.main_paper_answer_analysis) + analysisModel.getContent();
+			 TextImgUtil.textImageView(this.analysisView, content);
 		 }
 	}
 	//查找题号
 	private String findItemOrder(String content){
+		String order = null;
 		if(StringUtils.isNotBlank(content)){
 			Matcher matcher = this.regex.matcher(content);
 			if(matcher.find()){
-				return matcher.group(0);
+				order =  matcher.group(0);
+				if(StringUtils.isNotBlank(order) && order.endsWith(".")){
+					order = order.substring(0, order.length() - 1);
+				}
 			}
 		}
-		return null;
+		return order;
 	}
 }

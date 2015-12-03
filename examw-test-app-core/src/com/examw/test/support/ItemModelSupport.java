@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import android.util.Log;
-
 import com.examw.test.model.PaperItemModel;
 import com.examw.test.model.PaperItemModel.ItemType;
+
+import android.util.Log;
 
 /**
  * 试题数据模型支持。
@@ -33,11 +33,12 @@ public final class ItemModelSupport {
 	 * @return
 	 * 
 	 */
-	public static List<PaperItemTitleModel> createItemModels(int order, PaperItemModel itemModel, boolean displayAnswer, String myAnswers){
+	public static synchronized List<PaperItemTitleModel> createItemModels(final int order, final PaperItemModel itemModel, 
+			final boolean displayAnswer, final String myAnswers){
 		Log.d(TAG, "创建试题数据模型");
 		if(itemModel != null  && itemModel.getType() != null && itemModel.getType() >= 0){
 			//选项集合
-			ItemType type = ItemType.parse(itemModel.getType()); 
+			final ItemType type = ItemType.parse(itemModel.getType()); 
 			switch(type){
 				case Single://单选
 				case Multy://多选
@@ -71,15 +72,16 @@ public final class ItemModelSupport {
 	 * @param myAnswers
 	 * @return
 	 */
-	private static List<PaperItemOptModel> createOptions(List<PaperItemModel> options, ItemType type, boolean displayAnswer, String rightAnswers, String myAnswers){
+	private static List<PaperItemOptModel> createOptions(final List<PaperItemModel> options, final ItemType type, 
+			final boolean displayAnswer, final String rightAnswers,final String myAnswers){
 		int len = 0;
 		if(options != null && (len = options.size()) > 0){
-			List<PaperItemOptModel> opts = new ArrayList<PaperItemOptModel>(len);
+			final List<PaperItemOptModel> opts = new ArrayList<PaperItemOptModel>(len);
 			//选项
 			for(PaperItemModel item : options){
 				if(item == null) continue;
 				//创建选项
-				PaperItemOptModel optModel = new PaperItemOptModel(item);
+				final PaperItemOptModel optModel = new PaperItemOptModel(item);
 				optModel.setItemType(type);
 				optModel.setRightAnswers(rightAnswers);
 				optModel.setMyAnswers(myAnswers);
@@ -101,25 +103,25 @@ public final class ItemModelSupport {
 	 * @param myAnswers
 	 * @return
 	 */
-	private static List<PaperItemTitleModel> createChoiceItem(int order, ItemType type,  PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createChoiceItem(final int order, final ItemType type, final PaperItemModel itemModel, 
+			final boolean displayAnswer, final String myAnswers) {
 		Log.d(TAG, "创建选择题...");
 		//创建结果集合
-		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
+		final List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
 		//标题
-		PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
+		final PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
 		titleModel.setOrder(order + 1);
 		//添加到数据源
 		list.add(titleModel);
 		//选项
-		List<PaperItemOptModel>  optModels = createOptions(itemModel.getChildren(), type, displayAnswer, itemModel.getAnswer(), myAnswers);
+		final List<PaperItemOptModel> optModels = createOptions(itemModel.getChildren(), type, displayAnswer, itemModel.getAnswer(), myAnswers);
 		if(optModels != null && optModels.size() > 0){
 			//添加到数据源
 			list.addAll(optModels);
 		}
 		//答案解析
-		if(displayAnswer && optModels != null && optModels.size() > 0){
-			PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(itemModel);
-			analysisModel.setOptions(optModels);
+		if(displayAnswer){
+			final PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(itemModel, optModels);
 			analysisModel.setMyAnswers(myAnswers);
 			//添加到数据源
 			list.add(analysisModel);
@@ -135,38 +137,38 @@ public final class ItemModelSupport {
 	 * @param myAnswers
 	 * @return
 	 */
-	private static List<PaperItemTitleModel> createJudgeItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createJudgeItem(final int order, final ItemType type, final PaperItemModel itemModel, 
+			final boolean displayAnswer, final String myAnswers) {
 		Log.d(TAG, "创建判断题...");
 		//创建结果集合
-		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
+		final List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
 		//标题
-		PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
+		final PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
 		titleModel.setOrder(order + 1);
 		//添加到数据源
 		list.add(titleModel);
 		
 		//判断选项初始化
 		//1.正确答案
-		PaperItemModel optRightModel = new PaperItemModel();
+		final PaperItemModel optRightModel = new PaperItemModel();
 		optRightModel.setId(String.valueOf(PaperItemModel.ItemJudgeAnswer.Right.getValue()));
 		optRightModel.setContent(PaperItemModel.ItemJudgeAnswer.Right.getName());
 		
 		//2.错误答案
-		PaperItemModel optWrongModel = new PaperItemModel();
+		final PaperItemModel optWrongModel = new PaperItemModel();
 		optWrongModel.setId(String.valueOf(PaperItemModel.ItemJudgeAnswer.Wrong.getValue()));
 		optWrongModel.setContent(PaperItemModel.ItemJudgeAnswer.Wrong.getName());
 		
 		//选项
-		List<PaperItemOptModel> optModels = createOptions(Arrays.asList(new PaperItemModel[] {optRightModel, optWrongModel}), 
+		final List<PaperItemOptModel> optModels = createOptions(Arrays.asList(new PaperItemModel[] {optRightModel, optWrongModel}), 
 				type, displayAnswer, itemModel.getAnswer(), myAnswers);
 		if(optModels != null && optModels.size() > 0){
 			//添加到数据源
 			list.addAll(optModels);
 		}
 		//答案解析
-		if(displayAnswer && optModels != null && optModels.size() > 0){
-			PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(itemModel);
-			analysisModel.setOptions(optModels);
+		if(displayAnswer){
+			final PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(itemModel, optModels);
 			analysisModel.setMyAnswers(myAnswers);
 			//添加到数据源
 			list.add(analysisModel);
@@ -181,21 +183,20 @@ public final class ItemModelSupport {
 	 * @param displayAnswer
 	 * @return
 	 */
-	private static List<PaperItemTitleModel> createQandaItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer) {
+	private static List<PaperItemTitleModel> createQandaItem(final int order, final ItemType type, final PaperItemModel itemModel, final boolean displayAnswer) {
 		Log.d(TAG, "创建问答题...");
 		//创建结果集合
-		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
+		final List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
 		
 		//标题
-		PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
+		final PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
 		titleModel.setOrder(order + 1);
 		//添加到数据源
 		list.add(titleModel);
 		
 		//答案解析
 		if(displayAnswer){
-			PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(itemModel);
-			analysisModel.setOptions(null);
+			final PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(itemModel, null);
 			analysisModel.setMyAnswers(null);
 			//添加到数据源
 			list.add(analysisModel);
@@ -211,35 +212,35 @@ public final class ItemModelSupport {
 	 * @param myAnswers
 	 * @return
 	 */
-	private static List<PaperItemTitleModel> createShareTitle(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createShareTitle(final int order,final  ItemType type, final PaperItemModel itemModel, 
+			final boolean displayAnswer, final String myAnswers) {
 		Log.d(TAG, "创建共享题干...");
 		//创建结果集合
-		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
+		final List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
 		//标题
-		PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
+		final PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
 		titleModel.setOrder(0);
 		//添加到数据源
 		list.add(titleModel);
 		//
-		int index = itemModel.getIndex();
+		final int index = itemModel.getIndex();
 		if(itemModel.getChildren() != null && itemModel.getChildren().size() > index){
-			PaperItemModel child = itemModel.getChildren().get(index);
+			final PaperItemModel child = itemModel.getChildren().get(index);
 			if(child != null){
 				//子标题
-				PaperItemTitleModel subTitleModel = new PaperItemTitleModel(itemModel);
+				final PaperItemTitleModel subTitleModel = new PaperItemTitleModel(itemModel);
 				subTitleModel.setOrder(order + 1);
 				//添加到数据源
 				list.add(subTitleModel);
 				//选项
-				List<PaperItemOptModel> optModels = createOptions(child.getChildren(), type, displayAnswer, child.getAnswer(), myAnswers);
+				final List<PaperItemOptModel> optModels = createOptions(child.getChildren(), type, displayAnswer, child.getAnswer(), myAnswers);
 				if(optModels != null && optModels.size() > 0){
 					//添加到数据源
 					list.addAll(optModels);
 				}
 				//答案解析
-				if(displayAnswer && optModels != null && optModels.size() > 0){
-					PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(child);
-					analysisModel.setOptions(optModels);
+				if(displayAnswer){
+					final PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(child, optModels);
 					analysisModel.setMyAnswers(myAnswers);
 					//添加到数据源
 					list.add(analysisModel);
@@ -257,14 +258,15 @@ public final class ItemModelSupport {
 	 * @param myAnswers
 	 * @return
 	 */
-	private static List<PaperItemTitleModel> createShareAnswerItem(int order, ItemType type, PaperItemModel itemModel, boolean displayAnswer, String myAnswers) {
+	private static List<PaperItemTitleModel> createShareAnswerItem(final int order,final ItemType type,final PaperItemModel itemModel,
+			final boolean displayAnswer, final String myAnswers) {
 		Log.d(TAG, "创建共享题干...");
 		//创建结果集合
-		List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
+		final List<PaperItemTitleModel> list = new ArrayList<PaperItemTitleModel>();
 		
 		//标题
 		if(StringUtils.isNotBlank(itemModel.getContent())){
-			PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
+			final PaperItemTitleModel titleModel = new PaperItemTitleModel(itemModel);
 			titleModel.setOrder(0);
 			//添加到数据源
 			list.add(titleModel);
@@ -274,7 +276,7 @@ public final class ItemModelSupport {
 			int max = 0, index = itemModel.getIndex();
 			PaperItemModel p = null;
 			//构建选项，查找根
-			List<PaperItemModel> optItemModels = new ArrayList<PaperItemModel>();
+			final List<PaperItemModel> optItemModels = new ArrayList<PaperItemModel>();
 			for(PaperItemModel child : itemModel.getChildren()){
 				if(child == null) continue;
 				if(child.getOrderNo() > max){
@@ -289,23 +291,22 @@ public final class ItemModelSupport {
 			}
 			//拼接试题
 			if(p != null && p.getChildren() != null && p.getChildren().size() > index){
-				PaperItemModel subItemModel = p.getChildren().get(index);
+				final PaperItemModel subItemModel = p.getChildren().get(index);
 				if(subItemModel != null && subItemModel.getType() != null){
 					//子标题
-					PaperItemTitleModel titleModel = new PaperItemTitleModel(subItemModel);
+					final PaperItemTitleModel titleModel = new PaperItemTitleModel(subItemModel);
 					titleModel.setOrder(order + 1);
 					//添加到数据源
 					list.add(titleModel);
 					//选项
-					List<PaperItemOptModel> optModels = createOptions(optItemModels, ItemType.values()[subItemModel.getType() - 1], displayAnswer, subItemModel.getAnswer(), myAnswers);
+					final List<PaperItemOptModel> optModels = createOptions(optItemModels, ItemType.values()[subItemModel.getType() - 1], displayAnswer, subItemModel.getAnswer(), myAnswers);
 					if(optModels != null && optModels.size() > 0){
 						//添加到数据源
 						list.addAll(optModels);
 					}
 					//答案解析
-					if(displayAnswer && optItemModels != null && optItemModels.size() > 0){
-						PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(subItemModel);
-						analysisModel.setOptions(optModels);
+					if(displayAnswer){
+						final PaperItemAnalysisModel analysisModel = new PaperItemAnalysisModel(subItemModel, optModels);
 						analysisModel.setMyAnswers(myAnswers);
 						//添加到数据源
 						list.add(analysisModel);
@@ -323,21 +324,21 @@ public final class ItemModelSupport {
 	 */
 	public static class PaperItemTitleModel implements Serializable{
 		private static final long serialVersionUID = 1L;
-		private final String id;
+		private String id;
 		private int order;
 		private ItemType itemType;
 		private String content;
-		private List<String> images;
 		/**
 		 * 构造函数。
 		 * @param itemModel
 		 */
 		public PaperItemTitleModel(PaperItemModel itemModel){
-			this.id = itemModel.getId();
-			this.setOrder(itemModel.getOrderNo());
-			this.setItemType(itemModel.getType() == null ? null : ItemType.parse(itemModel.getType()));
-			this.setContent(itemModel.getContent());
-			this.setImages(itemModel.getItemContentImgUrls()); 
+			if(itemModel != null){
+				this.id = itemModel.getId();
+				this.setOrder(itemModel.getOrderNo());
+				this.setItemType(itemModel.getType() == null ? null : ItemType.parse(itemModel.getType()));
+				this.setContent(itemModel.getContent());
+			}
 		}
 		/**
 		 * 获取ID。
@@ -391,21 +392,6 @@ public final class ItemModelSupport {
 		public void setOrder(int order) {
 			this.order = order;
 		}
-		/**
-		 * 获取图片集合。
-		 * @return 图片集合。
-		 */
-		public List<String> getImages() {
-			return images;
-		}
-		/**
-		 * 设置图片集合。
-		 * @param images 
-		 *	  图片集合。
-		 */
-		public void setImages(List<String> images) {
-			this.images = images;
-		}
 		/*
 		 * 重载。
 		 * @see java.lang.Object#toString()
@@ -431,7 +417,9 @@ public final class ItemModelSupport {
 		 */
 		public PaperItemOptModel(PaperItemModel itemModel) {
 			super(itemModel);
-			this.setRightAnswers(itemModel.getAnswer());
+			if(itemModel != null){
+				this.setRightAnswers(itemModel.getAnswer());
+			}
 		}
 		/**
 		 * 获取我的答案。
@@ -488,14 +476,18 @@ public final class ItemModelSupport {
 	public static class PaperItemAnalysisModel extends PaperItemOptModel{
 		private static final long serialVersionUID = 1L;
 		private List<PaperItemOptModel> options;
+		
 		/**
 		 * 构造函数。
 		 * @param itemModel
+		 * @param options
 		 */
-		public PaperItemAnalysisModel(PaperItemModel itemModel) {
+		public PaperItemAnalysisModel(PaperItemModel itemModel, List<PaperItemOptModel> options) {
 			super(itemModel);
-			this.setContent(itemModel.getAnalysis());
-			this.setImages(itemModel.getItemAnalysisImgUrls());
+			if(itemModel != null){
+				this.setContent(itemModel.getAnalysis());
+			}
+			this.options = options;
 		}
 		/**
 		 * 获取选项集合。
@@ -503,14 +495,6 @@ public final class ItemModelSupport {
 		 */
 		public List<PaperItemOptModel> getOptions() {
 			return options;
-		}
-		/**
-		 * 设置 options
-		 * @param options 
-		 *	  options
-		 */
-		public void setOptions(List<PaperItemOptModel> options) {
-			this.options = options;
 		}
 	}
 }

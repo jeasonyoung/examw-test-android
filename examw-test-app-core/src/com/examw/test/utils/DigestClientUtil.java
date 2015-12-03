@@ -240,21 +240,13 @@ public final class DigestClientUtil {
 	 * @since 2015年11月30日
 	 */
 	public static class CallbackJSON<T>{
-		private Type t;
-		private Class<?> clazz;
+		private Class<T> clazz;
 		/**
 		 * 构造函数。
 		 * @param clazz
 		 */
-		public CallbackJSON(Class<?> clazz){
+		public CallbackJSON(Class<T> clazz){
 			this.clazz = clazz;
-		}
-		/**
-		 * 构造函数。
-		 * @param t
-		 */
-		public CallbackJSON(Type t){
-			this.t = t;
 		}
 		/**
 		 * 发送POST请求。
@@ -344,7 +336,7 @@ public final class DigestClientUtil {
 						Log.d(TAG, "准备反序列化JSON文件=>" + jsonFile.getAbsolutePath());
 						try{
 							//反序列化。
-							return this.convert(new FileReader(jsonFile));
+							return this.convertObj(new FileReader(jsonFile));
 						}catch(Exception e){
 							Log.e(TAG, "反序列化JSON失败:" + e.getMessage(), e);
 						}finally{
@@ -371,29 +363,25 @@ public final class DigestClientUtil {
 			if(StringUtils.isNotBlank(json)){
 				//初始化JSON转换
 				final Gson gson = new Gson();
-				//类型处理
-				if(this.clazz != null){
-					this.t = type(JSONCallback.class, this.clazz);
-				}
 				//返回结果
-				final JSONCallback<T> result = gson.fromJson(json, this.t);
+				final JSONCallback<T> result = gson.fromJson(json, type(JSONCallback.class, this.clazz));
 				///TODO:登录用户限制处理(扩展)
 				return result;
 			}
 			return new JSONCallback<T>(false, "服务器未响应!");
 		}
 		
-		//json转换
-		private T convert(Reader reader) {
+		/**
+		 * JSON转换为对象。
+		 * @param reader
+		 * @return
+		 */
+		private T convertObj(Reader reader) {
 			if(reader != null){
 				//初始化JSON转换
 				final Gson gson = new Gson();
-				//类型处理
-				if(this.clazz != null){
-					this.t = type(JSONCallback.class, this.clazz);
-				}
 				//返回结果
-				return gson.fromJson(reader, this.t);
+				return gson.fromJson(reader, this.clazz);
 			}
 			return  null;
 		}

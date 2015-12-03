@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
+import com.examw.test.utils.PaperUtils;
 
 /**
  * 试卷记录数据模型。
@@ -22,9 +22,7 @@ public class PaperRecordModel implements Serializable{
 	/**
 	 * 构造函数。
 	 */
-	public PaperRecordModel(){
-		
-	}
+	public PaperRecordModel(){ }
 	/**
 	 * 构造函数。
 	 * @param paperId
@@ -162,7 +160,6 @@ public class PaperRecordModel implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
-		return gson.toJson(this);
+		return PaperUtils.<PaperRecordModel>toJSON(this);
 	}
 }

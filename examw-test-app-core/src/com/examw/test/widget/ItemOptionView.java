@@ -2,17 +2,18 @@ package com.examw.test.widget;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.examw.test.R;
+import com.examw.test.model.PaperItemModel.ItemType;
+import com.examw.test.support.ItemModelSupport.PaperItemOptModel;
+import com.examw.test.utils.TextImgUtil;
+
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.examw.test.R;
-import com.examw.test.model.PaperItemModel.ItemType;
-import com.examw.test.support.ItemModelSupport.PaperItemOptModel;
 
 /**
  * 试题选项。
@@ -50,7 +51,12 @@ public class ItemOptionView extends LinearLayout {
 			final boolean selected =  StringUtils.isNotBlank(model.getMyAnswers()) ? model.getMyAnswers().indexOf(model.getId()) > -1 : false;
 			//加载图标
 			int icon_res_id = -1;
-			if(displayAnswer){//显示答案
+			//取消设置的划线
+			this.optView.getPaint().setFlags(0);
+			//恢复字体颜色
+			 this.optView.setTextColor(this.getResources().getColor(R.color.black));
+			//是否显示答案
+			if(displayAnswer){
 				//当前选项是否是正确答案
 				final boolean isRight = StringUtils.isNotBlank(model.getRightAnswers()) ? model.getRightAnswers().indexOf(model.getId()) > -1 : false;
 				//是否选中
@@ -59,15 +65,16 @@ public class ItemOptionView extends LinearLayout {
 						icon_res_id = R.drawable.option_right;
 					}else {//错误
 						icon_res_id = R.drawable.option_error;
+						//设置字体颜色
+						this.optView.setTextColor(this.getResources().getColor(R.color.default_color));
+						//设置中划线
+						this.optView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 					}
-				}else{//未选中
-					if(isRight){//当前选项为正确答案
-						icon_res_id = R.drawable.option_right;
-					}else {//普通选项
-						icon_res_id = isMulty ? R.drawable.option_multy_normal : R.drawable.option_single_normal;
-					}
+				}else{
+					icon_res_id = isMulty ? R.drawable.option_multy_normal : R.drawable.option_single_normal;
 				}
 			}else {//不显示答案
+				//是否选中
 				if(selected){
 					icon_res_id = isMulty ? R.drawable.option_multy_selected : R.drawable.option_single_selected;
 				}else{
@@ -77,7 +84,7 @@ public class ItemOptionView extends LinearLayout {
 			//设置图标
 			this.createOptionViewIcon(icon_res_id);
 			//设置内容
-			this.optView.setText(Html.fromHtml(model.getContent()));
+			TextImgUtil.textImageView(this.optView, model.getContent());
 		}
 	}
 	//设置选项图标
