@@ -18,6 +18,9 @@ import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
@@ -50,6 +53,7 @@ public final class TextImgUtil {
 			textView.setText("");
 			return;
 		}
+		//html处理
 		textView.setText(Html.fromHtml(content, new ImageGetter() {
 			/*
 			 * 加载图片。
@@ -59,14 +63,26 @@ public final class TextImgUtil {
 			public Drawable getDrawable(String source) {
 				Log.d(TAG, "加载图文图片=>" + source);
 				if(StringUtils.isNotBlank(source)){
+					String path = source;
+					if(path.indexOf('|') > 0){
+						path = path.split("\\|")[0];
+					}
 					//加载本地图片
-					final Drawable d = loadLocalImage(source.split("|")[0]);
-					if(d != null){
-						final int height = (int)(textView.getTextSize() * 1.5);
-						int width = (int)((float)d.getIntrinsicWidth() / (float)d.getIntrinsicHeight()) * height;
-						if(width <= 0){
-							width = d.getIntrinsicWidth();
-						}
+					final Bitmap img = loadLocalImage(path);
+					if(img != null){
+						 int maxWidth =  textView.getWidth();
+						 final AppContext appContext = (AppContext)AppContext.getContext();
+						 if(appContext != null){
+							 final Point size = appContext.getScreenSize();
+							 if(size != null) maxWidth = size.x;
+						 }
+						 int width = img.getWidth();
+						 int height = img.getHeight();
+						 if(maxWidth > 0 && width > maxWidth){
+							 width = maxWidth;
+							 height = (int)((float)img.getWidth()/(float)img.getHeight()) * width;
+						 }
+						final Drawable d = new BitmapDrawable(null,img);
 						d.setBounds(0, 0, width, height);
 						return d;
 					}
@@ -78,12 +94,13 @@ public final class TextImgUtil {
 	}
 	
 	//加载本地图片
-	private static Drawable loadLocalImage(String path){
+	private static Bitmap loadLocalImage(String path){
 		try{
 			 if(StringUtils.isBlank(path)) return null;
 			 final File imgFile = new File(path);
 			 if(imgFile.exists()){//图片文件存在
-				 return new BitmapDrawable(null, new FileInputStream(imgFile));
+				 return BitmapFactory.decodeStream(new FileInputStream(imgFile));
+				 //return new BitmapDrawable(null, new FileInputStream(imgFile));
 			 }
 		}catch(Exception e){
 			Log.e(TAG, "加载本地图片["+path+"]异常:" + e.getMessage(), e);
@@ -107,7 +124,7 @@ public final class TextImgUtil {
 	    	final String url = m.group(1);
 	    	if(StringUtils.isBlank(url)) continue;
 	    	if(url.indexOf('|') > 0){//已替换
-	    		final String[] paths = url.split("|");
+	    		final String[] paths = url.split("\\|");
 	    		final File f = new File(paths[0]);
 	    		if(!f.exists()){//已下载的图片不存在
 	    			//重新下载图片

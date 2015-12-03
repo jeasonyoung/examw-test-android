@@ -9,6 +9,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Point;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,6 +17,8 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.examw.test.R;
 import com.examw.test.dao.IPaperItemDataDelegate;
@@ -35,6 +38,8 @@ public class AppContext extends Application {
 	private static AppSettings currentSettings;
 	//线程池
 	private static ExecutorService ThreadPools = Executors.newCachedThreadPool();
+	//窗口管理
+	private WindowManager windowManager;
 	//连接管理
 	private ConnectivityManager connectivityManager;
 	//音频管理
@@ -145,6 +150,29 @@ public class AppContext extends Application {
 				}
 			});
 		}
+	}
+	//获取窗口管理器。
+	private WindowManager getWindowManager(){
+		if(this.windowManager == null){
+			this.windowManager = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
+			Log.d(TAG, "从系统服务中加载窗口管理器...");
+		}
+		return this.windowManager;
+	}
+	/**
+	 * 获取窗口屏幕尺寸。
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public Point getScreenSize(){
+		final WindowManager wm = this.getWindowManager();
+		if(wm != null){
+			final Display display = windowManager.getDefaultDisplay();
+			if(display != null){
+				return new Point(display.getWidth(), display.getHeight());
+			}
+		}
+		return null;
 	}
 	//获取连接管理
 	private ConnectivityManager getConnectivityManager(){

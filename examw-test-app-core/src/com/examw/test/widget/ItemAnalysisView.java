@@ -58,6 +58,8 @@ public class ItemAnalysisView extends LinearLayout{
 		//加载答案解析
 		if(this.analysisView == null){
 			this.analysisView = (TextView)this.findViewById(R.id.paper_item_analysis_content);
+			//装饰
+			new ZoomTextView(this.analysisView);
 		}
 		 //设置是否显示
 		 this.setVisibility((analysisModel == null) ? View.GONE :  View.VISIBLE);

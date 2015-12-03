@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.examw.test.utils.PaperUtils;
-import com.examw.test.utils.TextImgUtil;
 import com.google.gson.annotations.Expose;
 /**
  * 试题数据模型。
@@ -77,7 +76,7 @@ public class PaperItemModel implements Serializable {
 	 *	  试题内容。
 	 */
 	public void setContent(String content) {
-		this.content = TextImgUtil.findImgReplaceLocal(content);
+		this.content = content; //TextImgUtil.findImgReplaceLocal(content);
 	}
 	/**
 	 * 获取试题答案。
@@ -107,7 +106,7 @@ public class PaperItemModel implements Serializable {
 	 *	  试题解析。
 	 */
 	public void setAnalysis(String analysis) {
-		this.analysis = TextImgUtil.findImgReplaceLocal(analysis);
+		this.analysis = analysis;//TextImgUtil.findImgReplaceLocal(analysis);
 	}
 	/**
 	 * 获取难度值。

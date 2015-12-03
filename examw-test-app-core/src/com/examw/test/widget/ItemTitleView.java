@@ -37,6 +37,8 @@ public class ItemTitleView extends LinearLayout {
 		//加载控件。
 		if(this.titleView == null){
 			this.titleView = (TextView)this.findViewById(R.id.paper_item_title);
+			//装饰
+			new ZoomTextView(this.titleView);
 		}
 		//加载数据。
 		if(model != null){

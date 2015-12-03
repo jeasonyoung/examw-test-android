@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.examw.test.model.PaperItemModel;
 import com.examw.test.model.PaperItemModel.ItemType;
+import com.examw.test.utils.TextImgUtil;
 
 import android.util.Log;
 
@@ -360,7 +361,7 @@ public final class ItemModelSupport {
 		 * 内容。
 		 */
 		protected void setContent(String content){
-			this.content = content;
+			this.content = TextImgUtil.findImgReplaceLocal(content);
 		}
 		/**
 		 * 获取题型。
@@ -391,14 +392,6 @@ public final class ItemModelSupport {
 		 */
 		public void setOrder(int order) {
 			this.order = order;
-		}
-		/*
-		 * 重载。
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			return this.content;
 		}
 	}
 	/**

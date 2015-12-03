@@ -42,6 +42,8 @@ public class ItemOptionView extends LinearLayout {
 		//加载控件
 		if(this.optView == null){
 			this.optView = (TextView)this.findViewById(R.id.paper_item_option);
+			//装饰
+			new ZoomTextView(this.optView);
 		}
 		//加载数据
 		if(model != null){
