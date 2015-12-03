@@ -1,23 +1,21 @@
 package com.examw.test.dao;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
+import com.examw.codec.digest.DigestUtils;
 import com.examw.test.app.AppConstant;
 import com.examw.test.db.DbHelpers;
 import com.examw.test.model.PaperItemModel;
@@ -25,6 +23,12 @@ import com.examw.test.model.PaperModel;
 import com.examw.test.model.PaperRecordModel;
 import com.examw.test.model.sync.SubjectSync;
 import com.examw.test.utils.PaperUtils;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * 试卷数据Dao
@@ -34,32 +38,28 @@ import com.examw.test.utils.PaperUtils;
  */
 public class PaperDao {
 	private static final String TAG = "PaperDao";
-	private Context context;
+	private final Context context;
 	private DbHelpers dbHelpers;
-	private static final Map<String, PaperModel> PapersCache = new HashMap<String, PaperModel>();
+	//缓存线程池。
+	private static final ExecutorService cache_pools = Executors.newCachedThreadPool();
+	//private static final Map<String, PaperModel> PapersCache = new HashMap<String, PaperModel>();
 	/**
 	 * 构造函数。
 	 * @param context
 	 */
-	public PaperDao(Context context){
+	public PaperDao(final Context context){
 		Log.d(TAG, "初始化...");
-		if(context == null){
-			Log.d(TAG, "上下文为空!");
-			throw  new IllegalArgumentException("context");
-		}
 		this.context = context;
 	}
 	//获取数据操作工具对象。
-	private DbHelpers getDbHelpers(){
+	private final synchronized DbHelpers getDbHelpers(){
 		//惰性初始化数据操作工具
-		if(this.dbHelpers == null){
-			Log.d(TAG, "初始化");
+		if(this.dbHelpers == null)
 			this.dbHelpers = new DbHelpers(this.context);
-		}
 		return this.dbHelpers;
 	}
 	//获取试题ID。
-	private String getItemId(PaperItemModel model){
+	private final String getItemId(PaperItemModel model){
 		if(model != null){
 			return model.getId() + "$" + model.getIndex();
 		}
@@ -69,18 +69,18 @@ public class PaperDao {
 	 * 统计科目试卷。
 	 * @return
 	 */
-	public List<SubjectTotalModel> totalSubjects(){
+	public final List<SubjectTotalModel> totalSubjects(){
 		Log.d(TAG, "统计科目试卷...");
-		List<SubjectTotalModel> list = new ArrayList<PaperDao.SubjectTotalModel>();
+		final List<SubjectTotalModel> list = new ArrayList<PaperDao.SubjectTotalModel>();
 		SQLiteDatabase db = null;
 		try {
 			final String sql = "SELECT a.code,a.name,COUNT(b.id) AS total FROM tbl_subjects a LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code WHERE a.status = 1 GROUP BY a.code,a.name";
 			db =  this.getDbHelpers().getWritableDatabase();
 			Log.d(TAG, "exec-sql:" + sql);
-			Cursor cursor =  db.rawQuery(sql, null);
+			final Cursor cursor =  db.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
 				//初始化数据模型
-				SubjectTotalModel data = new SubjectTotalModel();
+				final SubjectTotalModel data = new SubjectTotalModel();
 				data.setCode(cursor.getString(0));
 				data.setName(cursor.getString(1));
 				data.setTotal(cursor.getInt(2));
@@ -90,9 +90,7 @@ public class PaperDao {
 		} catch (Exception e) {
 			 Log.e(TAG, "统计科目试卷发生异常:" + e.getMessage(), e);
 		}finally{
-			if(db != null){
-				db.close();
-			}
+			if(db != null) db.close();
 		}
 		return list;
 	}
@@ -103,16 +101,16 @@ public class PaperDao {
 	 * @return
 	 * 试卷类型集合。
 	 */
-	public List<PaperModel.PaperType> findPaperTypes(String subjectCode){
+	public final List<PaperModel.PaperType> findPaperTypes(final String subjectCode){
 		Log.d(TAG, "加载科目["+ subjectCode +"]下试卷类型集合...");
-		List<PaperModel.PaperType> list = new ArrayList<PaperModel.PaperType>();
+		final List<PaperModel.PaperType> list = new ArrayList<PaperModel.PaperType>();
 		SQLiteDatabase db = null;
 		try {
 			final String sql = "select type from tbl_papers where subjectCode = ? group by type order by type desc";
 			db = this.getDbHelpers().getReadableDatabase();
-			Cursor cursor = db.rawQuery(sql, new String[]{ subjectCode });
+			final Cursor cursor = db.rawQuery(sql, new String[]{ subjectCode });
 			while(cursor.moveToNext()){
-				PaperModel.PaperType type = PaperModel.PaperType.values()[cursor.getInt(0) - 1];
+				final PaperModel.PaperType type = PaperModel.PaperType.values()[cursor.getInt(0) - 1];
 				if(type != null){
 					list.add(type);
 				}
@@ -136,14 +134,14 @@ public class PaperDao {
 	 * @return
 	 * 试卷信息集合。
 	 */
-	public List<PaperInfoModel> findPaperInfos(String subjectCode, PaperModel.PaperType type, int pageIndex){
+	public final List<PaperInfoModel> findPaperInfos(final String subjectCode, final PaperModel.PaperType type, int pageIndex){
 		Log.d(TAG, "按科目代码["+ subjectCode +"]试卷类型["+ type+"]查询页码[" + pageIndex +"]查询试卷信息数据...");
-		List<PaperInfoModel> list = new ArrayList<PaperDao.PaperInfoModel>();
+		final List<PaperInfoModel> list = new ArrayList<PaperDao.PaperInfoModel>();
 		SQLiteDatabase db = null;
 		try {
 			pageIndex = Math.max(pageIndex, 0);
 			//1.拼装查询字符串
-			StringBuilder sqlBuilder = new StringBuilder()
+			final StringBuilder sqlBuilder = new StringBuilder()
 			.append(" SELECT a.id, a.title, a.total, a.createTime, b.name AS subjectName FROM tbl_papers a ")
 			.append(" LEFT OUTER JOIN tbl_subjects b ON b.code = a.subjectCode ")
 			.append(String.format(" WHERE a.type = ? and a.subjectCode = ? order by a.createTime desc limit %1$d,%2$d;",
@@ -151,10 +149,10 @@ public class PaperDao {
 			//2.创建数据查询对象
 			db = this.getDbHelpers().getReadableDatabase();
 			//3.查询数据
-			Log.d(TAG, "exec - " + sqlBuilder);
-			Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{  String.valueOf(type.getValue()), subjectCode });
+			//Log.d(TAG, "exec - " + sqlBuilder);
+			final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{  String.valueOf(type.getValue()), subjectCode });
 			while(cursor.moveToNext()){
-				PaperInfoModel data = new PaperInfoModel();
+				final PaperInfoModel data = new PaperInfoModel();
 				//1.试卷ID
 				data.setId(cursor.getString(0));
 				//2.试卷标题
@@ -176,48 +174,69 @@ public class PaperDao {
 		}
 		return list;
 	}
+	//试卷缓存文件路径
+	private synchronized File getPaperCachePath(final String paperId){
+		return new File(this.context.getFilesDir(), "p_"+ DigestUtils.md5Hex(paperId) +".cache");
+	}
 	/**
 	 * 加载试卷数据。
 	 * @param paperId
 	 * @return
 	 */
-	public PaperModel loadPaper(String paperId){
+	public final PaperModel loadPaper(final String paperId){
 		Log.d(TAG, "加载试卷["+paperId+"]数据...");
-		if(StringUtils.isNotBlank(paperId)){
-			//从缓存中加载数据
-			PaperModel model = PapersCache.get(paperId);
-			//缓存中数据不存在
-			if(model == null){ 
-				SQLiteDatabase db = null;
-				try {
-					final String sql = "SELECT content FROM tbl_papers WHERE id = ? limit 0,1";
-					db = this.getDbHelpers().getReadableDatabase();
-					String hex = null;
-					final Cursor cursor = db.rawQuery(sql, new String[]{ paperId });
-					while (cursor.moveToNext()) {
-						hex = cursor.getString(0);
-						break;
-					}
-					cursor.close();
-					//1.检查密文试卷数据
-					if(StringUtils.isNotBlank(hex)){
-						//2.解密试卷数据
-						//3.JSON反序列化
-						model = PaperModel.fromJSON(PaperUtils.decryptContent(hex, paperId));
-						//4.放入缓存
-						if(model != null){
-							PapersCache.put(paperId, model);
-						}
-					}
-				} catch (Exception e) {
-					Log.e(TAG, "加载试卷["+paperId+"]数据异常:" + e.getMessage(), e);
-				} finally{
-					if(db != null) db.close();
-				}
+		if(StringUtils.isBlank(paperId)) return null;
+		PaperModel model = null;
+		//缓存文件路径
+		final File cacheFile = this.getPaperCachePath(paperId);
+		//缓存文件是否存在
+		if(cacheFile.exists()){
+			try{
+				//加载缓存文件
+				model = PaperUtils.<PaperModel>fromJSON(PaperModel.class, new FileReader(cacheFile));
+			}catch(Exception e){
+				Log.e(TAG, "加载试卷["+paperId+"]缓存文件["+cacheFile.getAbsolutePath()+"]反序列化异常:" + e.getMessage(), e);
 			}
-			return model;
 		}
-		return null;
+		//
+		if(model != null) return model;
+		//
+		SQLiteDatabase db = null;
+		try {
+			final String sql = "SELECT content FROM tbl_papers WHERE id = ? limit 0,1";
+			db = this.getDbHelpers().getReadableDatabase();
+			final Cursor cursor = db.rawQuery(sql, new String[]{ paperId });
+			while (cursor.moveToNext()) {
+				model = PaperModel.fromJSON(PaperUtils.decryptContent(cursor.getString(0), paperId));
+				break;
+			}
+			cursor.close();
+		} catch (Exception e) {
+			Log.e(TAG, "加载试卷["+paperId+"]数据异常:" + e.getMessage(), e);
+		} finally{
+			if(db != null) db.close();
+		}
+		//试卷缓存处理
+		if(model != null){
+			final PaperModel pModel = model;
+			cache_pools.execute(new Runnable() {
+				/*
+				 * 异步线程缓存文件。
+				 * @see java.lang.Runnable#run()
+				 */
+				@Override
+				public void run() {
+					try{
+						final FileWriter writer =  new FileWriter(cacheFile, false);
+						PaperUtils.<PaperModel>toJSON(pModel, writer);
+						writer.close();
+					}catch(Exception e){
+						Log.e(TAG, "缓存试卷["+paperId+"]文件["+cacheFile.getAbsolutePath()+"]异常:" + e.getMessage(), e);
+					}
+				}
+			});
+		}
+		return model;
 	}
 	/**
 	 * 加载最新的试卷记录。
@@ -226,7 +245,7 @@ public class PaperDao {
 	 * @return
 	 * 试卷记录。
 	 */
-	public PaperRecordModel loadNewsRecord(String paperId){
+	public final PaperRecordModel loadNewsRecord(final String paperId){
 		Log.d(TAG, "加载试卷["+paperId+"]最新的记录...");
 		PaperRecordModel model = null;
 		if(StringUtils.isBlank(paperId)){
@@ -260,7 +279,6 @@ public class PaperDao {
 				model.setPaperName(cursor.getString(5));
 				//7.所属试卷ID
 				model.setPaperId(paperId);
-				
 				break;
 			}
 			cursor.close();
@@ -278,7 +296,7 @@ public class PaperDao {
 	 * @return
 	 * 试卷记录。
 	 */
-	public PaperRecordModel loadPaperRecord(String paperRecordId){
+	public final PaperRecordModel loadPaperRecord(final String paperRecordId){
 		Log.d(TAG, "加载试卷记录..." + paperRecordId);
 		PaperRecordModel model = null;
 		if(StringUtils.isBlank(paperRecordId)){
@@ -288,14 +306,14 @@ public class PaperDao {
 		SQLiteDatabase db = null;
 		try {
 			//创建SQL
-			StringBuilder sqlBuilder = new StringBuilder()
+			final StringBuilder sqlBuilder = new StringBuilder()
 			.append(" SELECT a.id,a.status,a.score,a.rights,a.useTimes,a.paperId,b.title ")
 			.append(" FROM tbl_paperRecords a ")
 			.append(" LEFT OUTER JOIN tbl_papers b  on b.id = a.paperId ")
 			.append(" WHERE a.id = ? ORDER BY a.lastTime DESC,a.createTime DESC limit 0,1 ");
 			//初始化
 			db = this.getDbHelpers().getReadableDatabase();
-			Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ paperRecordId});
+			final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ paperRecordId});
 			while(cursor.moveToNext()){
 				//0.初始化
 				model = new PaperRecordModel();
@@ -332,14 +350,14 @@ public class PaperDao {
 	 * @return
 	 * 试卷记录集合。
 	 */
-	public List<PaperRecordModel> loadPaperRecords(String subjectCode, int pageIndex){
+	public final List<PaperRecordModel> loadPaperRecords(final String subjectCode, int pageIndex){
 		Log.d(TAG, "查询科目["+ subjectCode+"]下页码["+pageIndex+"]下试卷记录...");
-		List<PaperRecordModel> list = new ArrayList<PaperRecordModel>();
+		final List<PaperRecordModel> list = new ArrayList<PaperRecordModel>();
 		SQLiteDatabase db = null;
 		try {
 			pageIndex = Math.max(pageIndex, 0);
 			//初始化SQL
-			StringBuilder sqlBuilder = new StringBuilder()
+			final StringBuilder sqlBuilder = new StringBuilder()
 			.append(" SELECT a.id,a.paperId,b.title,a.status,a.score,a.rights,a.useTimes,a.lastTime ")
 			.append(" FROM tbl_paperRecords a ")
 			.append(" LEFT OUTER JOIN tbl_papers b ON b.id = a.paperId ")
@@ -348,10 +366,10 @@ public class PaperDao {
 					pageIndex * AppConstant.PAGEOFROWS, AppConstant.PAGEOFROWS));
 			//初始化数据查询
 			db = this.getDbHelpers().getReadableDatabase();
-			Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ subjectCode });
+			final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ subjectCode });
 			while(cursor.moveToNext()){
 				//0.初始化
-				PaperRecordModel model = new PaperRecordModel();
+				final PaperRecordModel model = new PaperRecordModel();
 				//1.试卷记录ID
 				model.setId(cursor.getString(0));
 				//2.所属试卷ID
@@ -383,7 +401,7 @@ public class PaperDao {
 	 * 更新试卷记录。
 	 * @param model
 	 */
-	public void updatePaperRecord(PaperRecordModel model){
+	public void updatePaperRecord(final PaperRecordModel model){
 		Log.d(TAG, "更新试卷记录...");
 		if(model == null || StringUtils.isBlank(model.getPaperId())){
 			Log.d(TAG, "试卷记录或试卷记录ID为空!");
@@ -397,7 +415,7 @@ public class PaperDao {
 			boolean isAdded = StringUtils.isBlank(model.getId());
 			if(!isAdded){
 				//查询试卷记录是否存在
-				Cursor cursor = db.rawQuery("SELECT count(*) FROM tbl_paperRecords WHERE id = ?", new String[]{model.getId()});
+				final Cursor cursor = db.rawQuery("SELECT count(*) FROM tbl_paperRecords WHERE id = ?", new String[]{model.getId()});
 				while(cursor.moveToNext()){
 					isAdded = (cursor.getInt(0) == 0);
 					break;
@@ -411,7 +429,7 @@ public class PaperDao {
 				if(StringUtils.isBlank(model.getId())){
 					model.setId(UUID.randomUUID().toString());
 				}
-				ContentValues values = new ContentValues();
+				final ContentValues values = new ContentValues();
 				//1.试卷记录ID
 				values.put("id", model.getId());
 				//2.所属试卷ID
@@ -429,7 +447,7 @@ public class PaperDao {
 				Log.d(TAG, "新增试卷记录:" + (result > 0));
 			}else {
 				//更新处理
-				ContentValues values = new ContentValues();
+				final ContentValues values = new ContentValues();
 				//1.状态
 				values.put("status", model.isStatus());
 				//2.分数
@@ -439,7 +457,7 @@ public class PaperDao {
 				//4.用时(秒)
 				values.put("useTimes", model.getUseTimes());
 				//5.更新时间
-				SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+				final SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 				values.put("lastTime", sdFormat.format(new Date()));
 				//
 				long result = db.update(tableName, values, "id=?", new String[]{ model.getId() });
@@ -464,7 +482,7 @@ public class PaperDao {
 			try {
 				final String sql = "SELECT count(*) FROM tbl_favorites WHERE itemId = ?";
 				db = this.getDbHelpers().getReadableDatabase();
-				Cursor cursor = db.rawQuery(sql, new String[]{ itemId });
+				final Cursor cursor = db.rawQuery(sql, new String[]{ itemId });
 				while(cursor.moveToNext()){
 					result = cursor.getInt(0) > 0;
 					break;
@@ -487,7 +505,7 @@ public class PaperDao {
 	 * @return 
 	 * 状态枚举。
 	 */
-	public ItemStatus exitRecord(String paperRecordId, PaperItemModel itemModel){
+	public ItemStatus exitRecord(final String paperRecordId, final PaperItemModel itemModel){
 		ItemStatus status = ItemStatus.None;
 		if(StringUtils.isNotBlank(paperRecordId) && itemModel != null){
 			final String itemId = this.getItemId(itemModel);
@@ -495,7 +513,7 @@ public class PaperDao {
 			try {
 				final String sql = "SELECT status FROM tbl_itemRecords WHERE paperRecordId = ? and itemId = ? limit 0,1";
 				db = this.getDbHelpers().getReadableDatabase();
-				Cursor cursor = db.rawQuery(sql, new String[]{ paperRecordId,  itemId});
+				final Cursor cursor = db.rawQuery(sql, new String[]{ paperRecordId,  itemId});
 				while(cursor.moveToNext()){
 					status = ItemStatus.values()[cursor.getInt(0)];
 					break;
@@ -516,14 +534,14 @@ public class PaperDao {
 	 * @return
 	 * 试题记录ID(试题ID＋"$" +索引号)
 	 */
-	public String loadNewItemAndIndex(String paperRecordId){
+	public String loadNewItemAndIndex(final String paperRecordId){
 		String itemId = null;
 		if(StringUtils.isNotBlank(paperRecordId)){
 			SQLiteDatabase db = null;
 			try {
 				final String sql = " SELECT itemId FROM tbl_itemRecords WHERE paperRecordId = ? ORDER BY lastTime desc,createTime desc limit 0,1 ";
 				db = this.getDbHelpers().getReadableDatabase();
-				Cursor cursor = db.rawQuery(sql, new String[]{ paperRecordId });
+				final Cursor cursor = db.rawQuery(sql, new String[]{ paperRecordId });
 				while(cursor.moveToNext()){
 					itemId = cursor.getString(0);
 					break;
@@ -546,15 +564,15 @@ public class PaperDao {
 	 * @return
 	 * 试题答案。
 	 */
-	public String loadRecodAnswers(String paperRecordId, PaperItemModel itemModel){
+	public final String loadRecodAnswers(final String paperRecordId, final PaperItemModel itemModel){
 		String answers = null;
 		if(StringUtils.isNotBlank(paperRecordId) && itemModel != null){
 			final String itemId = this.getItemId(itemModel);
 			SQLiteDatabase db = null;
 			try {
 				final String sql = "SELECT answer FROM tbl_itemRecords WHERE paperRecordId = ? and itemId = ? limit 0,1";
-				db = this.dbHelpers.getReadableDatabase();
-				Cursor cursor = db.rawQuery(sql, new String[]{ paperRecordId, itemId });
+				db = this.getDbHelpers().getReadableDatabase();
+				final Cursor cursor = db.rawQuery(sql, new String[]{ paperRecordId, itemId });
 				while(cursor.moveToNext()){
 					answers = cursor.getString(0);
 					break;
@@ -573,7 +591,7 @@ public class PaperDao {
 	 * @param paperRecordId
 	 * 试卷记录ID。
 	 */
-	public void deletePaperRecord(String paperRecordId){
+	public void deletePaperRecord(final String paperRecordId){
 		Log.d(TAG, "删除试卷记录:" + paperRecordId);
 		if(StringUtils.isNotBlank(paperRecordId)){
 			SQLiteDatabase db = null;
@@ -601,7 +619,8 @@ public class PaperDao {
 	 * @param useTimes
 	 * 做题用时。
 	 */
-	public void addItemRecord(String paperRecordId, PaperItemModel itemModel, String answers, int useTimes){
+	public void addItemRecord(final String paperRecordId, final PaperItemModel itemModel, 
+			final String answers, final int useTimes){
 		if(StringUtils.isNotBlank(paperRecordId) && itemModel != null && StringUtils.isNotBlank(answers)){
 			final String itemId = this.getItemId(itemModel);
 			SQLiteDatabase db = null;
@@ -634,7 +653,7 @@ public class PaperDao {
 				//查询是否存在记录
 				String itemRecordId = null;
 				final String query_sql = "SELECT id FROM tbl_itemRecords WHERE paperRecordId = ? and itemId = ? limit 0,1";
-				Cursor cursor = db.rawQuery(query_sql, new String[]{ paperRecordId, itemId });
+				final Cursor cursor = db.rawQuery(query_sql, new String[]{ paperRecordId, itemId });
 				while(cursor.moveToNext()){
 					itemRecordId = cursor.getString(0);
 					break;
@@ -693,7 +712,7 @@ public class PaperDao {
 		}
 	}
 	//收藏/取消(收藏返回true,取消返回false)
-	private boolean updateFavorite(PaperItemModel itemModel, UpdateFavoriteListener handler){
+	private boolean updateFavorite(final PaperItemModel itemModel, final UpdateFavoriteListener handler){
 		boolean result = false;
 		if(itemModel != null){
 			//试题ID
@@ -705,7 +724,7 @@ public class PaperDao {
 				//查询是否收藏过
 				final String query_sql = "SELECT id,status FROM tbl_favorites WHERE itemId = ? limit 0,1";
 				db = this.getDbHelpers().getWritableDatabase();
-				Cursor cursor = db.rawQuery(query_sql, new String[]{ itemId });
+				final Cursor cursor = db.rawQuery(query_sql, new String[]{ itemId });
 				while(cursor.moveToNext()){
 					favId = cursor.getString(0);
 					status = (cursor.getInt(1) > 0);
@@ -817,7 +836,7 @@ public class PaperDao {
 	 * @param useTimes
 	 * 用时(秒)
 	 */
-	public void submit(String paperRecordId, int useTimes){
+	public void submit(final String paperRecordId, final int useTimes){
 		Log.d(TAG, "开始交卷处理:" + paperRecordId);
 		if(StringUtils.isNotBlank(paperRecordId)){
 			SQLiteDatabase db = null;
@@ -826,7 +845,7 @@ public class PaperDao {
 				final String total_score_sql = "SELECT SUM(score) AS score,SUM(useTimes) as useTimes,SUM(status) AS rights FROM tbl_itemRecords WHERE paperRecordId = ?";
 				float totalScore = 0, totalRights = 0, totalUseTimes = 0;
 				db = this.getDbHelpers().getWritableDatabase();
-				Cursor cursor = db.rawQuery(total_score_sql, new String[]{paperRecordId});
+				final Cursor cursor = db.rawQuery(total_score_sql, new String[]{paperRecordId});
 				while(cursor.moveToNext()){
 					//统计得分
 					totalScore = cursor.getFloat(0);
@@ -866,7 +885,7 @@ public class PaperDao {
 	 * @param paperRecordId
 	 * @return
 	 */
-	public PaperResultModel loadPaperRecordResult(String paperRecordId){
+	public PaperResultModel loadPaperRecordResult(final String paperRecordId){
 		Log.d(TAG, "加载试卷记录[" + paperRecordId + "]结果...");
 		PaperResultModel resultModel = null;
 		if(StringUtils.isNotBlank(paperRecordId)){
@@ -894,35 +913,35 @@ public class PaperDao {
 					//1.7.最后时间
 					resultModel.setLastTime(cursor.getString(5));
 					break;
+				}
+				cursor.close();
+				//加载统计数据
+				if(resultModel != null){
+					//2.统计错题记录
+					final String error_sql = "SELECT count(*) FROM tbl_itemRecords WHERE paperRecordId = ? and status = 0";
+					cursor = db.rawQuery(error_sql, new String[]{ paperRecordId });
+					while(cursor.moveToNext()){
+						resultModel.setErrors(cursor.getInt(0));
+						break;
 					}
 					cursor.close();
-					//加载统计数据
-					if(resultModel != null){
-						//2.统计错题记录
-						final String error_sql = "SELECT count(*) FROM tbl_itemRecords WHERE paperRecordId = ? and status = 0";
-						cursor = db.rawQuery(error_sql, new String[]{ paperRecordId });
-						while(cursor.moveToNext()){
-							resultModel.setErrors(cursor.getInt(0));
-							break;
-						}
-						cursor.close();
-						//3.查询总题数
-						final String total_sql = "SELECT total FROM tbl_papers WHERE id = ? limit 0,1 ";
-						cursor = db.rawQuery(total_sql, new String[]{ resultModel.getPaperId() });
-						while(cursor.moveToNext()){
-							resultModel.setTotal(cursor.getInt(0));
-							break;
-						}
-						cursor.close();
+					//3.查询总题数
+					final String total_sql = "SELECT total FROM tbl_papers WHERE id = ? limit 0,1 ";
+					cursor = db.rawQuery(total_sql, new String[]{ resultModel.getPaperId() });
+					while(cursor.moveToNext()){
+						resultModel.setTotal(cursor.getInt(0));
+						break;
 					}
-				} catch (Exception e) {
-					Log.e(TAG, "加载试卷记录[" + paperRecordId + "]结果异常:" + e.getMessage(), e);
-				}finally{
-					if(db != null)db.close();
+					cursor.close();
 				}
+			} catch (Exception e) {
+				Log.e(TAG, "加载试卷记录[" + paperRecordId + "]结果异常:" + e.getMessage(), e);
+			}finally{
+				if(db != null)db.close();
 			}
-			return resultModel;
 		}
+		return resultModel;
+	}
 		/**
 		 * 按科目统计错题记录集合。
 		 * @return
@@ -1097,10 +1116,10 @@ public class PaperDao {
 						+ "LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code "
 						+ "LEFT OUTER JOIN tbl_paperRecords c ON c.paperId = b.id "
 						+ "WHERE a.status = 1 GROUP BY a.code,a.name";
-				Cursor cursor = db.rawQuery(sql, null);
+				final Cursor cursor = db.rawQuery(sql, null);
 				while(cursor.moveToNext()){
 					//0.初始化
-					SubjectTotalModel data = new SubjectTotalModel();
+					final SubjectTotalModel data = new SubjectTotalModel();
 					//1.科目代码
 					data.setCode(cursor.getString(0));
 					//2.科目名称

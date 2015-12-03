@@ -89,7 +89,9 @@ public class ItemAnalysisView extends LinearLayout{
 			 final String myAnswer = StringUtils.join(listMyAnswer.toArray(new String[0])).toUpperCase(Locale.getDefault());
 			 this.rightView.setText(String.format(getContext().getString(R.string.main_paper_answer_right), rightAnswer));
 			 //判断对错
-			 this.resultView.setText(getContext().getString((StringUtils.isNotBlank(rightAnswer) &&  StringUtils.equalsIgnoreCase(rightAnswer, myAnswer)) ? R.string.main_paper_answer_my_right : R.string.main_paper_answer_my_wrong));
+			 final boolean isRight = (StringUtils.isNotBlank(rightAnswer) &&  StringUtils.equalsIgnoreCase(rightAnswer, myAnswer));
+			 this.resultView.setText(getContext().getString(isRight? R.string.main_paper_answer_my_right : R.string.main_paper_answer_my_wrong));
+			 this.resultView.setBackgroundResource(isRight ? R.color.item_right_bgcolor : R.color.item_wrong_bgcolor);
 			 //设置解析
 			 final String content = getContext().getString(R.string.main_paper_answer_analysis) + analysisModel.getContent();
 			 TextImgUtil.textImageView(this.analysisView, content);

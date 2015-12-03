@@ -18,8 +18,6 @@ import com.examw.test.app.AppConstant;
 import com.examw.test.app.AppContext;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -68,21 +66,20 @@ public final class TextImgUtil {
 						path = path.split("\\|")[0];
 					}
 					//加载本地图片
-					final Bitmap img = loadLocalImage(path);
-					if(img != null){
+					final Drawable d = loadLocalImage(path);
+					if(d != null){
 						 int maxWidth =  textView.getWidth();
 						 final AppContext appContext = (AppContext)AppContext.getContext();
 						 if(appContext != null){
 							 final Point size = appContext.getScreenSize();
 							 if(size != null) maxWidth = size.x;
 						 }
-						 int width = img.getWidth();
-						 int height = img.getHeight();
-						 if(maxWidth > 0 && width > maxWidth){
-							 width = maxWidth;
-							 height = (int)((float)img.getWidth()/(float)img.getHeight()) * width;
+						 int width = d.getIntrinsicWidth();
+						 int height = d.getIntrinsicHeight();
+						 if(maxWidth > 0 && width < maxWidth){
+							 width = (int)(maxWidth * 0.75);
+							 height = (int)((float)d.getIntrinsicWidth()/(float)d.getIntrinsicHeight()) * width;
 						 }
-						final Drawable d = new BitmapDrawable(null,img);
 						d.setBounds(0, 0, width, height);
 						return d;
 					}
@@ -94,13 +91,13 @@ public final class TextImgUtil {
 	}
 	
 	//加载本地图片
-	private static Bitmap loadLocalImage(String path){
+	private static Drawable loadLocalImage(String path){
 		try{
 			 if(StringUtils.isBlank(path)) return null;
 			 final File imgFile = new File(path);
 			 if(imgFile.exists()){//图片文件存在
-				 return BitmapFactory.decodeStream(new FileInputStream(imgFile));
-				 //return new BitmapDrawable(null, new FileInputStream(imgFile));
+				 //return BitmapFactory.decodeStream(new FileInputStream(imgFile));
+				 return new BitmapDrawable(null, new FileInputStream(imgFile));
 			 }
 		}catch(Exception e){
 			Log.e(TAG, "加载本地图片["+path+"]异常:" + e.getMessage(), e);

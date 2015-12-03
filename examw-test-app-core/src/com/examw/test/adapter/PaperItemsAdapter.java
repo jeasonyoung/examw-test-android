@@ -85,7 +85,7 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 						//加载我的答案
 						String myAnswers = null;
 						final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
-						if(displayAnswer && dataDelegate != null){
+						if(dataDelegate != null){
 							myAnswers = dataDelegate.loadMyAnswer(itemModel);
 						}
 						//创建试题数据模型
