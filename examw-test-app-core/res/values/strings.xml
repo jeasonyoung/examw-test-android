@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- 应用名称 -->
-    <string name="app_name">中华网校题库</string>
+    <string name="app_name">中华考试题库</string>
     <!-- 等待加载文字 -->
     <string name="wating_img_load">LOADING</string>
     <!-- 查询考试名称placeholder -->
