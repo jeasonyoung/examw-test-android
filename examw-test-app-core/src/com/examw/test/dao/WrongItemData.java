@@ -64,7 +64,7 @@ public class WrongItemData extends PaperItemDataDelegate {
 		}
 		if(this.items != null && this.items.size() > 0){
 			//按题型分类
-			SparseArray<List<PaperItemModel>> itemTypeArrays = new SparseArray<List<PaperItemModel>>();
+			final SparseArray<List<PaperItemModel>> itemTypeArrays = new SparseArray<List<PaperItemModel>>();
 			for(PaperItemModel itemModel : this.items){
 				if(itemModel == null) continue;
 				final int itemType = itemModel.getType();

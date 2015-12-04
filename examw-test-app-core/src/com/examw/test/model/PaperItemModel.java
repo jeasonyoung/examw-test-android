@@ -17,12 +17,11 @@ public class PaperItemModel implements Serializable {
 	@Expose
 	private String id,content,answer,analysis;
 	@Expose
-	private Integer type,level,orderNo,count;
+	private Integer type,level,orderNo,count,index;
 	@Expose
 	private List<PaperItemModel> children;
 	
 	private String structureId,structureTitle,itemRecordId,paperRecordId;
-	private Integer index;
 	private Float structureScore,structureMin;
 	/**
 	 * JSON反序列化对象。

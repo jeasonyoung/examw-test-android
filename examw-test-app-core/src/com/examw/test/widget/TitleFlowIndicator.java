@@ -18,7 +18,7 @@ package com.examw.test.widget;
 import java.util.ArrayList;
 
 import com.examw.test.R;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -37,6 +37,7 @@ import android.widget.TextView;
  * also scrolled.
  * 
  */
+@SuppressLint("DrawAllocation")
 public class TitleFlowIndicator extends TextView implements FlowIndicator {
 
 	private static final float TITLE_PADDING = 10.0f;
@@ -86,6 +87,7 @@ public class TitleFlowIndicator extends TextView implements FlowIndicator {
 	 * @param context
 	 * @param attrs
 	 */
+	@SuppressLint("Recycle")
 	public TitleFlowIndicator(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// Retrieve styles attributs
@@ -143,6 +145,7 @@ public class TitleFlowIndicator extends TextView implements FlowIndicator {
 	 * 
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
+	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -318,7 +321,7 @@ public class TitleFlowIndicator extends TextView implements FlowIndicator {
 	 */
 	private String getTitle(int pos) {
 		// Set the default title
-		String title = "title " + pos;
+		String title = "";//"title " + pos;
 		// If the TitleProvider exist
 		if (titleProvider != null) {
 			title = titleProvider.getTitle(pos);

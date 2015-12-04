@@ -42,7 +42,6 @@ public class PaperDao {
 	private DbHelpers dbHelpers;
 	//缓存线程池。
 	private static final ExecutorService cache_pools = Executors.newCachedThreadPool();
-	//private static final Map<String, PaperModel> PapersCache = new HashMap<String, PaperModel>();
 	/**
 	 * 构造函数。
 	 * @param context
@@ -59,9 +58,11 @@ public class PaperDao {
 		return this.dbHelpers;
 	}
 	//获取试题ID。
-	private final String getItemId(PaperItemModel model){
+	private synchronized final String getItemId(PaperItemModel model){
 		if(model != null){
-			return model.getId() + "$" + model.getIndex();
+			Integer index = model.getIndex();
+			if(index == null) index = 0;
+			return model.getId() + "$" + index;
 		}
 		return null;
 	}
@@ -74,10 +75,15 @@ public class PaperDao {
 		final List<SubjectTotalModel> list = new ArrayList<PaperDao.SubjectTotalModel>();
 		SQLiteDatabase db = null;
 		try {
-			final String sql = "SELECT a.code,a.name,COUNT(b.id) AS total FROM tbl_subjects a LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code WHERE a.status = 1 GROUP BY a.code,a.name";
+			final StringBuilder sqlBuilder = new StringBuilder(" SELECT a.code,a.name,COUNT(b.id) AS total ")
+					.append(" FROM tbl_subjects a ")
+					.append(" LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code ")
+					.append(" WHERE a.status = ?  ")
+					.append(" GROUP BY a.code,a.name ");
+			
 			db =  this.getDbHelpers().getWritableDatabase();
-			Log.d(TAG, "exec-sql:" + sql);
-			final Cursor cursor =  db.rawQuery(sql, null);
+			Log.d(TAG, "exec-sql:" + sqlBuilder);
+			final Cursor cursor =  db.rawQuery(sqlBuilder.toString(), new String[]{ Integer.toString(ItemStatus.Right.value) });
 			while (cursor.moveToNext()) {
 				//初始化数据模型
 				final SubjectTotalModel data = new SubjectTotalModel();
@@ -193,6 +199,7 @@ public class PaperDao {
 		if(cacheFile.exists()){
 			try{
 				//加载缓存文件
+				Log.d(TAG, "加载试卷缓存文件=>" + cacheFile.getAbsolutePath());
 				model = PaperUtils.<PaperModel>fromJSON(PaperModel.class, new FileReader(cacheFile));
 			}catch(Exception e){
 				Log.e(TAG, "加载试卷["+paperId+"]缓存文件["+cacheFile.getAbsolutePath()+"]反序列化异常:" + e.getMessage(), e);
@@ -227,6 +234,7 @@ public class PaperDao {
 				@Override
 				public void run() {
 					try{
+						Log.d(TAG, "试卷缓存文件=>" + cacheFile.getAbsolutePath());
 						final FileWriter writer =  new FileWriter(cacheFile, false);
 						PaperUtils.<PaperModel>toJSON(pModel, writer);
 						writer.close();
@@ -842,10 +850,13 @@ public class PaperDao {
 			SQLiteDatabase db = null;
 			try {
 				//统计得分/用时/正确
-				final String total_score_sql = "SELECT SUM(score) AS score,SUM(useTimes) as useTimes,SUM(status) AS rights FROM tbl_itemRecords WHERE paperRecordId = ?";
+				final StringBuilder sqlBuilder = new StringBuilder("SELECT SUM(score) AS score,SUM(useTimes) as useTimes,")
+						.append(String.format("SUM(case when status = %d then 1 else 0 end) AS rights", ItemStatus.Right.value))
+						.append(" FROM tbl_itemRecords ")
+						.append(" WHERE paperRecordId = ? ");
 				float totalScore = 0, totalRights = 0, totalUseTimes = 0;
 				db = this.getDbHelpers().getWritableDatabase();
-				final Cursor cursor = db.rawQuery(total_score_sql, new String[]{paperRecordId});
+				final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{paperRecordId});
 				while(cursor.moveToNext()){
 					//统计得分
 					totalScore = cursor.getFloat(0);
@@ -918,8 +929,8 @@ public class PaperDao {
 				//加载统计数据
 				if(resultModel != null){
 					//2.统计错题记录
-					final String error_sql = "SELECT count(*) FROM tbl_itemRecords WHERE paperRecordId = ? and status = 0";
-					cursor = db.rawQuery(error_sql, new String[]{ paperRecordId });
+					final String error_sql = "SELECT count(*) FROM tbl_itemRecords WHERE paperRecordId = ? and status = ?";
+					cursor = db.rawQuery(error_sql, new String[]{ paperRecordId, Integer.toString(ItemStatus.Wrong.value) });
 					while(cursor.moveToNext()){
 						resultModel.setErrors(cursor.getInt(0));
 						break;
@@ -951,16 +962,18 @@ public class PaperDao {
 			List<SubjectTotalModel> list = new ArrayList<PaperDao.SubjectTotalModel>();
 			SQLiteDatabase db = null;
 			try {
+				final StringBuilder sqlBuilder = new StringBuilder("SELECT a.code,a.name,COUNT(d.itemId) AS total ")
+						.append(" FROM tbl_subjects a ")
+						.append(" LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code ")
+						.append(" LEFT OUTER JOIN tbl_paperRecords c ON c.paperId = b.id ")
+						.append(" LEFT OUTER JOIN tbl_itemRecords d ON d.paperRecordId = c.id ")
+						.append(" WHERE d.status = ? ")
+						.append(" GROUP BY a.code,a.name ");
+				
+				Log.d(TAG, "exec-sql:" + sqlBuilder);
 				//初始化
 				db = this.getDbHelpers().getReadableDatabase();
-				//SQL
-				final String sql = "SELECT a.code,a.name,COUNT(d.itemId) AS total FROM tbl_subjects a "
-						+ " LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code "
-						+ " LEFT OUTER JOIN tbl_paperRecords c ON c.paperId = b.id "
-						+ " LEFT OUTER JOIN tbl_itemRecords d ON d.paperRecordId = c.id  AND ((d.status IS NULL) OR (d.status = 0)) "
-						+ " GROUP BY a.code,a.name";
-				Log.d(TAG, "exec-sql:" + sql);
-				Cursor cursor = db.rawQuery(sql, null);
+				final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ Integer.toString(ItemStatus.Wrong.value) });
 				while(cursor.moveToNext()){
 					//0.初始化
 					SubjectTotalModel data = new SubjectTotalModel();
@@ -990,16 +1003,16 @@ public class PaperDao {
 			List<SubjectTotalModel> list = new ArrayList<PaperDao.SubjectTotalModel>();
 			SQLiteDatabase db = null;
 			try {
+				final StringBuilder sqlBuilder = new StringBuilder("SELECT a.code,a.name,COUNT(b.itemId) AS total ")
+						.append(" FROM tbl_subjects a ")
+						.append(" LEFT OUTER JOIN tbl_favorites b ")
+						.append("  ON b.subjectCode = a.code ")
+						.append("  GROUP BY a.code,a.name ");
+				//
+				Log.d(TAG, "exec-sql:" + sqlBuilder);
 				//初始化
 				db = this.getDbHelpers().getReadableDatabase();
-				//SQL
-				final String sql = "SELECT a.code,a.name,COUNT(b.itemId) AS total FROM tbl_subjects a "
-						+ " LEFT OUTER JOIN tbl_favorites b "
-						+ " ON b.subjectCode = a.code  AND ((b.status IS NULL) OR (b.status = 1)) "
-						+ " GROUP BY a.code,a.name";
-				//
-				Log.d(TAG, "exec-sql:" + sql);
-				Cursor cursor = db.rawQuery(sql, null);
+				final Cursor cursor = db.rawQuery(sqlBuilder.toString(), null);
 				while(cursor.moveToNext()){
 					//0.初始化
 					SubjectTotalModel data = new SubjectTotalModel();
@@ -1029,22 +1042,24 @@ public class PaperDao {
 		 */
 		public List<PaperItemModel> loadFavoriteItems(String subjectCode){
 			Log.d(TAG, "加载科目["+subjectCode+"]下的收藏试题集合...");
-			List<PaperItemModel> list = new ArrayList<PaperItemModel>();
+			final List<PaperItemModel> list = new ArrayList<PaperItemModel>();
 			if(StringUtils.isNotBlank(subjectCode)){
 				SQLiteDatabase db = null;
 				try {
+					final StringBuilder sqlBuilder = new StringBuilder(" SELECT id,content ")
+							.append(" FROM tbl_favorites ")
+							.append(" WHERE subjectCode = ? ")
+							.append(" ORDER BY itemType,createTime DESC ");
+					
 					db = this.getDbHelpers().getReadableDatabase();
-					final String sql = "SELECT id,content FROM tbl_favorites WHERE status = 1 AND subjectCode = ? ORDER BY itemType,createTime DESC";
-					Cursor cursor = db.rawQuery(sql, new String[]{ subjectCode });
+					final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ subjectCode });
 					while(cursor.moveToNext()){
 						//1.试题收藏ID
 						final String favId = cursor.getString(0);
 						//2.试题内容密文
 						final String hex = cursor.getString(1);
-						//3.解密
-						final String json = PaperUtils.decryptContent(hex, favId);
-						//4.反序列化试题
-						PaperItemModel data = PaperItemModel.fromJSON(json);
+						//3.解密 .反序列化试题
+						final PaperItemModel data = PaperItemModel.fromJSON(PaperUtils.decryptContent(hex, favId));
 						if(data != null){
 							//添加到集合
 							list.add(data);
@@ -1070,12 +1085,14 @@ public class PaperDao {
 			if(StringUtils.isNotBlank(subjectCode)){
 				SQLiteDatabase db = null;
 				try {
+					final StringBuilder sqlBuilder = new StringBuilder(" SELECT a.id,a.paperRecordId,a.content  ")
+							.append(" FROM tbl_itemRecords a ")
+							.append(" LEFT OUTER JOIN tbl_paperRecords b ON b.id = a.paperRecordId ")
+							.append(" LEFT OUTER JOIN tbl_papers c ON c.id = b.paperId ")
+							.append(" WHERE a.status = ? AND c.subjectCode = ? ")
+							.append(" ORDER BY a.itemType ");
 					db = this.getDbHelpers().getReadableDatabase();
-					final String sql = "SELECT a.id,a.paperRecordId,a.content FROM tbl_itemRecords a "
-							+ "LEFT OUTER JOIN tbl_paperRecords b ON b.id = a.paperRecordId "
-							+ "LEFT OUTER JOIN tbl_papers c ON c.id = b.paperId "
-							+ "WHERE a.status = 0 AND c.subjectCode = ? ORDER BY a.itemType";
-					Cursor cursor = db.rawQuery(sql, new String[]{ subjectCode });
+					final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{  Integer.toString(ItemStatus.Wrong.getValue()),subjectCode });
 					while(cursor.moveToNext()){
 						//1.试题记录ID
 						final String itemRecordId = cursor.getString(0);
@@ -1083,10 +1100,8 @@ public class PaperDao {
 						final String paperRecordId = cursor.getString(1);
 						//3.试题内容密文
 						final String hex = cursor.getString(2);
-						//3.解密
-						final String json = PaperUtils.decryptContent(hex, itemRecordId);
-						//4.反序列化试题
-						PaperItemModel data = PaperItemModel.fromJSON(json);
+						//3.解密/反序列化试题
+						final PaperItemModel data = PaperItemModel.fromJSON(PaperUtils.decryptContent(hex, itemRecordId));
 						if(data != null){
 							data.setPaperRecordId(paperRecordId);
 							//添加到集合
@@ -1111,12 +1126,14 @@ public class PaperDao {
 			List<SubjectTotalModel> list = new ArrayList<PaperDao.SubjectTotalModel>();
 			SQLiteDatabase db = null;
 			try {
+				final StringBuilder sqlBuilder = new StringBuilder(" SELECT a.code,a.name,COUNT(c.id) AS total ")
+						.append(" FROM tbl_subjects a  ")
+						.append(" LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code ")
+						.append(" LEFT OUTER JOIN tbl_paperRecords c ON c.paperId = b.id ")
+						.append(" WHERE a.status = ? ")
+						.append(" GROUP BY a.code,a.name ");
 				db = this.getDbHelpers().getReadableDatabase();
-				final String sql = "SELECT a.code,a.name,COUNT(c.id) AS total FROM tbl_subjects a "
-						+ "LEFT OUTER JOIN tbl_papers b ON b.subjectCode = a.code "
-						+ "LEFT OUTER JOIN tbl_paperRecords c ON c.paperId = b.id "
-						+ "WHERE a.status = 1 GROUP BY a.code,a.name";
-				final Cursor cursor = db.rawQuery(sql, null);
+				final Cursor cursor = db.rawQuery(sqlBuilder.toString(), new String[]{ Integer.toString(ItemStatus.Right.value) });
 				while(cursor.moveToNext()){
 					//0.初始化
 					final SubjectTotalModel data = new SubjectTotalModel();

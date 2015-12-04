@@ -36,7 +36,9 @@
                  android:paddingEnd="@dimen/list_left"
                  android:background="@color/white"
                  android:textColor="@color/black"
-                 android:textSize="@dimen/fontsize_l"/>
+                 android:textSize="@dimen/fontsize_l"
+                 android:lineSpacingExtra="@dimen/line_spacing"
+                 android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
              
              <!-- 按钮布局-->
              <LinearLayout 
@@ -140,7 +142,9 @@
                   android:paddingRight="@dimen/list_right"
                   android:paddingEnd="@dimen/list_right"
                   android:textColor="@color/black"
-                  android:textSize="@dimen/fontsize_m" />
+                  android:textSize="@dimen/fontsize_m" 
+                  android:lineSpacingExtra="@dimen/line_spacing"
+                  android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
               
               <!-- 所属地区 -->
               <TextView android:id="@+id/main_paperinfo_area"
@@ -152,7 +156,9 @@
                   android:paddingRight="@dimen/list_right"
                   android:paddingEnd="@dimen/list_right"
                   android:textColor="@color/black"
-                  android:textSize="@dimen/fontsize_m" />
+                  android:textSize="@dimen/fontsize_m"
+                  android:lineSpacingExtra="@dimen/line_spacing"
+                  android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
             
               <!-- 所属类型 -->
               <TextView android:id="@+id/main_paperinfo_type"
@@ -164,7 +170,9 @@
                   android:paddingRight="@dimen/list_right"
                   android:paddingEnd="@dimen/list_right"
                   android:textColor="@color/black"
-                  android:textSize="@dimen/fontsize_m" />
+                  android:textSize="@dimen/fontsize_m"
+                  android:lineSpacingExtra="@dimen/line_spacing"
+                  android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
               
               <!-- 所属年份 -->
               <TextView android:id="@+id/main_paperinfo_year"
@@ -176,7 +184,9 @@
                   android:paddingRight="@dimen/list_right"
                   android:paddingEnd="@dimen/list_right"
                   android:textColor="@color/black"
-                  android:textSize="@dimen/fontsize_m" />
+                  android:textSize="@dimen/fontsize_m"
+                  android:lineSpacingExtra="@dimen/line_spacing"
+                  android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
             
               <!-- 所属总分 -->
               <TextView android:id="@+id/main_paperinfo_totals"
@@ -188,7 +198,9 @@
                   android:paddingRight="@dimen/list_right"
                   android:paddingEnd="@dimen/list_right"
                   android:textColor="@color/black"
-                  android:textSize="@dimen/fontsize_m" />
+                  android:textSize="@dimen/fontsize_m"
+                  android:lineSpacingExtra="@dimen/line_spacing"
+                  android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
               
               <!-- 所属试题数 -->
               <TextView android:id="@+id/main_paperinfo_items"
@@ -200,7 +212,9 @@
                   android:paddingRight="@dimen/list_right"
                   android:paddingEnd="@dimen/list_right"
                   android:textColor="@color/black"
-                  android:textSize="@dimen/fontsize_m" />
+                  android:textSize="@dimen/fontsize_m"
+                  android:lineSpacingExtra="@dimen/line_spacing"
+                  android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
               
               <!-- 所属试时长 -->
               <TextView android:id="@+id/main_paperinfo_times"
@@ -212,7 +226,9 @@
                   android:paddingRight="@dimen/list_right"
                   android:paddingEnd="@dimen/list_right"
                   android:textColor="@color/black"
-                  android:textSize="@dimen/fontsize_m" />
+                  android:textSize="@dimen/fontsize_m"
+                  android:lineSpacingExtra="@dimen/line_spacing"
+                  android:lineSpacingMultiplier="@integer/line_spacing_multiplier"/>
               
         </LinearLayout>
     </ScrollView>
