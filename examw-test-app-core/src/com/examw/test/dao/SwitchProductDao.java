@@ -31,17 +31,13 @@ public class SwitchProductDao implements Serializable {
 	private static final String TAG = "SwitchProductDao";
 	private static final ExecutorService pools = Executors.newCachedThreadPool();
 	private static List<CategoryModel> localCategoriesCache;
-	private Context context;
+	private final Context context;
 	/**
 	 * 构造函数。
 	 * @param context
 	 */
-	public SwitchProductDao(Context context){
+	public SwitchProductDao(final Context context){
 		Log.d(TAG, "初始化...");
-		if(context == null){
-			Log.d(TAG, "上下文为空!");
-			throw  new IllegalArgumentException("context");
-		}
 		this.context = context;
 	}
 	//是否存在本地数据
@@ -92,6 +88,7 @@ public class SwitchProductDao implements Serializable {
 			//准备开始下载
 			final JSONCallback<CategoryModel[]> callback = new DigestClientUtil.CallbackJSON<CategoryModel[]>(CategoryModel[].class)
 																									    .sendGETRequest(AppConstant.APP_API_CATEGORY_URL, null);
+			//Log.d(TAG, "下载loadCategoriesFromNetWorks类别成功callback=>" + callback.getSuccess());
 			if(!callback.getSuccess()){
 				Log.d(TAG, callback.getMsg());
 				if(handler != null){
@@ -100,6 +97,7 @@ public class SwitchProductDao implements Serializable {
 				return;
 			}
 			//保存到本地文件中
+			//Log.d(TAG, "下载loadCategoriesFromNetWorks类别成功callback保存到本地文件中=>" + callback.getData());
 			boolean saveResult = CategoryModel.saveLocal(Arrays.asList(callback.getData()));
 			Log.d(TAG, "保存到本地文件：" + saveResult);
 			//下载保存完毕

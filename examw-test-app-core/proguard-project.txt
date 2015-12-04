@@ -18,7 +18,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep class com.google.gson.** {*;}
--keep class com.examw.test.widget.** {*;}
--dontobfuscate
--dontoptimize
+
+# removes such information by default, so configure it to keep all of it. 
+-keepattributes Signature 
+
+# Gson specific classes 
+-keep class sun.misc.Unsafe { *; }
+
+-keep class com.examw.test.widget.** { *; }
+-keep class com.handmark.pulltorefresh.library.** { *; }
+
+-dontwarn org.apache.commons.httpclient.** 
+-dontwarn android.support.v4.**
+
+#-ignorewarnings
+-libraryjars libs/commons-lang3-3.4.jar
+-libraryjars libs/gson-1.7.1.jar

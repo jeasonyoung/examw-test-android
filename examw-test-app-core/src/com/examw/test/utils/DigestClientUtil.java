@@ -49,7 +49,6 @@ import android.util.Log;
  * @author yangyong
  * @since 2014年12月22日
  */
-@SuppressWarnings("deprecation")
 public final class DigestClientUtil {
 	private static final String TAG = "DigestClientUtil";
 	private static final String ENCODING = "UTF-8";
@@ -172,7 +171,7 @@ public final class DigestClientUtil {
 	//构建参数。
 	private static List<BasicNameValuePair> createParameters(final Map<String, Object> parameters){
 		Log.d(TAG, "构建参数...");
-		final List<BasicNameValuePair> params = new LinkedList<>();
+		final List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
 		if(parameters != null && parameters.size() > 0){
 			for(Entry<String, Object> entry : parameters.entrySet()){
 				if(StringUtils.isBlank(entry.getKey()) || entry.getValue() == null) continue;
@@ -365,6 +364,7 @@ public final class DigestClientUtil {
 				final Gson gson = new Gson();
 				//返回结果
 				final JSONCallback<T> result = gson.fromJson(json, type(JSONCallback.class, this.clazz));
+				//Log.d(TAG, "JSON字符串转换为对象->成功=>" + result);
 				///TODO:登录用户限制处理(扩展)
 				return result;
 			}

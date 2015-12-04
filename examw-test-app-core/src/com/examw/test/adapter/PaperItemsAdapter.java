@@ -133,7 +133,7 @@ public class PaperItemsAdapter extends BaseAdapter implements AdapterView.OnItem
 					//选项ID
 					final String optId = optModel.getId();
 					//加载我的答案
-					final List<String> selectOpts = new ArrayList<>();
+					final List<String> selectOpts = new ArrayList<String>();
 					final IPaperItemDataDelegate dataDelegate = AppContext.getPaperDataDelegate();
 					if(dataDelegate != null){
 						final String myAnswers = dataDelegate.loadMyAnswer(itemModel);

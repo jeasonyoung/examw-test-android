@@ -115,7 +115,6 @@ public class MoreMenuAdapter extends BaseAdapter{
 		return convertView;
 	}
 	//加载图标
-	@SuppressWarnings("deprecation")
 	private Drawable loadIconDrawable(String icon){
 		if(StringUtils.isNotBlank(icon) && this.resources != null){
 			Drawable drawable = null;

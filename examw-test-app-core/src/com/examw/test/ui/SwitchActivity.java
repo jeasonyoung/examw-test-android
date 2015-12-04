@@ -58,7 +58,6 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 	private WaitingViewDialog waitingViewDialog;
 	private SubFragmentType subType = SubFragmentType.None;
 	private MsgHandler msgHandler;
-	private SwitchProductDao dao;
 	private String categoryId, categoryName, examId,examCode,examName;
 	/*
 	 * 重载创建。
@@ -67,8 +66,6 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//初始化dao
-		this.dao = new SwitchProductDao(this);
 		//加载布局XML 
 		this.setContentView(R.layout.ui_switch_main);
 		//初始化等待框
@@ -265,20 +262,25 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 				 */
 				@Override
 				public void run() {
-					Log.d(TAG, "多线程开始搜索考试名称:" + examName);
-					dao.findSearchExams(examName, new SwitchProductDao.SearchResultListener() {
-						/*
-						 * 多线程搜索结果反馈
-						 * @see com.examw.test.dao.SwitchProductDao.SearchResultListener#onSearchResult(com.examw.test.model.sync.ExamModel)
-						 */
-						@Override
-						public void onSearchResult(ExamModel exam) {
-							Log.d(TAG, "查找到考试:" + exam);
-							Message msg = new Message();
-							msg.obj = exam;
-							handler.sendMessage(msg);
-						}
-					});
+					try{
+						Log.d(TAG, "多线程开始搜索考试名称:" + examName);
+						final SwitchProductDao  dao  = new SwitchProductDao(getActivity());
+						dao.findSearchExams(examName, new SwitchProductDao.SearchResultListener() {
+							/*
+							 * 多线程搜索结果反馈
+							 * @see com.examw.test.dao.SwitchProductDao.SearchResultListener#onSearchResult(com.examw.test.model.sync.ExamModel)
+							 */
+							@Override
+							public void onSearchResult(ExamModel exam) {
+								Log.d(TAG, "查找到考试:" + exam);
+								Message msg = new Message();
+								msg.obj = exam;
+								handler.sendMessage(msg);
+							}
+						});
+					}catch(Exception e){
+						Log.e(TAG, "搜索考试名称["+examName+"]异常:" + e.getMessage(), e);
+					}
 				}
 			});
 		}
@@ -328,26 +330,32 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 			 */
 			@Override
 			protected List<CategoryModel> doInBackground(Void... params) {
-				Log.d(TAG, "开始异步线程加载考试分类数据...");
-				if(!dao.hasLocalCategories()){
-					 //从网络加载数据
-					 dao.loadCategoriesFromNetWorks(new DownloadResultListener() {
-						/*
-						 * 重载。
-						 * @see com.examw.test.dao.DownloadResultListener#onComplete(boolean, java.lang.String)
-						 */
-						@Override
-						public void onComplete(boolean result, String msg) {
-							if(!result){
-								 Log.d(TAG, "下载数据失败:" + msg);
-								 msgHandler.sendMessage(StringUtils.isBlank(msg) ? "未知异常！" : msg);
-							}else {
-								msgHandler.sendMessage("下载数据完成!");
+				 try{
+					Log.d(TAG, "开始异步线程加载考试分类数据...");
+					final SwitchProductDao dao = new SwitchProductDao(getActivity());
+					if(!dao.hasLocalCategories()){
+						 //从网络加载数据
+						 dao.loadCategoriesFromNetWorks(new DownloadResultListener() {
+							/*
+							 * 重载。
+							 * @see com.examw.test.dao.DownloadResultListener#onComplete(boolean, java.lang.String)
+							 */
+							@Override
+							public void onComplete(boolean result, String msg) {
+								if(!result){
+									 Log.d(TAG, "下载数据失败:" + msg);
+									 msgHandler.sendMessage(StringUtils.isBlank(msg) ? "未知异常！" : msg);
+								}else {
+									msgHandler.sendMessage("下载数据完成!");
+								}
 							}
-						}
-					});
-				}
-				return dao.getCategories();
+						});
+					}
+					return dao.getCategories();
+				 }catch(Exception e){
+					 Log.e(TAG, "加载考试分类数据异常:" + e.getMessage(), e);
+				 }
+				 return null;
 			}
 			/*
 			 * 主线程处理
@@ -522,8 +530,14 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 			 */
 			@Override
 			protected List<ExamModel> doInBackground(Void... params) {
-				Log.d(TAG, "异步加载考试分类["+ categoryName +"]下的考试数据...");
-				return dao.loadExams(categoryId);
+				try{
+					Log.d(TAG, "异步加载考试分类["+ categoryName +"]下的考试数据...");
+					final SwitchProductDao dao = new SwitchProductDao(getActivity());
+					return dao.loadExams(categoryId);
+				}catch(Exception e){
+					Log.e(TAG, "加载考试分类["+ categoryName +"]下的考试数据异常:" + e.getMessage(), e);
+				}
+				return null;
 			}
 			/*
 			 * 主线程更新。
@@ -676,8 +690,14 @@ public class SwitchActivity extends FragmentActivity implements FragmentManager.
 			 */
 			@Override
 			protected List<ProductModel> doInBackground(Void... params) {
-				Log.d(TAG, "异步加载考试["+ examName +"]下的产品数据...");
-				return dao.loadProducts(examId);
+				try{
+					Log.d(TAG, "异步加载考试["+ examName +"]下的产品数据...");
+					final SwitchProductDao dao = new SwitchProductDao(getActivity());
+					return dao.loadProducts(examId);
+				}catch(Exception e){
+					Log.e(TAG, "加载考试["+ examName +"]下的产品数据异常:" + e.getMessage(), e);
+				}
+				return null;
 			}
 			/*
 			 * 主线程更新。

@@ -88,7 +88,6 @@ public class ItemOptionView extends LinearLayout {
 		}
 	}
 	//设置选项图标
-	@SuppressWarnings("deprecation")
 	private void createOptionViewIcon(int resId){
 		if(resId > -1 && this.optView != null && this.getResources() != null){
 			final Drawable drawable = this.getResources().getDrawable(resId);

@@ -362,7 +362,6 @@ public class PaperActivity extends Activity implements View.OnClickListener,View
 					//更新收藏夹图片
 					if(favoriteImageButton != null){
 						favoriteImageButton.post(new Runnable() {
-							@SuppressWarnings("deprecation")
 							@Override
 							public void run() {
 								int resId = (result ? R.drawable.paper_btn_fav_highlight : R.drawable.paper_btn_fav_normal); 
